@@ -3,6 +3,7 @@ import LoginScreen from "@/src/screens/Auth/LoginScreen";
 import RegisterScreen from "@/src/screens/Auth/RegisterScreen";
 import CarsListScreen from "@/src/screens/Cars/CarsListScreen";
 import CarDetailsScreen from "@/src/screens/Cars/CarDetailsScreen";
+import PartsListScreen from "@/src/screens/Parts/PartsListScreen";
 
 export type RootStackParamList = {
   Login: undefined;
@@ -23,6 +24,7 @@ const AppNavigator = () => {
       <Stack.Screen name="Register" component={RegisterScreen}></Stack.Screen>
       <Stack.Screen name="CarsList" component={CarsListScreen}></Stack.Screen>
       <Stack.Screen name="CarDetails" component={CarDetailsScreen}></Stack.Screen>
+      <Stack.Screen name="PartsList" component={PartsListScreen}></Stack.Screen>
     </Stack.Navigator>
   )
 };
