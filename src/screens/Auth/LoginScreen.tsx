@@ -1,8 +1,9 @@
 import {NativeStackScreenProps} from "@react-navigation/native-stack";
 import {RootStackParamList} from "@/src/navigation/AppNavigator";
 import {Controller, useForm} from "react-hook-form";
-import {Button, TextInput, View, StyleSheet} from "react-native";
+import {Button, TextInput, Text, View, StyleSheet} from "react-native";
 import StyledText from "@/src/components/ui/StyledText";
+import StyledButton from "@/src/components/ui/StyledButton";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -48,6 +49,7 @@ const LoginScreen = ({navigation}: Props) => {
         )}
       />
 
+      <StyledButton label="Delete"></StyledButton>
       <Button title="Login" onPress={handleSubmit(onSubmit)}/>
       <Button title="Register" onPress={() => navigation.navigate("Register")} />
     </View>
