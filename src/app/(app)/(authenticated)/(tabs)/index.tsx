@@ -1,26 +1,91 @@
-import { View, ActivityIndicator, Platform } from 'react-native';
-import { useQuery } from '@tanstack/react-query';
-import HomeBlock from '@/components/HomeBlock';
 import { Stack } from 'expo-router';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import {
+  ActivityIndicator, Dimensions, Image, Platform, Pressable, ScrollView, Text, View
+} from 'react-native';
+import Carousel from 'react-native-reanimated-carousel';
+
+import HomeBlock from '@/components/HomeBlock';
+import { Ionicons } from '@expo/vector-icons';
+import { useQuery } from '@tanstack/react-query';
+
+const { width } = Dimensions.get("window");
+
+const data = [
+  {
+    id: 1,
+    title: "Tata Punch",
+    price: "₹ 5.99 Lakh",
+    image: require("@/data/images/1images.jpeg"), // use your car image
+  },
+  {
+    id: 2,
+    title: "Hyundai Venue",
+    price: "₹ 7.89 Lakh",
+    image: require("@/data/images/2LEAD.jpg"),
+  },
+];
 
 export default function HomeScreen() {
-  const [isLoading, setIsLoading] = useState(Platform.OS === 'web' ? false : true);
-
-  const { data } = useQuery({
-    queryKey: ['homeInfo'],
-    queryFn: () => getHomeInfo(),
-  });
+  const [isLoading, setIsLoading] = useState(false);
+  console.log(Platform.OS)
+  // const { data } = useQuery({
+  //   queryKey: ['homeInfo'],
+  //   queryFn: () => getHomeInfo(),
+  // });
 
   return (
     <View className="h-full flex-1">
-      <Stack.Screen options={{ title: data?.title }} />
+      {/* <Stack.Screen options={{ title: data?.title }} /> */}
       {isLoading && (
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator />
         </View>
       )}
-      <HomeBlock
+      <View>
+        <Text className="text-2xl font-bold text-center my-4">Popular Cars</Text>
+      </View>
+      <Header />
+      <ScrollView>
+        <View className="bg-white items-center justify-center">
+          <Carousel
+            loop
+            width={width}
+            height={350}
+            autoPlay={false}
+            data={data}
+            scrollAnimationDuration={800}
+            renderItem={({ item }) => {
+              console.log(item)
+              return (
+                <View className="mx-2 bg-white rounded-2xl shadow-md">
+                  <Image
+                    source={item.image}
+                    className="w-full h-48 rounded-t-2xl"
+                    resizeMode="cover"
+                  />
+                  <View className="p-4">
+                    <Text className="text-lg font-bold text-atlassian-blue">
+                      {item.title}
+                    </Text>
+                    <Text className="text-base text-gray-600">{item.price}</Text>
+                    <View className="flex-row mt-2">
+                      <Text className="text-xs text-gray-500 mr-2">⭐ 5-star GNCAP</Text>
+                      <Text className="text-xs text-gray-500">🚗 More Mileage</Text>
+                    </View>
+                  </View>
+                </View>
+              )
+            }}
+          />
+        </View>
+        <BuySellButtons />
+
+        {/** to check scroll */}
+        <BuySellButtons />
+        <BuySellButtons />
+      </ScrollView>
+      {/* <HomeBlock
         homeInfo={data!}
         dom={{
           scrollEnabled: false,
@@ -29,7 +94,70 @@ export default function HomeScreen() {
             setIsLoading(false);
           },
         }}
-      />
+      /> */}
+    </View>
+  );
+}
+
+
+
+
+const Header = () => {
+  return (
+    <View className="bg-white flex-row items-center justify-between px-4 py-3">
+      {/* Left side: Location */}
+      <View className="flex-row items-center">
+        <Ionicons name="location-sharp" size={20} color="red" />
+        <Text className="ml-1 text-base font-semibold text-gray-800">
+          Your Location
+        </Text>
+      </View>
+
+      {/* Right side: Heart + Profile */}
+      <View className="flex-row items-center">
+        <Ionicons name="heart-outline" size={22} color="black" />
+        <Image
+          source={{ uri: "https://i.pravatar.cc/100" }}
+          className="w-8 h-8 rounded-full ml-3"
+        />
+      </View>
+    </View>
+  );
+}
+
+
+const BuySellButtons = () => {
+  return (
+    <View className="px-4 bg-white">
+      <Text className="text-xl font-bold mb-3">What are you looking for?</Text>
+
+      <View className="flex-row">
+        {/* Buy Car Button */}
+        <Pressable className="flex-1 bg-orange-500 rounded-2xl p-4 mr-2">
+          <Text className="text-white text-lg font-bold">Buy Car</Text>
+          <Text className="text-white text-xs mb-2">
+            Wide Range of Verified Cars for you!
+          </Text>
+          <Image
+            source={require("@/assets/images/home-buy-car.png")} // replace with your illustration
+            className="w-full h-24"
+            resizeMode="contain"
+          />
+        </Pressable>
+
+        {/* Sell Car Button */}
+        <Pressable className="flex-1 bg-blue-500 rounded-2xl p-4 ml-2">
+          <Text className="text-white text-lg font-bold">Sell Car</Text>
+          <Text className="text-white text-xs mb-2">
+            Made Easy and Simple from Home
+          </Text>
+          <Image
+            source={require("@/assets/images/home-sell-car.png")} // replace with your illustration
+            className="w-full h-24"
+            resizeMode="contain"
+          />
+        </Pressable>
+      </View>
     </View>
   );
 }
