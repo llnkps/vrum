@@ -61,6 +61,7 @@ const InitialLayout = () => {
     }
   }, [isLoaded, isSignedIn, loaded]);
 
+
   if (!isLoaded || !loaded) {
     return <ActivityIndicator />;
   }
@@ -68,7 +69,7 @@ const InitialLayout = () => {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="login" />
-      <Stack.Screen name="(app)" />
+      {/* <Stack.Screen name="(app)" /> */}
     </Stack>
   );
 };
@@ -76,13 +77,11 @@ const InitialLayout = () => {
 const RootLayout = () => {
   const colorScheme = useColorScheme();
 
-  return <Text>Hello world</Text>;
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          {/* <InitialLayout /> */}
-          <Text>Hello world</Text>
+          <InitialLayout />
         </ThemeProvider>
       </QueryClientProvider>
     </GestureHandlerRootView>
