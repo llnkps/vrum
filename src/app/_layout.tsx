@@ -40,7 +40,7 @@ const InitialLayout = () => {
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
-  const { isLoaded, isSignedIn } = { isLoaded: true, isSignedIn: false }; // useAuth();
+  const { isLoaded, isSignedIn } = { isLoaded: true, isSignedIn: true }; // useAuth();
   const router = useRouter();
   const segments = useSegments();
   useReactQueryDevTools(queryClient);
@@ -55,12 +55,11 @@ const InitialLayout = () => {
     if (!loaded) return;
 
     const inAuthGroup = segments[1] === '(authenticated)';
-
+    console.log(isSignedIn && !inAuthGroup, inAuthGroup, segments);
     if (isSignedIn && !inAuthGroup) {
       router.replace('/(app)/(authenticated)/(tabs)');
     }
   }, [isLoaded, isSignedIn, loaded]);
-
 
   if (!isLoaded || !loaded) {
     return <ActivityIndicator />;
@@ -69,7 +68,7 @@ const InitialLayout = () => {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="login" />
-      {/* <Stack.Screen name="(app)" /> */}
+      <Stack.Screen name="(app)" />
     </Stack>
   );
 };

@@ -4,7 +4,6 @@ module.exports = {
   content: ['./src/app/**/*.{js,jsx,ts,tsx}', './src/components/**/*.{js,jsx,ts,tsx}'],
   presets: [require("nativewind/preset")],
   theme: {
-    theme: {
       extend: {
         colors: {
           // Atlassian brand colors
@@ -71,7 +70,6 @@ module.exports = {
           full: "9999px",
         },
       },
-    },
   },
   plugins: [],
 }
