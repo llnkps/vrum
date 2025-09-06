@@ -1,7 +1,13 @@
-import { Image, Platform, ScrollView, Text, View } from 'react-native';
-import { useQuery } from '@tanstack/react-query';
-import CourseCard from '@/components/CourseCard';
+import 'tailwindcss/tailwind.css';
+
+import React, { useState } from 'react';
+import { FlatList, Image, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+
+import CourseCard from '@/components/CourseCard';
+import { useQuery } from '@tanstack/react-query';
+import { Ionicons } from '@expo/vector-icons';
 
 const data = [
   {
@@ -21,35 +27,105 @@ const data = [
 const Page = () => {
   console.log("BUY CAR PAGE RENDERED", Platform.OS);
   return (
-    <View className="flex-1 px-4">
-      <Animated.FlatList
-        data={data}
-        renderItem={({ item, index }) => (
-          <Animated.View entering={FadeIn.delay(index * 400).duration(800)}>
-            <View className="mx-2 rounded-2xl shadow-md">
-              <Image
-                source={item.image}
-                className="w-full h-48 rounded-t-2xl"
-                resizeMode="cover"
-              />
-              <View className="p-4">
-                <Text className="text-lg font-bold text-font-brand dark:text-font-brand-dark">
-                  {item.title}
-                </Text>
-                <Text className="text-base text-font dark:text-font-dark">{item.price}</Text>
-                <View className="flex-row mt-2">
-                  <Text className="text-xs text-font dark:text-font-dark mr-2">⭐ 5-star GNCAP</Text>
-                  <Text className="text-xs text-font dark:text-font-dark">🚗 More Mileage</Text>
+    <SafeAreaProvider>
+      <SafeAreaView className="flex-1 bg-surface dark:bg-surface-dark">
+        <ScrollView className="flex-1 px-4">
+          <Header />
+          <ButtonCarousel />
+          <Animated.FlatList
+            data={data}
+            renderItem={({ item, index }) => (
+              <Animated.View entering={FadeIn.delay(index * 400).duration(800)}>
+                <View className="mx-2 rounded-2xl shadow-md">
+                  <Image
+                    source={item.image}
+                    className="w-full h-48 rounded-t-2xl"
+                    resizeMode="cover"
+                  />
+                  <View className="p-4">
+                    <Text className="text-lg font-bold text-font-brand dark:text-font-brand-dark">
+                      {item.title}
+                    </Text>
+                    <Text className="text-base text-font dark:text-font-dark">{item.price}</Text>
+                    <View className="flex-row mt-2">
+                      <Text className="text-xs text-font dark:text-font-dark mr-2">⭐ 5-star GNCAP</Text>
+                      <Text className="text-xs text-font dark:text-font-dark">🚗 More Mileage</Text>
+                    </View>
+                  </View>
                 </View>
-              </View>
-            </View>
-          </Animated.View>
-        )}
-        contentContainerClassName="pt-4"
-        keyExtractor={(item) => item.id.toString()}
-        showsVerticalScrollIndicator={false}
-      />
-    </View>
+              </Animated.View>
+            )}
+            contentContainerClassName="pt-4"
+            keyExtractor={(item) => item.id.toString()}
+            showsVerticalScrollIndicator={false}
+          />
+        </ScrollView>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 export default Page;
+
+
+
+
+const Header = () => {
+  return (
+    <View className="flex-row items-center justify-between px-4 py-3">
+      {/* Left side: Location */}
+      <View className="flex-row items-center">
+        <Ionicons name="location-sharp" size={20} color="red" />
+        <Text className="ml-1 text-base font-semibold text-font dark:text-font-dark">
+          Your Location
+        </Text>
+      </View>
+
+      {/* Right side: Heart + Profile */}
+      <View className="flex-row items-center">
+        <Ionicons name="heart-outline" size={22} color="red" />
+        <Image
+          source={{ uri: "https://i.pravatar.cc/100" }}
+          className="w-8 h-8 rounded-full ml-3"
+        />
+      </View>
+    </View>
+  );
+}
+
+
+const options = ['Preference', 'Price', 'Kms', 'Other'];
+
+function ButtonCarousel() {
+  const [selected, setSelected] = useState('Preference');
+
+  const renderItem = ({ item }: { item: string }) => {
+    const isSelected = selected === item;
+    return (
+      <TouchableOpacity
+        onPress={() => setSelected(item)}
+        className={`px-4 py-2 mr-2 rounded-md border ${isSelected
+          ? 'bg-red-400 border-red-400'
+          : 'bg-gray-200 border-gray-300'
+          }`}
+      >
+        <Text
+          className={`font-medium ${isSelected ? 'text-white' : 'text-gray-800'}`}
+        >
+          {item}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
+
+  return (
+    <SafeAreaView className="flex-1 justify-center items-start p-4">
+      <FlatList
+        data={options}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        renderItem={renderItem}
+        keyExtractor={(item) => item}
+      />
+    </SafeAreaView>
+  );
+}

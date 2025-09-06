@@ -23,9 +23,8 @@ const Layout = () => {
       <Stack.Screen
         name="buy-car"
         options={{
-          headerBackTitle: 'Back',
-          title: 'Courses',
-          headerShown: Platform.OS === 'web' ? false : true,
+          title: 'Buy Car',
+          headerShown: false,
         }}
       />
       <Stack.Screen
