@@ -1,13 +1,7 @@
-import {SafeAreaProvider} from "react-native-safe-area-context";
-import AppNavigator from "@/src/navigation/AppNavigator";
-import {StatusBar} from "expo-status-bar";
-import '../styles/globals.css';
+import { Redirect } from 'expo-router';
 
-export default function Index() {
-  return (
-    <SafeAreaProvider>
-      <AppNavigator/>
-      <StatusBar style="auto" />
-    </SafeAreaProvider>
-  );
-}
+const Page = () => {
+  return <Redirect href="/login" />;
+};
+
+export default Page;
