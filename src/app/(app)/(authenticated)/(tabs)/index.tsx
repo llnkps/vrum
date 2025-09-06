@@ -65,13 +65,13 @@ export default function HomeScreen({ navigation }) {
                         resizeMode="cover"
                       />
                       <View className="p-4">
-                        <Text className="text-lg font-bold text-atlassian-blue">
+                        <Text className="text-lg font-bold text-font-brand dark:text-font-brand-dark">
                           {item.title}
                         </Text>
-                        <Text className="text-base text-gray-600">{item.price}</Text>
+                        <Text className="text-base text-font dark:text-font-dark">{item.price}</Text>
                         <View className="flex-row mt-2">
-                          <Text className="text-xs text-gray-500 mr-2">⭐ 5-star GNCAP</Text>
-                          <Text className="text-xs text-gray-500">🚗 More Mileage</Text>
+                          <Text className="text-xs text-font dark:text-font-dark mr-2">⭐ 5-star GNCAP</Text>
+                          <Text className="text-xs text-font dark:text-font-dark">🚗 More Mileage</Text>
                         </View>
                       </View>
                     </View>
