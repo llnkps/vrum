@@ -1,9 +1,10 @@
-import { Stack } from 'expo-router';
+import { Link, Stack } from 'expo-router';
 import React, { useState } from 'react';
 import {
   ActivityIndicator, Dimensions, Image, Platform, Pressable, ScrollView, Text, View
 } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 import HomeBlock from '@/components/HomeBlock';
 import { Ionicons } from '@expo/vector-icons';
@@ -26,7 +27,7 @@ const data = [
   },
 ];
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   const [isLoading, setIsLoading] = useState(false);
   console.log(Platform.OS)
   // const { data } = useQuery({
@@ -35,57 +36,52 @@ export default function HomeScreen() {
   // });
 
   return (
-    <View className="h-full flex-1">
-      {/* <Stack.Screen options={{ title: data?.title }} /> */}
-      {isLoading && (
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator />
-        </View>
-      )}
-      <View>
-        <Text className="text-2xl font-bold text-center my-4">Popular Cars</Text>
-      </View>
-      <Header />
-      <ScrollView>
-        <View className="bg-white items-center justify-center">
-          <Carousel
-            loop
-            width={width}
-            height={350}
-            autoPlay={false}
-            data={data}
-            scrollAnimationDuration={800}
-            renderItem={({ item }) => {
-              console.log(item)
-              return (
-                <View className="mx-2 bg-white rounded-2xl shadow-md">
-                  <Image
-                    source={item.image}
-                    className="w-full h-48 rounded-t-2xl"
-                    resizeMode="cover"
-                  />
-                  <View className="p-4">
-                    <Text className="text-lg font-bold text-atlassian-blue">
-                      {item.title}
-                    </Text>
-                    <Text className="text-base text-gray-600">{item.price}</Text>
-                    <View className="flex-row mt-2">
-                      <Text className="text-xs text-gray-500 mr-2">⭐ 5-star GNCAP</Text>
-                      <Text className="text-xs text-gray-500">🚗 More Mileage</Text>
+    <SafeAreaProvider>
+      <SafeAreaView className="flex-1 bg-surface dark:bg-surface-dark">
+        <View className="h-full flex-1">
+          {/* <Stack.Screen options={{ title: data?.title }} /> */}
+          {isLoading && (
+            <View className="flex-1 items-center justify-center">
+              <ActivityIndicator />
+            </View>
+          )}
+          <Header />
+          <ScrollView>
+            <View className="items-center justify-center">
+              <Carousel
+                loop
+                width={width}
+                height={350}
+                autoPlay={false}
+                data={data}
+                scrollAnimationDuration={800}
+                renderItem={({ item }) => {
+                  console.log(item)
+                  return (
+                    <View className="mx-2 rounded-2xl shadow-md">
+                      <Image
+                        source={item.image}
+                        className="w-full h-48 rounded-t-2xl"
+                        resizeMode="cover"
+                      />
+                      <View className="p-4">
+                        <Text className="text-lg font-bold text-atlassian-blue">
+                          {item.title}
+                        </Text>
+                        <Text className="text-base text-gray-600">{item.price}</Text>
+                        <View className="flex-row mt-2">
+                          <Text className="text-xs text-gray-500 mr-2">⭐ 5-star GNCAP</Text>
+                          <Text className="text-xs text-gray-500">🚗 More Mileage</Text>
+                        </View>
+                      </View>
                     </View>
-                  </View>
-                </View>
-              )
-            }}
-          />
-        </View>
-        <BuySellButtons />
-
-        {/** to check scroll */}
-        <BuySellButtons />
-        <BuySellButtons />
-      </ScrollView>
-      {/* <HomeBlock
+                  )
+                }}
+              />
+            </View>
+            <BuySellButtons navigation={navigation} />
+          </ScrollView>
+          {/* <HomeBlock
         homeInfo={data!}
         dom={{
           scrollEnabled: false,
@@ -95,7 +91,9 @@ export default function HomeScreen() {
           },
         }}
       /> */}
-    </View>
+        </View>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
@@ -104,11 +102,11 @@ export default function HomeScreen() {
 
 const Header = () => {
   return (
-    <View className="bg-white flex-row items-center justify-between px-4 py-3">
+    <View className="flex-row items-center justify-between px-4 py-3">
       {/* Left side: Location */}
       <View className="flex-row items-center">
         <Ionicons name="location-sharp" size={20} color="red" />
-        <Text className="ml-1 text-base font-semibold text-gray-800">
+        <Text className="ml-1 text-base font-semibold text-font">
           Your Location
         </Text>
       </View>
@@ -126,24 +124,26 @@ const Header = () => {
 }
 
 
-const BuySellButtons = () => {
+const BuySellButtons = ({ navigation }) => {
   return (
-    <View className="px-4 bg-white">
+    <View className="px-4 bg-background dark:bg-background-dark">
       <Text className="text-xl font-bold mb-3">What are you looking for?</Text>
 
       <View className="flex-row">
         {/* Buy Car Button */}
-        <Pressable className="flex-1 bg-orange-500 rounded-2xl p-4 mr-2">
-          <Text className="text-white text-lg font-bold">Buy Car</Text>
-          <Text className="text-white text-xs mb-2">
-            Wide Range of Verified Cars for you!
-          </Text>
-          <Image
-            source={require("@/assets/images/home-buy-car.png")} // replace with your illustration
-            className="w-full h-24"
-            resizeMode="contain"
-          />
-        </Pressable>
+        <Link href="/buy-car" asChild>
+          <Pressable className="flex-1 bg-orange-500 rounded-2xl p-4 mr-2">
+            <Text className="text-white text-lg font-bold">Buy Car</Text>
+            <Text className="text-white text-xs mb-2">
+              Wide Range of Verified Cars for you!
+            </Text>
+            <Image
+              source={require("@/assets/images/home-buy-car.png")} // replace with your illustration
+              className="w-full h-24"
+              resizeMode="contain"
+            />
+          </Pressable>
+        </Link>
 
         {/* Sell Car Button */}
         <Pressable className="flex-1 bg-blue-500 rounded-2xl p-4 ml-2">

@@ -2,7 +2,7 @@ import { Stack } from 'expo-router';
 import { Platform, TouchableOpacity, useColorScheme } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-
+import { NavigationContainer } from "@react-navigation/native";
 export const unstable_settings = {
   initialRouteName: '(tabs)',
 };
@@ -21,7 +21,7 @@ const Layout = () => {
       }}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen
-        name="courses"
+        name="buy-car"
         options={{
           headerBackTitle: 'Back',
           title: 'Courses',
