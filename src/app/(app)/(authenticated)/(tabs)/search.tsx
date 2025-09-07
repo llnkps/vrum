@@ -1,7 +1,8 @@
 import { Link, Stack } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    ActivityIndicator, Dimensions, Image, Platform, Pressable, ScrollView, Text, View
+    ActivityIndicator, Dimensions, Image, Platform, Pressable, ScrollView, Text, TouchableHighlight,
+    View
 } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
@@ -96,6 +97,18 @@ export default function SearchScreen() {
       <SafeAreaView className="flex-1 bg-surface dark:bg-surface-dark">
         <View className="h-full flex-1">
           <Animated.FlatList
+            ListHeaderComponent={<>
+              <Header />
+              <HeaderCategory />
+              <SearchSection />
+              <View className={"px-4 py-3"}>
+                <Pressable
+                  className={"px-4 py-3 flex flex-row justify-center bg-background-neutral dark:bg-background-neutral-dark rounded-md border border-border dark:border-border-dark"}
+                >
+                  <Text className="text-font dark:text-font-dark font-bold">Показать 8888 объявлений</Text>
+                </Pressable>
+              </View>
+            </>}
             data={data}
             renderItem={({ item, index }) => (
               <Animated.ScrollView entering={FadeIn.delay(index * 400).duration(800)}>
@@ -121,20 +134,6 @@ export default function SearchScreen() {
             contentContainerClassName="pt-4"
             keyExtractor={(item) => item.id.toString()}
             showsVerticalScrollIndicator={false}
-            ListHeaderComponent={<>
-              <Header />
-              <HeaderCategory />
-              <SearchSection />
-
-              <View className={"px-4 py-3"}>
-                <Pressable
-                  className={"px-4 py-3 flex flex-row justify-center bg-background-neutral dark:bg-background-neutral-dark rounded-md border border-border dark:border-border-dark"}
-                >
-                  <Text className="text-font dark:text-font-dark font-bold">Показать 8888 объявлений</Text>
-                </Pressable>
-              </View>
-
-            </>}
           />
         </View>
       </SafeAreaView>
@@ -153,24 +152,35 @@ const Header = () => {
 
 const HeaderCategory = () => {
   return (
-    <View className="flex-row items-center justify-center gap-4 px-4 py-3">
+    <View className="flex-row items-center justify-center gap-2 px-4 py-3">
       {/* Left side: Location */}
-      <View className="flex-col items-center justify-center">
-        <HeaderAuto />
-        <Text className="text-font dark:text-font-dark">Автомобили</Text>
-      </View>
-      <View className="flex-col items-center justify-center">
-        <HeaderSpecauto />
-        <Text className="text-font dark:text-font-dark">Спецтехника</Text>
-      </View>
-      <View className="flex-col items-center justify-center">
-        <HeaderBreak />
-        <Text className="text-font dark:text-font-dark">Запчасти</Text>
-      </View>
-      <View className="flex-col items-center justify-center">
-        <HeaderMoto />
-        <Text className="text-font dark:text-font-dark">Мототехника</Text>
-      </View>
+      <TouchableHighlight className="bg-background-neutral dark:bg-background-neutral-dark rounded-md p-2">
+        <View className="flex-col items-center justify-center">
+          <HeaderAuto />
+          <Text className="text-font dark:text-font-dark">Автомобили</Text>
+        </View>
+      </TouchableHighlight>
+
+      <TouchableHighlight className="bg-background-neutral dark:bg-background-neutral-dark rounded-md p-2">
+        <View className="flex-col items-center justify-center">
+          <HeaderSpecauto />
+          <Text className="text-font dark:text-font-dark">Спецтехника</Text>
+        </View>
+      </TouchableHighlight>
+
+      <TouchableHighlight className="bg-background-neutral dark:bg-background-neutral-dark rounded-md p-2">
+        <View className="flex-col items-center justify-center">
+          <HeaderBreak />
+          <Text className="text-font dark:text-font-dark">Запчасти</Text>
+        </View>
+      </TouchableHighlight>
+
+      <TouchableHighlight className="bg-background-neutral dark:bg-background-neutral-dark rounded-md p-2">
+        <View className="flex-col items-center justify-center">
+          <HeaderMoto />
+          <Text className="text-font dark:text-font-dark">Мототехника</Text>
+        </View>
+      </TouchableHighlight>
     </View>
   );
 }
