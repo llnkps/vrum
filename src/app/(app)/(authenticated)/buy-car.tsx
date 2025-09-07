@@ -29,13 +29,13 @@ const Page = () => {
   return (
     <SafeAreaProvider>
       <SafeAreaView className="flex-1 bg-surface dark:bg-surface-dark">
-        <ScrollView className="flex-1 px-4">
+        <View className="flex-1 px-4">
           <Header />
           <ButtonCarousel />
           <Animated.FlatList
             data={data}
             renderItem={({ item, index }) => (
-              <Animated.View entering={FadeIn.delay(index * 400).duration(800)}>
+              <Animated.ScrollView entering={FadeIn.delay(index * 400).duration(800)}>
                 <View className="mx-2 rounded-2xl shadow-md">
                   <Image
                     source={item.image}
@@ -53,13 +53,13 @@ const Page = () => {
                     </View>
                   </View>
                 </View>
-              </Animated.View>
+              </Animated.ScrollView>
             )}
             contentContainerClassName="pt-4"
             keyExtractor={(item) => item.id.toString()}
             showsVerticalScrollIndicator={false}
           />
-        </ScrollView>
+        </View>
       </SafeAreaView>
     </SafeAreaProvider>
   );
