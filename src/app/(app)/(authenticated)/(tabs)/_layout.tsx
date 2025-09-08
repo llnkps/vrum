@@ -11,7 +11,7 @@ export default function TabLayout() {
           ? {
               tabBarActiveTintColor: '#0d6c9a',
               tabBarInactiveTintColor: '#8E8E93',
-              headerShown: true,
+              headerShown: false,
               tabBarBackground: BlurTabBarBackground,
               tabBarStyle: {
                 position: 'absolute',
@@ -26,23 +26,37 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          tabBarLabel: 'My Studio',
+          tabBarLabel: 'Home',
           tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} />,
         }}
       />
 
       <Tabs.Screen
-        name="my-content"
+        name="favorites"
         options={{
-          title: 'My Courses',
-          tabBarIcon: ({ color, size }) => <Ionicons name="book" size={size} color={color} />,
+          title: 'Favorites',
+          tabBarIcon: ({ color, size }) => <Ionicons name="star" size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="announcement"
+        options={{
+          title: 'Announcement',
+          tabBarIcon: ({ color, size }) => <Ionicons name="add-circle" size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="messages"
+        options={{
+          title: 'Messages',
+          tabBarIcon: ({ color, size }) => <Ionicons name="chatbubbles" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: 'Profile',
-          tabBarIcon: ({ color, size }) => <Ionicons name="person" size={size} color={color} />,
+          tabBarIcon: ({ color, size }) => <Ionicons name="person-circle" size={size} color={color} />,
         }}
       />
     </Tabs>
