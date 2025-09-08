@@ -18,11 +18,19 @@ export default function TabLayout() {
               },
             }
           : {
-              tabBarActiveTintColor: '#0d6c9a',
-              tabBarInactiveTintColor: '#8E8E93',
-              headerShown: false,
-            }
+            tabBarActiveTintColor: '#0d6c9a',
+            tabBarInactiveTintColor: '#8E8E93',
+            headerShown: false,
+          }
       }>
+      <Tabs.Screen
+        name="search"
+        options={{
+          tabBarLabel: 'My Studio',
+          tabBarIcon: ({ color, size }) => <Ionicons name="search-sharp" size={size} color={color} />,
+        }}
+      />
+
       <Tabs.Screen
         name="index"
         options={{
