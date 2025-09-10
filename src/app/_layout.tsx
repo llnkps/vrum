@@ -14,6 +14,8 @@ import { useReactQueryDevTools } from '@dev-plugins/react-query';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+import '@/i18n'; // Import your i18n configuration
+
 // const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 // if (!publishableKey) {
 //   throw new Error(
