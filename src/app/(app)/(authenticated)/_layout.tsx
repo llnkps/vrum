@@ -20,6 +20,8 @@ const Layout = () => {
         },
       }}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="search-screen/filters/model-gen" options={{ headerShown: false }} />
+      <Stack.Screen name="search-screen/filters/settings" options={{ headerShown: false }} />
       <Stack.Screen
         name="buy-car"
         options={{

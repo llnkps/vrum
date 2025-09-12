@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Image, Pressable, Text, View } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation, useRouter } from 'expo-router';
 
 export const AutoHeaderScreen = () => {
   const { t } = useTranslation();
@@ -43,7 +44,7 @@ export const AutoItemScreen = ({ item }) => {
 }
 
 const SearchSection = () => {
-
+  const router = useRouter();
   const handlePress = (buttonName) => {
     console.log(`Button "${buttonName}" was pressed.`);
     // You can add navigation or other logic here.
@@ -59,7 +60,7 @@ const SearchSection = () => {
   return (
     <View className={"px-4 py-3 gap-y-1 bg-background dark:bg-background-dark"}>
       <Pressable
-        onPress={() => handlePress('Model')}
+        onPress={() => router.navigate("/search-screen/filters/model-gen")}
         className={"px-4 py-3 flex flex-row bg-background-neutral dark:bg-background-neutral-dark rounded-t-md border border-border dark:border-border-dark"}
       >
         <Text className="text-font dark:text-font-dark font-bold">Марка, модель, поколение</Text>
@@ -80,7 +81,7 @@ const SearchSection = () => {
         </Pressable>
 
         <Pressable
-          onPress={() => handlePress('Параметры')}
+          onPress={() => router.navigate("/search-screen/filters/settings")}
           className={"flex-1 px-4 py-3 flex flex-row bg-background-neutral dark:bg-background-neutral-dark border border-border dark:border-border-dark"}
         >
           <View className="flex flex-row items-center space-x-2">
