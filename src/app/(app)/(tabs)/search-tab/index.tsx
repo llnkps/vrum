@@ -5,22 +5,22 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
-    AutoHeaderScreen, AutoItemScreen
+  AutoHeaderScreen, AutoItemScreen
 } from '@/app/(app)/(tabs)/search-tab/category-top-tabs/auto-screen';
 import {
-    AutoDetailHeaderScreen, AutoDetailItemScreen
+  AutoDetailHeaderScreen, AutoDetailItemScreen
 } from '@/app/(app)/(tabs)/search-tab/category-top-tabs/auto_detail-screen';
 import {
-    MotoHeaderScreen, MotoItemScreen
+  MotoHeaderScreen, MotoItemScreen
 } from '@/app/(app)/(tabs)/search-tab/category-top-tabs/moto-screen';
 import {
-    SpecAutoHeaderScreen, SpecAutoItemScreen
+  SpecAutoHeaderScreen, SpecAutoItemScreen
 } from '@/app/(app)/(tabs)/search-tab/category-top-tabs/spec_auto-screen';
 import { Header } from '@/components/global/Header';
 import { HeaderCategory } from '@/components/search-screen/HeaderCategory';
 import { ActiveScreen } from '@/components/search-screen/types';
 import BottomSheet, {
-    BottomSheetBackdrop, BottomSheetModal, BottomSheetModalProvider, BottomSheetView
+  BottomSheetBackdrop, BottomSheetModal, BottomSheetModalProvider, BottomSheetView
 } from '@gorhom/bottom-sheet';
 
 const data = [
@@ -133,8 +133,24 @@ export default function SearchScreen() {
     bottomSheetRef.current?.expand();
   }, []);
 
+
+
+
+
+ const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+  // callbacks
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log('handleSheetChanges', index);
+  }, []);
+
+
+
   return (
-    <SafeAreaView className="flex-1 bg-background-page dark:bg-background-page-dark">
+    <SafeAreaView className="flex-1">
       {/*         
         <BottomSheetModalProvider>
           <Button
@@ -189,6 +205,22 @@ export default function SearchScreen() {
         />
       </View>
 
+      <BottomSheetModalProvider>
+        <Button
+          onPress={handlePresentModalPress}
+          title="Present Modal"
+          color="black"
+        />
+        <BottomSheetModal
+          ref={bottomSheetModalRef}
+          onChange={handleSheetChanges}
+        >
+          <BottomSheetView style={styles.contentContainer}>
+            <Text>Awesome 🎉</Text>
+          </BottomSheetView>
+        </BottomSheetModal>
+      </BottomSheetModalProvider>
+
       <BottomSheet
         ref={bottomSheetRef}
         index={-1} // hidden by default
@@ -206,3 +238,17 @@ export default function SearchScreen() {
     </SafeAreaView>
   );
 }
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 24,
+    justifyContent: 'center',
+    backgroundColor: 'grey',
+  },
+  contentContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
+});

@@ -1,21 +1,25 @@
-import { View, Text, Image, Pressable } from "react-native";
+import TextInputIcon from "@/components/ui/TextInputIcon";
+import { useState } from "react";
+import { View, Text, Image, Pressable, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const ModelItemScreenFilter = () => {
+  const [text, setText] = useState('');
+
   return (
     <>
-      <View className="flex-1 bg-background-page dark:bg-background-page-dark">
-        <View className="mx-2 rounded-2xl shadow-md">
-          <View className="p-4">
-            <Text className="text-lg font-bold text-font-brand dark:text-font-brand-dark">
-              dasqq
-            </Text>
-            <Text className="text-base text-font dark:text-font-dark">22</Text>
-            <View className="flex-row mt-2">
-              <Text className="text-xs text-font dark:text-font-dark mr-2">⭐ 5-star GNCAP</Text>
-              <Text className="text-xs text-font dark:text-font-dark">🚗 More Mileage</Text >
-            </View>
-          </View>
+      <View className="flex-1">
+        <View>
+          <Text className="text-lg font-bold text-font dark:text-font-dark">
+            Марки
+          </Text>
+          <TextInput
+            style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+            onChangeText={newText => setText(newText)}
+            value={text}
+            placeholder="Марка или модель"
+          />
+          <TextInputIcon />
         </View>
         <View className="px-4 py-3 gap-y-1 bg-background dark:bg-background-dark">
           <Pressable

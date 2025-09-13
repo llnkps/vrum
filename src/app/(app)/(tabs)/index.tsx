@@ -36,7 +36,7 @@ export default function HomeScreen({ navigation }) {
   // });
 
   return (
-      <SafeAreaView className="flex-1 bg-background-page dark:bg-background-page-dark">
+      <SafeAreaView className="flex-1">
         <View className="h-full flex-1">
           {/* <Stack.Screen options={{ title: data?.title }} /> */}
           {isLoading && (

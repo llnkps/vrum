@@ -56,7 +56,7 @@ const SearchSection = () => {
   return (
     <View className={"px-4 py-3 gap-y-1 bg-background dark:bg-background-dark"}>
       <Pressable
-        onPress={() => router.push("/search-screen/filters/model-gen")}
+        onPress={() => router.push("/search-screen/filters/modal")}
         className={"px-4 py-3 flex flex-row bg-background-neutral dark:bg-background-neutral-dark rounded-t-md border border-border dark:border-border-dark"}
       >
         <Text className="text-font dark:text-font-dark font-bold">Марка, модель, поколение</Text>

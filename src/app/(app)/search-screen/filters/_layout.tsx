@@ -25,7 +25,6 @@ export default function SearchFilterLayout() {
         <Ionicons name="close" size={22} color="white" />
       </TouchableOpacity>
     ),
-    presentation: "formSheet",
     animation: "slide_from_bottom",
     sheetGrabberVisible: false,
     sheetInitialDetentIndex: 1,
@@ -37,8 +36,9 @@ export default function SearchFilterLayout() {
 
   return (
     <Stack>
-      <Stack.Screen name="model-gen" options={{ title: "", ...commonOptions }} />
-      <Stack.Screen name="settings" options={{ title: "Advanced Filters", ...commonOptions }} />
+      <Stack.Screen name="model-gen" options={{ title: "", presentation: "formSheet", ...commonOptions }} />
+      <Stack.Screen name="settings" options={{ title: "Advanced Filters", presentation: "formSheet", ...commonOptions }} />
+      <Stack.Screen name="modal" options={{ title: "", presentation: 'modal', headerShown: false }} />
     </Stack>
   )
 }

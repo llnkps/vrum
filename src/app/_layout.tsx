@@ -147,8 +147,7 @@ const MyDarkTheme = {
   ...DarkTheme,
   colors: {
     ...DarkTheme.colors,
-    background: "#1F1F21",
-    backgroundPage: "#000",
+    background: "#000",
     text: "#BFC1C4",
     primary: "#669DF1",
     tabBarActiveTintColor: "#BFC1C4",
