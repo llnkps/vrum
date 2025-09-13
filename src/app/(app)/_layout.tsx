@@ -1,21 +1,52 @@
-import { Redirect, Slot, useSegments } from 'expo-router';
-import { Text } from 'react-native';
+import { Stack, useRouter } from 'expo-router';
+import { useColorScheme } from 'react-native';
 
-const Layout = () => {
-  const { isSignedIn } = { isSignedIn: true }; // TODO: Replace with your auth logic
-  const segments = useSegments();
-  const inAuthGroup = segments[1] === '(authenticated)';
-
-  // Protect the inside area
-  if (!isSignedIn && inAuthGroup) {
-    return <Redirect href="/login" />;
-  }
-
-  return (
-    <>
-      <Slot />
-    </>
-  );
+export const unstable_settings = {
+  initialRouteName: '(tabs)',
 };
 
-export default Layout;
+export default function AppLayout() {
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="search-screen" options={{ headerShown: false }} />
+
+      {/* <Stack.Screen
+        name="buy-car"
+        options={{
+          title: 'Buy Car',
+          headerShown: false,
+        }}
+      /> */}
+
+      {/* <Stack.Screen
+        name="course/[slug]/index"
+        options={{
+          headerShown: true,
+          headerTransparent: true,
+          headerBackVisible: false,
+          title: '',
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => router.dismiss()}
+              className="p-2 bg-white/25 rounded-full">
+              <Ionicons name="close" size={22} color="black" />
+            </TouchableOpacity>
+          ),
+          presentation: 'formSheet',
+          gestureDirection: 'vertical',
+          animation: 'slide_from_bottom',
+          sheetGrabberVisible: false,
+          sheetInitialDetentIndex: 1,
+          sheetAllowedDetents: [0.5, 1.0],
+        }}
+      />
+      <Stack.Screen
+        name="course/[slug]/[lesson]"
+        options={{
+          headerShown: false,
+        }}
+      /> */}
+    </Stack>
+  );
+};

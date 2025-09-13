@@ -103,6 +103,10 @@ module.exports = {
             },
           },
           background: {
+            page: {
+              DEFAULT: '#fff',
+              dark: '#000',
+            },
             disabled: {
               DEFAULT: '#17171708',
               dark: '#BDBDBD0A',
