@@ -39,6 +39,7 @@ export default function SearchFilterLayout() {
       <Stack.Screen name="model-gen" options={{ title: "", presentation: "formSheet", ...commonOptions }} />
       <Stack.Screen name="settings" options={{ title: "Advanced Filters", presentation: "formSheet", ...commonOptions }} />
       <Stack.Screen name="modal" options={{ title: "", presentation: 'modal', headerShown: false }} />
+      <Stack.Screen name="modal-model" options={{ title: "", presentation: 'modal', headerShown: false }} />
     </Stack>
   )
 }
