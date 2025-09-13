@@ -1,44 +1,46 @@
+import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
-import { Animated, Button, Image, Pressable, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  Button, Image, Pressable, Text, TextInput, TouchableOpacity, View
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import TextInputIcon from '@/components/ui/TextInputIcon';
-import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
 
-const DATA = Array.from({ length: 30 }, (_, i) => `Item ${i + 1}`);
+import Animated, { FadeIn } from 'react-native-reanimated';
+
 
 export default function ModelItemScreenFilterModal() {
+  const data = require('@/data/auto-icons/output.json');
+
   const [text, setText] = useState('');
 
   const [modalVisible, setModalVisible] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
 
-  const items = ["Apple", "Banana", "Orange"];
 
-
-
-  const scrollY = useRef(new Animated.Value(0)).current;
+  // const scrollY = useRef(new Animated.Value(0)).current;
 
   // Interpolate title position
-  const translateY = scrollY.interpolate({
-    inputRange: [0, 100], // scroll distance
-    outputRange: [0, -40], // move up into header
-    extrapolate: "clamp",
-  });
+  // const translateY = scrollY.interpolate({
+  //   inputRange: [0, 100], // scroll distance
+  //   outputRange: [0, -40], // move up into header
+  //   extrapolate: "clamp",
+  // });
 
-  const scale = scrollY.interpolate({
-    inputRange: [0, 100],
-    outputRange: [1, 0.8], // shrink a bit
-    extrapolate: "clamp",
-  });
+  // const scale = scrollY.interpolate({
+  //   inputRange: [0, 100],
+  //   outputRange: [1, 0.8], // shrink a bit
+  //   extrapolate: "clamp",
+  // });
 
-  const opacity = scrollY.interpolate({
-    inputRange: [0, 100],
-    outputRange: [1, 0], // fade out
-    extrapolate: "clamp",
-  });
+  // const opacity = scrollY.interpolate({
+  //   inputRange: [0, 100],
+  //   outputRange: [1, 0], // fade out
+  //   extrapolate: "clamp",
+  // });
 
 
   const router = useRouter();
@@ -46,38 +48,59 @@ export default function ModelItemScreenFilterModal() {
   return (
     <>
       <SafeAreaView className="flex-1 px-3 gap-y-4">
-        <TouchableOpacity
-          onPress={() => router.dismiss()}
-          className="p-2"
-        >
-          <Ionicons name="close" size={22} color="white" />
-        </TouchableOpacity>
 
-        <View className="gap-y-3">
-          <Text className="text-3xl font-bold text-font dark:text-font-dark">
-            Марки
-          </Text>
-          <TextInputIcon />
-        </View>
 
         <View className="mt-2 gap-y-2">
-          {items.map((item) => (
-            <TouchableOpacity
-              key={item}
-              onPress={() => router.push({
-                pathname: "/search-screen/filters/modal-model",
-                params: {
-                  item
-                }
-              })}
-              className={"p-2 border-b border-border dark:border-border-dark"}
-            >
-              <View className="flex-row gap-x-4">
-                <Ionicons name="car-sport-outline" size={32} color="gold" />
-                <Text className="text-xl text-font dark:text-font-dark">{item}</Text>
-              </View>
-            </TouchableOpacity>
-          ))}
+
+          <Animated.FlatList
+            ListHeaderComponent={
+              <>
+                <TouchableOpacity
+                  onPress={() => router.dismiss()}
+                  className="p-2"
+                >
+                  <Ionicons name="close" size={22} color="white" />
+                </TouchableOpacity>
+
+                <View className="gap-y-3">
+                  <Text className="text-3xl font-bold text-font dark:text-font-dark">
+                    Марки
+                  </Text>
+                  <TextInputIcon />
+                </View>
+              </>
+            }
+            data={data}
+            renderItem={({ item, index }) => (
+              <Animated.ScrollView entering={FadeIn.delay(index * 20).duration(50)}>
+                <TouchableOpacity
+                  key={`${item.name}_${index}`}
+                  onPress={() => router.push({
+                    pathname: "/search-screen/filters/modal-model",
+                    params: {
+                      ...item
+                    }
+                  })}
+                  className={"p-2 border-b border-border dark:border-border-dark"}
+                >
+                  <View className="flex-row gap-x-4">
+                    {/* <Image source={require(`@/data/auto-icons/${item.filepath}`)} /> */}
+                    <Text className="text-xl text-font dark:text-font-dark">{item.name}</Text>
+                  </View>
+                </TouchableOpacity>
+              </Animated.ScrollView>
+            )}
+            contentContainerClassName="pt-4"
+            keyExtractor={(item) => item.filename}
+            showsVerticalScrollIndicator={false}
+          />
+
+          {/* {data.map((item, i) => {
+            // const a = require(`@/data/auto-icons/${item.filepath}`)
+            return (
+              
+            )
+          })} */}
 
           {/* ✅ Show button only after user picks something */}
           {selected && (

@@ -1,0 +1,520 @@
+[
+  {
+    "name": "Abarth",
+    "src": ["https://c.rdrom.ru/js/bundles/media/abarth.7429bd58ee80921494fb.png"]
+  },
+  {
+    "name": "AC",
+    "src": [
+      "https://c.rdrom.ru/js/bundles/media/ac-light.1d02f52da2c1274fc706.png",
+      "https://c.rdrom.ru/js/bundles/media/ac-dark.128be8a37abd53383cae.png"
+    ]
+  },
+  {
+    "name": "Acura",
+    "src": ["https://c.rdrom.ru/js/bundles/media/acura.d3ac4a7ccad16ed7a225.png"]
+  },
+  {
+    "name": "AITO",
+    "src": [
+      "https://c.rdrom.ru/js/bundles/media/aito-light.52815da0bf3e0c0a2f4a.png",
+      "https://c.rdrom.ru/js/bundles/media/aito-dark.5b1d6c39ed52a39f4b3c.png"
+    ]
+  },
+  {
+    "name": "Alfa Romeo",
+    "src": ["https://c.rdrom.ru/js/bundles/media/alfa-romeo.1e99c67bfd858f986fba.png"]
+  },
+  {
+    "name": "Alpina",
+    "src": ["https://c.rdrom.ru/js/bundles/media/alpina.561d1eea566f16232f54.png"]
+  },
+  {
+    "name": "Alpine",
+    "src": ["https://c.rdrom.ru/js/bundles/media/alpine.2d1a428730d77af6ad0e.png"]
+  },
+  {
+    "name": "AMC",
+    "src": ["https://i.rdrom.ru/404/empty.gif"]
+  },
+  {
+    "name": "Aro",
+    "src": [
+      "https://c.rdrom.ru/js/bundles/media/aro-light.0252f506fd4ab052e30b.png",
+      "https://c.rdrom.ru/js/bundles/media/aro-dark.6aa7c171d1469956fbab.png"
+    ]
+  },
+  {
+    "name": "Asia",
+    "src": ["https://c.rdrom.ru/js/bundles/media/asia.830e4d038a4522216862.png"]
+  },
+  {
+    "name": "Aston Martin",
+    "src": [
+      "https://c.rdrom.ru/js/bundles/media/astonmartin-light.57c247de83ca6954903c.png",
+      "https://c.rdrom.ru/js/bundles/media/astonmartin-dark.80fe21686cf6ce8c8d31.png"
+    ]
+  },
+  {
+    "name": "Audi",
+    "src": [
+      "https://c.rdrom.ru/js/bundles/media/audi-light.766b5d397af6a9784156.png",
+      "https://c.rdrom.ru/js/bundles/media/audi-dark.412a6c475d41128aaac0.png"
+    ]
+  },
+  {
+    "name": "Avatr",
+    "src": [
+      "https://c.rdrom.ru/js/bundles/media/avatr-light.f20b9484318576b318fb.png",
+      "https://c.rdrom.ru/js/bundles/media/avatr-dark.d02cea9a04aaea45cc09.png"
+    ]
+  },
+  {
+    "name": "BAIC",
+    "src": ["https://c.rdrom.ru/js/bundles/media/baic.174ec57728ddc494a724.png"]
+  },
+  {
+    "name": "Baojun",
+    "src": ["https://c.rdrom.ru/js/bundles/media/baojun.b74bac7bd5bf56e3a230.png"]
+  },
+  {
+    "name": "BAW",
+    "src": ["https://c.rdrom.ru/js/bundles/media/baw.32d7399b3f84446ceaaf.png"]
+  },
+  {
+    "name": "Belgee",
+    "src": ["https://c.rdrom.ru/js/bundles/media/belgee.0a260320007632d434ff.png"]
+  },
+  {
+    "name": "Bentley",
+    "src": ["https://c.rdrom.ru/js/bundles/media/bentley.704286eb468a58d7ad6d.png"]
+  },
+  {
+    "name": "Bestune",
+    "src": ["https://i.rdrom.ru/404/empty.gif"]
+  },
+  {
+    "name": "BMW",
+    "src": [
+      "https://c.rdrom.ru/js/bundles/media/bmw-light.63c8532776357e9102c6.png",
+      "https://c.rdrom.ru/js/bundles/media/bmw-dark.6e7e6fa021ed9c70c42c.png"
+    ]
+  },
+  {
+    "name": "Borgward",
+    "src": ["https://c.rdrom.ru/js/bundles/media/borgward.a4b858535a106f54a293.png"]
+  },
+  {
+    "name": "Brilliance",
+    "src": ["https://c.rdrom.ru/js/bundles/media/brilliance.70a38ed01fd4f4e1e0dc.png"]
+  },
+  {
+    "name": "Bugatti",
+    "src": ["https://c.rdrom.ru/js/bundles/media/bugatti.a210cd8c7de53235bc83.png"]
+  },
+  {
+    "name": "Buick",
+    "src": ["https://c.rdrom.ru/js/bundles/media/buick.ca0914d97d396d642516.png"]
+  },
+  {
+    "name": "BYD",
+    "src": ["https://c.rdrom.ru/js/bundles/media/byd.89e07334e36d65c29d67.png"]
+  },
+  {
+    "name": "Cadillac",
+    "src": ["https://c.rdrom.ru/js/bundles/media/cadillac.bbb37d569e944934c45a.png"]
+  },
+  {
+    "name": "Changan",
+    "src": ["https://c.rdrom.ru/js/bundles/media/changan.abaf17deda8b92f839e9.png"]
+  },
+  {
+    "name": "Changfeng",
+    "src": ["https://c.rdrom.ru/js/bundles/media/changfeng.2b945b6e3e4a1a2ddc12.png"]
+  },
+  {
+    "name": "Changhe",
+    "src": ["https://c.rdrom.ru/js/bundles/media/changhe.083630a057395c063c6c.png"]
+  },
+  {
+    "name": "Chery",
+    "src": ["https://c.rdrom.ru/js/bundles/media/chery.41871b3805a2dbf160d5.png"]
+  },
+  {
+    "name": "Chevrolet",
+    "src": ["https://c.rdrom.ru/js/bundles/media/chevrolet.1833f79352ce503b08c9.png"]
+  },
+  {
+    "name": "Chrysler",
+    "src": ["https://c.rdrom.ru/js/bundles/media/chrysler.f44ea6644db8e176ddf9.png"]
+  },
+  {
+    "name": "Citroen",
+    "src": [
+      "https://c.rdrom.ru/js/bundles/media/citroen-light.de79eff21bbc40a7b08f.png",
+      "https://c.rdrom.ru/js/bundles/media/citroen-dark.8af2ce212e61c8ea0615.png"
+    ]
+  },
+  {
+    "name": "Cupra",
+    "src": [
+      "https://c.rdrom.ru/js/bundles/media/cupra-light.ad5065ebb5787b4d94e5.png",
+      "https://c.rdrom.ru/js/bundles/media/cupra-dark.1d5beaa9f8053bd734b3.png"
+    ]
+  },
+  {
+    "name": "Dacia",
+    "src": [
+      "https://c.rdrom.ru/js/bundles/media/dacia-light.9a8d9bf5d1bc45b942e1.png",
+      "https://c.rdrom.ru/js/bundles/media/dacia-dark.efffb7eac5864f43a602.png"
+    ]
+  },
+  {
+    "name": "Dadi",
+    "src": ["https://c.rdrom.ru/js/bundles/media/dadi.b7fff19f394e9ff94cda.png"]
+  },
+  {
+    "name": "Daewoo",
+    "src": ["https://c.rdrom.ru/js/bundles/media/daewoo.590f87a8ecef73f94e62.png"]
+  },
+  {
+    "name": "Daihatsu",
+    "src": ["https://c.rdrom.ru/js/bundles/media/daihatsu.0e8719e49df2d2d07a1d.png"]
+  },
+  {
+    "name": "Datsun",
+    "src": ["https://c.rdrom.ru/js/bundles/media/datsun.d76215d8d955cf3dfbc4.png"]
+  },
+  {
+    "name": "Dayun",
+    "src": ["https://c.rdrom.ru/js/bundles/media/dayun.e42c06fce71058fa7c2f.png"]
+  },
+  {
+    "name": "Denza",
+    "src": ["https://c.rdrom.ru/js/bundles/media/denza.badef76c051d1a6d1559.png"]
+  },
+  {
+    "name": "Derways",
+    "src": ["https://c.rdrom.ru/js/bundles/media/derways.f8f50e0f56e03cd9b47b.png"]
+  },
+  {
+    "name": "Dodge",
+    "src": [
+      "https://c.rdrom.ru/js/bundles/media/dodge-light.3334dc84ae58494f8c55.png",
+      "https://c.rdrom.ru/js/bundles/media/dodge-dark.4c24bf62ea82e7a13588.png"
+    ]
+  },
+  {
+    "name": "Dongfeng",
+    "src": ["https://c.rdrom.ru/js/bundles/media/dongfeng.ecc2988b1e15e97b4281.png"]
+  }
+  {
+    "name": "DW Hower",
+    "src": "https://c.rdrom.ru/js/bundles/media/dw-hower.fd099650186e285709cb.png"
+  },
+  {
+    "name": "Eagle",
+    "src": "https://c.rdrom.ru/js/bundles/media/eagle.033bf3da0d8a9b80b29c.png"
+  },
+  {
+    "name": "EXEED",
+    "src": "https://c.rdrom.ru/js/bundles/media/exeed.ed2f74d051508155670f.png"
+  },
+  {
+    "name": "FAW",
+    "src": "https://c.rdrom.ru/js/bundles/media/faw.01ed4c6a199bef7dc440.png"
+  },
+  {
+    "name": "Ferrari",
+    "src": "https://c.rdrom.ru/js/bundles/media/ferrari.28b8c3d886bf65723f59.png"
+  },
+  {
+    "name": "Fiat",
+    "src": "https://c.rdrom.ru/js/bundles/media/fiat.2060f0b7c931db934113.png"
+  },
+  {
+    "name": "Ford",
+    "src": "https://c.rdrom.ru/js/bundles/media/ford.5258a60d3e04d9c73d14.png"
+  },
+  {
+    "name": "Forthing",
+    "src": "https://c.rdrom.ru/js/bundles/media/forthing.5ca71c3b20bc3addc149.png"
+  },
+  {
+    "name": "Foton",
+    "src": "https://c.rdrom.ru/js/bundles/media/foton.41870011918ea443543f.png"
+  },
+  {
+    "name": "FSO",
+    "src": "https://i.rdrom.ru/404/empty.gif"
+  },
+  {
+    "name": "GAC",
+    "src": "https://c.rdrom.ru/js/bundles/media/gac.ac3938fc3cc2c63ad0cd.png"
+  },
+  {
+    "name": "Geely",
+    "src": "https://c.rdrom.ru/js/bundles/media/geely-light.7210d09d28fa8a4d4383.png"
+  },
+  {
+    "name": "Genesis",
+    "src": "https://c.rdrom.ru/js/bundles/media/genesis.e0980297c899f2837984.png"
+  },
+  {
+    "name": "Geo",
+    "src": "https://c.rdrom.ru/js/bundles/media/geo.c23c86d2b5051d0df5b4.png"
+  },
+  {
+    "name": "GMC",
+    "src": "https://c.rdrom.ru/js/bundles/media/gmc.45ca4c41396bc782ef6a.png"
+  },
+  {
+    "name": "Great Wall",
+    "src": "https://c.rdrom.ru/js/bundles/media/great-wall.74fcdba1af4834309f37.png"
+  },
+  {
+    "name": "Hafei",
+    "src": "https://c.rdrom.ru/js/bundles/media/hafei.d02e9989e6abe170ab3e.png"
+  },
+  {
+    "name": "Haima",
+    "src": "https://c.rdrom.ru/js/bundles/media/haima.ad0aaaab2ad0c7c421e6.png"
+  },
+  {
+    "name": "Haval",
+    "src": "https://c.rdrom.ru/js/bundles/media/haval-light.a9694b958caf1a856960.png"
+  },
+  {
+    "name": "Hawtai",
+    "src": "https://c.rdrom.ru/js/bundles/media/hawtai.d576b5dd8b1ea50b948d.png"
+  },
+  {
+    "name": "HiPhi",
+    "src": "https://c.rdrom.ru/js/bundles/media/hiphi-light.daca174a08f38f185256.png"
+  },
+  {
+    "name": "Honda",
+    "src": "https://c.rdrom.ru/js/bundles/media/honda.90a9c276ea492b5a7dc8.png"
+  },
+  {
+    "name": "Hongqi",
+    "src": "https://c.rdrom.ru/js/bundles/media/hongqi.cf20689ad2f0ceaa4101.png"
+  },
+  {
+    "name": "Hozon",
+    "src": "https://c.rdrom.ru/js/bundles/media/hozon-light.31f50419b7e6ea6f3839.png"
+  },
+  {
+    "name": "Huanghai",
+    "src": "https://c.rdrom.ru/js/bundles/media/huanghai.3b3da7b13696942b5a23.png"
+  },
+  {
+    "name": "Hummer",
+    "src": "https://c.rdrom.ru/js/bundles/media/hummer-light.43f8937d20e45e274b20.png"
+  },
+  {
+    "name": "Hyundai",
+    "src": "https://c.rdrom.ru/js/bundles/media/hyundai-light.59fefbb0a7afd5336324.png"
+  },
+  {
+    "name": "iCAR",
+    "src": "https://c.rdrom.ru/js/bundles/media/i-car-light.5acd70209347912d0988.png"
+  },
+  {
+    "name": "IM Motors",
+    "src": "https://c.rdrom.ru/js/bundles/media/im-motors-light.d5ecb7cca2a8f167216c.png"
+  },
+  {
+    "name": "Ineos",
+    "src": "https://i.rdrom.ru/404/empty.gif"
+  },
+  {
+    "name": "Infiniti",
+    "src": "https://c.rdrom.ru/js/bundles/media/infiniti.a44b9412fdb2f075783b.png"
+  },
+  {
+    "name": "Iran Khodro",
+    "src": "https://c.rdrom.ru/js/bundles/media/iran-khodro.43872a9ce1dbc2feeb7e.png"
+  },
+  {
+    "name": "Isuzu",
+    "src": "https://c.rdrom.ru/js/bundles/media/isuzu.cf0892e73d53a554ba64.png"
+  },
+  {
+    "name": "IVECO",
+    "src": "https://c.rdrom.ru/js/bundles/media/iveco.96f3a76c2bc6052462fa.png"
+  },
+  {
+    "name": "JAC",
+    "src": "https://c.rdrom.ru/js/bundles/media/jac.0496d3a4020dc0156a5e.png"
+  },
+  {
+    "name": "Jaecoo",
+    "src": "https://c.rdrom.ru/js/bundles/media/jaecoo-light.fc40804a43624c6171fd.png"
+  },
+  {
+    "name": "Jaguar",
+    "src": "https://c.rdrom.ru/js/bundles/media/jaguar.2a704c844655ac4de7ed.png"
+  },
+  {
+    "name": "Jeep",
+    "src": "https://c.rdrom.ru/js/bundles/media/jeep.6ab14a41621a6db3176e.png"
+  },
+  {
+    "name": "Jetour",
+    "src": "https://c.rdrom.ru/js/bundles/media/jetour-light.1fc542e299ece0cb1b1c.png"
+  },
+  {
+    "name": "Jetta",
+    "src": "https://c.rdrom.ru/js/bundles/media/jetta-light.795102d682a0c0d00d85.png"
+  },
+  {
+    "name": "Jidu",
+    "src": "https://c.rdrom.ru/js/bundles/media/jidu-light.728f7f2d3db3355316c4.png"
+  },
+  {
+    "name": "Jinbei",
+    "src": "https://c.rdrom.ru/js/bundles/media/jinbei.43cf9885bfca63489eb8.png"
+  },
+  {
+    "name": "JMC",
+    "src": "https://c.rdrom.ru/js/bundles/media/jmc.236760390a2d7c87534a.png"
+  },
+  {
+    "name": "Kaiyi",
+    "src": "https://c.rdrom.ru/js/bundles/media/kaiyi-light.f20fab86f2ce02877d4f.png"
+  },
+  {
+    "name": "KG Mobility",
+    "src": "https://c.rdrom.ru/js/bundles/media/kgm-light.7fe96642d3b7b34f023a.png"
+  },
+  {
+    "name": "Kia",
+    "src": "https://c.rdrom.ru/js/bundles/media/kia-light.d11a15a00d5e360c840e.png"
+  },
+  {
+    "name": "Knewstar",
+    "src": "https://c.rdrom.ru/js/bundles/media/knewstar-light.fab839646ff750ee2256.png"
+  },
+  {
+    "name": "Kuayue",
+    "src": "https://c.rdrom.ru/js/bundles/media/kuayue.3cf3c248f6027fad0dce.png"
+  },
+  {"name": "Lamborghini", "src": "https://c.rdrom.ru/js/bundles/media/lamborghini.74b1e6f84818a0bdce7a.png"},
+  {"name": "Lancia", "src": "https://c.rdrom.ru/js/bundles/media/lancia.89f35541217e1fc07c14.png"},
+  {"name": "Land Rover", "src": "https://c.rdrom.ru/js/bundles/media/land-rover.0808fbea3421388836aa.png"},
+  {"name": "Landwind", "src": "https://c.rdrom.ru/js/bundles/media/landwind-light.7811c2acd4b3fb9430ec.png"},
+  {"name": "Leapmotor", "src": "https://c.rdrom.ru/js/bundles/media/leapmotor-light.a85f0975621c3cb525bd.png"},
+  {"name": "Lexus", "src": "https://c.rdrom.ru/js/bundles/media/lexus.b635e5e8050f687d5c2f.png"},
+  {"name": "Li", "src": "https://c.rdrom.ru/js/bundles/media/li-light.d159dff9e1b4422d9042.png"},
+  {"name": "Lifan", "src": "https://c.rdrom.ru/js/bundles/media/lifan-light.b12096988144f5d8f53a.png"},
+  {"name": "Lincoln", "src": "https://c.rdrom.ru/js/bundles/media/lincoln-light.d0d9b87d9884340da5fa.png"},
+  {"name": "Livan", "src": "https://c.rdrom.ru/js/bundles/media/livan-light.38638783d37efbfc7e87.png"},
+  {"name": "Lotus", "src": "https://c.rdrom.ru/js/bundles/media/lotus.d25f42f58a995280759a.png"},
+  {"name": "Luxeed", "src": "https://c.rdrom.ru/js/bundles/media/luxeed-light.e6b9dad8f577ed1017a8.png"},
+  {"name": "Luxgen", "src": "https://c.rdrom.ru/js/bundles/media/luxgen.e7d548459ae45c675252.png"},
+  {"name": "Lynk & Co", "src": "https://c.rdrom.ru/js/bundles/media/lynk_and_co-light.693e5ca82a354155076c.png"},
+  {"name": "M-Hero", "src": "https://c.rdrom.ru/js/bundles/media/m-hero-light.b22e8396af2be4299f67.png"},
+  {"name": "Maserati", "src": "https://c.rdrom.ru/js/bundles/media/maserati-light.6da2976b0ee2efeb5f03.png"},
+  {"name": "Maxus", "src": "https://c.rdrom.ru/js/bundles/media/maxus.7c2672af15677b17ea4b.png"},
+  {"name": "Maybach", "src": "https://c.rdrom.ru/js/bundles/media/maybach.a9d2bd38674b7bb94be2.png"},
+  {"name": "Mazda", "src": "https://c.rdrom.ru/js/bundles/media/mazda.43a667fdcbc44a2c42a1.png"},
+  {"name": "McLaren", "src": "https://c.rdrom.ru/js/bundles/media/mclaren-light.9b3fac071ef779604eab.png"},
+  {"name": "Mercedes-Benz", "src": "https://c.rdrom.ru/js/bundles/media/mercedes-benz.1f112a2808e13b02b2e5.png"},
+  {"name": "Mercury", "src": "https://c.rdrom.ru/js/bundles/media/mercury.efb8307076a3038c17b2.png"},
+  {"name": "MG", "src": "https://c.rdrom.ru/js/bundles/media/mg-light.1dda134ee2d3c5fc9d0a.png"},
+  {"name": "MINI", "src": "https://c.rdrom.ru/js/bundles/media/mini-light.85e35036bcd1dea5ed2d.png"},
+  {"name": "Mitsubishi", "src": "https://c.rdrom.ru/js/bundles/media/mitsubishi.1b5e461d4945f0e126c6.png"},
+  {"name": "Mitsuoka", "src": "https://c.rdrom.ru/js/bundles/media/mitsuoka-light.f24798d2e961b6caabfa.png"},
+  {"name": "Morgan", "src": "https://i.rdrom.ru/404/empty.gif"},
+  {"name": "Nio", "src": "https://c.rdrom.ru/js/bundles/media/nio-light.f8a426ed76504db0a846.png"},
+  {"name": "Nissan", "src": "https://c.rdrom.ru/js/bundles/media/nissan-light.87a537dfa99f2ae3dd41.png"},
+  {"name": "Oldsmobile", "src": "https://c.rdrom.ru/js/bundles/media/oldsmobile.70a6857bb5aa35d38946.png"},
+  {"name": "OMODA", "src": "https://c.rdrom.ru/js/bundles/media/omoda-light.0f5bde6f459024a7f1a9.png"},
+  {"name": "Opel", "src": "https://c.rdrom.ru/js/bundles/media/opel-light.80ef7b12e995c5775a7b.png"},
+  {"name": "ORA", "src": "https://c.rdrom.ru/js/bundles/media/ora-light.7f78d64cf7bf43445be7.png"},
+  {"name": "Oshan", "src": "https://c.rdrom.ru/js/bundles/media/oshan.833170eaacc7507a3721.png"},
+  {"name": "Oting", "src": "https://c.rdrom.ru/js/bundles/media/oting.4f9e7b3849023038183d.png"},
+  {"name": "Packard", "src": "https://i.rdrom.ru/404/empty.gif"},
+  {"name": "Peugeot", "src": "https://c.rdrom.ru/js/bundles/media/peugeot.49726c1923bc4ae183c2.png"},
+  {"name": "Plymouth", "src": "https://c.rdrom.ru/js/bundles/media/plymouth.5d2cfc8f966731f12fe2.png"},
+  {"name": "Polar Stone", "src": "https://c.rdrom.ru/js/bundles/media/polar-stone-light.763e2897f1abfd372310.png"},
+  {"name": "Polestar", "src": "https://c.rdrom.ru/js/bundles/media/polestar.9dfa31b7dd00ee5841e2.png"},
+  {"name": "Pontiac", "src": "https://c.rdrom.ru/js/bundles/media/pontiac-light.45f77a7e3694240368f2.png"},
+  {"name": "Porsche", "src": "https://c.rdrom.ru/js/bundles/media/porsche.837851699bce718547eb.png"},
+  {"name": "Proton", "src": "https://c.rdrom.ru/js/bundles/media/proton.63cbadb85067ead17d9f.png"},
+  {"name": "RAM", "src": "https://c.rdrom.ru/js/bundles/media/ram.65a1de49c7011f845b9e.png"},
+  {"name": "Ravon", "src": "https://c.rdrom.ru/js/bundles/media/ravon.c78c508e05c706d6813c.png"},
+  {"name": "Renault", "src": "https://c.rdrom.ru/js/bundles/media/renault-light.fc1350ea12945d160522.png"},
+  {"name": "Renault Samsung", "src": "https://c.rdrom.ru/js/bundles/media/renault-samsung.354c969758761a54ef7f.png"},
+  {"name": "Rising Auto", "src": "https://c.rdrom.ru/js/bundles/media/rising-auto-light.8eabb9cb04f5ce0ec61e.png"},
+  {"name": "Rivian", "src": "https://c.rdrom.ru/js/bundles/media/rivian-light.1e33085763cb84876123.png"},
+  {"name": "Roewe", "src": "https://c.rdrom.ru/js/bundles/media/roewe-light.a4ad89aebe1ec053269c.png"},
+  {"name": "Rolls-Royce", "src": "https://c.rdrom.ru/js/bundles/media/rolls-royce.4124cf05b283966ba591.png"},
+  {"name": "Rover", "src": "https://c.rdrom.ru/js/bundles/media/rover.0242a8005aab1318795d.png"},
+  {"name": "Rox", "src": "https://c.rdrom.ru/js/bundles/media/rox-light.38f2f6f054770beec07c.png"},
+  {"name": "Saab", "src": "https://c.rdrom.ru/js/bundles/media/saab.b9e70719e9703b9690ca.png"},
+  {"name": "SAIPA", "src": "https://c.rdrom.ru/js/bundles/media/saipa.bae813e7068ca0892daf.png"},
+  {"name": "Saturn", "src": "https://c.rdrom.ru/js/bundles/media/saturn.78ec4c763b3f460bc341.png"},
+  {"name": "Scion", "src": "https://c.rdrom.ru/js/bundles/media/scion.cdd6a9c66110864c46dd.png"},
+  {"name": "SEAT", "src": "https://c.rdrom.ru/js/bundles/media/seat.053fe12e9f265ed4e08f.png"},
+  {"name": "Seres", "src": "https://c.rdrom.ru/js/bundles/media/seres-light.8f2b3dc7ac04d3e2d433.png"},
+  {"name": "Shuanghuan", "src": "https://c.rdrom.ru/js/bundles/media/shuanghuan.13290dcbd72fecb162e2.png"},
+  {"name": "Skoda", "src": "https://c.rdrom.ru/js/bundles/media/skoda.3518b191d9bf52eaf4b3.png"},
+  {"name": "Skywell", "images": ["https://c.rdrom.ru/js/bundles/media/skywell.e68f45f5e3260a720a8b.png"]},
+  {"name": "Smart", "images": ["https://c.rdrom.ru/js/bundles/media/smart.4d03be8710db79198594.png"]},
+  {"name": "Soueast", "images": ["https://c.rdrom.ru/js/bundles/media/soueast.a668a275dbf92fc736cb.png"]},
+  {"name": "SRM Shineray", "images": ["https://c.rdrom.ru/js/bundles/media/shineray-light.3186220174d3ec4c90ac.png","https://c.rdrom.ru/js/bundles/media/shineray-dark.2e3c77e83444655742e9.png"]},
+  {"name": "SsangYong", "images": ["https://c.rdrom.ru/js/bundles/media/ssangyong-light.990fef72e86f4b9006af.png","https://c.rdrom.ru/js/bundles/media/ssangyong-dark.a8df0bef2635f45ce0d2.png"]},
+  {"name": "Subaru", "images": ["https://c.rdrom.ru/js/bundles/media/subaru.f35c710433d25ec3b19d.png"]},
+  {"name": "Suzuki", "images": ["https://c.rdrom.ru/js/bundles/media/suzuki.3f38e7beb78986325fb6.png"]},
+  {"name": "SWM", "images": ["https://c.rdrom.ru/js/bundles/media/swm.4dfac8cc082e98a91df6.png"]},
+  {"name": "Tank", "images": ["https://c.rdrom.ru/js/bundles/media/tank-light.55fd200e8230d0de2fc3.png","https://c.rdrom.ru/js/bundles/media/tank-dark.3e01d21bb1cc13beadcb.png"]},
+  {"name": "TATA", "images": ["https://c.rdrom.ru/js/bundles/media/tata.6b6438c37ddc71caafb7.png"]},
+  {"name": "Tatra", "images": ["https://i.rdrom.ru/404/empty.gif"]},
+  {"name": "Tesla", "images": ["https://c.rdrom.ru/js/bundles/media/tesla.2c7d526d2d5ef2f10817.png"]},
+  {"name": "Tianma", "images": ["https://c.rdrom.ru/js/bundles/media/tianma.74ddd87473ecb3949fc2.png"]},
+  {"name": "Tianye", "images": ["https://c.rdrom.ru/js/bundles/media/tianye.8698dde57951dce1f446.png"]},
+  {"name": "Toyota", "images": ["https://c.rdrom.ru/js/bundles/media/toyota-light.e5d2efbc0fe39b43fa43.png","https://c.rdrom.ru/js/bundles/media/toyota-dark.7fa5678b8f28250f0511.png"]},
+  {"name": "Trabant", "images": ["https://c.rdrom.ru/js/bundles/media/trabant-light.819a1b6391c1180ad4c5.png","https://c.rdrom.ru/js/bundles/media/trabant-dark.2c91ca0627ad31be5c44.png"]},
+  {"name": "Vauxhall", "images": ["https://i.rdrom.ru/404/empty.gif"]},
+  {"name": "Venucia", "images": ["https://c.rdrom.ru/js/bundles/media/venucia.770d3369af7d4523144f.png"]},
+  {"name": "VGV", "images": ["https://c.rdrom.ru/js/bundles/media/vgv-light.5b244a122ac6588ec64a.png","https://c.rdrom.ru/js/bundles/media/vgv-dark.e4053bbafd7a2396370e.png"]},
+  {"name": "Volkswagen", "images": ["https://c.rdrom.ru/js/bundles/media/volkswagen-light.0018f014092337ece455.png","https://c.rdrom.ru/js/bundles/media/volkswagen-dark.9d94c4c2de4e0cd12877.png"]},
+  {"name": "Volvo", "images": ["https://c.rdrom.ru/js/bundles/media/volvo-light.58f0499e635b34b46e28.png","https://c.rdrom.ru/js/bundles/media/volvo-dark.26d51ec75ecadf47f9a2.png"]},
+  {"name": "Vortex", "images": ["https://c.rdrom.ru/js/bundles/media/vortex-light.f8440bc69c6fb72e8045.png","https://c.rdrom.ru/js/bundles/media/vortex-dark.32f46dfa096a22eb1d47.png"]},
+  {"name": "Voyah", "images": ["https://c.rdrom.ru/js/bundles/media/voyah-light.ae7405c9662b6d90f707.png","https://c.rdrom.ru/js/bundles/media/voyah-dark.a34c16bb3bec1d31c8fd.png"]},
+  {"name": "Wartburg", "images": ["https://c.rdrom.ru/js/bundles/media/wartburg.4620071b48b3470583cb.png"]},
+  {"name": "Weltmeister", "images": ["https://c.rdrom.ru/js/bundles/media/weltmeister-light.eadfb07608d43ab185b8.png","https://c.rdrom.ru/js/bundles/media/weltmeister-dark.161d1bd3f45f4a15d4f1.png"]},
+  {"name": "WEY", "images": ["https://c.rdrom.ru/js/bundles/media/wey.0149037cfc26aa1e121c.png"]},
+  {"name": "Wuling", "images": ["https://c.rdrom.ru/js/bundles/media/wuling.a3ba45a05183550b8946.png"]},
+  {"name": "Xiaomi", "images": ["https://c.rdrom.ru/js/bundles/media/xiaomi.04324c783c24573ccec9.png"]},
+  {"name": "Xin Kai", "images": ["https://c.rdrom.ru/js/bundles/media/xin-kai-light.ee20ab8cc69ed989636d.png","https://c.rdrom.ru/js/bundles/media/xin-kai-dark.0a9782d4c5bb5ea1c0bf.png"]},
+  {"name": "Xpeng", "images": ["https://c.rdrom.ru/js/bundles/media/xpeng-light.cbfca67115294b2c794f.png","https://c.rdrom.ru/js/bundles/media/xpeng-dark.73cb7130a74729d4799a.png"]},
+  {"name": "Yema", "images": ["https://c.rdrom.ru/js/bundles/media/yema.7f5369eb4ce6f4d090bd.png"]},
+  {"name": "Zeekr", "images": ["https://c.rdrom.ru/js/bundles/media/zeekr-light.bc11ef25634e702ce7a2.png","https://c.rdrom.ru/js/bundles/media/zeekr-dark.fdd3991178b755c1db93.png"]},
+  {"name": "Zotye", "images": ["https://c.rdrom.ru/js/bundles/media/zotye.fb9a2744758c17f615da.png"]},
+  {"name": "ZX", "images": ["https://c.rdrom.ru/js/bundles/media/zx.3abd4f5b2840ce55386b.png"]},
+  {"name": "Marussia", "images": ["https://c.rdrom.ru/js/bundles/media/marussia.89782e4879f5412b8634.png"]},
+  {"name": "Solaris", "images": ["https://c.rdrom.ru/js/bundles/media/solaris-light.76f5e3724b6c54dab22e.png","https://c.rdrom.ru/js/bundles/media/solaris-dark.c0ae2aad033e1481ca52.png"]},
+  {"name": "Tenet", "images": ["https://i.rdrom.ru/404/empty.gif"]},
+  {"name": "Xcite", "images": ["https://c.rdrom.ru/js/bundles/media/xcite-light.532026594450bcbb0d82.png","https://c.rdrom.ru/js/bundles/media/xcite-dark.245921a01617bda2e2f3.png"]},
+  {"name": "Амберавто", "images": ["https://c.rdrom.ru/js/bundles/media/amberauto-light.2121ae9f99de754f9e35.png","https://c.rdrom.ru/js/bundles/media/amberauto-dark.d4e0e1c2bbebd8b39c66.png"]},
+  {"name": "Амбертрак", "images": ["https://c.rdrom.ru/js/bundles/media/ambertruck.42dfcff058b89a85da94.png"]},
+  {"name": "Аурус", "images": ["https://c.rdrom.ru/js/bundles/media/aurus.e527b9758750f77617d1.png"]},
+  {"name": "Богдан", "images": ["https://c.rdrom.ru/js/bundles/media/bogdan.f15f7c6de2ce0d8d9aa0.png"]},
+  {"name": "Волга", "images": ["https://c.rdrom.ru/js/bundles/media/volga.ecb7b116b008afc36c90.png"]},
+  {"name": "ГАЗ", "images": ["https://c.rdrom.ru/js/bundles/media/gaz.c43dcf358f8041811cc8.png"]},
+  {"name": "Донинвест", "images": ["https://c.rdrom.ru/js/bundles/media/doninvest.3d3a53a4401ed7ac75a2.png"]},
+  {"name": "ЗАЗ", "images": ["https://c.rdrom.ru/js/bundles/media/zaz.991e462e769e7a1700c9.png"]},
+  {"name": "ЗИЛ", "images": ["https://c.rdrom.ru/js/bundles/media/zil-light.5b33e38e66c701c671e8.png","https://c.rdrom.ru/js/bundles/media/zil-dark.d4552f8413136079ba55.png"]},
+  {"name": "ЗиС", "images": ["https://c.rdrom.ru/js/bundles/media/zis-light.8606cd0ef9b9cb5f7b75.png","https://c.rdrom.ru/js/bundles/media/zis-dark.fca60c8f2e9079a290a7.png"]},
+  {"name": "ИЖ", "images": ["https://c.rdrom.ru/js/bundles/media/izh.39802ff74d2c4f90788c.png"]},
+  {"name": "Лада", "images": ["https://c.rdrom.ru/js/bundles/media/lada.d7b303a0cddaf20da89a.png"]},
+  {"name": "ЛуАЗ", "images": ["https://c.rdrom.ru/js/bundles/media/luaz.d90404dc3d92c77f82fe.png"]},
+  {"name": "Москвич", "images": ["https://c.rdrom.ru/js/bundles/media/moskvich.20f208e2630fd0bfda13.png"]},
+  {"name": "Соллерс", "images": ["https://c.rdrom.ru/js/bundles/media/sollers.153643db1f470e164dd5.png"]},
+  {"name": "ТагАЗ", "images": ["https://c.rdrom.ru/js/bundles/media/tagaz.8c30bc06d060e30048ed.png"]},
+  {"name": "УАЗ", "images": ["https://c.rdrom.ru/js/bundles/media/uaz.07ccd1ec4662413d5788.png"]},
+  {"name": "Эволют", "images": ["https://c.rdrom.ru/js/bundles/media/evolute-light.cff4e9f73731f3e6fd9f.png","https://c.rdrom.ru/js/bundles/media/evolute-dark.d823f1b0b859418e7e19.png"]}
+]
