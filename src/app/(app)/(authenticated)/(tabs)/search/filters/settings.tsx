@@ -1,19 +1,19 @@
 import { View, Text, Image, Pressable } from "react-native";
 
-export const ModelItemScreenFilter = ({ item }) => {
+const SettingScreenFilter = () => {
   return (
     <>
       <View className="mx-2 rounded-2xl shadow-md">
-        <Image
+        {/* <Image
           source={item.image}
           className="w-full h-48 rounded-t-2xl"
           resizeMode="cover"
-        />
+        /> */}
         <View className="p-4">
           <Text className="text-lg font-bold text-font-brand dark:text-font-brand-dark">
-            {item.title}
+            aaa
           </Text>
-          <Text className="text-base text-font dark:text-font-dark">{item.price}</Text>
+          <Text className="text-base text-font dark:text-font-dark">22</Text>
           <View className="flex-row mt-2">
             <Text className="text-xs text-font dark:text-font-dark mr-2">⭐ 5-star GNCAP</Text>
             <Text className="text-xs text-font dark:text-font-dark">🚗 More Mileage</Text >
@@ -61,4 +61,4 @@ export const ModelItemScreenFilter = ({ item }) => {
   )
 }
 
-
+export default SettingScreenFilter;

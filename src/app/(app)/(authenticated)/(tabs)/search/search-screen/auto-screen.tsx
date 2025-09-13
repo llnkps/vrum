@@ -4,12 +4,12 @@ import { Image, Pressable, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRouter } from 'expo-router';
 
-export const AutoHeaderScreen = () => {
+export const AutoHeaderScreen = ({handleOpen}) => {
   const { t } = useTranslation();
 
   return (
     <>
-      <SearchSection />
+      <SearchSection handleOpen={handleOpen} />
       <View className={"px-4 py-3"}>
         <Pressable
           className={"px-4 py-3 flex flex-row justify-center bg-background-neutral dark:bg-background-neutral-dark rounded-md border border-border dark:border-border-dark"}
@@ -43,7 +43,7 @@ export const AutoItemScreen = ({ item }) => {
   )
 }
 
-const SearchSection = () => {
+const SearchSection = ({handleOpen}) => {
   const router = useRouter();
   const handlePress = (buttonName) => {
     console.log(`Button "${buttonName}" was pressed.`);
@@ -60,14 +60,14 @@ const SearchSection = () => {
   return (
     <View className={"px-4 py-3 gap-y-1 bg-background dark:bg-background-dark"}>
       <Pressable
-        onPress={() => router.navigate("/search-screen/filters/model-gen")}
+        onPress={() => router.push("/search/filters/model-gen")}
         className={"px-4 py-3 flex flex-row bg-background-neutral dark:bg-background-neutral-dark rounded-t-md border border-border dark:border-border-dark"}
       >
         <Text className="text-font dark:text-font-dark font-bold">Марка, модель, поколение</Text>
       </Pressable>
       <View className={"flex flex-row gap-1"}>
         <Pressable
-          onPress={() => handlePress('Год')}
+          onPress={() => handleOpen()}
           className={"px-4 py-3 flex flex-row bg-background-neutral dark:bg-background-neutral-dark border border-border dark:border-border-dark"}
         >
           <Text className="text-font dark:text-font-dark font-bold">Год</Text>
@@ -81,7 +81,7 @@ const SearchSection = () => {
         </Pressable>
 
         <Pressable
-          onPress={() => router.navigate("/search-screen/filters/settings")}
+          onPress={() => router.push("/search/filters/settings")}
           className={"flex-1 px-4 py-3 flex flex-row bg-background-neutral dark:bg-background-neutral-dark border border-border dark:border-border-dark"}
         >
           <View className="flex flex-row items-center space-x-2">
