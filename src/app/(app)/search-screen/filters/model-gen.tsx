@@ -1,4 +1,4 @@
-import TextInputIcon from "@/components/ui/TextInputIcon";
+import TextInputIcon from "@/components/ui/InputField";
 import { useState } from "react";
 import { View, Text, Image, Pressable, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";

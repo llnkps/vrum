@@ -1,16 +1,17 @@
 import { useRouter } from 'expo-router';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
-    Button, Dimensions, FlatList, Image, Pressable, StatusBar, StyleSheet, Text, TextInput,
-    TouchableOpacity, useColorScheme, View
+  Button, Dimensions, FlatList, Image, Pressable, StatusBar, StyleSheet, Text, TextInput,
+  TouchableHighlight,
+  TouchableOpacity, useColorScheme, View
 } from 'react-native';
 import Animated, {
-    Extrapolation, FadeIn, interpolate, interpolateColor, useAnimatedScrollHandler,
-    useAnimatedStyle, useSharedValue
+  Extrapolation, FadeIn, interpolate, interpolateColor, useAnimatedScrollHandler,
+  useAnimatedStyle, useSharedValue
 } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import TextInputIcon from '@/components/ui/TextInputIcon';
+import { InputField } from '@/components/ui/InputField';
 import { Ionicons } from '@expo/vector-icons';
 
 const HEADER_HEIGHT = 120;
@@ -18,6 +19,9 @@ const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 
 export default function ModelItemScreenFilterModal() {
   const data = require('@/data/auto-icons/output.json');
+
+  const [filteredData, setFilteredData] = useState(data);
+
   const router = useRouter();
 
   const scrollY = useSharedValue(0);
@@ -49,33 +53,38 @@ export default function ModelItemScreenFilterModal() {
 
       {/* <SafeAreaView className="flex-1 px-3 gap-y-4"> */}
       <View className="mt-2">
-        <Header headerHeight={HEADER_HEIGHT} scrollY={scrollY} />
+        <Header headerHeight={HEADER_HEIGHT} scrollY={scrollY} setFilteredData={setFilteredData} initialData={data} />
 
         <Animated.FlatList
-          data={data}
+          data={filteredData}
           keyExtractor={(item, index) => `${item.filename}_${index}`}
           scrollEventThrottle={16}
           onScroll={scrollHandler}
-          renderItem={({ item, index }) => (
-            <Animated.ScrollView>
-              <TouchableOpacity
-                key={`${item.filename}_${index}`}
-                onPress={() => router.push({
-                  pathname: "/search-screen/filters/modal-model",
-                  params: {
-                    ...item
-                  }
-                })}
-                className={"p-2 border-b border-border dark:border-border-dark"}
-              >
-                <View className="flex-row gap-x-4">
-                  {/* <Image source={require(`@/data/auto-icons/${item.filepath}`)} /> */}
-                  <Text className="text-xl text-font dark:text-font-dark">{item.name}</Text>
-                </View>
-              </TouchableOpacity>
-            </Animated.ScrollView>
-          )}
           showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: HEADER_HEIGHT + STATUSBAR_HEIGHT + 100 }} // so list doesn't hide under button
+          renderItem={({ item, index }) => (
+            
+            <TouchableHighlight
+              onPress={() => router.push({
+                pathname: "/search-screen/filters/modal-model",
+                params: {
+                  ...item
+                }
+              })}
+              className={"p-4 border-b border-border dark:border-border-dark last:border-0"}
+            >
+              <View className="flex-row gap-x-4">
+                {/* <Image source={require(`@/data/auto-icons/${item.filepath}`)} /> */}
+                <Text className="text-xl text-font dark:text-font-dark">{item.name}</Text>
+              </View>
+            </TouchableHighlight>
+          )}
+
+          initialNumToRender={10}      // how many items to render at first
+          windowSize={10}              // number of screen heights to render around
+          maxToRenderPerBatch={10}     // batch size
+          updateCellsBatchingPeriod={50} // delay in ms between renders
+          removeClippedSubviews={true} // 
         />
       </View>
 
@@ -89,10 +98,29 @@ export default function ModelItemScreenFilterModal() {
 }
 
 
-const Header = ({ headerHeight, scrollY }) => {
+const Header = ({ headerHeight, scrollY, setFilteredData, initialData }) => {
   const router = useRouter();
+  const [searchValue, setSearchValue] = useState("");
 
   const offsetValue = 140;
+
+  // filter data using searchValue
+  useEffect(() => {
+    if (searchValue) {
+      const searchValueLowerCase = searchValue.toLowerCase();
+      setFilteredData(initialData.filter(i => {
+        const nameLowerCase = i.name.toLowerCase();
+        if (nameLowerCase.includes(searchValueLowerCase)) {
+          return true;
+        }
+        return false;
+      }))
+    } else {
+      setFilteredData(initialData)
+    }
+
+  }, [searchValue, setFilteredData, initialData])
+
 
   // Header container (bg + height)
   const animatedHeader = useAnimatedStyle(() => {
@@ -168,7 +196,11 @@ const Header = ({ headerHeight, scrollY }) => {
 
         {/* Input stays outside, not collapsing with header */}
         <View className="px-3 pb-2">
-          <TextInputIcon />
+          <InputField
+            Icon={<Ionicons name="search" size={20} color="gray" />}
+            value={searchValue}
+            onChange={(value) => setSearchValue(value)}
+          />
         </View>
       </View>
     </>

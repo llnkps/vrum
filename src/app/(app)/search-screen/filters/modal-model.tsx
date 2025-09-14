@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { Animated, Button, Image, Pressable, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import TextInputIcon from '@/components/ui/TextInputIcon';
+import {InputField} from '@/components/ui/InputField';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -39,7 +39,7 @@ export default function ModalModelItem() {
           <Text className="text-3xl font-bold text-font dark:text-font-dark">
             {params.item}
           </Text>
-          <TextInputIcon />
+          <InputField />
         </View>
 
         <View className="mt-2 gap-y-2">
