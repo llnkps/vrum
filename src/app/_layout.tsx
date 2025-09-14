@@ -45,7 +45,6 @@ const InitialLayout = () => {
   });
   // // const segments = useSegments();
   // // useReactQueryDevTools(queryClient);
-  console.log(loadedFonts)
   useEffect(() => {
     if (loadedFonts) {
       SplashScreen.hideAsync();
@@ -56,7 +55,6 @@ const InitialLayout = () => {
   //   // if (!loaded) return;
 
   //   // const inAuthGroup = segments[1] === '(authenticated)';
-  //   // console.log(isSignedIn && !inAuthGroup, inAuthGroup, segments);
 
   //   const timeout = setTimeout(() => {
   //     if (isSignedIn) {
@@ -68,8 +66,6 @@ const InitialLayout = () => {
 
   // }, [isLoaded, isSignedIn, router]);
 
-  // console.log(!isLoaded)
-
   // return (
   //   <Stack screenOptions={{ headerShown: false }}>
   //     <Stack.Screen name="login" />
@@ -79,7 +75,6 @@ const InitialLayout = () => {
 
   // const { data: session } = authClient.useSession();
   const isAuthenticated = true;
-  console.log("INITIAL LAYOUT", isAuthenticated)
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Protected guard={isAuthenticated}>
@@ -95,8 +90,7 @@ const InitialLayout = () => {
 
 const RootLayout = () => {
   const colorScheme = useColorScheme();
-  const theme = useTheme();
-  console.log("ROOT LAYOUT", theme, colorScheme)
+
   return (
     <GestureHandlerRootView className="flex-1">
       <QueryClientProvider client={queryClient}>

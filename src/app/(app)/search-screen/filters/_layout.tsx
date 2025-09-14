@@ -12,7 +12,6 @@ export default function SearchFilterLayout() {
   // TODO: change color based on theme from colorScheme
   const theme = useTheme();
 
-  console.log(colorScheme)
   const commonOptions = {
     headerShown: true,
     // headerTransparent: true,

@@ -29,7 +29,6 @@ const data = [
 
 export default function HomeScreen({ navigation }) {
   const [isLoading, setIsLoading] = useState(false);
-  console.log(Platform.OS)
   // const { data } = useQuery({
   //   queryKey: ['homeInfo'],
   //   queryFn: () => getHomeInfo(),
@@ -55,7 +54,6 @@ export default function HomeScreen({ navigation }) {
                 data={data}
                 scrollAnimationDuration={800}
                 renderItem={({ item }) => {
-                  console.log(item)
                   return (
                     <View className="mx-2 rounded-2xl shadow-md">
                       <Image
