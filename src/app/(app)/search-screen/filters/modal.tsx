@@ -72,7 +72,7 @@ export default function ModelItemScreenFilterModal() {
             renderItem={({ item, index }) => (
               <Animated.ScrollView entering={FadeIn.delay(index * 20).duration(50)}>
                 <TouchableOpacity
-                  key={`${item.name}_${index}`}
+                  key={`${item.filename}_${index}`}
                   onPress={() => router.push({
                     pathname: "/search-screen/filters/modal-model",
                     params: {
@@ -89,7 +89,7 @@ export default function ModelItemScreenFilterModal() {
               </Animated.ScrollView>
             )}
             contentContainerClassName="pt-4"
-            keyExtractor={(item) => item.filename}
+            keyExtractor={(item, index) => `${item.filename}_${index}`}
             showsVerticalScrollIndicator={false}
           />
 
@@ -108,14 +108,14 @@ export default function ModelItemScreenFilterModal() {
             />
           )}
         </View>
-        <View className="px-4 py-3">
+        {/* <View className="px-4 py-3">
           <Pressable
             onPress={() => console.log('Показать результаты Pressed')}
             className={"px-4 py-3 flex flex-row bg-button-primary dark:bg-button-primary-dark rounded-md justify-center"}
           >
             <Text className="text-white font-bold">Показать результаты</Text>
           </Pressable>
-        </View>
+        </View> */}
       </SafeAreaView>
     </>
   )

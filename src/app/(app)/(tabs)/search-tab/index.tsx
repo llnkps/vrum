@@ -4,23 +4,23 @@ import { Button, Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import {
-  AutoHeaderScreen, AutoItemScreen
-} from '@/app/(app)/(tabs)/search-tab/category-top-tabs/auto-screen';
-import {
-  AutoDetailHeaderScreen, AutoDetailItemScreen
-} from '@/app/(app)/(tabs)/search-tab/category-top-tabs/auto_detail-screen';
-import {
-  MotoHeaderScreen, MotoItemScreen
-} from '@/app/(app)/(tabs)/search-tab/category-top-tabs/moto-screen';
-import {
-  SpecAutoHeaderScreen, SpecAutoItemScreen
-} from '@/app/(app)/(tabs)/search-tab/category-top-tabs/spec_auto-screen';
 import { Header } from '@/components/global/Header';
+import {
+    AutoHeaderScreen, AutoItemScreen
+} from '@/components/search-screen/category-top-tabs/auto-screen';
+import {
+    AutoDetailHeaderScreen, AutoDetailItemScreen
+} from '@/components/search-screen/category-top-tabs/auto_detail-screen';
+import {
+    MotoHeaderScreen, MotoItemScreen
+} from '@/components/search-screen/category-top-tabs/moto-screen';
+import {
+    SpecAutoHeaderScreen, SpecAutoItemScreen
+} from '@/components/search-screen/category-top-tabs/spec_auto-screen';
 import { HeaderCategory } from '@/components/search-screen/HeaderCategory';
 import { ActiveScreen } from '@/components/search-screen/types';
 import BottomSheet, {
-  BottomSheetBackdrop, BottomSheetModal, BottomSheetModalProvider, BottomSheetView
+    BottomSheetBackdrop, BottomSheetModal, BottomSheetModalProvider, BottomSheetView
 } from '@gorhom/bottom-sheet';
 
 const data = [
@@ -137,7 +137,7 @@ export default function SearchScreen() {
 
 
 
- const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   // callbacks
   const handlePresentModalPress = useCallback(() => {
