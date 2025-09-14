@@ -1,20 +1,14 @@
 import { useRouter } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
-import {
-  Button, Dimensions, FlatList, Image, Pressable, StatusBar, StyleSheet, Text, TextInput,
-  TouchableHighlight,
-  TouchableOpacity, useColorScheme, View
-} from 'react-native';
+import { useEffect, useState } from 'react';
+import { StatusBar, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native';
 import Animated, {
-  Extrapolation, FadeIn, interpolate, interpolateColor, useAnimatedScrollHandler,
-  useAnimatedStyle, useSharedValue
+  Extrapolation, interpolate, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue
 } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { InputField } from '@/components/ui/InputField';
 import { Ionicons } from '@expo/vector-icons';
 
-const HEADER_HEIGHT = 120;
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 
 export default function ModelItemScreenFilterModal() {
@@ -53,7 +47,7 @@ export default function ModelItemScreenFilterModal() {
 
       {/* <SafeAreaView className="flex-1 px-3 gap-y-4"> */}
       <View className="mt-2">
-        <Header headerHeight={HEADER_HEIGHT} scrollY={scrollY} setFilteredData={setFilteredData} initialData={data} />
+        <Header scrollY={scrollY} setFilteredData={setFilteredData} initialData={data} />
 
         <Animated.FlatList
           data={filteredData}
@@ -61,9 +55,9 @@ export default function ModelItemScreenFilterModal() {
           scrollEventThrottle={16}
           onScroll={scrollHandler}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: HEADER_HEIGHT + STATUSBAR_HEIGHT + 100 }} // so list doesn't hide under button
+          contentContainerStyle={{ paddingBottom: 120 + STATUSBAR_HEIGHT + 100 }} // HEADER + STATUSBAR + 100 so list doesn't hide under button
           renderItem={({ item, index }) => (
-            
+
             <TouchableHighlight
               onPress={() => router.push({
                 pathname: "/search-screen/filters/modal-model",
@@ -98,7 +92,7 @@ export default function ModelItemScreenFilterModal() {
 }
 
 
-const Header = ({ headerHeight, scrollY, setFilteredData, initialData }) => {
+const Header = ({ scrollY, setFilteredData, initialData }) => {
   const router = useRouter();
   const [searchValue, setSearchValue] = useState("");
 
@@ -127,7 +121,7 @@ const Header = ({ headerHeight, scrollY, setFilteredData, initialData }) => {
     const height = interpolate(
       scrollY.value,
       [0, offsetValue],
-      [80, 40], // from 100px to 55px
+      [100, 40], // from 100px to 40px
       Extrapolation.CLAMP
     );
 
@@ -182,12 +176,12 @@ const Header = ({ headerHeight, scrollY, setFilteredData, initialData }) => {
       <View>
         <Animated.View style={[animatedHeader]} className="px-2">
           {/* Back button */}
-          <TouchableOpacity onPress={() => router.dismiss()} style={{ padding: 8 }}>
+          <TouchableOpacity onPress={() => router.dismiss()} className="p-3">
             <Ionicons name="close" size={22} color="white" />
           </TouchableOpacity>
 
           {/* Title */}
-          <Animated.View style={animatedSpacer}>
+          <Animated.View style={animatedSpacer} className="px-3">
             <Animated.Text style={[animatedTitle]} className="font-bold text-font dark:text-font-dark">
               Марки
             </Animated.Text>
@@ -200,6 +194,7 @@ const Header = ({ headerHeight, scrollY, setFilteredData, initialData }) => {
             Icon={<Ionicons name="search" size={20} color="gray" />}
             value={searchValue}
             onChange={(value) => setSearchValue(value)}
+            placeholder="Марка или модель"
           />
         </View>
       </View>
