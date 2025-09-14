@@ -48,8 +48,6 @@ export default function ModelItemScreenFilterModal() {
   return (
     <>
       <SafeAreaView className="flex-1 px-3 gap-y-4">
-
-
         <View className="mt-2 gap-y-2">
 
           <Animated.FlatList
