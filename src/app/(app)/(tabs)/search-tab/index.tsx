@@ -19,6 +19,7 @@ import {
 } from '@/components/search-screen/category-top-tabs/spec_auto-screen';
 import { HeaderCategory } from '@/components/search-screen/HeaderCategory';
 import { ActiveScreen } from '@/components/search-screen/types';
+import { useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
 import BottomSheet, {
     BottomSheetBackdrop, BottomSheetModal, BottomSheetModalProvider, BottomSheetView
 } from '@gorhom/bottom-sheet';
@@ -134,7 +135,10 @@ export default function SearchScreen() {
   }, []);
 
 
+  const { selectedModels } = useAutoSelectStore();
 
+  console.log("INDEX -------------------")
+  console.log(selectedModels)
 
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);

@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { InputField } from '@/components/ui/InputField';
 import { Ionicons } from '@expo/vector-icons';
+import { useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 
@@ -32,7 +33,9 @@ export default function ModelItemScreenFilterModal() {
       isScrolling.value = false;
     }
   })
+  const { selectedModels } = useAutoSelectStore();
 
+  console.log(selectedModels)
   return (
     <>
       <View style={{ height: STATUSBAR_HEIGHT }}>

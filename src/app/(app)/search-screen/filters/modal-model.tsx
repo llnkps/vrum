@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import {InputField} from '@/components/ui/InputField';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
 
 
 const DATA = Array.from({ length: 30 }, (_, i) => `Item ${i + 1}`);
@@ -23,7 +24,13 @@ export default function ModalModelItem() {
 
 
   const params = useLocalSearchParams();
-  console.log(params)
+  // console.log(params)
+
+  const { selectedModels, addSelectedModel } = useAutoSelectStore();
+
+  const handleSelectModel = (item) => {
+    addSelectedModel(item)
+  }
 
   return (
     <>
@@ -42,11 +49,22 @@ export default function ModalModelItem() {
           <InputField />
         </View>
 
+      <View className="flex flex-row gap-2">
+        {selectedModels.map(item => {
+          return (
+            <View key={item} className="p-2 bg-background-discovery rounded-md">
+              <Text className="text-font">{item}</Text>
+            </View>
+          )
+        })}
+      </View>
+
+
         <View className="mt-2 gap-y-2">
           {items.map((item) => (
             <TouchableOpacity
               key={item}
-              onPress={() => setSelected(item)}
+              onPress={() => handleSelectModel(item)}
               className={"p-2 border-b border-border dark:border-border-dark"}
             >
               <View className="flex-row gap-x-4">
