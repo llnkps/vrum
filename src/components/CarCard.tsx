@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Pressable } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
-import type { FavoriteItem } from './types';
+import {FavoriteItem} from "@/components/favorites-screen/types";
 
 type FavoriteCardProps = {
   item: FavoriteItem;
@@ -10,7 +10,7 @@ type FavoriteCardProps = {
   onToggleFavorite?: () => void;
 };
 
-export const FavoriteCard = ({ item, onPress, onToggleFavorite }: FavoriteCardProps) => {
+export const CarCard = ({ item, onPress, onToggleFavorite }: FavoriteCardProps) => {
   return (
     <Pressable
       className="bg-white rounded-xl mb-4 overflow-hidden shadow-sm border border-gray-100"

@@ -3,8 +3,8 @@ import {Text, TouchableOpacity, View} from "react-native";
 import {SafeAreaProvider, SafeAreaView} from "react-native-safe-area-context";
 import { Ionicons } from '@expo/vector-icons';
 import { FavoriteItem, SubscriptionItem } from "@/components/favorites-screen/types";
-import FavoritesList from "@/screens/favorites-screen/FavoritesList";
-import SubscriptionsList from "@/screens/favorites-screen/SubscriptionsList";
+import FavoritesList from "@/components/favorites-screen/FavoritesList";
+import SubscriptionsList from "@/components/favorites-screen/SubscriptionsList";
 
 const TAB_OPTIONS = {
   SUBSCRIPTIONS: "subscriptions",

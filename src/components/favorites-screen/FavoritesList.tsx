@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import { FlatList } from 'react-native';
 import {FavoriteItem} from "@/components/favorites-screen/types";
-import {FavoriteCard} from "@/components/favorites-screen/FavoriteCard";
-import EmptyState from "@/screens/favorites-screen/EmptyState";
+import {CarCard} from "@/components/CarCard";
+import EmptyState from "@/components/favorites-screen/EmptyState";
 
 type FavoritesListProps = {
   data: FavoriteItem[];
@@ -18,7 +18,7 @@ const FavoritesList = ({
                          onSearchPress
                        }: FavoritesListProps) => {
   const renderItem = useCallback(({ item }: { item: FavoriteItem }) => (
-    <FavoriteCard
+    <CarCard
       item={item}
       onPress={() => onItemPress?.(item)}
       onToggleFavorite={() => onToggleFavorite?.(item.id)}
