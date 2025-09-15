@@ -1,5 +1,6 @@
 import 'react-native-reanimated';
 import './globals.css';
+import '@/i18n'; // Import your i18n configuration
 
 import { useFonts } from 'expo-font';
 import { Stack, useRouter, useSegments } from 'expo-router';
@@ -7,11 +8,11 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { ActivityIndicator, LogBox, Text, useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { tokenCache } from '@/utils/cache';
 import { useReactQueryDevTools } from '@dev-plugins/react-query';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, ThemeProvider, useTheme } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
@@ -33,54 +34,67 @@ const queryClient = new QueryClient({
   },
 });
 
-export const unstable_settings = {
-  initialRouteName: 'index',
-};
 
 const InitialLayout = () => {
-  const [loaded] = useFonts({
+  // const { isLoaded, isSignedIn } = { isLoaded: true, isSignedIn: true }; // useAuth();
+  // const router = useRouter();
+
+
+  const [loadedFonts] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
-  const { isLoaded, isSignedIn } = { isLoaded: true, isSignedIn: true }; // useAuth();
-  const router = useRouter();
-  const segments = useSegments();
-  useReactQueryDevTools(queryClient);
-
+  // // const segments = useSegments();
+  // // useReactQueryDevTools(queryClient);
   useEffect(() => {
-    if (loaded && isLoaded) {
+    if (loadedFonts) {
       SplashScreen.hideAsync();
     }
-  }, [loaded, isLoaded]);
+  }, [loadedFonts]);
 
-  useEffect(() => {
-    if (!loaded) return;
+  // useEffect(() => {
+  //   // if (!loaded) return;
 
-    const inAuthGroup = segments[1] === '(authenticated)';
-    console.log(isSignedIn && !inAuthGroup, inAuthGroup, segments);
-    if (isSignedIn && !inAuthGroup) {
-      router.replace('/(app)/(authenticated)/(tabs)');
-    }
-  }, [isLoaded, isSignedIn, loaded]);
+  //   // const inAuthGroup = segments[1] === '(authenticated)';
 
-  if (!isLoaded || !loaded) {
-    return <ActivityIndicator />;
-  }
+  //   const timeout = setTimeout(() => {
+  //     if (isSignedIn) {
+  //       router.replace('/(app)/(authenticated)/(tabs)');
+  //     }
+  //   }, 0);
 
+  //   return () => clearTimeout(timeout)
+
+  // }, [isLoaded, isSignedIn, router]);
+
+  // return (
+  //   <Stack screenOptions={{ headerShown: false }}>
+  //     <Stack.Screen name="login" />
+  //   </Stack>
+  // );
+
+
+  // const { data: session } = authClient.useSession();
+  const isAuthenticated = true;
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="login" />
-      <Stack.Screen name="(app)" />
+      <Stack.Protected guard={isAuthenticated}>
+        <Stack.Screen name="(app)" />
+      </Stack.Protected>
+      <Stack.Protected guard={!isAuthenticated}>
+        <Stack.Screen name="(auth)" />
+      </Stack.Protected>
     </Stack>
   );
+
 };
 
 const RootLayout = () => {
   const colorScheme = useColorScheme();
 
   return (
-    <GestureHandlerRootView>
+    <GestureHandlerRootView className="flex-1">
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <ThemeProvider value={colorScheme === 'dark' ? MyDarkTheme : MyLightTheme}>
           <InitialLayout />
         </ThemeProvider>
       </QueryClientProvider>
@@ -107,3 +121,30 @@ const RootLayout = () => {
 };
 
 export default RootLayout;
+
+
+
+// for navigation elements: tab, header
+const MyLightTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: "#FFFFFF",
+    text: "#292A2E",
+    primary: "#1868DB",
+    tabBarActiveTintColor: "#0d6c9a",
+    tabBarInactiveTintColor: "#8E8E93",
+  },
+};
+
+const MyDarkTheme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    background: "#000",
+    text: "#BFC1C4",
+    primary: "#669DF1",
+    tabBarActiveTintColor: "#BFC1C4",
+    tabBarInactiveTintColor: "#6B6E76",
+  },
+};

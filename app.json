@@ -35,10 +35,19 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-localization",
+      "expo-font",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "6c0f5f0c-1001-4cea-b1bc-fb810167454b"
+      }
     }
   }
 }
