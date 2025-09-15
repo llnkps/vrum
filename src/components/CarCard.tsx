@@ -1,40 +1,98 @@
-import { Text, Image, TouchableOpacity, StyleSheet } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { RootStackParamList } from "../navigation/AppNavigator";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import React from 'react';
+import { View, Text, TouchableOpacity, Pressable } from 'react-native';
+import { Image } from 'expo-image';
+import { Ionicons } from '@expo/vector-icons';
+import {FavoriteItem} from "@/components/favorites-screen/types";
 
-type Car = {
-  id: string;
-  title: string;
-  price: string;
-  image: string;
+type FavoriteCardProps = {
+  item: FavoriteItem;
+  onPress?: () => void;
+  onToggleFavorite?: () => void;
 };
 
-type Props = {
-  car: Car;
-};
-
-const CarCard =({ car }: Props) => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
+export const CarCard = ({ item, onPress, onToggleFavorite }: FavoriteCardProps) => {
   return (
-    <TouchableOpacity
-      style={styles.card}
-      onPress={() => navigation.navigate("CarDetails", { id: car.id })}
+    <Pressable
+      className="bg-white rounded-xl mb-4 overflow-hidden shadow-sm border border-gray-100"
+      onPress={onPress}
+      android_ripple={{ color: '#f3f4f6' }}
     >
-      <Image source={{ uri: car.image }} style={styles.image} />
-      <Text style={styles.title}>{car.title}</Text>
-      <Text style={styles.price}>{car.price}</Text>
-    </TouchableOpacity>
+      {/* Header */}
+      <View className="flex-row justify-between items-start px-4 pt-4">
+        <View className="flex-1 pr-3">
+          <Text className="text-gray-900 text-lg font-semibold leading-tight" numberOfLines={2}>
+            {item.title}
+          </Text>
+          {item.subtitle && (
+            <Text className="text-gray-600 text-sm mt-1" numberOfLines={1}>
+              {item.subtitle}
+            </Text>
+          )}
+        </View>
+
+        <TouchableOpacity
+          onPress={onToggleFavorite}
+          className="p-2 -mr-2 -mt-2"
+          activeOpacity={0.7}
+        >
+          <Ionicons name="star" size={22} color="#EF4444" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Price and Tag */}
+      <View className="flex-row items-center px-4 mt-3">
+        <Text className="text-gray-900 text-xl font-bold mr-3">
+          {item.price}
+        </Text>
+        {item.tag && (
+          <View className="bg-orange-100 rounded-full px-3 py-1">
+            <Text className="text-orange-700 text-xs font-medium">
+              {item.tag}
+            </Text>
+          </View>
+        )}
+      </View>
+
+      {/* Images */}
+      {item.images && item.images.length > 0 && (
+        <View className="flex-row mt-4">
+          {item.images.slice(0, 2).map((imageUri, index) => (
+            <Image
+              key={index}
+              source={{ uri: imageUri }}
+              className={`h-32 ${
+                item.images!.length === 1 ? 'w-full' : 'w-1/2'
+              }`}
+              contentFit="cover"
+              transition={200}
+            />
+          ))}
+          {item.images.length > 2 && (
+            <View className="absolute bottom-2 right-2 bg-black/70 rounded-full px-2 py-1">
+              <Text className="text-white text-xs font-medium">
+                +{item.images.length - 2}
+              </Text>
+            </View>
+          )}
+        </View>
+      )}
+
+      {/* Description and Location */}
+      <View className="px-4 py-4">
+        {item.description && (
+          <Text className="text-gray-700 text-sm leading-5 mb-2" numberOfLines={2}>
+            {item.description}
+          </Text>
+        )}
+        {item.location && (
+          <View className="flex-row items-center">
+            <Ionicons name="location-outline" size={14} color="#9CA3AF" />
+            <Text className="text-gray-500 text-sm ml-1">
+              {item.location}
+            </Text>
+          </View>
+        )}
+      </View>
+    </Pressable>
   );
-}
-
-const styles = StyleSheet.create({
-  card: { padding: 10, borderBottomWidth: 1 },
-  image: { width: "100%", height: 150, borderRadius: 8 },
-  title: { fontSize: 18, marginVertical: 5 },
-  price: { fontSize: 16, color: "green" },
-});
-
-export default CarCard;
+};

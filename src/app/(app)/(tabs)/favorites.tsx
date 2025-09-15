@@ -1,7 +1,10 @@
 import { useState } from "react";
-import {ScrollView, Text, TouchableOpacity, View} from "react-native";
+import {Text, TouchableOpacity, View} from "react-native";
 import {SafeAreaProvider, SafeAreaView} from "react-native-safe-area-context";
 import { Ionicons } from '@expo/vector-icons';
+import { FavoriteItem, SubscriptionItem } from "@/components/favorites-screen/types";
+import FavoritesList from "@/components/favorites-screen/FavoritesList";
+import SubscriptionsList from "@/components/favorites-screen/SubscriptionsList";
 
 const TAB_OPTIONS = {
   SUBSCRIPTIONS: "subscriptions",
@@ -9,43 +12,6 @@ const TAB_OPTIONS = {
 } as const;
 
 type TabType = typeof TAB_OPTIONS[keyof typeof TAB_OPTIONS];
-
-const EmptyStateContent = ({ tab }: {tab: TabType}) => {
-  const isSubscriptions = tab === TAB_OPTIONS.SUBSCRIPTIONS;
-
-  return (
-    <View className="items-center px-6">
-      <Ionicons
-        name={isSubscriptions ? "notifications-outline" : "star-outline"}
-        size={64}
-        color="#9CA3AF"
-        style={{ marginBottom: 20 }}
-      />
-      <Text className="text-gray-800 text-center text-lg font-semibold mb-3">
-        {isSubscriptions ? "Нет активных подписок" : "Избранное пусто"}
-      </Text>
-
-      <Text className="text-gray-600 text-center text-base leading-6">
-        {isSubscriptions
-          ? "Сохраняйте поисковые запросы - как только появится подходящее объявление, вы сразу же получите уведомление!"
-          : "Вы можете сохранить интересные объявления, добавив их в избранное"
-        }
-      </Text>
-
-      {!isSubscriptions && (
-        <TouchableOpacity
-          className="bg-amber-600 px-6 py-3 rounded-lg mt-6"
-          activeOpacity={0.8}
-          onPress={() => console.log('Перейти к объявлениям')}
-        >
-          <Text className="text-white font-semobild">
-            Смотреть объявления
-          </Text>
-        </TouchableOpacity>
-      )}
-    </View>
-  )
-}
 
 const TabButton = ({title, isActive, onPress, icon}:
                    {title: string; isActive: boolean; onPress: () => void; icon?: string}) => (
@@ -70,19 +36,130 @@ const TabButton = ({title, isActive, onPress, icon}:
   </TouchableOpacity>
 );
 
-
 const Page = () => {
-  const [tab, setTab] = useState<TabType>(TAB_OPTIONS.SUBSCRIPTIONS);
+  const [tab, setTab] = useState<TabType>(TAB_OPTIONS.FAVORITES);
+
+  // Данные для избранного
+  const [favoritesData, setFavoritesData] = useState<FavoriteItem[]>([
+    {
+      id: "1",
+      title: "BMW 3-Series, 2020",
+      subtitle: "320d AT xDrive M Sport",
+      price: "4 700 000 ₽",
+      tag: "высокая цена",
+      description: "2.0 л, 190 л.с., дизель, АКПП, 4WD, 21 тыс.км",
+      location: "Москва, 10 сент",
+      images: [
+        "https://cdn.bmwblog.com/wp-content/uploads/2020/01/BMW-G20-3-Series.jpg",
+        "https://cdn.bmwblog.com/wp-content/uploads/2019/12/BMW-G20-3-Series-front.jpg",
+      ],
+    },{
+      id: "2",
+      title: "BMW 3-Series, 2020",
+      subtitle: "320d AT xDrive M Sport",
+      price: "4 700 000 ₽",
+      tag: "высокая цена",
+      description: "2.0 л, 190 л.с., дизель, АКПП, 4WD, 21 тыс.км",
+      location: "Москва, 10 сент",
+      images: [
+        "https://cdn.bmwblog.com/wp-content/uploads/2020/01/BMW-G20-3-Series.jpg",
+        "https://cdn.bmwblog.com/wp-content/uploads/2019/12/BMW-G20-3-Series-front.jpg",
+      ],
+    },{
+      id: "3",
+      title: "BMW 3-Series, 2020",
+      subtitle: "320d AT xDrive M Sport",
+      price: "4 700 000 ₽",
+      tag: "высокая цена",
+      description: "2.0 л, 190 л.с., дизель, АКПП, 4WD, 21 тыс.км",
+      location: "Москва, 10 сент",
+      images: [
+        "https://cdn.bmwblog.com/wp-content/uploads/2020/01/BMW-G20-3-Series.jpg",
+        "https://cdn.bmwblog.com/wp-content/uploads/2019/12/BMW-G20-3-Series-front.jpg",
+      ],
+    },
+  ]);
+
+  // Данные для подписок
+  const [subscriptionsData, setSubscriptionsData] = useState<SubscriptionItem[]>([
+    {
+      id: "1",
+      brand: "Audi",
+      model: "A4 (5 поколение: 2019–…)",
+      info: "легковые; все регионы",
+      count: "~31 объявление в месяц",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/6/6f/Audi_logo_detail.svg",
+    },{
+      id: "2",
+      brand: "Audi",
+      model: "A4 (5 поколение: 2019–…)",
+      info: "легковые; все регионы",
+      count: "~31 объявление в месяц",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/6/6f/Audi_logo_detail.svg",
+    },{
+      id: "3",
+      brand: "Audi",
+      model: "A4 (5 поколение: 2019–…)",
+      info: "легковые; все регионы",
+      count: "~31 объявление в месяц",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/6/6f/Audi_logo_detail.svg",
+    },
+  ]);
+
+  // Обработчики для избранного
+  const handleFavoriteItemPress = (item: FavoriteItem) => {
+    console.log('Открыть объявление:', item.title);
+  };
+
+  const handleToggleFavorite = (id: string) => {
+    setFavoritesData(prev => prev.filter(item => item.id !== id));
+    console.log('Удалить из избранного:', id);
+  };
+
+  const handleSearchPress = () => {
+    console.log('Перейти к поиску объявлений');
+  };
+
+  // Обработчики для подписок
+  const handleSubscriptionItemPress = (item: SubscriptionItem) => {
+    console.log('Открыть подписку:', item.brand);
+  };
+
+  const handleDeleteSubscription = (id: string) => {
+    setSubscriptionsData(prev => prev.filter(item => item.id !== id));
+    console.log('Удалить подписку:', id);
+  };
+
+  const handleEditSubscription = (id: string) => {
+    console.log('Редактировать подписку:', id);
+  };
+
+  const renderContent = () => {
+    if (tab === TAB_OPTIONS.FAVORITES) {
+      return (
+        <FavoritesList
+          data={favoritesData}
+          onItemPress={handleFavoriteItemPress}
+          onToggleFavorite={handleToggleFavorite}
+          onSearchPress={handleSearchPress}
+        />
+      );
+    } else {
+      return (
+        <SubscriptionsList
+          data={subscriptionsData}
+          onItemPress={handleSubscriptionItemPress}
+          onDeleteSubscription={handleDeleteSubscription}
+          onEditSubscription={handleEditSubscription}
+        />
+      );
+    }
+  };
 
   return (
     <SafeAreaProvider>
       <SafeAreaView className="flex-1">
-        <ScrollView
-          className="flex-1"
-          contentContainerStyle={{ flexGrow: 1 }}
-          showsVerticalScrollIndicator={false}
-        >
-
+        <View className="flex-1">
           {/* Title */}
           <View className="px-4 pt-5 pb-6">
             <Text className="text-black text-2xl font-bold">
@@ -107,33 +184,33 @@ const Page = () => {
           </View>
 
           {/* Main content */}
-          <View className="flex-1 justify-center">
-            <EmptyStateContent tab={tab} />
+          <View className="flex-1">
+            {renderContent()}
           </View>
 
           {/* Info section */}
-          <View className="px-4 py-6 bg-gray-50 mx-4 rounded-lg mb-16">
-            <View className="flex-row items-start">
-              <Ionicons
-                name="information-circle-outline"
-                size={20}
-                color="#6B7280"
-                style={{ marginTop: 2, marginRight: 8 }}
-              />
-              <View className="flex-1">
-                <Text className="text-gray-700 text-sm font-medium mb-1">
-                  Как это работает?
-                </Text>
-                <Text className="text-gray-600 text-sm leading-5">
-                  {tab === TAB_OPTIONS.SUBSCRIPTIONS
-                    ? "Создавайте подписки с нужными параметрами поиска. Мы уведомим вас о новых объявлениях, которые соответствуют вашим критериям."
-                    : "Нажимайте на звездочку в объявлениях, чтобы сохранить их в избранном. Все сохраненные объявления будут доступны здесь."
-                  }
-                </Text>
+            <View className="px-4 py-6 bg-gray-50 mx-4 rounded-lg mb-16">
+              <View className="flex-row items-start">
+                <Ionicons
+                  name="information-circle-outline"
+                  size={20}
+                  color="#6B7280"
+                  style={{ marginTop: 2, marginRight: 8 }}
+                />
+                <View className="flex-1">
+                  <Text className="text-gray-700 text-sm font-medium mb-1">
+                    Как это работает?
+                  </Text>
+                  <Text className="text-gray-600 text-sm leading-5">
+                    {tab === TAB_OPTIONS.SUBSCRIPTIONS
+                      ? "Создавайте подписки с нужными параметрами поиска. Мы уведомим вас о новых объявлениях, которые соответствуют вашим критериям."
+                      : "Нажимайте на звездочку в объявлениях, чтобы сохранить их в избранном. Все сохраненные объявления будут доступны здесь."
+                    }
+                  </Text>
+                </View>
               </View>
             </View>
-          </View>
-        </ScrollView>
+        </View>
       </SafeAreaView>
     </SafeAreaProvider>
   )
