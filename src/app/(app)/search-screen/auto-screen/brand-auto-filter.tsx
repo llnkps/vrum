@@ -2,13 +2,13 @@ import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StatusBar, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native';
 import Animated, {
-  Extrapolation, interpolate, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue
+    Extrapolation, interpolate, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue
 } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { InputField } from '@/components/ui/InputField';
-import { Ionicons } from '@expo/vector-icons';
 import { useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
+import { Ionicons } from '@expo/vector-icons';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 
@@ -63,7 +63,7 @@ export default function ModelItemScreenFilterModal() {
 
             <TouchableHighlight
               onPress={() => router.push({
-                pathname: "/search-screen/filters/modal-model",
+                pathname: "/search-screen/auto-screen/brand-auto-type-filter",
                 params: {
                   ...item
                 }
