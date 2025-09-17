@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import { FlatList } from 'react-native';
-import {FavoriteItem} from "@/components/favorites-screen/types";
+import {FavoriteItem} from "@/components/favorites/types";
 import {CarCard} from "@/components/CarCard";
-import EmptyState from "@/components/favorites-screen/EmptyState";
+import EmptyState from "@/components/favorites/EmptyState";
 
 type FavoritesListProps = {
   data: FavoriteItem[];

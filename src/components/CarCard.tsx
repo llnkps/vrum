@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Pressable } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
-import {FavoriteItem} from "@/components/favorites-screen/types";
+import {FavoriteItem} from "@/components/favorites/types";
 
 type FavoriteCardProps = {
   item: FavoriteItem;

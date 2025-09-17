@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import { FlatList, Image, Text, TouchableOpacity, View, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import {SubscriptionItem} from "@/components/favorites-screen/types";
-import EmptyState from "@/components/favorites-screen/EmptyState";
+import {SubscriptionItem} from "@/components/favorites/types";
+import EmptyState from "@/components/favorites/EmptyState";
 
 
 type SubscriptionsListProps = {

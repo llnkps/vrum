@@ -1,83 +1,55 @@
-import {ScrollView, Text, TouchableOpacity, View} from "react-native";
-import {useState} from "react";
-import {Ionicons} from "@expo/vector-icons";
-import {SafeAreaProvider, SafeAreaView} from "react-native-safe-area-context";
+import React from 'react';
+import { ScrollView, Text, View } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { SegmentedButton } from '@/components/common/SegmentedButton';
+import { EmptyListings } from '@/components/listings/EmptyListings';
+import { AddListingPanel } from '@/components/listings/AddListingPanel';
+import { useListings } from '@/hooks/useListings';
+import {ListingsTab} from "@/constants/navigation";
 
 const Page = () => {
-  const [tab, setTab] = useState<"active" | "archive">("active");
+  const {
+    tab,
+    setTab,
+    handlers: {
+      handleAddAd,
+    }
+  } = useListings();
 
   return (
-    <SafeAreaProvider >
-      <SafeAreaView className="flex-1 pt-5">
-        <ScrollView
-          className="flex-1 mb-40"
-          contentContainerStyle={{ flexGrow: 1 }}
-        >
-          <Text className="text-black text-2xl font-bold px-4 mb-4">
-            Мои объявления
-          </Text>
-
-          <View className="flex-row justify-center bg-neutral-400 rounded-lg mx-4">
-            <TouchableOpacity
-              className={`flex-1 py-2 rounded-lg ${tab === "active" ? "bg-neutral-700" : ""}` }
-              onPress={() => setTab("active")}
-            >
-              <Text className="text-center text-white">Актуальные</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className={`flex-1 py-2 rounded-lg ${tab === "archive" ? "bg-neutral-700" : ""}` }
-              onPress={() => setTab("archive")}
-            >
-              <Text className="text-center text-white">Архив</Text>
-            </TouchableOpacity>
+    <SafeAreaProvider>
+      <SafeAreaView className='flex-1'>
+        <ScrollView className='flex-1' contentContainerStyle={{ flexGrow: 1 }}>
+          {/* Title */}
+          <View className='px-4 pt-5 pb-6'>
+            <Text className='text-black text-2xl font-bold'>
+              Мои объявления
+            </Text>
           </View>
 
-          <View className="flex-1 justify-center items-center">
-            {tab === "active" ? (
-              <>
-                <Ionicons name="newspaper-outline" size={64} className="mb-4" />
-                <Text className="text-black text-center mx-10">
-                  У вас нет активных объявлений
-                </Text>
-              </>
-            ) : (
-              <>
-                <Ionicons name="newspaper-outline" size={64} className="mb-4" />
-                <Text className="text-black text-center mx-10">
-                  У вас нет архивных сообщений
-                </Text>
-              </>
-            )}
+          {/* Tabs */}
+          <View className='flex-row justify-center bg-neutral-400 rounded-lg mx-4 mb-2 p-1'>
+            <SegmentedButton
+              title='Активные'
+              isActive={tab === ListingsTab.ACTIVE}
+              onPress={() => setTab(ListingsTab.ACTIVE)}
+            />
+            <SegmentedButton
+              title='Архив'
+              isActive={tab === ListingsTab.ARCHIVED}
+              onPress={() => setTab(ListingsTab.ARCHIVED)}
+            />
           </View>
+
+          {/* Content */}
+          <EmptyListings tab={tab} />
         </ScrollView>
 
-        <View className="absolute bottom-16 left-0 right-0 bg-neutral-300 rounded-t-3xl px-4 pt-6 pb-10">
-          <Text className="text-black text-lg font-bold mb-4">
-            Добавить объявление
-          </Text>
-
-          <View className="flex-row justify-between">
-            <TouchableOpacity className="flex-1 items-center bg-neutral-700 py-4 mx-1 rounded-lg">
-              <Text className="text-center text-white">
-                Автомобили
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity className="flex-1 items-center bg-neutral-700 py-4 mx-1 rounded-lg">
-              <Text className="text-center text-white">
-                Автомобили
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity className="flex-1 items-center bg-neutral-700 py-4 mx-1 rounded-lg">
-              <Text className="text-center text-white">
-                Автомобили
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        {/* Bottom bar */}
+        <AddListingPanel onAddAd={handleAddAd} />
       </SafeAreaView>
     </SafeAreaProvider>
-
-  )
-}
+  );
+};
 
 export default Page;
