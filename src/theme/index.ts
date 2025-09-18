@@ -5,6 +5,8 @@ export interface CustomTheme extends NavigationTheme {
     tabBarActiveTintColor: string;
     tabBarInactiveTintColor: string;
     icon: string;
+
+    surface: string;
   };
 }
 
@@ -19,6 +21,7 @@ export const MyLightTheme: CustomTheme = {
     tabBarActiveTintColor: "#0d6c9a",
     tabBarInactiveTintColor: "#8E8E93",
     icon: "#CECFD2",
+    surface: "#FFFFFF",
   },
 };
 
@@ -32,5 +35,6 @@ export const MyDarkTheme: CustomTheme = {
     tabBarActiveTintColor: "#BFC1C4",
     tabBarInactiveTintColor: "#6B6E76",
     icon: "#292A2E",
+    surface: "#1F1F21",
   },
 };

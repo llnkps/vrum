@@ -331,6 +331,9 @@ module.exports = {
           xl: "16px",
           full: "9999px",
         },
+        borderWidth: {
+          1: "1px"
+        }
       },
   },
   plugins: [],
