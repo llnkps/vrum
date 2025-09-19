@@ -1,4 +1,3 @@
-import CloseIcon from "@/components/global/CloseIcon";
 import CustomBottomSheetModal from "@/components/global/CustomBottomSheetModal";
 import CustomWheelPicker from "@/components/global/CustomWheelPicker";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -7,7 +6,7 @@ import {
   ValueChangedEvent,
 } from "@quidone/react-native-wheel-picker";
 import React, { forwardRef, useCallback, useState } from "react";
-import { StyleSheet, Vibration, View } from "react-native";
+import { Vibration, View } from "react-native";
 import { Text } from "react-native-gesture-handler";
 import { CustomFooter } from "./footer";
 import { HeaderHandle } from "./header";
@@ -27,15 +26,6 @@ const years = [...Array(100).keys()].map((index) => ({
   label: (2025 - index).toString(),
 }));
 
-const styles = StyleSheet.create({
-  header: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-});
-
 const YearModal = forwardRef<BottomSheetRef, props>((props, ref) => {
   const [fromYear, setFromYear] = useState(years[0].value);
   const [tillYear, setTillYear] = useState(years[0].value);
@@ -53,22 +43,14 @@ const YearModal = forwardRef<BottomSheetRef, props>((props, ref) => {
   };
 
   const handleChangingWithVibration = () => {
-    Vibration.vibrate(1)
-  }
+    Vibration.vibrate(1);
+  };
 
   const renderHeaderHandle = useCallback(
-    (props) => (
-      <HeaderHandle {...props}>
-        <View style={styles.header}>
-          <Text className="text-font dark:text-font-dark font-bold text-lg">
-            Год
-          </Text>
-          <CloseIcon onPress={() => {}} />
-        </View>
-      </HeaderHandle>
-    ),
+    (props) => <HeaderHandle {...props} />,
     []
   );
+
   return (
     <CustomBottomSheetModal
       ref={ref}

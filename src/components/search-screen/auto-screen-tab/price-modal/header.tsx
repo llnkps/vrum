@@ -13,7 +13,7 @@ const HeaderHandleComponent = ({ ...rest }: HeaderHandleProps) => {
     <BottomSheetHandle {...rest}>
       <View style={styles.header}>
         <Text className="text-font dark:text-font-dark font-bold text-2xl">
-          Год
+          Цена
         </Text>
         <CloseIcon onPress={() => {}} />
       </View>

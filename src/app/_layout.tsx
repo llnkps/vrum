@@ -1,18 +1,18 @@
-import 'react-native-reanimated';
-import './globals.css';
-import '@/i18n'; // Import your i18n configuration
+import "react-native-reanimated";
+import "./globals.css";
+import "@/i18n"; // Import your i18n configuration
 
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import { LogBox, useColorScheme } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useFonts } from "expo-font";
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect } from "react";
+import { LogBox, useColorScheme } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-import { MyDarkTheme, MyLightTheme } from '@/theme';
-import { ThemeProvider } from '@react-navigation/native';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { MyDarkTheme, MyLightTheme } from "@/theme";
+import { ThemeProvider } from "@react-navigation/native";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 // const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 // if (!publishableKey) {
@@ -20,7 +20,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 //     'Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env'
 //   );
 // }
-LogBox.ignoreLogs(['Clerk: Clerk has been loaded with development keys']);
+LogBox.ignoreLogs(["Clerk: Clerk has been loaded with development keys"]);
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -33,14 +33,12 @@ const queryClient = new QueryClient({
   },
 });
 
-
 const InitialLayout = () => {
   // const { isLoaded, isSignedIn } = { isLoaded: true, isSignedIn: true }; // useAuth();
   // const router = useRouter();
 
-
   const [loadedFonts] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
   // // const segments = useSegments();
   // // useReactQueryDevTools(queryClient);
@@ -71,7 +69,6 @@ const InitialLayout = () => {
   //   </Stack>
   // );
 
-
   // const { data: session } = authClient.useSession();
   const isAuthenticated = true;
   return (
@@ -84,7 +81,6 @@ const InitialLayout = () => {
       </Stack.Protected>
     </Stack>
   );
-
 };
 
 const RootLayout = () => {
@@ -93,11 +89,11 @@ const RootLayout = () => {
   return (
     <GestureHandlerRootView className="flex-1">
       <QueryClientProvider client={queryClient}>
-        <BottomSheetModalProvider>
-          <ThemeProvider value={colorScheme === 'dark' ? MyDarkTheme : MyLightTheme}>
+        <ThemeProvider value={colorScheme === "dark" ? MyDarkTheme : MyLightTheme}>
+          <BottomSheetModalProvider>
             <InitialLayout />
-          </ThemeProvider>
-        </BottomSheetModalProvider>
+          </BottomSheetModalProvider>
+        </ThemeProvider>
       </QueryClientProvider>
     </GestureHandlerRootView>
   );
