@@ -8,7 +8,7 @@ import CustomBottomSheetModal from '@/components/global/CustomBottomSheetModal';
 import { Header } from '@/components/global/Header';
 import {
   AutoHeaderScreen, AutoItemScreen
-} from '@/components/search-screen/(components-tabs)/auto-screen';
+} from '@/components/search-screen/auto-screen-tab/auto-screen';
 import {
   AutoDetailHeaderScreen, AutoDetailItemScreen
 } from '@/components/search-screen/(components-tabs)/auto_detail-screen';
