@@ -6,7 +6,7 @@ import { Image, Pressable, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import PriceModal from "./price-modal/price-modal";
-import RegionModal from "./region-modal/region-modal";
+import { RegionModal } from "./region-modal/region-modal";
 import YearModal from "./year-modal/year-modal";
 
 export const AutoHeaderScreen = () => {
