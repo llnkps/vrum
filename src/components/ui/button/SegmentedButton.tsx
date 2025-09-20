@@ -1,6 +1,6 @@
-import React from 'react';
-import {Text, TouchableOpacity, View} from "react-native";
-import {Ionicons} from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons";
+import React from "react";
+import { Text, TouchableOpacity, View } from "react-native";
 
 interface TabButtonProps {
   title: string;
@@ -10,11 +10,11 @@ interface TabButtonProps {
 }
 
 export const SegmentedButton: React.FC<TabButtonProps> = ({
-                                                      title,
-                                                      isActive,
-                                                      onPress,
-                                                      icon
-                                                    }) => (
+  title,
+  isActive,
+  onPress,
+  icon,
+}) => (
   <TouchableOpacity
     className={`flex-1 py-3 rounded-lg ${isActive ? "bg-neutral-700" : ""}`}
     onPress={onPress}
@@ -26,12 +26,10 @@ export const SegmentedButton: React.FC<TabButtonProps> = ({
           name={icon as any}
           size={18}
           color="white"
-          style={{marginRight: 6}}
+          style={{ marginRight: 6 }}
         />
       )}
-      <Text className="text-center text-white font-medium">
-        {title}
-      </Text>
+      <Text className="text-center text-white font-medium">{title}</Text>
     </View>
   </TouchableOpacity>
 );

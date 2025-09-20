@@ -7,6 +7,13 @@ export interface CustomTheme extends NavigationTheme {
     icon: string;
 
     surface: string;
+    button: {
+      primary: string;
+      primaryPressed: string;
+
+      subtle: string;
+      subtlePressed: string;
+    }
   };
 }
 
@@ -22,6 +29,14 @@ export const MyLightTheme: CustomTheme = {
     tabBarInactiveTintColor: "#8E8E93",
     icon: "#292A2E",
     surface: "#FFFFFF",
+
+    button: {
+      primary: "",
+      primaryPressed: "",
+
+      subtle: "#00000000",
+      subtlePressed: "#0B120E24",
+    },
   },
 };
 
@@ -36,5 +51,13 @@ export const MyDarkTheme: CustomTheme = {
     tabBarInactiveTintColor: "#6B6E76",
     icon: "#CECFD2",
     surface: "#1F1F21",
+
+    button: {
+      primary: "",
+      primaryPressed: "",
+
+      subtle: "#00000000",
+      subtlePressed: "#E3E4F21F"
+    }
   },
 };
