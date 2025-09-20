@@ -20,7 +20,7 @@ export const MyLightTheme: CustomTheme = {
     primary: "#1868DB",
     tabBarActiveTintColor: "#0d6c9a",
     tabBarInactiveTintColor: "#8E8E93",
-    icon: "#CECFD2",
+    icon: "#292A2E",
     surface: "#FFFFFF",
   },
 };
@@ -34,7 +34,7 @@ export const MyDarkTheme: CustomTheme = {
     primary: "#669DF1",
     tabBarActiveTintColor: "#BFC1C4",
     tabBarInactiveTintColor: "#6B6E76",
-    icon: "#292A2E",
+    icon: "#CECFD2",
     surface: "#1F1F21",
   },
 };

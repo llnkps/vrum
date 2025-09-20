@@ -3,7 +3,7 @@ import {Text, View} from "react-native";
 import {SafeAreaProvider, SafeAreaView} from "react-native-safe-area-context";
 import FavoritesList from "@/components/favorites/FavoritesList";
 import SubscriptionsList from "@/components/favorites/SubscriptionsList";
-import {SegmentedButton} from "@/components/common/SegmentedButton";
+import {SegmentedButton} from "@/components/ui/button";
 import {useFavorites} from "@/hooks/useFavorites";
 import {FavoritesTab} from "@/constants/navigation";
 

@@ -1,64 +1,109 @@
-import { View, Text, Image, Pressable } from "react-native";
+import { Button } from "@/components/ui/button";
+import { Pressable, StatusBar, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+import CloseIcon from "@/components/global/CloseIcon";
+import { useRouter } from "expo-router";
+
+const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 
 const SettingScreenFilter = () => {
   return (
     <>
-      <View className="mx-2 rounded-2xl shadow-md">
-        {/* <Image
-          source={item.image}
-          className="w-full h-48 rounded-t-2xl"
-          resizeMode="cover"
-        /> */}
-        <View className="p-4">
-          <Text className="text-lg font-bold text-font-brand dark:text-font-brand-dark">
-            aaa
-          </Text>
-          <Text className="text-base text-font dark:text-font-dark">22</Text>
-          <View className="flex-row mt-2">
-            <Text className="text-xs text-font dark:text-font-dark mr-2">⭐ 5-star GNCAP</Text>
-            <Text className="text-xs text-font dark:text-font-dark">🚗 More Mileage</Text >
-          </View>
-        </View>
+      <View style={{ height: STATUSBAR_HEIGHT }}>
+        <SafeAreaView>
+          <StatusBar
+            translucent
+            backgroundColor={"red"}
+            barStyle={"light-content"}
+          />
+        </SafeAreaView>
       </View>
-      <View className="px-4 py-3 gap-y-1 bg-background dark:bg-background-dark">
-        <Pressable
-          onPress={() => console.log('Model Pressed')}
-          className={"px-4 py-3 flex flex-row bg-background-neutral dark:bg-background-neutral-dark rounded-t-md border border-border dark:border-border-dark"}
-        >
-          <Text className="text-font dark:text-font-dark font-bold">Марка, модель, поколение</Text>
-        </Pressable>
-        <View className={"flex flex-row gap-1"}>
-          <Pressable
-            onPress={() => console.log('Год Pressed')}
-            className={"px-4 py-3 flex flex-row bg-background-neutral dark:bg-background-neutral-dark border border-border dark:border-border-dark"}
-          >
-            <Text className="text-font dark:text-font-dark font-bold">Год</Text>
-          </Pressable>
 
-          <Pressable
-            onPress={() => console.log('Цена Pressed')}
-            className={"px-4 py-3 flex flex-row bg-background-neutral dark:bg-background-neutral-dark border border-border dark:border-border-dark"}
-          >
-            <Text className="text-font dark:text-font-dark font-bold">Цена</Text>
-          </Pressable>
+      <View className="">
+        <Header />
+
+        <View className="flex-row justify-center bg-surface dark:bg-surface-dark rounded-lg mx-4 mb-2 p-1">
+          <Button
+            title="Все"
+            // isActive={tab === ListingsTab.ACTIVE}
+            // onPress={() => setTab(ListingsTab.ACTIVE)}
+          />
+          <Button
+            title="С пробегом"
+            // isActive={tab === ListingsTab.ARCHIVED}
+            // onPress={() => setTab(ListingsTab.ARCHIVED)}
+          />
+          <Button
+            title="Новые"
+            // isActive={tab === ListingsTab.ARCHIVED}
+            // onPress={() => setTab(ListingsTab.ARCHIVED)}
+          />
         </View>
-        <Pressable
-          onPress={() => console.log('Еще Pressed')}
-          className={"px-4 py-3 flex flex-row bg-background-neutral dark:bg-background-neutral-dark rounded-b-md border border-border dark:border-border-dark"}
-        >
-          <Text className="text-font dark:text-font-dark font-bold">Еще</Text>
-        </Pressable>
+
+        <View className="flex-row justify-center bg-surface dark:bg-surface-dark rounded-lg mx-4 mb-2 p-1">
+          {/* <View className="p-2 rounded-md bg-background-neutral-subtle-pressed dark:bg-background-neutral-subtle-dark-pressed"> */}
+          <Text className="text-font dark:text-font-dark text-lg">
+            Все регионы
+          </Text>
+          {/* </View> */}
+        </View>
+
+        <View className="flex-row justify-center bg-surface dark:bg-surface-dark rounded-lg mx-4 mb-2 p-1">
+          {/* <View className="p-2 rounded-md bg-background-neutral-subtle-pressed dark:bg-background-neutral-subtle-dark-pressed"> */}
+          <Text className="text-font dark:text-font-dark text-lg">
+            Марка, модель, поколение
+          </Text>
+          {/* </View> */}
+        </View>
+
+        <View className="flex-row justify-center bg-surface dark:bg-surface-dark rounded-lg mx-4 mb-2 p-1">
+          {/* <View className="p-2 rounded-md bg-background-neutral-subtle-pressed dark:bg-background-neutral-subtle-dark-pressed"> */}
+          <Text className="text-font dark:text-font-dark text-lg">Год</Text>
+          <Text className="text-font dark:text-font-dark text-lg">Цена</Text>
+          {/* </View> */}
+        </View>
       </View>
       <View className="px-4 py-3">
         <Pressable
-          onPress={() => console.log('Показать результаты Pressed')}
-          className={"px-4 py-3 flex flex-row bg-button-primary dark:bg-button-primary-dark rounded-md justify-center"}
+          onPress={() => console.log("Показать результаты Pressed")}
+          className={
+            "px-4 py-3 flex flex-row bg-button-primary dark:bg-button-primary-dark rounded-md justify-center"
+          }
         >
           <Text className="text-white font-bold">Показать результаты</Text>
         </Pressable>
       </View>
     </>
-  )
-}
+  );
+};
 
 export default SettingScreenFilter;
+
+export const Header = () => {
+  const router = useRouter();
+
+  return (
+    <View>
+      <View className="flex-row justify-between">
+        {/* Back button */}
+        <CloseIcon onPress={() => router.dismiss()} />
+
+        {/* Title */}
+        <View className="px-3">
+          <Text className="font-bold text-font dark:text-font-dark">
+            Параметры
+          </Text>
+        </View>
+      </View>
+      <View>
+        <Button
+          onPress={() => {
+            console.log("Reset");
+          }}
+          title="Сбросить"
+        />
+      </View>
+    </View>
+  );
+};

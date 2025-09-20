@@ -1,39 +1,37 @@
-import { Stack, useRouter } from 'expo-router';
-
-import CloseIcon from '@/components/global/CloseIcon';
+import { Stack } from "expo-router";
 
 export default function SearchFilterLayout() {
-  const router = useRouter();
+  // const router = useRouter();
 
-  const commonOptions = {
-    headerShown: true,
-    // headerTransparent: true,
-    headerBackVisible: false,
-    headerLeft: () => (
-      <CloseIcon onPress={() => router.dismiss} />
-    ),
-    animation: "slide_from_bottom",
-    // sheetGrabberVisible: false,
-    sheetInitialDetentIndex: 1,
-    sheetAllowedDetents: [0.5, 1.0],
-    headerStyle: {
-      // backgroundColor: theme.colors.backgroundPage
-    }
-  };
+  // const commonOptions = {
+  //   headerShown: true,
+  //   // headerTransparent: true,
+  //   headerBackVisible: false,
+  //   headerLeft: () => (
+  //     <CloseIcon onPress={() => router.dismiss()} />
+  //   ),
+  //   animation: "slide_from_bottom",
+  //   // sheetGrabberVisible: false,
+  //   sheetInitialDetentIndex: 1,
+  //   sheetAllowedDetents: [0.5, 1.0],
+  //   headerStyle: {
+  //     // backgroundColor: theme.colors.backgroundPage
+  //   }
+  // };
 
   return (
     <Stack>
       <Stack.Screen
         name="brand-auto-filter"
-        options={{ title: "", presentation: 'modal', headerShown: false }}
+        options={{ title: "", presentation: "modal", headerShown: false }}
       />
       <Stack.Screen
         name="brand-auto-type-filter"
-        options={{ title: "", presentation: 'modal', headerShown: false }}
+        options={{ title: "", presentation: "modal", headerShown: false }}
       />
 
-      <Stack.Screen
-        name="year-filter"
+      {/* <Stack.Screen
+        name="regions"
         options={{
           title: "HELLO WORLD",
           headerShown: false,
@@ -47,10 +45,13 @@ export default function SearchFilterLayout() {
           sheetExpandsWhenScrolledToEdge: true,
           sheetElevation: 24,
         }}
-      />
+      /> */}
 
-      <Stack.Screen name="model-gen" options={{ title: "", presentation: "formSheet", ...commonOptions }} />
-      <Stack.Screen name="settings" options={{ title: "Advanced Filters", presentation: "formSheet", ...commonOptions }} />
+      {/* <Stack.Screen name="regions" options={{ title: "", presentation: "formSheet", ...commonOptions }} /> */}
+      <Stack.Screen
+        name="settings"
+        options={{ presentation: "modal", headerShown: false, animation: "default" }}
+      />
     </Stack>
-  )
+  );
 }

@@ -1,6 +1,10 @@
+// !!!
+// TODO: it's not used for now. but it will be used later after clicking by regions in RegionModal
+
+
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { GestureResponderEvent, StatusBar, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native';
+import { StatusBar, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native';
 import Animated, {
     Extrapolation, interpolate, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue
 } from 'react-native-reanimated';
@@ -9,11 +13,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { InputField } from '@/components/ui/InputField';
 import { useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
 import { Ionicons } from '@expo/vector-icons';
-import CloseIcon from '@/components/global/CloseIcon';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 
-export default function ModelItemScreenFilterModal() {
+export default function RegionScreenFilterModal() {
   const data = require('@/data/auto-icons/output.json');
 
   const [filteredData, setFilteredData] = useState(data);
@@ -180,7 +183,9 @@ const Header = ({ scrollY, setFilteredData, initialData }) => {
       <View>
         <Animated.View style={[animatedHeader]} className="px-2">
           {/* Back button */}
-          <CloseIcon onPress={() => router.dismiss()} />
+          <TouchableOpacity onPress={() => router.dismiss()} className="p-3">
+            <Ionicons name="close" size={22} color="white" />
+          </TouchableOpacity>
 
           {/* Title */}
           <Animated.View style={animatedSpacer} className="px-3">

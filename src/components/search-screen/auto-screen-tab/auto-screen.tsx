@@ -5,8 +5,9 @@ import { Image, Pressable, Text, View } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import YearModal from "./year-modal/year-modal";
 import PriceModal from "./price-modal/price-modal";
+import RegionModal from "./region-modal/region-modal";
+import YearModal from "./year-modal/year-modal";
 
 export const AutoHeaderScreen = () => {
   const { t } = useTranslation();
@@ -62,6 +63,7 @@ const SearchSection = () => {
 
   const yearModalRef = useRef<BottomSheetModal>(null);
   const priceModalRef = useRef<BottomSheetModal>(null);
+  const regionModalRef = useRef<BottomSheetModal>(null);
 
   const handlePresentYearModalPress = useCallback(() => {
     yearModalRef.current?.present();
@@ -71,6 +73,9 @@ const SearchSection = () => {
     priceModalRef.current?.present();
   }, []);
 
+  const handlePresentRegionModalPress = useCallback(() => {
+    regionModalRef.current?.present();
+  }, []);
 
   return (
     <View className={"px-4 py-3 gap-y-1 bg-background dark:bg-background-dark"}>
@@ -121,7 +126,7 @@ const SearchSection = () => {
         </Pressable>
       </View>
       <Pressable
-        onPress={() => handlePress("Все регионы")}
+        onPress={() => handlePresentRegionModalPress()}
         className={
           "px-4 py-3 flex flex-row bg-background-neutral dark:bg-background-neutral-dark rounded-b-md border border-border dark:border-border-dark"
         }
@@ -134,6 +139,7 @@ const SearchSection = () => {
       {/** component for opening year modal */}
       <YearModal ref={yearModalRef} />
       <PriceModal ref={priceModalRef} />
+      <RegionModal ref={regionModalRef} />
     </View>
   );
 };
