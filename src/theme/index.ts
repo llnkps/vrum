@@ -1,0 +1,63 @@
+import { DarkTheme, DefaultTheme, Theme as NavigationTheme } from '@react-navigation/native';
+
+export interface CustomTheme extends NavigationTheme {
+  colors: NavigationTheme["colors"] & {
+    tabBarActiveTintColor: string;
+    tabBarInactiveTintColor: string;
+    icon: string;
+
+    surface: string;
+    button: {
+      primary: string;
+      primaryPressed: string;
+
+      subtle: string;
+      subtlePressed: string;
+    }
+  };
+}
+
+// for navigation elements: tab, header
+export const MyLightTheme: CustomTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: "#FFFFFF",
+    text: "#292A2E",
+    primary: "#1868DB",
+    tabBarActiveTintColor: "#0d6c9a",
+    tabBarInactiveTintColor: "#8E8E93",
+    icon: "#292A2E",
+    surface: "#FFFFFF",
+
+    button: {
+      primary: "",
+      primaryPressed: "",
+
+      subtle: "#00000000",
+      subtlePressed: "#0B120E24",
+    },
+  },
+};
+
+export const MyDarkTheme: CustomTheme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    background: "#000",
+    text: "#BFC1C4",
+    primary: "#669DF1",
+    tabBarActiveTintColor: "#BFC1C4",
+    tabBarInactiveTintColor: "#6B6E76",
+    icon: "#CECFD2",
+    surface: "#1F1F21",
+
+    button: {
+      primary: "",
+      primaryPressed: "",
+
+      subtle: "#00000000",
+      subtlePressed: "#E3E4F21F"
+    }
+  },
+};

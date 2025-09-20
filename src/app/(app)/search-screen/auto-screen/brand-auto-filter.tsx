@@ -1,14 +1,15 @@
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { StatusBar, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native';
+import { GestureResponderEvent, StatusBar, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native';
 import Animated, {
-  Extrapolation, interpolate, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue
+    Extrapolation, interpolate, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue
 } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { InputField } from '@/components/ui/InputField';
-import { Ionicons } from '@expo/vector-icons';
 import { useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
+import { Ionicons } from '@expo/vector-icons';
+import CloseIcon from '@/components/global/CloseIcon';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 
@@ -63,7 +64,7 @@ export default function ModelItemScreenFilterModal() {
 
             <TouchableHighlight
               onPress={() => router.push({
-                pathname: "/search-screen/filters/modal-model",
+                pathname: "/search-screen/auto-screen/brand-auto-type-filter",
                 params: {
                   ...item
                 }
@@ -179,9 +180,7 @@ const Header = ({ scrollY, setFilteredData, initialData }) => {
       <View>
         <Animated.View style={[animatedHeader]} className="px-2">
           {/* Back button */}
-          <TouchableOpacity onPress={() => router.dismiss()} className="p-3">
-            <Ionicons name="close" size={22} color="white" />
-          </TouchableOpacity>
+          <CloseIcon onPress={() => router.dismiss()} />
 
           {/* Title */}
           <Animated.View style={animatedSpacer} className="px-3">

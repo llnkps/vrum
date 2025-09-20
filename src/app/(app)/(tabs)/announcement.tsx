@@ -1,7 +1,7 @@
 import React from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { SegmentedButton } from '@/components/common/SegmentedButton';
+import { SegmentedButton } from '@/components/ui/button';
 import { EmptyListings } from '@/components/listings/EmptyListings';
 import { AddListingPanel } from '@/components/listings/AddListingPanel';
 import { useListings } from '@/hooks/useListings';
