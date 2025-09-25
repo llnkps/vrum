@@ -3,14 +3,19 @@ import { Pressable, ScrollView, StatusBar, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import CloseIcon from "@/components/global/CloseIcon";
-import { ListingsTab } from "@/constants/navigation";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 
+enum Tab {
+  All = "all",
+  OLD = "old",
+  NEW = "new",
+}
+
 const SettingScreenFilter = () => {
-  const [tab, setTab] = useState(ListingsTab.ACTIVE);
+  const [tab, setTab] = useState(Tab.All);
 
   return (
     <>
@@ -32,22 +37,22 @@ const SettingScreenFilter = () => {
               useNativePressable
               appearance="subtle"
               title="Все"
-              isSelected={tab === ListingsTab.ACTIVE}
-              onPress={() => setTab(ListingsTab.ACTIVE)}
+              isSelected={tab === Tab.All}
+              onPress={() => setTab(Tab.All)}
             />
             <Button
               useNativePressable
               appearance="subtle"
               title="С пробегом"
-              isSelected={tab === ListingsTab.ARCHIVED}
-              onPress={() => setTab(ListingsTab.ARCHIVED)}
+              isSelected={tab === Tab.OLD}
+              onPress={() => setTab(Tab.OLD)}
             />
             <Button
               useNativePressable
               appearance="subtle"
               title="Новые"
-              isSelected={tab === ListingsTab.ARCHIVED}
-              onPress={() => setTab(ListingsTab.ARCHIVED)}
+              isSelected={tab === Tab.NEW}
+              onPress={() => setTab(Tab.NEW)}
             />
           </View>
 
