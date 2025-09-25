@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import {Text, useColorScheme, View} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import {AdsTab} from "@/constants/navigation";
 
@@ -8,6 +8,10 @@ interface EmptyStateProps {
 }
 
 export const EmptyAds: React.FC<EmptyStateProps> = ({ tab }) => {
+  const scheme = useColorScheme();
+
+  const iconColor = scheme === "dark" ? "#96999E" : "#6B6E76";
+
   const getEmptyStateContent = () => {
     if (tab === AdsTab.ACTIVE) {
       return {
@@ -26,8 +30,8 @@ export const EmptyAds: React.FC<EmptyStateProps> = ({ tab }) => {
 
   return (
     <View className='flex-1 justify-center items-center'>
-      <Ionicons name={icon} size={64} className='mb-4' />
-      <Text className='text-black text-center mx-10'>
+      <Ionicons name={icon} size={64} className='mb-4' color={iconColor}/>
+      <Text className='text-font dark:text-font-dark text-center mx-10'>
         {text}
       </Text>
     </View>
