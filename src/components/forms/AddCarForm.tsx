@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, useColorScheme, Modal, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Picker } from "@react-native-picker/picker";
-import {useRouter} from "expo-router";
+import { useRouter } from "expo-router";
 
 type CarForm = {
   id: string;
@@ -58,7 +58,11 @@ const AddCarForm = () => {
     color: "",
     condition: "used",
   });
+
+  const [activeModal, setActiveModal] = useState<string | null>(null);
   const router = useRouter();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
 
   const handleChange = (key: keyof CarForm, value: any) => {
     setForm({ ...form, [key]: value, updatedAt: new Date() });
@@ -69,175 +73,420 @@ const AddCarForm = () => {
     router.back();
   };
 
+  const pickerOptions = {
+    currency: [
+      { label: "USD ($)", value: "USD" },
+      { label: "EUR (€)", value: "EUR" },
+      { label: "MDL (L)", value: "MDL" },
+      { label: "RUB (₽)", value: "RUB" },
+    ],
+    fuelType: [
+      { label: "Бензин", value: "petrol" },
+      { label: "Дизель", value: "diesel" },
+      { label: "Электро", value: "electric" },
+      { label: "Гибрид", value: "hybrid" },
+      { label: "Газ", value: "gas" },
+    ],
+    transmission: [
+      { label: "Механика", value: "manual" },
+      { label: "Автомат", value: "automatic" },
+      { label: "Робот", value: "robot" },
+      { label: "Вариатор (CVT)", value: "cvt" },
+    ],
+    bodyType: [
+      { label: "Седан", value: "sedan" },
+      { label: "Хэтчбек", value: "hatchback" },
+      { label: "SUV", value: "suv" },
+      { label: "Купе", value: "coupe" },
+      { label: "Универсал", value: "wagon" },
+      { label: "Пикап", value: "pickup" },
+      { label: "Фургон", value: "van" },
+    ],
+    drivetrain: [
+      { label: "Передний (FWD)", value: "fwd" },
+      { label: "Задний (RWD)", value: "rwd" },
+      { label: "Полный (AWD)", value: "awd" },
+      { label: "4x4", value: "4x4" },
+    ],
+    condition: [
+      { label: "Новый", value: "new" },
+      { label: "Б/у", value: "used" },
+      { label: "На запчасти", value: "for parts" },
+    ],
+  };
+
+  const getPickerLabel = (type: string, value: string) => {
+    const options = pickerOptions[type as keyof typeof pickerOptions];
+    return options?.find(option => option.value === value)?.label || value;
+  };
+
+  const PickerModal = ({
+                         visible,
+                         onClose,
+                         title,
+                         options,
+                         selectedValue,
+                         onValueChange
+                       }: {
+    visible: boolean;
+    onClose: () => void;
+    title: string;
+    options: Array<{ label: string; value: string }>;
+    selectedValue: string;
+    onValueChange: (value: string) => void;
+  }) => (
+    <Modal
+      visible={visible}
+      transparent
+      animationType="slide"
+      onRequestClose={onClose}
+    >
+      <View className="flex-1 justify-end bg-black/50">
+        <Pressable className="flex-1" onPress={onClose} />
+        <View className={`rounded-t-3xl p-0 ${isDark ? 'bg-surface-dark' : 'bg-surface'}`}>
+          <View className="p-4 border-b border-border-DEFAULT/10">
+            <View className="flex-row justify-between items-center">
+              <Text className={`text-lg font-semibold ${isDark ? 'text-font-dark' : 'text-font'}`}>
+                {title}
+              </Text>
+              <TouchableOpacity onPress={onClose}>
+                <Text className="text-background-brand-bold text-base font-medium">Готово</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <Picker
+            selectedValue={selectedValue}
+            onValueChange={(value) => {
+              onValueChange(value);
+              onClose();
+            }}
+            style={{
+              color: isDark ? '#BFC1C4' : '#292A2E',
+            }}
+          >
+            {options.map((option) => (
+              <Picker.Item
+                key={option.value}
+                label={option.label}
+                value={option.value}
+              />
+            ))}
+          </Picker>
+        </View>
+      </View>
+    </Modal>
+  );
+
+  const PickerButton = ({
+                          label,
+                          value,
+                          onPress,
+                          placeholder = "Выберите..."
+                        }: {
+    label: string;
+    value: string;
+    onPress: () => void;
+    placeholder?: string;
+  }) => (
+    <TouchableOpacity
+      onPress={onPress}
+      className={`
+        ${isDark
+        ? 'bg-background-input-dark border-border-input-dark'
+        : 'bg-background-input border-border-input'
+      } 
+        border px-4 py-3 rounded-xl flex-row justify-between items-center
+        active:opacity-70
+      `}
+    >
+      <Text className={`text-base ${value ? (isDark ? 'text-font-dark' : 'text-font') : (isDark ? 'text-font-subtlest-dark' : 'text-font-subtlest')}`}>
+        {value || placeholder}
+      </Text>
+      <Text className={`text-lg ${isDark ? 'text-font-subtle-dark' : 'text-font-subtle'}`}>▼</Text>
+    </TouchableOpacity>
+  );
+
+  const inputClassName = `
+    ${isDark
+    ? 'bg-background-input-dark border-border-input-dark text-font-dark placeholder:text-font-subtlest-dark'
+    : 'bg-background-input border-border-input text-font placeholder:text-font-subtlest'
+  } 
+    border px-4 py-3 rounded-xl text-base
+    focus:border-border-brand${isDark ? '-dark' : ''} focus:shadow-sm
+  `;
+
+  const labelClassName = `
+    ${isDark ? 'text-font-dark' : 'text-font'} 
+    text-sm font-semibold mb-2 ml-1
+  `;
+
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <ScrollView className="p-4">
-        <Text className="text-xl font-bold mb-4">Создать объявление</Text>
+    <SafeAreaView className={`flex-1 ${isDark ? 'bg-background-page-dark' : 'bg-background-page'}`}>
+      <ScrollView className="px-5 py-2" showsVerticalScrollIndicator={false}>
+        {/* Заголовок страницы */}
+        <View className="mb-8 mt-2">
+          <Text className={`text-3xl font-bold ${isDark ? 'text-font-dark' : 'text-font'} mb-2`}>
+            Продать авто
+          </Text>
+          <Text className={`text-base ${isDark ? 'text-font-subtle-dark' : 'text-font-subtle'}`}>
+            Заполните информацию о вашем автомобиле
+          </Text>
+        </View>
 
-        {/* Заголовок */}
-        <Text className="font-semibold">Заголовок</Text>
-        <TextInput
-          className="border p-2 rounded mb-3"
-          value={form.title}
-          onChangeText={(t) => handleChange("title", t)}
-        />
+        {/* Основная информация */}
+        <View className={`p-5 rounded-2xl mb-5 shadow-sm ${isDark ? 'bg-surface-dark' : 'bg-surface'}`}>
+          <View className="flex-row items-center mb-5">
+            <Text className={`text-xl font-bold ${isDark ? 'text-font-dark' : 'text-font'}`}>
+              Основная информация
+            </Text>
+          </View>
 
-        {/* Описание */}
-        <Text className="font-semibold">Описание</Text>
-        <TextInput
-          className="border p-2 rounded mb-3"
-          value={form.description}
-          multiline
-          onChangeText={(t) => handleChange("description", t)}
-        />
+          <View className="mb-5">
+            <Text className={labelClassName}>Заголовок объявления</Text>
+            <TextInput
+              className={inputClassName}
+              value={form.title}
+              onChangeText={(t) => handleChange("title", t)}
+              placeholder="Например: BMW X5 2020 года"
+              placeholderTextColor={isDark ? '#96999E' : '#6B6E76'}
+            />
+          </View>
 
-        {/* Цена + Валюта */}
-        <Text className="font-semibold">Цена</Text>
-        <TextInput
-          keyboardType="numeric"
-          className="border p-2 rounded mb-3"
-          value={form.price.toString()}
-          onChangeText={(t) => handleChange("price", Number(t))}
-        />
+          <View className="mb-5">
+            <Text className={labelClassName}>Описание</Text>
+            <TextInput
+              className={`${inputClassName} h-28`}
+              value={form.description}
+              multiline
+              textAlignVertical="top"
+              onChangeText={(t) => handleChange("description", t)}
+              placeholder="Опишите состояние автомобиля, особенности, дополнительное оборудование..."
+              placeholderTextColor={isDark ? '#96999E' : '#6B6E76'}
+            />
+          </View>
 
-        <Text className="font-semibold">Валюта</Text>
-        <Picker
-          selectedValue={form.currency}
-          onValueChange={(v) => handleChange("currency", v)}
-          className="mb-3"
-        >
-          <Picker.Item label="USD" value="USD" />
-          <Picker.Item label="EUR" value="EUR" />
-          <Picker.Item label="MDL" value="MDL" />
-          <Picker.Item label="RUB" value="RUB" />
-        </Picker>
+          <View className="flex-row gap-4 mb-5">
+            <View className="flex-1">
+              <Text className={labelClassName}>Цена</Text>
+              <TextInput
+                keyboardType="numeric"
+                className={inputClassName}
+                value={form.price.toString()}
+                onChangeText={(t) => handleChange("price", Number(t) || 0)}
+                placeholder="15000"
+                placeholderTextColor={isDark ? '#96999E' : '#6B6E76'}
+              />
+            </View>
 
-        {/* Локация */}
-        <Text className="font-semibold">Локация</Text>
-        <TextInput
-          className="border p-2 rounded mb-3"
-          value={form.location}
-          onChangeText={(t) => handleChange("location", t)}
-        />
+            <View className="w-28">
+              <Text className={labelClassName}>Валюта</Text>
+              <PickerButton
+                label=""
+                value={getPickerLabel('currency', form.currency)}
+                onPress={() => setActiveModal('currency')}
+              />
+            </View>
+          </View>
 
-        {/* Марка */}
-        <Text className="font-semibold">Марка</Text>
-        <TextInput
-          className="border p-2 rounded mb-3"
-          value={form.brand}
-          onChangeText={(t) => handleChange("brand", t)}
-        />
+          <View className="mb-0">
+            <Text className={labelClassName}>Местоположение</Text>
+            <TextInput
+              className={inputClassName}
+              value={form.location}
+              onChangeText={(t) => handleChange("location", t)}
+              placeholder="Кишинев, Центр"
+              placeholderTextColor={isDark ? '#96999E' : '#6B6E76'}
+            />
+          </View>
+        </View>
 
-        {/* Модель */}
-        <Text className="font-semibold">Модель</Text>
-        <TextInput
-          className="border p-2 rounded mb-3"
-          value={form.model}
-          onChangeText={(t) => handleChange("model", t)}
-        />
+        {/* Характеристики автомобиля */}
+        <View className={`p-5 rounded-2xl mb-5 shadow-sm ${isDark ? 'bg-surface-dark' : 'bg-surface'}`}>
+          <View className="flex-row items-center mb-5">
+            <Text className={`text-xl font-bold ${isDark ? 'text-font-dark' : 'text-font'}`}>
+              Характеристики
+            </Text>
+          </View>
 
-        {/* Год */}
-        <Text className="font-semibold">Год выпуска</Text>
-        <TextInput
-          keyboardType="numeric"
-          className="border p-2 rounded mb-3"
-          value={form.year.toString()}
-          onChangeText={(t) => handleChange("year", Number(t))}
-        />
+          <View className="flex-row gap-4 mb-5">
+            <View className="flex-1">
+              <Text className={labelClassName}>Марка</Text>
+              <TextInput
+                className={inputClassName}
+                value={form.brand}
+                onChangeText={(t) => handleChange("brand", t)}
+                placeholder="BMW"
+                placeholderTextColor={isDark ? '#96999E' : '#6B6E76'}
+              />
+            </View>
 
-        {/* Пробег */}
-        <Text className="font-semibold">Пробег (км)</Text>
-        <TextInput
-          keyboardType="numeric"
-          className="border p-2 rounded mb-3"
-          value={form.mileage.toString()}
-          onChangeText={(t) => handleChange("mileage", Number(t))}
-        />
+            <View className="flex-1">
+              <Text className={labelClassName}>Модель</Text>
+              <TextInput
+                className={inputClassName}
+                value={form.model}
+                onChangeText={(t) => handleChange("model", t)}
+                placeholder="X5"
+                placeholderTextColor={isDark ? '#96999E' : '#6B6E76'}
+              />
+            </View>
+          </View>
 
-        {/* Топливо */}
-        <Text className="font-semibold">Тип топлива</Text>
-        <Picker
-          selectedValue={form.fuelType}
-          onValueChange={(v) => handleChange("fuelType", v)}
-          className="mb-3"
-        >
-          <Picker.Item label="Бензин" value="petrol" />
-          <Picker.Item label="Дизель" value="diesel" />
-          <Picker.Item label="Электро" value="electric" />
-          <Picker.Item label="Гибрид" value="hybrid" />
-          <Picker.Item label="Газ" value="gas" />
-        </Picker>
+          <View className="flex-row gap-4 mb-5">
+            <View className="flex-1">
+              <Text className={labelClassName}>Год выпуска</Text>
+              <TextInput
+                keyboardType="numeric"
+                className={inputClassName}
+                value={form.year.toString()}
+                onChangeText={(t) => handleChange("year", Number(t) || new Date().getFullYear())}
+                placeholder="2020"
+                placeholderTextColor={isDark ? '#96999E' : '#6B6E76'}
+              />
+            </View>
 
-        {/* Коробка передач */}
-        <Text className="font-semibold">Коробка передач</Text>
-        <Picker
-          selectedValue={form.transmission}
-          onValueChange={(v) => handleChange("transmission", v)}
-          className="mb-3"
-        >
-          <Picker.Item label="Механика" value="manual" />
-          <Picker.Item label="Автомат" value="automatic" />
-          <Picker.Item label="Робот" value="robot" />
-          <Picker.Item label="Вариатор (CVT)" value="cvt" />
-        </Picker>
+            <View className="flex-1">
+              <Text className={labelClassName}>Пробег (км)</Text>
+              <TextInput
+                keyboardType="numeric"
+                className={inputClassName}
+                value={form.mileage.toString()}
+                onChangeText={(t) => handleChange("mileage", Number(t) || 0)}
+                placeholder="50000"
+                placeholderTextColor={isDark ? '#96999E' : '#6B6E76'}
+              />
+            </View>
+          </View>
 
-        {/* Кузов */}
-        <Text className="font-semibold">Тип кузова</Text>
-        <Picker
-          selectedValue={form.bodyType}
-          onValueChange={(v) => handleChange("bodyType", v)}
-          className="mb-3"
-        >
-          <Picker.Item label="Седан" value="sedan" />
-          <Picker.Item label="Хэтчбек" value="hatchback" />
-          <Picker.Item label="SUV" value="suv" />
-          <Picker.Item label="Купе" value="coupe" />
-          <Picker.Item label="Универсал" value="wagon" />
-          <Picker.Item label="Пикап" value="pickup" />
-          <Picker.Item label="Фургон" value="van" />
-        </Picker>
+          <View className="mb-5">
+            <Text className={labelClassName}>Тип топлива</Text>
+            <PickerButton
+              label=""
+              value={getPickerLabel('fuelType', form.fuelType)}
+              onPress={() => setActiveModal('fuelType')}
+            />
+          </View>
 
-        {/* Привод */}
-        <Text className="font-semibold">Привод</Text>
-        <Picker
-          selectedValue={form.drivetrain}
-          onValueChange={(v) => handleChange("drivetrain", v)}
-          className="mb-3"
-        >
-          <Picker.Item label="Передний (FWD)" value="fwd" />
-          <Picker.Item label="Задний (RWD)" value="rwd" />
-          <Picker.Item label="Полный (AWD)" value="awd" />
-          <Picker.Item label="4x4" value="4x4" />
-        </Picker>
+          <View className="mb-5">
+            <Text className={labelClassName}>Коробка передач</Text>
+            <PickerButton
+              label=""
+              value={getPickerLabel('transmission', form.transmission)}
+              onPress={() => setActiveModal('transmission')}
+            />
+          </View>
 
-        {/* Состояние */}
-        <Text className="font-semibold">Состояние</Text>
-        <Picker
-          selectedValue={form.condition}
-          onValueChange={(v) => handleChange("condition", v)}
-          className="mb-3"
-        >
-          <Picker.Item label="Новый" value="new" />
-          <Picker.Item label="Б/у" value="used" />
-          <Picker.Item label="На запчасти" value="for parts" />
-        </Picker>
+          <View className="mb-5">
+            <Text className={labelClassName}>Тип кузова</Text>
+            <PickerButton
+              label=""
+              value={getPickerLabel('bodyType', form.bodyType)}
+              onPress={() => setActiveModal('bodyType')}
+            />
+          </View>
 
-        {/* Цвет */}
-        <Text className="font-semibold">Цвет</Text>
-        <TextInput
-          className="border p-2 rounded mb-3"
-          value={form.color}
-          onChangeText={(t) => handleChange("color", t)}
-        />
+          <View className="mb-5">
+            <Text className={labelClassName}>Привод</Text>
+            <PickerButton
+              label=""
+              value={getPickerLabel('drivetrain', form.drivetrain)}
+              onPress={() => setActiveModal('drivetrain')}
+            />
+          </View>
 
-        {/* Кнопка */}
+          <View className="mb-5">
+            <Text className={labelClassName}>Состояние</Text>
+            <PickerButton
+              label=""
+              value={getPickerLabel('condition', form.condition)}
+              onPress={() => setActiveModal('condition')}
+            />
+          </View>
+
+          <View className="mb-0">
+            <Text className={labelClassName}>Цвет</Text>
+            <TextInput
+              className={inputClassName}
+              value={form.color}
+              onChangeText={(t) => handleChange("color", t)}
+              placeholder="Черный"
+              placeholderTextColor={isDark ? '#96999E' : '#6B6E76'}
+            />
+          </View>
+        </View>
+
+        {/* Кнопка создания */}
         <TouchableOpacity
-          className="bg-blue-500 p-3 rounded mt-4"
+          className={`
+            ${isDark
+            ? 'bg-background-brand-bold-dark active:bg-background-brand-bold-dark-pressed'
+            : 'bg-background-brand-bold active:bg-background-brand-bold-pressed'
+          } 
+            px-6 py-4 rounded-2xl mb-10 shadow-lg
+          `}
           onPress={handleSubmit}
+          activeOpacity={0.8}
         >
-          <Text className="text-white text-center font-bold">Создать</Text>
+          <Text className="text-white text-center font-bold text-lg">
+            Создать объявление
+          </Text>
         </TouchableOpacity>
       </ScrollView>
+
+      {/* Модальные окна для пикеров */}
+      <PickerModal
+        visible={activeModal === 'currency'}
+        onClose={() => setActiveModal(null)}
+        title="Выберите валюту"
+        options={pickerOptions.currency}
+        selectedValue={form.currency}
+        onValueChange={(value) => handleChange('currency', value)}
+      />
+
+      <PickerModal
+        visible={activeModal === 'fuelType'}
+        onClose={() => setActiveModal(null)}
+        title="Выберите тип топлива"
+        options={pickerOptions.fuelType}
+        selectedValue={form.fuelType}
+        onValueChange={(value) => handleChange('fuelType', value)}
+      />
+
+      <PickerModal
+        visible={activeModal === 'transmission'}
+        onClose={() => setActiveModal(null)}
+        title="Выберите коробку передач"
+        options={pickerOptions.transmission}
+        selectedValue={form.transmission}
+        onValueChange={(value) => handleChange('transmission', value)}
+      />
+
+      <PickerModal
+        visible={activeModal === 'bodyType'}
+        onClose={() => setActiveModal(null)}
+        title="Выберите тип кузова"
+        options={pickerOptions.bodyType}
+        selectedValue={form.bodyType}
+        onValueChange={(value) => handleChange('bodyType', value)}
+      />
+
+      <PickerModal
+        visible={activeModal === 'drivetrain'}
+        onClose={() => setActiveModal(null)}
+        title="Выберите привод"
+        options={pickerOptions.drivetrain}
+        selectedValue={form.drivetrain}
+        onValueChange={(value) => handleChange('drivetrain', value)}
+      />
+
+      <PickerModal
+        visible={activeModal === 'condition'}
+        onClose={() => setActiveModal(null)}
+        title="Выберите состояние"
+        options={pickerOptions.condition}
+        selectedValue={form.condition}
+        onValueChange={(value) => handleChange('condition', value)}
+      />
     </SafeAreaView>
   );
 };

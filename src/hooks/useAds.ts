@@ -11,7 +11,7 @@ export const useAds = () => {
 
     switch (category) {
       case AdsCategory.CARS:
-        router.push('/(modals)/add-car');
+        router.push('/add-car');
         break;
       case AdsCategory.MOTORCYCLES:
         // router.push('/add-motorcycle');
