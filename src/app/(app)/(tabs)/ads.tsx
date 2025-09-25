@@ -1,11 +1,11 @@
 import React from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { SegmentedButton } from '@/components/common/SegmentedButton';
 import { EmptyAds } from '@/components/ads/EmptyAds';
 import { AddAdsPanel } from '@/components/ads/AddAdsPanel';
 import { useAds } from '@/hooks/useAds';
 import {AdsTab} from "@/constants/navigation";
+import {SegmentedButton} from "@/components/ui/button";
 
 const Page = () => {
   const {

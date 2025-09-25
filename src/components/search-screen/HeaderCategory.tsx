@@ -31,7 +31,7 @@ export const HeaderCategory = ({ activeScreen, setActiveScreen }: {
       )}
         onPress={() => handleChangeScreen("auto")}
         activeOpacity={0.6}
-        underlayColor="#DDDDDD" 
+        underlayColor="#DDDDDD"
       >
         <View className="flex-col items-center justify-center">
           <HeaderAuto />

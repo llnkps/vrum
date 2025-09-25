@@ -1,19 +1,18 @@
-import 'react-native-reanimated';
-import './globals.css';
-import '@/i18n'; // Import your i18n configuration
+import "react-native-reanimated";
+import "./globals.css";
+import "@/i18n"; // Import your i18n configuration
 
-import { useFonts } from 'expo-font';
-import { Stack, useRouter, useSegments } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import { ActivityIndicator, LogBox, Text, useColorScheme } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useFonts } from "expo-font";
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect } from "react";
+import { LogBox, useColorScheme } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-import { tokenCache } from '@/utils/cache';
-import { useReactQueryDevTools } from '@dev-plugins/react-query';
-import { DarkTheme, DefaultTheme, ThemeProvider, useTheme } from '@react-navigation/native';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { MyDarkTheme, MyLightTheme } from "@/theme";
+import { ThemeProvider } from "@react-navigation/native";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 // const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 // if (!publishableKey) {
@@ -21,7 +20,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 //     'Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env'
 //   );
 // }
-LogBox.ignoreLogs(['Clerk: Clerk has been loaded with development keys']);
+LogBox.ignoreLogs(["Clerk: Clerk has been loaded with development keys"]);
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -34,14 +33,12 @@ const queryClient = new QueryClient({
   },
 });
 
-
 const InitialLayout = () => {
   // const { isLoaded, isSignedIn } = { isLoaded: true, isSignedIn: true }; // useAuth();
   // const router = useRouter();
 
-
   const [loadedFonts] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
   // // const segments = useSegments();
   // // useReactQueryDevTools(queryClient);
@@ -72,7 +69,6 @@ const InitialLayout = () => {
   //   </Stack>
   // );
 
-
   // const { data: session } = authClient.useSession();
   const isAuthenticated = true;
   return (
@@ -85,7 +81,6 @@ const InitialLayout = () => {
       </Stack.Protected>
     </Stack>
   );
-
 };
 
 const RootLayout = () => {
@@ -94,8 +89,10 @@ const RootLayout = () => {
   return (
     <GestureHandlerRootView className="flex-1">
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider value={colorScheme === 'dark' ? MyDarkTheme : MyLightTheme}>
-          <InitialLayout />
+        <ThemeProvider value={colorScheme === "dark" ? MyDarkTheme : MyLightTheme}>
+          <BottomSheetModalProvider>
+            <InitialLayout />
+          </BottomSheetModalProvider>
         </ThemeProvider>
       </QueryClientProvider>
     </GestureHandlerRootView>
@@ -121,30 +118,3 @@ const RootLayout = () => {
 };
 
 export default RootLayout;
-
-
-
-// for navigation elements: tab, header
-const MyLightTheme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    background: "#FFFFFF",
-    text: "#292A2E",
-    primary: "#1868DB",
-    tabBarActiveTintColor: "#0d6c9a",
-    tabBarInactiveTintColor: "#8E8E93",
-  },
-};
-
-const MyDarkTheme = {
-  ...DarkTheme,
-  colors: {
-    ...DarkTheme.colors,
-    background: "#000",
-    text: "#BFC1C4",
-    primary: "#669DF1",
-    tabBarActiveTintColor: "#BFC1C4",
-    tabBarInactiveTintColor: "#6B6E76",
-  },
-};
