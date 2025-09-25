@@ -5,8 +5,6 @@ import {FavoritesTab} from "@/constants/navigation";
 
 export const useFavorites = () => {
   const [tab, setTab] = useState<FavoritesTab>(FavoritesTab.FAVORITES);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [favoritesData, setFavoritesData] = useState<FavoriteItem[]>(mockFavoritesData);
   const [subscriptionsData, setSubscriptionsData] = useState<SubscriptionItem[]>(mockSubscriptionsData);
 

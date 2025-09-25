@@ -5,7 +5,6 @@ import { FlatList, Image, Platform, ScrollView, Text, TouchableOpacity, View } f
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
-import CourseCard from '@/components/CourseCard';
 import { useQuery } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
 

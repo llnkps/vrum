@@ -21,8 +21,8 @@ export default function TabLayout() {
             },
           }
           : {
-            tabBarActiveTintColor: theme.colors.tabBarActiveTintColor,
-            tabBarInactiveTintColor: theme.colors.tabBarInactiveTintColor,
+            // tabBarActiveTintColor: theme.colors.tabBarActiveTintColor,
+            // tabBarInactiveTintColor: theme.colors.tabBarInactiveTintColor,
             headerShown: false,
             tabBarStyle: {
               backgroundColor: theme.colors.background,
@@ -54,9 +54,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="announcement"
+        name="ads"
         options={{
-          title: 'Announcement',
+          title: 'Ads',
           tabBarIcon: ({ color, size }) => <Ionicons name="add-circle" size={size} color={color} />,
         }}
       />

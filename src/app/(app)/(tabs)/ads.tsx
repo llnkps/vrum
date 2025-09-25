@@ -1,11 +1,12 @@
 import React from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { SegmentedButton } from '@/components/ui/button';
-import { EmptyListings } from '@/components/listings/EmptyListings';
-import { AddListingPanel } from '@/components/listings/AddListingPanel';
-import { useListings } from '@/hooks/useListings';
-import {ListingsTab} from "@/constants/navigation";
+import { EmptyAds } from '@/components/ads/EmptyAds';
+import { AddAdsPanel } from '@/components/ads/AddAdsPanel';
+import { useAds } from '@/hooks/useAds';
+import {AdsTab} from "@/constants/navigation";
+import {SegmentedButton} from "@/components/ui/button";
+
 
 const Page = () => {
   const {
@@ -14,7 +15,7 @@ const Page = () => {
     handlers: {
       handleAddAd,
     }
-  } = useListings();
+  } = useAds();
 
   return (
     <SafeAreaProvider>
@@ -31,22 +32,25 @@ const Page = () => {
           <View className='flex-row justify-center bg-neutral-400 rounded-lg mx-4 mb-2 p-1'>
             <SegmentedButton
               title='Активные'
-              isActive={tab === ListingsTab.ACTIVE}
-              onPress={() => setTab(ListingsTab.ACTIVE)}
+              isActive={tab === AdsTab.ACTIVE}
+              onPress={() => setTab(AdsTab.ACTIVE)}
             />
             <SegmentedButton
               title='Архив'
-              isActive={tab === ListingsTab.ARCHIVED}
-              onPress={() => setTab(ListingsTab.ARCHIVED)}
+              isActive={tab === AdsTab.ARCHIVED}
+              onPress={() => setTab(AdsTab.ARCHIVED)}
             />
           </View>
 
           {/* Content */}
-          <EmptyListings tab={tab} />
+          <EmptyAds tab={tab} />
         </ScrollView>
 
         {/* Bottom bar */}
-        <AddListingPanel onAddAd={handleAddAd} />
+        <AddAdsPanel onAddAd={handleAddAd} />
+
+
+
       </SafeAreaView>
     </SafeAreaProvider>
   );

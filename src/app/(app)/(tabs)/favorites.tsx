@@ -7,6 +7,11 @@ import {SegmentedButton} from "@/components/ui/button";
 import {useFavorites} from "@/hooks/useFavorites";
 import {FavoritesTab} from "@/constants/navigation";
 
+const tabs = [
+  { key: FavoritesTab.FAVORITES, title: 'Избранное', icon: 'star-outline' },
+  { key: FavoritesTab.SUBSCRIPTIONS, title: 'Подписки', icon: 'notifications-outline' },
+] as const;
+
 const Page = () => {
   const {
     tab,
@@ -58,18 +63,15 @@ const Page = () => {
 
           {/* Tabs */}
           <View className="flex-row justify-center bg-neutral-400 rounded-lg mx-4 mb-2 p-1">
-            <SegmentedButton
-              title="Избранное"
-              isActive={tab === FavoritesTab.FAVORITES}
-              onPress={() => setTab(FavoritesTab.FAVORITES)}
-              icon="star-outline"
-            />
-            <SegmentedButton
-              title="Подписки"
-              isActive={tab === FavoritesTab.SUBSCRIPTIONS}
-              onPress={() => setTab(FavoritesTab.SUBSCRIPTIONS)}
-              icon="notifications-outline"
-            />
+            {tabs.map(({key, title, icon}) => (
+              <SegmentedButton
+                key={key}
+                title={title}
+                isActive={tab === key}
+                onPress={() => setTab(key)}
+                icon={icon}
+              />
+            ))}
           </View>
 
           {/* Main content */}

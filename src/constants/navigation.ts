@@ -3,12 +3,12 @@ export enum FavoritesTab {
   SUBSCRIPTIONS = 'subscriptions',
 }
 
-export enum ListingsTab {
+export enum AdsTab {
   ACTIVE = 'active',
   ARCHIVED = 'archived',
 }
 
-export enum ListingCategory {
+export enum AdsCategory {
   CARS = 'cars',
   MOTORCYCLES = 'motorcycles',
   PARTS = 'parts',

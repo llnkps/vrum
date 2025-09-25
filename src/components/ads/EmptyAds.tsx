@@ -1,15 +1,15 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import {ListingsTab} from "@/constants/navigation";
+import {AdsTab} from "@/constants/navigation";
 
 interface EmptyStateProps {
-  tab: ListingsTab;
+  tab: AdsTab;
 }
 
-export const EmptyListings: React.FC<EmptyStateProps> = ({ tab }) => {
+export const EmptyAds: React.FC<EmptyStateProps> = ({ tab }) => {
   const getEmptyStateContent = () => {
-    if (tab === ListingsTab.ACTIVE) {
+    if (tab === AdsTab.ACTIVE) {
       return {
         icon: 'newspaper-outline' as const,
         text: 'У вас нет активных объявлений'
