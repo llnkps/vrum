@@ -1,4 +1,4 @@
-export interface ListingItem {
+export interface AdItem {
   id: string;
   title: string;
   subtitle?: string;
