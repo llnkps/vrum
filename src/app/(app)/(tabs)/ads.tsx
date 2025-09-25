@@ -7,6 +7,7 @@ import { useAds } from '@/hooks/useAds';
 import {AdsTab} from "@/constants/navigation";
 import {SegmentedButton} from "@/components/ui/button";
 
+
 const Page = () => {
   const {
     tab,
