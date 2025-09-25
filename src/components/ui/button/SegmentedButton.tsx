@@ -1,6 +1,6 @@
-import { Ionicons } from "@expo/vector-icons";
+import {Ionicons} from "@expo/vector-icons";
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import {Text, TouchableOpacity, useColorScheme, View} from "react-native";
 
 interface TabButtonProps {
   title: string;
@@ -10,13 +10,17 @@ interface TabButtonProps {
 }
 
 export const SegmentedButton: React.FC<TabButtonProps> = ({
-  title,
-  isActive,
-  onPress,
-  icon,
-}) => (
+                                                            title,
+                                                            isActive,
+                                                            onPress,
+                                                            icon,
+                                                          }) => (
+
   <TouchableOpacity
-    className={`flex-1 py-3 rounded-lg ${isActive ? "bg-neutral-700" : ""}`}
+    className={`flex-1 py-3 rounded-lg 
+      ${isActive
+      ? "bg-background-brand-bold dark:bg-background-brand-bold-dark"
+      : "bg-background-neutral-subtle dark:bg-background-neutral-subtle-dark"}`}
     onPress={onPress}
     activeOpacity={0.7}
   >
@@ -26,7 +30,7 @@ export const SegmentedButton: React.FC<TabButtonProps> = ({
           name={icon as any}
           size={18}
           color="white"
-          style={{ marginRight: 6 }}
+          style={{marginRight: 6}}
         />
       )}
       <Text className="text-center text-white font-medium">{title}</Text>

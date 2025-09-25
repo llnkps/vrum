@@ -9,8 +9,8 @@ interface BottomBarProps {
 
 export const AddAdsPanel: React.FC<BottomBarProps> = ({ onAddAd }) => {
   return (
-    <View className='absolute bottom-16 left-0 right-0 bg-white rounded-t-3xl px-4 pt-6 pb-10 shadow-lg'>
-      <Text className='text-black text-lg font-bold mb-4'>
+    <View className='absolute bottom-16 left-0 right-0 bg-surface dark:bg-surface-dark rounded-t-3xl px-4 pt-6 pb-10 shadow-lg border-t border-border dark:border-border-dark'>
+      <Text className='text-font dark:text-font-dark text-lg font-bold mb-4'>
         Добавить объявление
       </Text>
 

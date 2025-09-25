@@ -19,11 +19,11 @@ const Page = () => {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView className='flex-1'>
+      <SafeAreaView className='flex-1 bg-background-page dark:bg-background-page-dark'>
         <ScrollView className='flex-1' contentContainerStyle={{ flexGrow: 1 }}>
           {/* Title */}
           <View className='px-4 pt-5 pb-6'>
-            <Text className='text-black text-2xl font-bold'>
+            <Text className='text-font dark:text-font-dark text-2xl font-bold'>
               Мои объявления
             </Text>
           </View>

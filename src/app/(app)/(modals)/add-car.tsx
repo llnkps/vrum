@@ -1,4 +1,3 @@
-// src/app/(app)/(modals)/add-car.tsx
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';

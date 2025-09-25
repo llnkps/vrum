@@ -13,18 +13,18 @@ type FavoriteCardProps = {
 export const CarCard = ({ item, onPress, onToggleFavorite }: FavoriteCardProps) => {
   return (
     <Pressable
-      className="bg-white rounded-xl mb-4 overflow-hidden shadow-sm border border-gray-100"
+      className="bg-surface dark:bg-surface-dark rounded-xl mb-4 overflow-hidden shadow-sm border border-border dark:border-border-dark"
       onPress={onPress}
       android_ripple={{ color: '#f3f4f6' }}
     >
       {/* Header */}
       <View className="flex-row justify-between items-start px-4 pt-4">
         <View className="flex-1 pr-3">
-          <Text className="text-gray-900 text-lg font-semibold leading-tight" numberOfLines={2}>
+          <Text className="text-font dark:text-font-dark text-lg font-semibold leading-tight" numberOfLines={2}>
             {item.title}
           </Text>
           {item.subtitle && (
-            <Text className="text-gray-600 text-sm mt-1" numberOfLines={1}>
+            <Text className="text-font-subtlest dark:text-font-subtlest-dark  text-sm mt-1" numberOfLines={1}>
               {item.subtitle}
             </Text>
           )}
@@ -41,12 +41,12 @@ export const CarCard = ({ item, onPress, onToggleFavorite }: FavoriteCardProps) 
 
       {/* Price and Tag */}
       <View className="flex-row items-center px-4 mt-3">
-        <Text className="text-gray-900 text-xl font-bold mr-3">
+        <Text className="text-font dark:text-font-dark text-xl font-bold mr-3">
           {item.price}
         </Text>
         {item.tag && (
-          <View className="bg-orange-100 rounded-full px-3 py-1">
-            <Text className="text-orange-700 text-xs font-medium">
+          <View className="bg-background-warning dark:bg-background-warning-dark rounded-full px-3 py-1">
+            <Text className="text-font-warning dark:text-font-warning-dark text-xs font-medium">
               {item.tag}
             </Text>
           </View>
@@ -80,14 +80,14 @@ export const CarCard = ({ item, onPress, onToggleFavorite }: FavoriteCardProps) 
       {/* Description and Location */}
       <View className="px-4 py-4">
         {item.description && (
-          <Text className="text-gray-700 text-sm leading-5 mb-2" numberOfLines={2}>
+          <Text className="text-font-subtle dark:text-font-subtle-dark text-sm leading-5 mb-2" numberOfLines={2}>
             {item.description}
           </Text>
         )}
         {item.location && (
           <View className="flex-row items-center">
             <Ionicons name="location-outline" size={14} color="#9CA3AF" />
-            <Text className="text-gray-500 text-sm ml-1">
+            <Text className="text-font-subtlest dark:text-font-subtlest-dark text-sm ml-1">
               {item.location}
             </Text>
           </View>
