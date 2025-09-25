@@ -1,86 +1,161 @@
-import { View, Text, Button, Image, ScrollView } from 'react-native';
-import { useQuery } from '@tanstack/react-query';
+import React, { useState } from "react";
+import { ScrollView, View, Text, TouchableOpacity, Switch, Image } from "react-native";
+import FeatherIcon from "@expo/vector-icons/Feather";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
-const Page = () => {
-  const { signOut } = useAuth();
-  const { user } = useUser();
-  const { getUserCourses, getUserCompletedLessons } = useStrapi();
-
-  const { data: userCourses } = useQuery({
-    queryKey: ['userCourses'],
-    queryFn: () => getUserCourses(),
-  });
-
-  const { data: completedLessons } = useQuery({
-    queryKey: ['userCompletedLessons'],
-    queryFn: () => getUserCompletedLessons(),
+export default function SettingsPage() {
+  const [form, setForm] = useState({
+    emailNotifications: true,
+    pushNotifications: false,
   });
 
   return (
-    <View className="flex-1 bg-white p-4">
-      <ScrollView className="web:mx-auto">
-        <View className="flex-row items-center mb-6">
-          <Image source={{ uri: user?.imageUrl }} className="w-20 h-20 rounded-full mr-4" />
-          <View className="flex-1">
-            <Text className="text-md font-bold mb-1">
-              {user?.primaryEmailAddress?.emailAddress}
+    <SafeAreaProvider>
+      <SafeAreaView className="flex-1 bg-background-neutral dark:bg-background-neutral-dark">
+        {/* Header */}
+        <View className="px-5 py-4 border-b border-border/10 dark:border-border-dark/10">
+          <Text className="text-2xl font-bold text-font dark:text-font-dark">Настройки</Text>
+        </View>
+
+        {/* Content */}
+        <ScrollView className="px-5 py-2" showsVerticalScrollIndicator={false}>
+          {/* Account Section */}
+          <View className="py-4">
+            <Text className="text-sm font-semibold text-font-subtlest dark:text-font-subtlest-dark uppercase tracking-wide pl-3 mb-3">
+              Аккаунт
             </Text>
-            <Text className="text-base text-gray-600">
-              User since {new Date(user?.createdAt!).toDateString()}
+
+            <TouchableOpacity
+              className="flex-row items-center bg-surface dark:bg-surface-dark p-4 rounded-2xl active:opacity-80"
+              activeOpacity={0.7}
+            >
+              <Image
+                source={{
+                  uri: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&auto=format&fit=facearea&w=256&h=256&q=80",
+                }}
+                className="w-14 h-14 rounded-xl"
+              />
+              <View className="flex-1 ml-4">
+                <Text className="text-base font-semibold text-font dark:text-font-dark">John Doe</Text>
+                <Text className="text-sm text-font-subtle dark:text-font-subtle-dark">john@example.com</Text>
+              </View>
+              <FeatherIcon name="chevron-right" size={20} color="#A9ABAF" />
+            </TouchableOpacity>
+          </View>
+
+          {/* Preferences */}
+          <View className="py-4">
+            <Text className="text-sm font-semibold text-font-subtlest dark:text-font-subtlest-dark uppercase tracking-wide pl-3 mb-3">
+              Предпочтения
+            </Text>
+
+            <View className="bg-surface dark:bg-surface-dark rounded-2xl overflow-hidden">
+              {/* Language */}
+              <TouchableOpacity
+                className="flex-row items-center px-4 py-4 border-b border-border/10 dark:border-border-dark/10 active:opacity-80"
+                activeOpacity={0.7}
+              >
+                <Text className="text-base text-font dark:text-font-dark">Язык</Text>
+                <View className="flex-1" />
+                <Text className="text-sm font-medium text-font-subtle dark:text-font-subtle-dark mr-2">English</Text>
+                <FeatherIcon name="chevron-right" size={18} color="#A9ABAF" />
+              </TouchableOpacity>
+
+              {/* Location */}
+              <TouchableOpacity
+                className="flex-row items-center px-4 py-4 border-b border-border/10 dark:border-border-dark/10 active:opacity-80"
+                activeOpacity={0.7}
+              >
+                <Text className="text-base text-font dark:text-font-dark">Местоположение</Text>
+                <View className="flex-1" />
+                <Text className="text-sm font-medium text-font-subtle dark:text-font-subtle-dark mr-2">
+                  Los Angeles, CA
+                </Text>
+                <FeatherIcon name="chevron-right" size={18} color="#A9ABAF" />
+              </TouchableOpacity>
+
+              {/* Email Notifications */}
+              <View className="flex-row items-center px-4 py-4 border-b border-border/10 dark:border-border-dark/10">
+                <Text className="text-base text-font dark:text-font-dark">Email уведомления</Text>
+                <View className="flex-1" />
+                <Switch
+                  onValueChange={(val) => setForm({ ...form, emailNotifications: val })}
+                  value={form.emailNotifications}
+                  trackColor={{
+                    false: "#D3D5DA", // border
+                    true: "#1868DB", // interactive-primary
+                  }}
+                  thumbColor="#FFFFFF"
+                  ios_backgroundColor="#D3D5DA"
+                />
+              </View>
+
+              {/* Push Notifications */}
+              <View className="flex-row items-center px-4 py-4">
+                <Text className="text-base text-font dark:text-font-dark">Push уведомления</Text>
+                <View className="flex-1" />
+                <Switch
+                  onValueChange={(val) => setForm({ ...form, pushNotifications: val })}
+                  value={form.pushNotifications}
+                  trackColor={{
+                    false: "#D3D5DA",
+                    true: "#1868DB",
+                  }}
+                  thumbColor="#FFFFFF"
+                  ios_backgroundColor="#D3D5DA"
+                />
+              </View>
+            </View>
+          </View>
+
+          {/* Resources */}
+          <View className="py-4">
+            <Text className="text-sm font-semibold text-font-subtlest dark:text-font-subtlest-dark uppercase tracking-wide pl-3 mb-3">
+              Ресурсы
+            </Text>
+
+            <View className="bg-surface dark:bg-surface-dark rounded-2xl overflow-hidden">
+              {["Связаться с нами", "Сообщить об ошибке", "Оценить в App Store", "Условия и конфиденциальность"].map(
+                (item, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    className={`flex-row items-center px-4 py-4 active:opacity-80 ${
+                      index !== 3 ? "border-b border-border/10 dark:border-border-dark/10" : ""
+                    }`}
+                    activeOpacity={0.7}
+                  >
+                    <Text className="text-base text-font dark:text-font-dark">{item}</Text>
+                    <View className="flex-1" />
+                    <FeatherIcon name="chevron-right" size={18} color="#A9ABAF" />
+                  </TouchableOpacity>
+                )
+              )}
+            </View>
+          </View>
+
+          {/* Logout */}
+          <View className="py-4">
+            <TouchableOpacity
+              className="flex-row items-center bg-surface dark:bg-surface-dark px-4 py-4 justify-center rounded-2xl active:opacity-80"
+              activeOpacity={0.7}
+            >
+              <Text className="text-base font-semibold text-font-danger dark:text-font-danger-dark">
+                Выйти из аккаунта
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Footer */}
+          <View className="py-8 items-center">
+            <Text className="text-xs text-center text-font-subtlest dark:text-font-subtlest-dark">
+              App Version 2.24 #50491
+            </Text>
+            <Text className="text-xs text-center text-font-subtlest dark:text-font-subtlest-dark mt-1">
+              Сделано с ❤️ в Молдове
             </Text>
           </View>
-        </View>
-
-        <View className="flex-row justify-around mb-6 py-4 bg-gray-100 rounded-xl">
-          <View className="items-center">
-            <Text className="text-2xl font-bold mb-1">{userCourses?.length}</Text>
-            <Text className="text-sm text-gray-600">Courses</Text>
-          </View>
-          <View className="items-center">
-            <Text className="text-2xl font-bold mb-1">{completedLessons}</Text>
-            <Text className="text-sm text-gray-600">Lessons</Text>
-          </View>
-        </View>
-
-        <View className="mb-6">
-          <Text className="text-xl font-bold mb-4">Recent Activity</Text>
-          <View className="space-y-4">
-            <View className="flex-row items-center p-4 bg-gray-50 rounded-lg">
-              <View className="w-10 h-10 bg-blue-100 rounded-full items-center justify-center mr-4">
-                <Text className="text-blue-500 font-bold">✓</Text>
-              </View>
-              <View className="flex-1">
-                <Text className="font-medium">Completed "Sun Salutation Flow"</Text>
-                <Text className="text-gray-500 text-sm">2 hours ago</Text>
-              </View>
-            </View>
-
-            <View className="flex-row items-center p-4 bg-gray-50 rounded-lg">
-              <View className="w-10 h-10 bg-green-100 rounded-full items-center justify-center mr-4">
-                <Text className="text-green-500 font-bold">★</Text>
-              </View>
-              <View className="flex-1">
-                <Text className="font-medium">Started "Mindful Meditation Basics"</Text>
-                <Text className="text-gray-500 text-sm">Yesterday</Text>
-              </View>
-            </View>
-
-            <View className="flex-row items-center p-4 bg-gray-50 rounded-lg">
-              <View className="w-10 h-10 bg-purple-100 rounded-full items-center justify-center mr-4">
-                <Text className="text-purple-500 font-bold">⚡</Text>
-              </View>
-              <View className="flex-1">
-                <Text className="font-medium">Completed "Breathing Techniques for Beginners"</Text>
-                <Text className="text-gray-500 text-sm">3 days ago</Text>
-              </View>
-            </View>
-          </View>
-        </View>
-
-        <Button title="Sign Out" onPress={() => signOut()} color="#FF3B30" />
-      </ScrollView>
-    </View>
+        </ScrollView>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
-};
-
-export default Page;
+}
