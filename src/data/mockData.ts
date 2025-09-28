@@ -10,8 +10,8 @@ export const mockFavoritesData: FavoriteItem[] = [
     description: "2.0 л, 190 л.с., дизель, АКПП, 4WD, 21 тыс.км",
     location: "Москва, 10 сент",
     images: [
-      "https://cdn.bmwblog.com/wp-content/uploads/2020/01/BMW-G20-3-Series.jpg",
-      "https://cdn.bmwblog.com/wp-content/uploads/2019/12/BMW-G20-3-Series-front.jpg",
+      require("@/data/images/1images.jpeg"),
+      require("@/data/images/2LEAD.jpg"),
     ],
   },
   {
@@ -23,8 +23,7 @@ export const mockFavoritesData: FavoriteItem[] = [
     description: "2.0 л, 190 л.с., дизель, АКПП, 4WD, 21 тыс.км",
     location: "Москва, 10 сент",
     images: [
-      "https://cdn.bmwblog.com/wp-content/uploads/2020/01/BMW-G20-3-Series.jpg",
-      "https://cdn.bmwblog.com/wp-content/uploads/2019/12/BMW-G20-3-Series-front.jpg",
+      require("@/data/images/1images.jpeg"),
     ],
   },
   {
@@ -36,8 +35,8 @@ export const mockFavoritesData: FavoriteItem[] = [
     description: "2.0 л, 190 л.с., дизель, АКПП, 4WD, 21 тыс.км",
     location: "Москва, 10 сент",
     images: [
-      "https://cdn.bmwblog.com/wp-content/uploads/2020/01/BMW-G20-3-Series.jpg",
-      "https://cdn.bmwblog.com/wp-content/uploads/2019/12/BMW-G20-3-Series-front.jpg",
+      require("@/data/images/1images.jpeg"),
+      require("@/data/images/2LEAD.jpg"),
     ],
   },
 ];

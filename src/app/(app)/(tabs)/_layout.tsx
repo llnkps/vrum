@@ -41,6 +41,7 @@ export default function TabLayout() {
         }}
       />
 
+
       {/* <Tabs.Screen
         name="index"
         options={{
@@ -61,10 +62,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="advertisement"
         options={{
-          title: "объявления",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="add-circle" size={size} color={color} />
-          ),
+          title: 'New ads',
+          tabBarIcon: ({ color, size }) => <Ionicons name="duplicate" size={size} color={color} />,
+
         }}
       />
       <Tabs.Screen

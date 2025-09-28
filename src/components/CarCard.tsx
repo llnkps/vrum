@@ -59,10 +59,11 @@ export const CarCard = ({ item, onPress, onToggleFavorite }: FavoriteCardProps) 
           {item.images.slice(0, 2).map((imageUri, index) => (
             <Image
               key={index}
-              source={{ uri: imageUri }}
-              className={`h-32 ${
-                item.images!.length === 1 ? 'w-full' : 'w-1/2'
-              }`}
+              source={item.images}
+              style={{
+                height: 128,
+                width: item.images!.length === 1 ? '100%' : '75%',
+              }}
               contentFit="cover"
               transition={200}
             />
