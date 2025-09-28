@@ -13,6 +13,11 @@ export interface CustomTheme extends NavigationTheme {
 
       subtle: string;
       subtlePressed: string;
+    },
+    input: {
+      background: string;
+      placeholderColor: string;
+      borderColor: string;
     }
   };
 }
@@ -37,6 +42,12 @@ export const MyLightTheme: CustomTheme = {
       subtle: "#00000000",
       subtlePressed: "#0B120E24",
     },
+
+    input: {
+      background: "#FFFFFF",
+      placeholderColor: "#6B6E76",
+      borderColor: "#8C8F97",
+    }
   },
 };
 
@@ -58,6 +69,12 @@ export const MyDarkTheme: CustomTheme = {
 
       subtle: "#00000000",
       subtlePressed: "#E3E4F21F"
+    },
+
+    input: {
+      background: "#242528",
+      placeholderColor: "#96999E",
+      borderColor: "#7E8188",
     }
   },
 };
