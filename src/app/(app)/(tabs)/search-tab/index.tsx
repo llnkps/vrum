@@ -1,29 +1,29 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import Animated, { FadeIn } from 'react-native-reanimated';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useCallback, useMemo, useRef, useState } from "react";
+import { View } from "react-native";
+import Animated, { FadeIn } from "react-native-reanimated";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import CustomBottomSheetModal from '@/components/global/CustomBottomSheetModal';
-import { Header } from '@/components/global/Header';
+import { HeaderBrand } from "@/components/global/Header";
 import {
-  AutoHeaderScreen, AutoItemScreen
-} from '@/components/search-screen/auto-screen-tab/auto-screen';
+  AutoDetailHeaderScreen,
+  AutoDetailItemScreen,
+} from "@/components/search-screen/(components-tabs)/auto_detail-screen";
 import {
-  AutoDetailHeaderScreen, AutoDetailItemScreen
-} from '@/components/search-screen/(components-tabs)/auto_detail-screen';
+  MotoHeaderScreen,
+  MotoItemScreen,
+} from "@/components/search-screen/(components-tabs)/moto-screen";
 import {
-  MotoHeaderScreen, MotoItemScreen
-} from '@/components/search-screen/(components-tabs)/moto-screen';
+  SpecAutoHeaderScreen,
+  SpecAutoItemScreen,
+} from "@/components/search-screen/(components-tabs)/spec_auto-screen";
 import {
-  SpecAutoHeaderScreen, SpecAutoItemScreen
-} from '@/components/search-screen/(components-tabs)/spec_auto-screen';
-import { HeaderCategory } from '@/components/search-screen/HeaderCategory';
-import { ActiveScreen } from '@/components/search-screen/types';
-import { useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
-import BottomSheet, {
-  BottomSheetBackdrop, BottomSheetModal, BottomSheetView, useBottomSheetModal
-} from '@gorhom/bottom-sheet';
+  AutoHeaderScreen,
+  AutoItemScreen,
+} from "@/components/search-screen/auto-screen-tab/auto-screen";
+import { HeaderCategory } from "@/components/search-screen/HeaderCategory";
+import { ActiveScreen } from "@/components/search-screen/types";
+import { useAutoSelectStore } from "@/state/search-screen/useAutoSelectStore";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 const data = [
   {
@@ -87,7 +87,6 @@ const data = [
     price: "₹ 7.89 Lakh",
     image: require("@/data/images/2LEAD.jpg"),
   },
-
 ];
 
 const renderContent = (activeScreen: ActiveScreen) => {
@@ -95,40 +94,39 @@ const renderContent = (activeScreen: ActiveScreen) => {
     return {
       header: AutoHeaderScreen,
       item: AutoItemScreen,
-    }
+    };
   } else if (activeScreen === "auto_detail") {
     return {
       header: AutoDetailHeaderScreen,
       item: AutoDetailItemScreen,
-    }
+    };
   } else if (activeScreen === "spec_auto") {
     return {
       header: SpecAutoHeaderScreen,
       item: SpecAutoItemScreen,
-    }
+    };
   } else if (activeScreen === "moto") {
     return {
       header: MotoHeaderScreen,
       item: MotoItemScreen,
-    }
+    };
   }
   // Add other conditions for different screens if needed
   return null;
-}
+};
 
 export default function SearchScreen() {
   const [activeSreen, setActiveSreen] = useState<ActiveScreen>("auto");
-  const { header: HeaderScreen, item: RenderItemScreen } = renderContent(activeSreen) || {};
+  const { header: HeaderScreen, item: RenderItemScreen } =
+    renderContent(activeSreen) || {};
 
   const { selectedModels } = useAutoSelectStore();
 
-  console.log("INDEX -------------------")
-  console.log(selectedModels)
-
-
+  console.log("INDEX -------------------");
+  console.log(selectedModels);
 
   // const bottomSheetRef = useRef<BottomSheetModal>(null);
-  const snapPoints = useMemo(() => ['20%', '90%'], []);
+  const snapPoints = useMemo(() => ["20%", "90%"], []);
 
   // const bottomSheetRef = useRef<BottomSheetModal>(null);
 
@@ -144,21 +142,26 @@ export default function SearchScreen() {
     bottomSheetModalRef.current?.present();
   }, []);
   const handleSheetChanges = useCallback((index: number) => {
-    console.log('handleSheetChanges', index);
+    console.log("handleSheetChanges", index);
   }, []);
 
-  const handleOpen = () => {}
+  const handleOpen = () => {};
 
   return (
     <SafeAreaView className="flex-1">
       <View>
-        <Header />
-        <HeaderCategory activeScreen={activeSreen} setActiveScreen={setActiveSreen} />
+        <HeaderBrand />
+        <HeaderCategory
+          activeScreen={activeSreen}
+          setActiveScreen={setActiveSreen}
+        />
         {HeaderScreen && <HeaderScreen handleOpen={handleOpen} />}
         <Animated.FlatList
           data={data}
           renderItem={({ item, index }) => (
-            <Animated.ScrollView entering={FadeIn.delay(index * 400).duration(800)}>
+            <Animated.ScrollView
+              entering={FadeIn.delay(index * 400).duration(800)}
+            >
               {RenderItemScreen && <RenderItemScreen item={item} />}
             </Animated.ScrollView>
           )}

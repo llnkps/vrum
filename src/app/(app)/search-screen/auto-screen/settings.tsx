@@ -178,7 +178,7 @@ const SettingScreenFilter = () => {
 
 export default SettingScreenFilter;
 
-export const Header = () => {
+const Header = () => {
   const router = useRouter();
 
   return (

@@ -42,3 +42,7 @@ app-example
 .idea/
 .vscode/
 
+# openapi client generation
+src/openapi/client/
+src/openapi/openapi.json
+
