@@ -38,13 +38,13 @@ export default function TabLayout() {
         }}
       />
 
-      <Tabs.Screen
-        name="index"
-        options={{
-          tabBarLabel: 'Home',
-          tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} />,
-        }}
-      />
+      {/*<Tabs.Screen*/}
+      {/*  name="index"*/}
+      {/*  options={{*/}
+      {/*    tabBarLabel: 'Home',*/}
+      {/*    tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} />,*/}
+      {/*  }}*/}
+      {/*/>*/}
 
       <Tabs.Screen
         name="favorites"
@@ -56,8 +56,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="ads"
         options={{
-          title: 'Ads',
-          tabBarIcon: ({ color, size }) => <Ionicons name="add-circle" size={size} color={color} />,
+          title: 'New ads',
+          tabBarIcon: ({ color, size }) => <Ionicons name="duplicate" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
