@@ -30,7 +30,7 @@ import { CustomTheme } from "@/theme";
 import clsx from "clsx";
 import { RegionModal } from "@/modules/advertisement/simple-auto/region-modal/region-modal";
 import { Checkbox } from "expo-checkbox";
-import { SimpleAutoApi } from "@/openapi/client";
+import { Configuration, SimpleAutoApi } from "@/openapi/client";
 
 const pickerOptions = {
   currency: [
@@ -75,6 +75,16 @@ const pickerOptions = {
 };
 
 export default function AddCarPage() {
+
+// const configuration = new Configuration({
+//       credentials: "include",
+//       headers: {
+//         'Bearer': "dsasa"
+//       },
+//       accessToken: "das"
+//     });
+
+
   const router = useRouter();
   const simpleAutoClient = new SimpleAutoApi();
   const { selectedBrand, selectedModel } = useSimpleAutoFormContext();
@@ -112,10 +122,11 @@ export default function AddCarPage() {
     // Example: reset();
     simpleAutoClient.postAppSimpleautocontextPresentationSimpleautocreateCreate(
       {
+        postAppSimpleautocontextPresentationSimpleautocreateCreateRequest: {
         ...data,
         brand: selectedBrand?.name || "",
         model: selectedModel?.name || "",
-      }
+      }}
     );
   };
 
