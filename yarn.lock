@@ -4002,6 +4002,11 @@ expo-blur@~15.0.7:
   resolved "https://registry.yarnpkg.com/expo-blur/-/expo-blur-15.0.7.tgz#a11466e697fbf2b272444a38722065e60d0ecbe5"
   integrity sha512-SugQQbQd+zRPy8z2G5qDD4NqhcD7srBF7fN7O7yq6q7ZFK59VWvpDxtMoUkmSfdxgqONsrBN/rLdk00USADrMg==
 
+expo-checkbox@~5.0.7:
+  version "5.0.7"
+  resolved "https://registry.yarnpkg.com/expo-checkbox/-/expo-checkbox-5.0.7.tgz#0079a7956b1cea599405d71877e400430ffa3d13"
+  integrity sha512-oACH1MwJ5816ovT5bKQcaPr/5AAK3l+nlC9FxxAhtANXNBav+BjRJT1IqYTfp33b7+FMKx9ZkLmqJHfubolJrQ==
+
 expo-constants@~18.0.8:
   version "18.0.8"
   resolved "https://registry.yarnpkg.com/expo-constants/-/expo-constants-18.0.8.tgz#14f8388136de6e83d651bd68b326a675dfb7051c"

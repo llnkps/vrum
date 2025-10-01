@@ -1,6 +1,6 @@
 import { InputField } from "@/components/ui/InputField";
 import { useRouter } from "expo-router";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -28,6 +28,10 @@ import Entypo from "@expo/vector-icons/Entypo";
 import { useTheme } from "@react-navigation/native";
 import { CustomTheme } from "@/theme";
 import clsx from "clsx";
+import { RegionModal } from "@/modules/advertisement/simple-auto/region-modal/region-modal";
+import { Checkbox } from 'expo-checkbox';
+
+
 
 const pickerOptions = {
   currency: [
@@ -105,6 +109,7 @@ export default function AddCarPage() {
 
 
   const yearModalRef = useRef<BottomSheetRef>(null);
+  const regionModalRef = useRef<BottomSheetRef>(null);
   const transmissionModalRef = useRef<BottomSheetRef>(null);
   const fuelTypeModalRef = useRef<BottomSheetRef>(null);
   const bodyTypeModalRef = useRef<BottomSheetRef>(null);
@@ -122,6 +127,11 @@ export default function AddCarPage() {
   const handlePresentYearModalPress = useCallback(() => {
     yearModalRef.current?.present();
   }, []);
+
+  const handlePresentRegionModalPress = useCallback(() => {
+    regionModalRef.current?.present();
+  }, []);
+
   const handlePresentTransmissionModalPress = useCallback(() => {
     transmissionModalRef.current?.present();
   }, []);
@@ -161,7 +171,10 @@ export default function AddCarPage() {
   const handlePresentSellerModalPress = useCallback(() => {
     sellerModalRef.current?.present();
   }, []);
+ 
+  const [toggleCheckBox, setToggleCheckBox] = useState(false)
 
+  
   return (
     <SafeAreaView className="flex-1 bg-background-page dark:bg-background-page-dark">
       <KeyboardAwareScrollView
@@ -278,21 +291,73 @@ export default function AddCarPage() {
 
 
             <BottomSheetModalButton label={"Год"} onPress={handlePresentYearModalPress} />
-            <BottomSheetModalButton label={"Регион"} onPress={handlePresentYearModalPress} />
+            <BottomSheetModalButton label={"Регион"} onPress={handlePresentRegionModalPress} />
             <BottomSheetModalButton label={"Коробка передач"} onPress={handlePresentTransmissionModalPress} />
             <BottomSheetModalButton label={"Тип топлива"} onPress={handlePresentFuelTypeModalPress} />
             <BottomSheetModalButton label={"Тип кузова"} onPress={handlePresentBodyTypeModalPress} />
             <BottomSheetModalButton label={"Привод"} onPress={handlePresentDrivetrainModalPress} />
             <BottomSheetModalButton label={"Состояние"} onPress={handlePresentConditionModalPress} />
-            <BottomSheetModalButton label={"Цвет"} onPress={handlePresentColorModalPress} />
+            
+            <View>
+              <BottomSheetModalButton label={"Цвет"} onPress={handlePresentColorModalPress} />
+            </View>
+
             <BottomSheetModalButton label={"Объем двигателя"} onPress={handlePresentEngineCapacityModalPress} />
             <BottomSheetModalButton label={"Мощность"} onPress={handlePresentPowerModalPress} />
-            <BottomSheetModalButton label={"Пробег"} onPress={handlePresentYearModalPress} />
+            
+            <Controller
+                control={control}
+                name="mileage"
+                render={({ field }) => {
+                  return (
+                    <InputField
+                      ref={field.ref}
+                      value={field.value.toString()}
+                      onChange={field.onChange}
+                      label={"Пробег (км)"}
+                      keyboardType="numeric"
+                      placeholder="50000"
+                    />
+                  );
+                }}
+              />
+
             <BottomSheetModalButton label={"Количество владельцев"} onPress={handlePresentNumberOfOwnersModalPress} />
-            <BottomSheetModalButton label={"Торг"} onPress={handlePresentTradeAllowModalPress} />
+            
+            <View>
+              <Checkbox
+                disabled={false}
+                value={toggleCheckBox}
+                onValueChange={(newValue) => setToggleCheckBox(newValue)}
+              />
+              <Text className="text-font dark:text-font-dark">Обмен возможен - ТОРГ</Text>
+            </View>
+
+
+            {/* <View>
+              <CheckBox
+                disabled={false}
+                value={toggleCheckBox}
+                onValueChange={(newValue) => setToggleCheckBox(newValue)}
+              />
+              <Text>Документы в</Text>
+            </View> */}
+
+
             <BottomSheetModalButton label={"Документы в порядке"} onPress={handlePresentDocumentsOkModalPress} />
             <BottomSheetModalButton label={"Фото"} onPress={handlePresentPhotoModalPress} />
-            <BottomSheetModalButton label={"Продавец"} onPress={handlePresentSellerModalPress} />
+            
+            
+            <View>
+              <Text>Продавец</Text>
+              <Text>Любой</Text>
+              <Text>Собственник</Text>
+              <Text>Частник</Text>
+              <Text>Компания</Text>
+            </View>
+            {/* <BottomSheetModalButton label={"Продавец"} onPress={handlePresentSellerModalPress} /> */}
+
+
 
             {/* filterTransmission 
             filterFuel 
@@ -452,6 +517,7 @@ export default function AddCarPage() {
       </KeyboardAwareScrollView>
 
       <YearModal ref={yearModalRef} />
+      <RegionModal ref={regionModalRef} />
       <TransmissionModal ref={transmissionModalRef} onSelect={() => {}} />
       <FuelTypeModal ref={fuelTypeModalRef} onSelect={() => {}} />
       <BodyTypeModal ref={bodyTypeModalRef} onSelect={() => {}} />
