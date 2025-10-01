@@ -37,6 +37,18 @@ export interface GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands2
      * @memberof GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner
      */
     orderNumber?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner
+     */
+    image?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner
+     */
+    imageFilePath?: string;
 }
 
 /**
@@ -59,6 +71,8 @@ export function GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands20
         'id': json['id'] == null ? undefined : json['id'],
         'name': json['name'] == null ? undefined : json['name'],
         'orderNumber': json['orderNumber'] == null ? undefined : json['orderNumber'],
+        'image': json['image'] == null ? undefined : json['image'],
+        'imageFilePath': json['imageFilePath'] == null ? undefined : json['imageFilePath'],
     };
 }
 
@@ -76,6 +90,8 @@ export function GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands20
         'id': value['id'],
         'name': value['name'],
         'orderNumber': value['orderNumber'],
+        'image': value['image'],
+        'imageFilePath': value['imageFilePath'],
     };
 }
 

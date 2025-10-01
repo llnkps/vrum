@@ -15,14 +15,14 @@
 
 import * as runtime from '../runtime';
 import type {
-  GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner,
+  GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner,
   GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters200Response,
   GetAppSpecautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner,
   PostAppSimpleautocontextPresentationSimpleautocreateCreateRequest,
 } from '../models/index';
 import {
-    GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInnerFromJSON,
-    GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInnerToJSON,
+    GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInnerFromJSON,
+    GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInnerToJSON,
     GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters200ResponseFromJSON,
     GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters200ResponseToJSON,
     GetAppSpecautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInnerFromJSON,
@@ -58,7 +58,7 @@ export class SpecAutoApi extends runtime.BaseAPI {
 
     /**
      */
-    async getAppSpecautocontextPresentationBrandgetcollectionGetbrandsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner>>> {
+    async getAppSpecautocontextPresentationBrandgetcollectionGetbrandsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner>>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -81,12 +81,12 @@ export class SpecAutoApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInnerFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInnerFromJSON));
     }
 
     /**
      */
-    async getAppSpecautocontextPresentationBrandgetcollectionGetbrands(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner>> {
+    async getAppSpecautocontextPresentationBrandgetcollectionGetbrands(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner>> {
         const response = await this.getAppSpecautocontextPresentationBrandgetcollectionGetbrandsRaw(initOverrides);
         return await response.value();
     }

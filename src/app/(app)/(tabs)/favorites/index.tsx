@@ -1,7 +1,6 @@
 import { CarCard } from "@/components/CarCard";
-import EmptyState from "@/components/favorites/EmptyState";
 import { Button } from "@/components/ui/button";
-import { mockFavoritesData } from "@/data/mockData";
+import EmptyState from "@/modules/favorites/EmptyState";
 import { useRouter } from "expo-router";
 import React, { useCallback, useState } from "react";
 import { FlatList, Text, View } from "react-native";
@@ -10,7 +9,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function FavoriteScreen() {
   const router = useRouter();
 
-  const [favoritesData, setFavoritesData] = useState(mockFavoritesData);
+  const [favoritesData, setFavoritesData] = useState([]);
 
   const handleFavoriteItemPress = (item) => {
     console.log("Открыть объявление:", item.title);

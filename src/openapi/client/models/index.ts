@@ -3,6 +3,7 @@
 export * from './ApiAuthPost200Response';
 export * from './ApiAuthPostRequest';
 export * from './GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner';
+export * from './GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner';
 export * from './GetAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfilters200ResponseInner';
 export * from './GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters200Response';
 export * from './GetAppSpecautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner';

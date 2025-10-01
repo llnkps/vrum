@@ -7,87 +7,23 @@ import { HeaderBrand } from "@/components/global/Header";
 import {
   AutoDetailHeaderScreen,
   AutoDetailItemScreen,
-} from "@/components/search-screen/(components-tabs)/auto_detail-screen";
+} from "@/modules/search-screen/(components-tabs)/details-screen";
 import {
   MotoHeaderScreen,
   MotoItemScreen,
-} from "@/components/search-screen/(components-tabs)/moto-screen";
+} from "@/modules/search-screen/(components-tabs)/moto-screen";
 import {
   SpecAutoHeaderScreen,
   SpecAutoItemScreen,
-} from "@/components/search-screen/(components-tabs)/spec_auto-screen";
+} from "@/modules/search-screen/(components-tabs)/spec_auto-screen";
 import {
   AutoHeaderScreen,
   AutoItemScreen,
-} from "@/components/search-screen/auto-screen-tab/auto-screen";
-import { HeaderCategory } from "@/components/search-screen/HeaderCategory";
-import { ActiveScreen } from "@/components/search-screen/types";
+} from "@/modules/search-screen/simple-auto-tab/auto-screen";
+import { HeaderCategory } from "@/modules/search-screen/HeaderCategory";
+import { ActiveScreen } from "@/modules/search-screen/types";
 import { useAutoSelectStore } from "@/state/search-screen/useAutoSelectStore";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-
-const data = [
-  {
-    id: 1,
-    title: "Tata Punch",
-    price: "₹ 5.99 Lakh",
-    image: require("@/data/images/1images.jpeg"), // use your car image
-  },
-  {
-    id: 2,
-    title: "Hyundai Venue",
-    price: "₹ 7.89 Lakh",
-    image: require("@/data/images/2LEAD.jpg"),
-  },
-
-  {
-    id: 3,
-    title: "Hyundai Venue",
-    price: "₹ 7.89 Lakh",
-    image: require("@/data/images/2LEAD.jpg"),
-  },
-  {
-    id: 4,
-    title: "Hyundai Venue",
-    price: "₹ 7.89 Lakh",
-    image: require("@/data/images/2LEAD.jpg"),
-  },
-  {
-    id: 5,
-    title: "Hyundai Venue",
-    price: "₹ 7.89 Lakh",
-    image: require("@/data/images/2LEAD.jpg"),
-  },
-  {
-    id: 6,
-    title: "Hyundai Venue",
-    price: "₹ 7.89 Lakh",
-    image: require("@/data/images/2LEAD.jpg"),
-  },
-  {
-    id: 7,
-    title: "Hyundai Venue",
-    price: "₹ 7.89 Lakh",
-    image: require("@/data/images/2LEAD.jpg"),
-  },
-  {
-    id: 8,
-    title: "Hyundai Venue",
-    price: "₹ 7.89 Lakh",
-    image: require("@/data/images/2LEAD.jpg"),
-  },
-  {
-    id: 9,
-    title: "Hyundai Venue",
-    price: "₹ 7.89 Lakh",
-    image: require("@/data/images/2LEAD.jpg"),
-  },
-  {
-    id: 10,
-    title: "Hyundai Venue",
-    price: "₹ 7.89 Lakh",
-    image: require("@/data/images/2LEAD.jpg"),
-  },
-];
 
 const renderContent = (activeScreen: ActiveScreen) => {
   if (activeScreen === "auto") {
@@ -157,7 +93,7 @@ export default function SearchScreen() {
         />
         {HeaderScreen && <HeaderScreen handleOpen={handleOpen} />}
         <Animated.FlatList
-          data={data}
+          data={[]}
           renderItem={({ item, index }) => (
             <Animated.ScrollView
               entering={FadeIn.delay(index * 400).duration(800)}

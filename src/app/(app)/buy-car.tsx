@@ -9,18 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
 
 const data = [
-  {
-    id: 1,
-    title: "Tata Punch",
-    price: "₹ 5.99 Lakh",
-    image: require("@/data/images/1images.jpeg"), // use your car image
-  },
-  {
-    id: 2,
-    title: "Hyundai Venue",
-    price: "₹ 7.89 Lakh",
-    image: require("@/data/images/2LEAD.jpg"),
-  },
+  
 ];
 
 const Page = () => {

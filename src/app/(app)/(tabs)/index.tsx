@@ -1,31 +1,25 @@
-import { Link, Stack } from 'expo-router';
-import React, { useState } from 'react';
+import { Link, Stack } from "expo-router";
+import React, { useState } from "react";
 import {
-  ActivityIndicator, Dimensions, Image, Platform, Pressable, ScrollView, Text, View
-} from 'react-native';
-import Carousel from 'react-native-reanimated-carousel';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+  ActivityIndicator,
+  Dimensions,
+  Image,
+  Platform,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
+import Carousel from "react-native-reanimated-carousel";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
-import HomeBlock from '@/components/HomeBlock';
-import { Ionicons } from '@expo/vector-icons';
-import { useQuery } from '@tanstack/react-query';
+import HomeBlock from "@/components/HomeBlock";
+import { Ionicons } from "@expo/vector-icons";
+import { useQuery } from "@tanstack/react-query";
 
 const { width } = Dimensions.get("window");
 
-const data = [
-  {
-    id: 1,
-    title: "Tata Punch",
-    price: "₹ 5.99 Lakh",
-    image: require("@/data/images/1images.jpeg"), // use your car image
-  },
-  {
-    id: 2,
-    title: "Hyundai Venue",
-    price: "₹ 7.89 Lakh",
-    image: require("@/data/images/2LEAD.jpg"),
-  },
-];
+const data = [];
 
 export default function HomeScreen({ navigation }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -35,50 +29,56 @@ export default function HomeScreen({ navigation }) {
   // });
 
   return (
-      <SafeAreaView className="flex-1">
-        <View className="h-full flex-1">
-          {/* <Stack.Screen options={{ title: data?.title }} /> */}
-          {isLoading && (
-            <View className="flex-1 items-center justify-center">
-              <ActivityIndicator />
-            </View>
-          )}
-          <Header />
-          <ScrollView>
-            <View className="items-center justify-center">
-              <Carousel
-                loop
-                width={width}
-                height={350}
-                autoPlay={false}
-                data={data}
-                scrollAnimationDuration={800}
-                renderItem={({ item }) => {
-                  return (
-                    <View className="mx-2 rounded-2xl shadow-md">
-                      <Image
-                        source={item.image}
-                        className="w-full h-48 rounded-t-2xl"
-                        resizeMode="cover"
-                      />
-                      <View className="p-4">
-                        <Text className="text-lg font-bold text-font-brand dark:text-font-brand-dark">
-                          {item.title}
+    <SafeAreaView className="flex-1">
+      <View className="h-full flex-1">
+        {/* <Stack.Screen options={{ title: data?.title }} /> */}
+        {isLoading && (
+          <View className="flex-1 items-center justify-center">
+            <ActivityIndicator />
+          </View>
+        )}
+        <Header />
+        <ScrollView>
+          <View className="items-center justify-center">
+            <Carousel
+              loop
+              width={width}
+              height={350}
+              autoPlay={false}
+              data={data}
+              scrollAnimationDuration={800}
+              renderItem={({ item }) => {
+                return (
+                  <View className="mx-2 rounded-2xl shadow-md">
+                    <Image
+                      source={item.image}
+                      className="w-full h-48 rounded-t-2xl"
+                      resizeMode="cover"
+                    />
+                    <View className="p-4">
+                      <Text className="text-lg font-bold text-font-brand dark:text-font-brand-dark">
+                        {item.title}
+                      </Text>
+                      <Text className="text-base text-font dark:text-font-dark">
+                        {item.price}
+                      </Text>
+                      <View className="flex-row mt-2">
+                        <Text className="text-xs text-font dark:text-font-dark mr-2">
+                          ⭐ 5-star GNCAP
                         </Text>
-                        <Text className="text-base text-font dark:text-font-dark">{item.price}</Text>
-                        <View className="flex-row mt-2">
-                          <Text className="text-xs text-font dark:text-font-dark mr-2">⭐ 5-star GNCAP</Text>
-                          <Text className="text-xs text-font dark:text-font-dark">🚗 More Mileage</Text>
-                        </View>
+                        <Text className="text-xs text-font dark:text-font-dark">
+                          🚗 More Mileage
+                        </Text>
                       </View>
                     </View>
-                  )
-                }}
-              />
-            </View>
-            <BuySellButtons navigation={navigation} />
-          </ScrollView>
-          {/* <HomeBlock
+                  </View>
+                );
+              }}
+            />
+          </View>
+          <BuySellButtons navigation={navigation} />
+        </ScrollView>
+        {/* <HomeBlock
         homeInfo={data!}
         dom={{
           scrollEnabled: false,
@@ -88,13 +88,10 @@ export default function HomeScreen({ navigation }) {
           },
         }}
       /> */}
-        </View>
-      </SafeAreaView>
+      </View>
+    </SafeAreaView>
   );
 }
-
-
-
 
 const Header = () => {
   return (
@@ -117,8 +114,7 @@ const Header = () => {
       </View>
     </View>
   );
-}
-
+};
 
 const BuySellButtons = ({ navigation }) => {
   return (
@@ -156,4 +152,4 @@ const BuySellButtons = ({ navigation }) => {
       </View>
     </View>
   );
-}
+};

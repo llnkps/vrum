@@ -29,13 +29,13 @@ export default function MyAdvertisement() {
         {/* Tabs */}
         <View className="flex-row justify-between bg-surface dark:bg-surface-dark rounded-lg">
           <Button
-            useNativePressable
+            style={{ flex: 1 }}
             appearance="subtle"
             title="Акутальные"
             isSelected={true}
           />
           <Button
-            useNativePressable
+            style={{ flex: 1 }}
             appearance="subtle"
             title="Архив"
             isSelected={false}
@@ -68,7 +68,7 @@ export default function MyAdvertisement() {
             className={clsx(
               "bg-background-neutral dark:bg-background-neutral-dark rounded-md p-2"
             )}
-            onPress={() => router.push("/add-car")}
+            onPress={() => router.push("/(app)/advertisement/simple-auto")}
             activeOpacity={0.6}
             underlayColor="#DDDDDD"
           >

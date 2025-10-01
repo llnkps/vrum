@@ -85,6 +85,12 @@
                                             },
                                             "orderNumber": {
                                                 "type": "integer"
+                                            },
+                                            "image": {
+                                                "type": "string"
+                                            },
+                                            "imageFilePath": {
+                                                "type": "string"
                                             }
                                         },
                                         "type": "object"

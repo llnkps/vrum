@@ -23,7 +23,7 @@ export const InputField = ({
   const theme = useTheme() as CustomTheme;
 
   return (
-    <View>
+    <View className="gap-y-1">
       {label && <Text className="text-font dark:text-font-dark">{label}</Text>}
 
       <View className="flex-row items-center border border-border dark:border-border-dark rounded-xl px-2 bg-background-input dark:bg-background-input-dark">

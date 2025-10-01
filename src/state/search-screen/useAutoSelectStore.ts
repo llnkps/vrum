@@ -1,10 +1,11 @@
+import { GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner } from '@/openapi/client';
 import { create } from 'zustand';
 
 
 
 type SelectionStore = {
-  selectedModels: string[];
-  addSelectedModel: (item: string) => void;
+  selectedModels: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner[];
+  addSelectedModel: (item: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner) => void;
 };
 
 
