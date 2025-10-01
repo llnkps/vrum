@@ -1,9 +1,9 @@
-import { FilterProvider } from "@/modules/advertisement/simple-auto/FilterProvider";
+import { SimpleAutoFormProvider } from "@/modules/advertisement/simple-auto/SimpleAutoFormProvider";
 import { Stack } from "expo-router";
 
 export default function ModalsLayout() {
   return (
-    <FilterProvider>
+    <SimpleAutoFormProvider>
       <Stack
         screenOptions={{
           headerShown: false,
@@ -15,6 +15,6 @@ export default function ModalsLayout() {
         <Stack.Screen name="brand-auto-modal" />
         <Stack.Screen name="brand-auto-type-modal" />
       </Stack>
-    </FilterProvider>
+    </SimpleAutoFormProvider>
   );
 }

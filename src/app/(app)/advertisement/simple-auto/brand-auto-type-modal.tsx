@@ -14,7 +14,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import CloseIcon from "@/components/global/CloseIcon";
 import { InputField } from "@/components/ui/InputField";
 import { useSimpleAutoModelByBrandApi } from "@/hooks/useSimpleAutoModelByBrandApi";
-import { useFilterContext } from "@/modules/advertisement/simple-auto/FilterProvider";
+import { useFilterContext } from "@/modules/advertisement/simple-auto/SimpleAutoFormProvider";
 import { GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner } from "@/openapi/client";
 import { useAutoSelectStore } from "@/state/search-screen/useAutoSelectStore";
 import { Ionicons } from "@expo/vector-icons";

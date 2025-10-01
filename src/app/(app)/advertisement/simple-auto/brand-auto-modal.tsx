@@ -20,7 +20,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import CloseIcon from "@/components/global/CloseIcon";
 import { InputField } from "@/components/ui/InputField";
 import { useSimpleAutoBrandApi } from "@/hooks/useSimpleAutoBrandApi";
-import { useFilterContext } from "@/modules/advertisement/simple-auto/FilterProvider";
+import { useFilterContext } from "@/modules/advertisement/simple-auto/SimpleAutoFormProvider";
 import {
   DefaultConfig,
   GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner,

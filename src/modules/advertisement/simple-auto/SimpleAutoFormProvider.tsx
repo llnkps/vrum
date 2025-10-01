@@ -5,7 +5,7 @@ import {
 } from "@/openapi/client";
 import { createContext, useContext, useState } from "react";
 
-type FilterContextType = {
+type SimpleAutoFormContextType = {
   selectedBrand: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner | null;
   setSelectedBrand: (
     brand: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner | null
@@ -20,9 +20,9 @@ type FilterContextType = {
   setSelectedYear: (year: string | null) => void;
 };
 
-const FilterContext = createContext<FilterContextType | null>(null);
+const SimpleAutoFormContext = createContext<SimpleAutoFormContextType | null>(null);
 
-export const FilterProvider = ({ children }: { children: React.ReactNode }) => {
+export const SimpleAutoFormProvider = ({ children }: { children: React.ReactNode }) => {
   const [selectedBrand, setSelectedBrand] =
     useState<GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner | null>(
       null
@@ -34,7 +34,7 @@ export const FilterProvider = ({ children }: { children: React.ReactNode }) => {
   const [selectedYear, setSelectedYear] = useState<string | null>(null);
 
   return (
-    <FilterContext.Provider
+    <SimpleAutoFormContext.Provider
       value={{
         selectedBrand,
         setSelectedBrand,
@@ -45,14 +45,14 @@ export const FilterProvider = ({ children }: { children: React.ReactNode }) => {
       }}
     >
       {children}
-    </FilterContext.Provider>
+    </SimpleAutoFormContext.Provider>
   );
 };
 
-export const useFilterContext = () => {
-  const ctx = useContext(FilterContext);
+export const useSimpleAutoFormContext = () => {
+  const ctx = useContext(SimpleAutoFormContext);
   if (!ctx) {
-    throw new Error("useModalContext must be used within FilterProvider");
+    throw new Error("useModalContext must be used within SimpleAutoFormProvider");
   }
   return ctx;
 };

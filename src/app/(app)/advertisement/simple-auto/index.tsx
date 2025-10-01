@@ -7,7 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import CloseIcon from "@/components/global/CloseIcon";
 import { Button } from "@/components/ui/button";
-import { useFilterContext } from "@/modules/advertisement/simple-auto/FilterProvider";
+import { useSimpleAutoFormContext } from "@/modules/advertisement/simple-auto/SimpleAutoFormProvider";
 import YearModal from "@/modules/advertisement/simple-auto/year-modal/year-modal";
 import TransmissionModal from "@/modules/advertisement/simple-auto/transmission-modal/transmission-modal";
 import FuelTypeModal from "@/modules/advertisement/simple-auto/fuel-type-modal/fuel-type-modal";
@@ -29,9 +29,8 @@ import { useTheme } from "@react-navigation/native";
 import { CustomTheme } from "@/theme";
 import clsx from "clsx";
 import { RegionModal } from "@/modules/advertisement/simple-auto/region-modal/region-modal";
-import { Checkbox } from 'expo-checkbox';
-
-
+import { Checkbox } from "expo-checkbox";
+import { SimpleAutoApi } from "@/openapi/client";
 
 const pickerOptions = {
   currency: [
@@ -77,10 +76,11 @@ const pickerOptions = {
 
 export default function AddCarPage() {
   const router = useRouter();
-  const { selectedBrand, selectedModel } = useFilterContext();
+  const simpleAutoClient = new SimpleAutoApi();
+  const { selectedBrand, selectedModel } = useSimpleAutoFormContext();
   console.log(selectedBrand);
 
-  const { control } = useForm({
+  const { control, handleSubmit, getValues, reset } = useForm({
     defaultValues: {
       title: "",
       description: "",
@@ -88,8 +88,6 @@ export default function AddCarPage() {
       currency: "USD",
       location: "",
       images: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
       status: "active",
       category: "car",
       brand: "",
@@ -107,6 +105,19 @@ export default function AddCarPage() {
     },
   });
 
+  // Form submit handler
+  const onSubmit = (data) => {
+    // Here you can send data to your API or handle it as needed
+    console.log("Form submitted:", data);
+    // Example: reset();
+    simpleAutoClient.postAppSimpleautocontextPresentationSimpleautocreateCreate(
+      {
+        ...data,
+        brand: selectedBrand?.name || "",
+        model: selectedModel?.name || "",
+      }
+    );
+  };
 
   const yearModalRef = useRef<BottomSheetRef>(null);
   const regionModalRef = useRef<BottomSheetRef>(null);
@@ -171,16 +182,12 @@ export default function AddCarPage() {
   const handlePresentSellerModalPress = useCallback(() => {
     sellerModalRef.current?.present();
   }, []);
- 
-  const [toggleCheckBox, setToggleCheckBox] = useState(false)
 
-  
+  const [toggleCheckBox, setToggleCheckBox] = useState(false);
+
   return (
     <SafeAreaView className="flex-1 bg-background-page dark:bg-background-page-dark">
-      <KeyboardAwareScrollView
-      // className="px-5 py-2"
-      // showsVerticalScrollIndicator={false}
-      >
+      <KeyboardAwareScrollView>
         <Header />
 
         {/* Основная информация */}
@@ -289,50 +296,83 @@ export default function AddCarPage() {
               }
             />
 
+            <BottomSheetModalButton
+              label={"Год"}
+              onPress={handlePresentYearModalPress}
+            />
+            <BottomSheetModalButton
+              label={"Регион"}
+              onPress={handlePresentRegionModalPress}
+            />
+            <BottomSheetModalButton
+              label={"Коробка передач"}
+              onPress={handlePresentTransmissionModalPress}
+            />
+            <BottomSheetModalButton
+              label={"Тип топлива"}
+              onPress={handlePresentFuelTypeModalPress}
+            />
+            <BottomSheetModalButton
+              label={"Тип кузова"}
+              onPress={handlePresentBodyTypeModalPress}
+            />
+            <BottomSheetModalButton
+              label={"Привод"}
+              onPress={handlePresentDrivetrainModalPress}
+            />
+            <BottomSheetModalButton
+              label={"Состояние"}
+              onPress={handlePresentConditionModalPress}
+            />
 
-            <BottomSheetModalButton label={"Год"} onPress={handlePresentYearModalPress} />
-            <BottomSheetModalButton label={"Регион"} onPress={handlePresentRegionModalPress} />
-            <BottomSheetModalButton label={"Коробка передач"} onPress={handlePresentTransmissionModalPress} />
-            <BottomSheetModalButton label={"Тип топлива"} onPress={handlePresentFuelTypeModalPress} />
-            <BottomSheetModalButton label={"Тип кузова"} onPress={handlePresentBodyTypeModalPress} />
-            <BottomSheetModalButton label={"Привод"} onPress={handlePresentDrivetrainModalPress} />
-            <BottomSheetModalButton label={"Состояние"} onPress={handlePresentConditionModalPress} />
-            
             <View>
-              <BottomSheetModalButton label={"Цвет"} onPress={handlePresentColorModalPress} />
+              <BottomSheetModalButton
+                label={"Цвет"}
+                onPress={handlePresentColorModalPress}
+              />
             </View>
 
-            <BottomSheetModalButton label={"Объем двигателя"} onPress={handlePresentEngineCapacityModalPress} />
-            <BottomSheetModalButton label={"Мощность"} onPress={handlePresentPowerModalPress} />
-            
-            <Controller
-                control={control}
-                name="mileage"
-                render={({ field }) => {
-                  return (
-                    <InputField
-                      ref={field.ref}
-                      value={field.value.toString()}
-                      onChange={field.onChange}
-                      label={"Пробег (км)"}
-                      keyboardType="numeric"
-                      placeholder="50000"
-                    />
-                  );
-                }}
-              />
+            <BottomSheetModalButton
+              label={"Объем двигателя"}
+              onPress={handlePresentEngineCapacityModalPress}
+            />
+            <BottomSheetModalButton
+              label={"Мощность"}
+              onPress={handlePresentPowerModalPress}
+            />
 
-            <BottomSheetModalButton label={"Количество владельцев"} onPress={handlePresentNumberOfOwnersModalPress} />
-            
+            <Controller
+              control={control}
+              name="mileage"
+              render={({ field }) => {
+                return (
+                  <InputField
+                    ref={field.ref}
+                    value={field.value.toString()}
+                    onChange={field.onChange}
+                    label={"Пробег (км)"}
+                    keyboardType="numeric"
+                    placeholder="50000"
+                  />
+                );
+              }}
+            />
+
+            <BottomSheetModalButton
+              label={"Количество владельцев"}
+              onPress={handlePresentNumberOfOwnersModalPress}
+            />
+
             <View>
               <Checkbox
                 disabled={false}
                 value={toggleCheckBox}
                 onValueChange={(newValue) => setToggleCheckBox(newValue)}
               />
-              <Text className="text-font dark:text-font-dark">Обмен возможен - ТОРГ</Text>
+              <Text className="text-font dark:text-font-dark">
+                Обмен возможен - ТОРГ
+              </Text>
             </View>
-
 
             {/* <View>
               <CheckBox
@@ -343,11 +383,15 @@ export default function AddCarPage() {
               <Text>Документы в</Text>
             </View> */}
 
+            <BottomSheetModalButton
+              label={"Документы в порядке"}
+              onPress={handlePresentDocumentsOkModalPress}
+            />
+            <BottomSheetModalButton
+              label={"Фото"}
+              onPress={handlePresentPhotoModalPress}
+            />
 
-            <BottomSheetModalButton label={"Документы в порядке"} onPress={handlePresentDocumentsOkModalPress} />
-            <BottomSheetModalButton label={"Фото"} onPress={handlePresentPhotoModalPress} />
-            
-            
             <View>
               <Text>Продавец</Text>
               <Text>Любой</Text>
@@ -356,8 +400,6 @@ export default function AddCarPage() {
               <Text>Компания</Text>
             </View>
             {/* <BottomSheetModalButton label={"Продавец"} onPress={handlePresentSellerModalPress} /> */}
-
-
 
             {/* filterTransmission 
             filterFuel 
@@ -381,139 +423,12 @@ export default function AddCarPage() {
             filterNumberOfOwners 
             filterTradeAllow */}
           </View>
-
-          <View className="flex-1">
-            {/* <Text className={labelClassName}>Модель</Text> */}
-            {/* <TextInput
-                className={inputClassName}
-                value={form.model}
-                onChangeText={(t) => handleChange("model", t)}
-                placeholder="X5"
-                placeholderTextColor={isDark ? "#96999E" : "#6B6E76"}
-              /> */}
-            {/* <PickerButton */}
-            {/* label="" */}
-            {/* value={getPickerLabel("currency", "1")} */}
-            {/* onPress={() => setActiveModal("currency")} */}
-            {/* /> */}
-          </View>
-
-          <View className="flex-row gap-4 mb-5">
-            <View className="flex-1">
-              {/* <Text className={labelClassName}>Год выпуска</Text> */}
-              {/* <TextInput
-                keyboardType="numeric"
-                className={inputClassName}
-                value={form.year.toString()}
-                onChangeText={(t) =>
-                  handleChange("year", Number(t) || new Date().getFullYear())
-                }
-                placeholder="2020"
-                placeholderTextColor={isDark ? "#96999E" : "#6B6E76"}
-              /> */}
-              {/* <PickerButton */}
-              {/* label="" */}
-              {/* value={getPickerLabel("currency", "1")} */}
-              {/* onPress={() => setActiveModal("currency")} */}
-              {/* /> */}
-            </View>
-
-            <View className="flex-1">
-              {/* <Text className={labelClassName}>Пробег (км)</Text> */}
-
-              <Controller
-                control={control}
-                name="mileage"
-                render={({ field }) => {
-                  return (
-                    <InputField
-                      ref={field.ref}
-                      value={field.value.toString()}
-                      label={"Пробег (км)"}
-                      keyboardType="numeric"
-                      placeholder="50000"
-                    />
-                  );
-                }}
-              />
-              {/* onChangeText={(t) => handleChange("mileage", Number(t) || 0)} */}
-            </View>
-          </View>
-
-          {/* <View className="mb-5">
-            <Text className={labelClassName}>Тип топлива</Text>
-            <PickerButton
-              label=""
-              value={getPickerLabel("fuelType", "")}
-              onPress={() => setActiveModal("fuelType")}
-            />
-          </View>
-
-          <View className="mb-5">
-            <Text className={labelClassName}>Коробка передач</Text>
-            <PickerButton
-              label=""
-              value={getPickerLabel("transmission", "aa")}
-              onPress={() => setActiveModal("transmission")}
-            />
-          </View>
-
-          <View className="mb-5">
-            <Text className={labelClassName}>Тип кузова</Text>
-            <PickerButton
-              label=""
-              value={getPickerLabel("bodyType", "s")}
-              onPress={() => setActiveModal("bodyType")}
-            />
-          </View>
-
-          <View className="mb-5">
-            <Text className={labelClassName}>Привод</Text>
-            <PickerButton
-              label=""
-              value={getPickerLabel("drivetrain", "sa")}
-              onPress={() => setActiveModal("drivetrain")}
-            />
-          </View>
-
-          <View className="mb-5">
-            <Text className={labelClassName}>Состояние</Text>
-            <PickerButton
-              label=""
-              value={getPickerLabel("condition", "d")}
-              onPress={() => setActiveModal("condition")}
-            />
-          </View> */}
-
-          <View className="mb-0">
-            {/* <Text className={labelClassName}>Цвет</Text> */}
-            {/* <TextInput
-              className={inputClassName}
-              value={form.color}
-              onChangeText={(t) => handleChange("color", t)}
-              placeholder="Черный"
-              placeholderTextColor={isDark ? "#96999E" : "#6B6E76"}
-            /> */}
-          </View>
         </View>
 
         {/* Кнопка создания */}
-        {/* <TouchableOpacity
-          className={`
-            ${
-              isDark
-                ? "bg-background-brand-bold-dark active:bg-background-brand-bold-dark-pressed"
-                : "bg-background-brand-bold active:bg-background-brand-bold-pressed"
-            } 
-            px-6 py-4 rounded-2xl mb-10 shadow-lg
-          `}
-          onPress={handleSubmit}
-          activeOpacity={0.8}
-        >
-          <Text className="text-white text-center font-bold text-lg">
-            Создать объявление
-          </Text>
-        </TouchableOpacity> */}
+        <Button onPress={handleSubmit(onSubmit)} style={{ marginVertical: 20 }}>
+          <Text>Создать объявление</Text>
+        </Button>
       </KeyboardAwareScrollView>
 
       <YearModal ref={yearModalRef} />
@@ -555,46 +470,6 @@ const Header = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "white",
-    padding: 16,
-  },
-  dropdown: {
-    height: 50,
-    borderColor: "gray",
-    borderWidth: 0.5,
-    borderRadius: 8,
-    paddingHorizontal: 8,
-  },
-  icon: {
-    marginRight: 5,
-  },
-  label: {
-    position: "absolute",
-    backgroundColor: "white",
-    left: 22,
-    top: 8,
-    zIndex: 999,
-    paddingHorizontal: 8,
-    fontSize: 14,
-  },
-  placeholderStyle: {
-    fontSize: 16,
-  },
-  selectedTextStyle: {
-    fontSize: 16,
-  },
-  iconStyle: {
-    width: 20,
-    height: 20,
-  },
-  inputSearchStyle: {
-    height: 40,
-    fontSize: 16,
-  },
-});
 
 const ModalButton = ({
   label,
