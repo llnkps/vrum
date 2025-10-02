@@ -1,10 +1,16 @@
 
+
+import CustomBottomSheetModal, {
+  BottomSheetRef,
+} from "@/components/global/CustomBottomSheetModal";
+import { CustomRectButton } from "@/components/ui/button";
+import { BottomSheetView } from "@gorhom/bottom-sheet";
 import React, { forwardRef } from "react";
-import CustomBottomSheetModal, { BottomSheetRef } from "@/components/global/CustomBottomSheetModal";
-import { View, Text, Pressable } from "react-native";
+
+type FuelTypeOption = (typeof options)[number];
 
 type FuelTypeModalProps = {
-  onSelect: (value: string) => void;
+  onSelect: (value: FuelTypeOption) => void;
 };
 
 const options = [
@@ -15,19 +21,33 @@ const options = [
   { label: "Газ", value: "gas" },
 ];
 
-const FuelTypeModal = forwardRef<BottomSheetRef, FuelTypeModalProps>(({ onSelect }, ref) => {
-  return (
-    <CustomBottomSheetModal ref={ref} title="Выберите тип топлива">
-      <View style={{ padding: 20 }}>
-        {options.map((opt) => (
-          <Pressable key={opt.value} onPress={() => onSelect(opt.value)}>
-            <Text style={{ padding: 10 }}>{opt.label}</Text>
-          </Pressable>
-        ))}
-      </View>
-    </CustomBottomSheetModal>
-  );
-});
+const FuelTypeModal = forwardRef<BottomSheetRef, FuelTypeModalProps>(
+  ({ onSelect }, ref) => {
+    const [selectedFuelType, setSelectedFuelType] = React.useState<string | undefined>(undefined);
+
+    return (
+      <CustomBottomSheetModal
+        ref={ref}
+        snapPoints={["60%"]}
+        enableContentPanningGesture={true}
+      >
+        <BottomSheetView className="flex-col">
+          {options.map((opt) => (
+            <CustomRectButton
+              key={opt.value}
+              onPress={() => {
+                onSelect(opt);
+                setSelectedFuelType(opt.value);
+              }}
+              title={opt.label}
+              isSelected={selectedFuelType === opt.value}
+            />
+          ))}
+        </BottomSheetView>
+      </CustomBottomSheetModal>
+    );
+  }
+);
 FuelTypeModal.displayName = "FuelTypeModal";
 
 export default FuelTypeModal;

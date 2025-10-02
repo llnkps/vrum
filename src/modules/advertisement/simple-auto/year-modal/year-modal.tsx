@@ -48,10 +48,6 @@ const YearModal = forwardRef<BottomSheetRef, YearModalProps>((props, ref) => {
     if (props.onChange) props.onChange(fromYear, value.item.value);
   };
 
-  const handleChangingWithVibration = () => {
-    Vibration.vibrate(1);
-  };
-
   const renderHeaderHandle = useCallback(
     (props) => <HeaderHandle {...props} />,
     []
@@ -73,7 +69,6 @@ const YearModal = forwardRef<BottomSheetRef, YearModalProps>((props, ref) => {
             data={years}
             value={fromYear}
             onValueChanged={handleChangeFromYear}
-            onValueChanging={handleChangingWithVibration}
           />
         </View>
 
@@ -85,7 +80,6 @@ const YearModal = forwardRef<BottomSheetRef, YearModalProps>((props, ref) => {
             data={years}
             value={tillYear}
             onValueChanged={handleChangeTillYear}
-            onValueChanging={handleChangingWithVibration}
           />
         </View>
       </View>

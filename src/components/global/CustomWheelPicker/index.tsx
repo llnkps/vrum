@@ -9,6 +9,7 @@ import WheelPicker, {
 import { KeyExtractor } from "@quidone/react-native-wheel-picker/dest/typescript/base/types";
 import { useTheme } from "@react-navigation/native";
 import React, { memo } from "react";
+import { Vibration } from "react-native";
 import OverlayComponent from "./OverlayComponent";
 import PickerItemContainer from "./PickerItemContainer";
 
@@ -40,7 +41,10 @@ const CustomizedPicker = (props: props<T>) => {
       renderOverlay={renderOverlay}
       data={data}
       onValueChanged={onValueChanged}
-      onValueChanging={onValueChanging}
+      onValueChanging={(e) => {
+        Vibration.vibrate(1);
+        if (onValueChanging) onValueChanging(e);
+      }}
       visibleItemCount={7}
       itemTextStyle={{
         color: theme.colors.text, // TODO: by some reasons theme colors doesn't work here

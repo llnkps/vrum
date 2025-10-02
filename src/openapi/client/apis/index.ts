@@ -2,6 +2,7 @@
 /* eslint-disable */
 export * from './LoginApi';
 export * from './MotorbikeApi';
+export * from './RegionApi';
 export * from './SimpleAutoApi';
 export * from './SpecAutoApi';
 export * from './UserApi';

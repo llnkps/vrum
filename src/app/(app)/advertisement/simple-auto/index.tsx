@@ -1,7 +1,7 @@
 import { InputField } from "@/components/ui/InputField";
 import { useRouter } from "expo-router";
 import { useCallback, useRef, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, set, useForm } from "react-hook-form";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -75,27 +75,30 @@ const pickerOptions = {
 };
 
 export default function AddCarPage() {
-
-// const configuration = new Configuration({
-//       credentials: "include",
-//       headers: {
-//         'Bearer': "dsasa"
-//       },
-//       accessToken: "das"
-//     });
-
+  // const configuration = new Configuration({
+  //       credentials: "include",
+  //       headers: {
+  //         'Bearer': "dsasa"
+  //       },
+  //       accessToken: "das"
+  //     });
 
   const router = useRouter();
   const simpleAutoClient = new SimpleAutoApi();
-  const { selectedBrand, selectedModel } = useSimpleAutoFormContext();
+  const { selectedBrand, selectedModel, selectedRegion, setSelectedRegion, selectedTransmission, setSelectedTransmission } = useSimpleAutoFormContext();
   console.log(selectedBrand);
 
-  const { control, handleSubmit, getValues, reset } = useForm({
+  const { control, handleSubmit, setValue, getValues, reset } = useForm({
     defaultValues: {
       title: "",
       description: "",
       price: 0,
       currency: "USD",
+
+      releaseYearFrom: "",
+      releaseYearTo: "",
+      region: "",
+
       location: "",
       images: [],
       status: "active",
@@ -123,10 +126,11 @@ export default function AddCarPage() {
     simpleAutoClient.postAppSimpleautocontextPresentationSimpleautocreateCreate(
       {
         postAppSimpleautocontextPresentationSimpleautocreateCreateRequest: {
-        ...data,
-        brand: selectedBrand?.name || "",
-        model: selectedModel?.name || "",
-      }}
+          ...data,
+          brand: selectedBrand?.name || "",
+          model: selectedModel?.name || "",
+        },
+      }
     );
   };
 
@@ -314,10 +318,12 @@ export default function AddCarPage() {
             <BottomSheetModalButton
               label={"Регион"}
               onPress={handlePresentRegionModalPress}
+              selectedValue={selectedRegion ?? undefined}
             />
             <BottomSheetModalButton
               label={"Коробка передач"}
               onPress={handlePresentTransmissionModalPress}
+              selectedValue={selectedTransmission ?? undefined}
             />
             <BottomSheetModalButton
               label={"Тип топлива"}
@@ -442,9 +448,27 @@ export default function AddCarPage() {
         </Button>
       </KeyboardAwareScrollView>
 
-      <YearModal ref={yearModalRef} />
-      <RegionModal ref={regionModalRef} />
-      <TransmissionModal ref={transmissionModalRef} onSelect={() => {}} />
+      <YearModal
+        ref={yearModalRef}
+        onChange={(from, till) => {
+          console.log(from, till);
+          setValue("releaseYearFrom", from);
+          setValue("releaseYearTo", till);
+        }}
+      />
+      <RegionModal
+        ref={regionModalRef}
+        onChange={(region) => {
+          setValue("region", region.slug); // set value for form
+          setSelectedRegion(region.name); // set value for context
+          regionModalRef.current?.close({duration: 150});
+        }}
+      />
+      <TransmissionModal ref={transmissionModalRef} onSelect={(transmisison) => {
+        setValue("transmission", transmisison.value);
+        setSelectedTransmission(transmisison.label);
+        transmissionModalRef.current?.close({duration: 150});
+      }} />
       <FuelTypeModal ref={fuelTypeModalRef} onSelect={() => {}} />
       <BodyTypeModal ref={bodyTypeModalRef} onSelect={() => {}} />
       <DrivetrainModal ref={drivetrainModalRef} onSelect={() => {}} />
@@ -509,12 +533,13 @@ const ModalButton = ({
 const BottomSheetModalButton = ({
   label,
   onPress,
+  selectedValue,
 }: {
   label: string;
   onPress: () => void;
+  selectedValue?: string;
 }) => {
   const theme = useTheme() as CustomTheme;
-
   return (
     <Pressable
       onPress={onPress}
@@ -524,7 +549,15 @@ const BottomSheetModalButton = ({
         "rounded-md border border-border dark:border-border-dark"
       )}
     >
-      <Text className="text-font dark:text-font-dark font-bold">{label}</Text>
+      <View>
+        <Text className="text-font dark:text-font-dark font-bold">{label}</Text>
+        {selectedValue && (
+          <Text className="text-font-subtle dark:text-font-subtle-dark">
+            {selectedValue}
+          </Text>
+        )}
+      </View>
+
       <Entypo name="chevron-down" size={24} color={theme.colors.icon} />
     </Pressable>
   );

@@ -1,10 +1,16 @@
 
+
+import CustomBottomSheetModal, {
+  BottomSheetRef,
+} from "@/components/global/CustomBottomSheetModal";
+import { CustomRectButton } from "@/components/ui/button";
+import { BottomSheetView } from "@gorhom/bottom-sheet";
 import React, { forwardRef } from "react";
-import CustomBottomSheetModal, { BottomSheetRef } from "@/components/global/CustomBottomSheetModal";
-import { View, Text, Pressable } from "react-native";
+
+type ColorOption = (typeof options)[number];
 
 type ColorModalProps = {
-  onSelect: (value: string) => void;
+  onSelect: (value: ColorOption) => void;
 };
 
 const options = [
@@ -18,19 +24,33 @@ const options = [
   { label: "Другой", value: "other" },
 ];
 
-const ColorModal = forwardRef<BottomSheetRef, ColorModalProps>(({ onSelect }, ref) => {
-  return (
-    <CustomBottomSheetModal ref={ref} title="Выберите цвет">
-      <View style={{ padding: 20 }}>
-        {options.map((opt) => (
-          <Pressable key={opt.value} onPress={() => onSelect(opt.value)}>
-            <Text style={{ padding: 10 }}>{opt.label}</Text>
-          </Pressable>
-        ))}
-      </View>
-    </CustomBottomSheetModal>
-  );
-});
+const ColorModal = forwardRef<BottomSheetRef, ColorModalProps>(
+  ({ onSelect }, ref) => {
+    const [selectedColor, setSelectedColor] = React.useState<string | undefined>(undefined);
+
+    return (
+      <CustomBottomSheetModal
+        ref={ref}
+        snapPoints={["60%"]}
+        enableContentPanningGesture={true}
+      >
+        <BottomSheetView className="flex-col">
+          {options.map((opt) => (
+            <CustomRectButton
+              key={opt.value}
+              onPress={() => {
+                onSelect(opt);
+                setSelectedColor(opt.value);
+              }}
+              title={opt.label}
+              isSelected={selectedColor === opt.value}
+            />
+          ))}
+        </BottomSheetView>
+      </CustomBottomSheetModal>
+    );
+  }
+);
 ColorModal.displayName = "ColorModal";
 
 export default ColorModal;

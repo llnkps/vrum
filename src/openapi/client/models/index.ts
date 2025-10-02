@@ -11,5 +11,6 @@ export * from './GetAppUserdomainPresentationGetmeGetme200Response';
 export * from './GetAppUserdomainPresentationGetmeGetme200ResponseRecentProductsInner';
 export * from './GetAppUserdomainPresentationUsersubscriptionfilterUsersubscriptionfiltergetcollectionGetfilters200Response';
 export * from './GetAppUserdomainPresentationUsersubscriptionfilterUsersubscriptionfiltergetcollectionGetfilters200ResponseFilterParametersInner';
+export * from './GetRegionIndex200ResponseInner';
 export * from './PostAppSimpleautocontextPresentationSimpleautocreateCreateRequest';
 export * from './PostAppUserdomainPresentationUsersubscriptionfilterUsersubscriptionfiltercreateCreatefiltersRequest';

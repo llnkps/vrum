@@ -18,6 +18,24 @@ type SimpleAutoFormContextType = {
 
   selectedYear: string | null;
   setSelectedYear: (year: string | null) => void;
+
+  selectedRegion: string | null;
+  setSelectedRegion: (region: string | null) => void;
+
+  selectedTransmission: string | null;
+  setSelectedTransmission: (transmission: string | null) => void;
+
+  selectedCondition: string | null;
+  setSelectedCondition: (condition: string | null) => void;
+
+  selectedFuelType: string | null;
+  setSelectedFuelType: (fuelType: string | null) => void;
+
+  selectedSellerName: string | null;
+  setSelectedSellerName: (sellerName: string | null) => void;
+
+  selectedCurrency: string | null;
+  setSelectedCurrency: (currency: string | null) => void;
 };
 
 const SimpleAutoFormContext = createContext<SimpleAutoFormContextType | null>(null);
@@ -32,6 +50,13 @@ export const SimpleAutoFormProvider = ({ children }: { children: React.ReactNode
       null
     );
   const [selectedYear, setSelectedYear] = useState<string | null>(null);
+  const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
+  const [selectedTransmission, setSelectedTransmission] = useState<string | null>(null);
+  const [selectedCondition, setSelectedCondition] = useState<string | null>(null);
+  const [selectedFuelType, setSelectedFuelType] = useState<string | null>(null);
+  const [selectedSellerName, setSelectedSellerName] = useState<string | null>(null);
+  const [selectedCurrency, setSelectedCurrency] = useState<string | null>(null);
+
 
   return (
     <SimpleAutoFormContext.Provider
@@ -42,6 +67,18 @@ export const SimpleAutoFormProvider = ({ children }: { children: React.ReactNode
         setSelectedModel,
         selectedYear,
         setSelectedYear,
+        selectedRegion,
+        setSelectedRegion,
+        selectedTransmission,
+        setSelectedTransmission,
+        selectedCondition,
+        setSelectedCondition,
+        selectedFuelType,
+        setSelectedFuelType,
+        selectedSellerName,
+        setSelectedSellerName,
+        selectedCurrency,
+        setSelectedCurrency,
       }}
     >
       {children}

@@ -1276,6 +1276,49 @@
                     }
                 }
             }
+        },
+        "/api/regions": {
+            "get": {
+                "tags": [
+                    "Region"
+                ],
+                "operationId": "get_region_index",
+                "responses": {
+                    "200": {
+                        "description": "Returns regions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "id",
+                                        "name",
+                                        "slug",
+                                        "orderNumber"
+                                    ],
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            },
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "slug": {
+                                                "type": "string"
+                                            },
+                                            "orderNumber": {
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -1317,6 +1360,10 @@
         {
             "name": "Motorbike",
             "description": "Motorbike"
+        },
+        {
+            "name": "Region",
+            "description": "Region"
         }
     ]
 }

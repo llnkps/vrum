@@ -18,7 +18,7 @@ type CustomBottomSheetProps = {
   title?: string;
   handleComponent?: FC<BottomSheetVariables>;
   footerComponent?: FC<BottomSheetFooterProps>;
-
+  enableContentPanningGesture?: boolean;
   /** Content to render inside the bottom sheet */
   children: ReactNode;
 };
@@ -33,6 +33,7 @@ const CustomBottomSheetModal = forwardRef<
     children,
     handleComponent,
     footerComponent,
+    enableContentPanningGesture = false,
   } = props;
 
   const memoizedSnapPoints = useMemo(() => snapPoints, [snapPoints]);
@@ -59,7 +60,7 @@ const CustomBottomSheetModal = forwardRef<
       backdropComponent={renderBackdrop}
       handleComponent={handleComponent}
       footerComponent={footerComponent}
-      enableContentPanningGesture={false}
+      enableContentPanningGesture={enableContentPanningGesture}
       backgroundStyle={{
         backgroundColor: theme.colors.surface,
       }}

@@ -1,10 +1,15 @@
-
+import CustomBottomSheetModal, {
+  BottomSheetRef,
+} from "@/components/global/CustomBottomSheetModal";
+import { CustomRectButton } from "@/components/ui/button";
+import { BottomSheetView } from "@gorhom/bottom-sheet";
 import React, { forwardRef } from "react";
-import CustomBottomSheetModal, { BottomSheetRef } from "@/components/global/CustomBottomSheetModal";
-import { View, Text, Pressable } from "react-native";
+import { HeaderHandle } from "./header";
+
+type BodyTypeOption = (typeof options)[number];
 
 type BodyTypeModalProps = {
-  onSelect: (value: string) => void;
+  onSelect: (value: BodyTypeOption) => void;
 };
 
 const options = [
@@ -17,19 +22,36 @@ const options = [
   { label: "Фургон", value: "van" },
 ];
 
-const BodyTypeModal = forwardRef<BottomSheetRef, BodyTypeModalProps>(({ onSelect }, ref) => {
-  return (
-    <CustomBottomSheetModal ref={ref} title="Выберите тип кузова">
-      <View style={{ padding: 20 }}>
-        {options.map((opt) => (
-          <Pressable key={opt.value} onPress={() => onSelect(opt.value)}>
-            <Text style={{ padding: 10 }}>{opt.label}</Text>
-          </Pressable>
-        ))}
-      </View>
-    </CustomBottomSheetModal>
-  );
-});
+const BodyTypeModal = forwardRef<BottomSheetRef, BodyTypeModalProps>(
+  ({ onSelect }, ref) => {
+    const [selectedBodyType, setSelectedBodyType] = React.useState<
+      string | undefined
+    >(undefined);
+
+    return (
+      <CustomBottomSheetModal
+        ref={ref}
+        snapPoints={["60%"]}
+        handleComponent={HeaderHandle}
+        enableContentPanningGesture={true}
+      >
+        <BottomSheetView className="flex-col">
+          {options.map((opt) => (
+            <CustomRectButton
+              key={opt.value}
+              onPress={() => {
+                onSelect(opt);
+                setSelectedBodyType(opt.value);
+              }}
+              title={opt.label}
+              isSelected={selectedBodyType === opt.value}
+            />
+          ))}
+        </BottomSheetView>
+      </CustomBottomSheetModal>
+    );
+  }
+);
 BodyTypeModal.displayName = "BodyTypeModal";
 
 export default BodyTypeModal;

@@ -1,47 +1,51 @@
-import CustomBottomSheetModal from "@/components/global/CustomBottomSheetModal";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+
+import CustomBottomSheetModal, {
+  BottomSheetRef,
+} from "@/components/global/CustomBottomSheetModal";
+import { CustomRectButton } from "@/components/ui/button";
+import { BottomSheetView } from "@gorhom/bottom-sheet";
 import React, { forwardRef } from "react";
-import { Text, View } from "react-native";
 
-export type BottomSheetRef = BottomSheetModal;
+type CurrencyOption = (typeof options)[number];
 
-type props = {
-  /** Custom snap points (default: ['50%']) */
-  snapPoints?: string[];
-  /** Optional title at the top */
-  title?: string;
-  /** Content to render inside the bottom sheet */
+type CurrencyModalProps = {
+  onSelect: (value: CurrencyOption) => void;
 };
 
-export const CurrencyModal = forwardRef<BottomSheetRef, props>((props, ref) => {
-  return (
-    <CustomBottomSheetModal ref={ref} snapPoints={["60%"]}>
-      <View className="p-4 flex-col gap-y-4">
-        <View className="p-2 rounded-md bg-background-neutral-subtle-pressed dark:bg-background-neutral-subtle-dark-pressed">
-          <Text className="text-font dark:text-font-dark text-lg">
-            Все регионы
-          </Text>
-        </View>
+const options = [
+  { label: "MDL", value: "mdl" },
+  { label: "USD", value: "usd" },
+  { label: "EUR", value: "eur" },
+];
 
-        <View className="p-2 rounded-md">
-          <Text className="text-font dark:text-font-dark text-lg">Кишинев</Text>
-        </View>
+const CurrencyModal = forwardRef<BottomSheetRef, CurrencyModalProps>(
+  ({ onSelect }, ref) => {
+    const [selectedCurrency, setSelectedCurrency] = React.useState<string | undefined>(undefined);
 
-        <View className="p-2 rounded-md">
-          <Text className="text-font dark:text-font-dark text-lg">Кишинев</Text>
-        </View>
-
-        <View className="p-2 rounded-md">
-          <Text className="text-font dark:text-font-dark text-lg">Кишинев</Text>
-        </View>
-
-        <View className="p-2 rounded-md">
-          <Text className="text-font dark:text-font-dark text-lg">Кишинев</Text>
-        </View>
-      </View>
-    </CustomBottomSheetModal>
-  );
-});
-
+    return (
+      <CustomBottomSheetModal
+        ref={ref}
+        snapPoints={["60%"]}
+        enableContentPanningGesture={true}
+      >
+        <BottomSheetView className="flex-col">
+          {options.map((opt) => (
+            <CustomRectButton
+              key={opt.value}
+              onPress={() => {
+                onSelect(opt);
+                setSelectedCurrency(opt.value);
+              }}
+              title={opt.label}
+              isSelected={selectedCurrency === opt.value}
+            />
+          ))}
+        </BottomSheetView>
+      </CustomBottomSheetModal>
+    );
+  }
+);
 CurrencyModal.displayName = "CurrencyModal";
+
+export default CurrencyModal;
 
