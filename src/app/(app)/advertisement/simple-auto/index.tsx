@@ -1,12 +1,12 @@
 import { InputField } from "@/components/ui/InputField";
 import { useRouter } from "expo-router";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Controller, set, useForm } from "react-hook-form";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import CloseIcon from "@/components/global/CloseIcon";
-import { Button } from "@/components/ui/button";
+import { Button, CustomRectButton } from "@/components/ui/button";
 import { useSimpleAutoFormContext } from "@/modules/advertisement/simple-auto/SimpleAutoFormProvider";
 import YearModal from "@/modules/advertisement/simple-auto/year-modal/year-modal";
 import TransmissionModal from "@/modules/advertisement/simple-auto/transmission-modal/transmission-modal";
@@ -31,6 +31,7 @@ import clsx from "clsx";
 import { RegionModal } from "@/modules/advertisement/simple-auto/region-modal/region-modal";
 import { Checkbox } from "expo-checkbox";
 import { Configuration, SimpleAutoApi } from "@/openapi/client";
+import { CurrencySelect } from "@/modules/advertisement/simple-auto/currency-select";
 
 const pickerOptions = {
   currency: [
@@ -85,27 +86,28 @@ export default function AddCarPage() {
 
   const router = useRouter();
   const simpleAutoClient = new SimpleAutoApi();
-  const { selectedBrand, selectedModel, selectedRegion, setSelectedRegion, selectedTransmission, setSelectedTransmission } = useSimpleAutoFormContext();
+  const {
+    selectedBrand,
+    selectedModel,
+    selectedRegion,
+    setSelectedRegion,
+    selectedTransmission,
+    setSelectedTransmission,
+  } = useSimpleAutoFormContext();
   console.log(selectedBrand);
 
   const { control, handleSubmit, setValue, getValues, reset } = useForm({
     defaultValues: {
-      title: "",
+      name: "",
       description: "",
-      price: 0,
+      price: "",
       currency: "USD",
-
-      releaseYearFrom: "",
-      releaseYearTo: "",
+      images: [],
+      brand: null,
+      model: null,
+      releaseYear: "",
       region: "",
 
-      location: "",
-      images: [],
-      status: "active",
-      category: "car",
-      brand: "",
-      model: "",
-      year: new Date().getFullYear(),
       mileage: 0,
       fuelType: "petrol",
       transmission: "manual",
@@ -114,25 +116,52 @@ export default function AddCarPage() {
       engineCapacity: 0,
       power: 0,
       color: "",
+
+      tradeAllow: false,
+
+      status: "active",
       condition: "used",
     },
   });
 
   // Form submit handler
   const onSubmit = (data) => {
-    // Here you can send data to your API or handle it as needed
     console.log("Form submitted:", data);
-    // Example: reset();
+    console.log(selectedBrand, selectedModel);
+    const {
+      name,
+      description,
+      price,
+      currency,
+      region,
+      releaseYear,
+      brand,
+      model,
+      ...additionalFields
+    } = data;
+
     simpleAutoClient.postAppSimpleautocontextPresentationSimpleautocreateCreate(
       {
         postAppSimpleautocontextPresentationSimpleautocreateCreateRequest: {
           ...data,
-          brand: selectedBrand?.name || "",
-          model: selectedModel?.name || "",
+          // brand: selectedBrand?.id || "",
+          // model: selectedModel?.id || "",
         },
       }
     );
   };
+
+  useEffect(() => {
+    if (selectedBrand && selectedBrand.id) {
+      setValue("brand", selectedBrand.id);
+    }
+  }, [selectedBrand, setValue]);
+
+  useEffect(() => {
+    if (selectedModel && selectedModel.id) {
+      setValue("model", selectedModel.id);
+    }
+  }, [selectedModel, setValue]);
 
   const yearModalRef = useRef<BottomSheetRef>(null);
   const regionModalRef = useRef<BottomSheetRef>(null);
@@ -198,8 +227,6 @@ export default function AddCarPage() {
     sellerModalRef.current?.present();
   }, []);
 
-  const [toggleCheckBox, setToggleCheckBox] = useState(false);
-
   return (
     <SafeAreaView className="flex-1 bg-background-page dark:bg-background-page-dark">
       <KeyboardAwareScrollView>
@@ -215,7 +242,7 @@ export default function AddCarPage() {
 
           <Controller
             control={control}
-            name="title"
+            name="name"
             render={({ field }) => {
               return (
                 <InputField
@@ -242,50 +269,27 @@ export default function AddCarPage() {
             }}
           />
 
-          <View className="flex-row gap-4">
-            <View className="flex-1">
-              <Controller
-                control={control}
-                name="price"
-                render={({ field }) => {
-                  return (
-                    <InputField
-                      ref={field.ref}
-                      value={field.value.toString()}
-                      label={"Цена"}
-                      keyboardType="numeric"
-                      placeholder="1500"
-                    />
-                  );
-                }}
-              />
-            </View>
-
-            {/* <View className="w-28">
-              <Text className={labelClassName}>Валюта</Text>
-              <PickerButton
-                label=""
-                value={getPickerLabel("currency", "1")}
-                onPress={() => setActiveModal("currency")}
-              />
-            </View> */}
-          </View>
-
-          <View>
-            {/* <Text className={labelClassName}>Местоположение</Text> */}
-            {/* <TextInput
-              className={inputClassName}
-              value={form.location}
-              onChangeText={(t) => handleChange("location", t)}
-              placeholder="Кишинев, Центр"
-              placeholderTextColor={isDark ? "#96999E" : "#6B6E76"}
-            /> */}
-            {/* <PickerButton
-              label=""
-              value={getPickerLabel("currency", "USD")}
-              onPress={() => setActiveModal("currency")}
-            /> */}
-          </View>
+          <Controller
+            control={control}
+            name="price"
+            render={({ field }) => {
+              return (
+                <InputField
+                  ref={field.ref}
+                  value={field.value.toString()}
+                  onChange={(e) => field.onChange(e)}
+                  label={"Цена"}
+                  keyboardType="numeric"
+                  placeholder="1500"
+                />
+              );
+            }}
+          />
+          <CurrencySelect
+            onChange={(currency) => {
+              setValue("currency", currency.value);
+            }}
+          />
         </View>
 
         {/* Характеристики автомобиля */}
@@ -296,6 +300,8 @@ export default function AddCarPage() {
             </Text>
           </View>
           <View className="gap-y-3">
+            {/* Buttons to open modals and bottom sheet modals */}
+
             <ModalButton
               label={selectedBrand?.name ?? "Марка"}
               onPress={() =>
@@ -341,14 +347,10 @@ export default function AddCarPage() {
               label={"Состояние"}
               onPress={handlePresentConditionModalPress}
             />
-
-            <View>
-              <BottomSheetModalButton
-                label={"Цвет"}
-                onPress={handlePresentColorModalPress}
-              />
-            </View>
-
+            <BottomSheetModalButton
+              label={"Цвет"}
+              onPress={handlePresentColorModalPress}
+            />
             <BottomSheetModalButton
               label={"Объем двигателя"}
               onPress={handlePresentEngineCapacityModalPress}
@@ -380,25 +382,20 @@ export default function AddCarPage() {
               onPress={handlePresentNumberOfOwnersModalPress}
             />
 
-            <View>
-              <Checkbox
-                disabled={false}
-                value={toggleCheckBox}
-                onValueChange={(newValue) => setToggleCheckBox(newValue)}
-              />
-              <Text className="text-font dark:text-font-dark">
-                Обмен возможен - ТОРГ
-              </Text>
-            </View>
-
-            {/* <View>
-              <CheckBox
-                disabled={false}
-                value={toggleCheckBox}
-                onValueChange={(newValue) => setToggleCheckBox(newValue)}
-              />
-              <Text>Документы в</Text>
-            </View> */}
+            <Controller
+              control={control}
+              name="tradeAllow"
+              render={({ field }) => {
+                console.log(field.value);
+                return (
+                  <CheckboxRectButton
+                    label="Обмен возможен - ТОРГ"
+                    value={field.value}
+                    onPress={() => field.onChange(!field.value)} // toggle value
+                  />
+                );
+              }}
+            />
 
             <BottomSheetModalButton
               label={"Документы в порядке"}
@@ -416,29 +413,6 @@ export default function AddCarPage() {
               <Text>Частник</Text>
               <Text>Компания</Text>
             </View>
-            {/* <BottomSheetModalButton label={"Продавец"} onPress={handlePresentSellerModalPress} /> */}
-
-            {/* filterTransmission 
-            filterFuel 
-            filterVolumeFrom 
-            filterVolumeTo
-            filterDriveType 
-            filterUnsold 
-            filterWithImage
-            filterFrame 
-            filterColor
-            filterDocument 
-            filterDamangedType 
-            filterWheelType
-            filterPowerFrom
-            filterPowerTo 
-            filterMileageFrom 
-            filterMileageTo
-            filterFirmCountryGroup 
-            filterSeller 
-            filterSellLocation
-            filterNumberOfOwners 
-            filterTradeAllow */}
           </View>
         </View>
 
@@ -450,25 +424,28 @@ export default function AddCarPage() {
 
       <YearModal
         ref={yearModalRef}
-        onChange={(from, till) => {
-          console.log(from, till);
-          setValue("releaseYearFrom", from);
-          setValue("releaseYearTo", till);
+        onChange={(releaseYear) => {
+          console.log(releaseYear);
+          setValue("releaseYear", releaseYear.value);
         }}
       />
       <RegionModal
         ref={regionModalRef}
         onChange={(region) => {
+          console.log(region)
           setValue("region", region.slug); // set value for form
           setSelectedRegion(region.name); // set value for context
-          regionModalRef.current?.close({duration: 150});
+          regionModalRef.current?.close({ duration: 150 });
         }}
       />
-      <TransmissionModal ref={transmissionModalRef} onSelect={(transmisison) => {
-        setValue("transmission", transmisison.value);
-        setSelectedTransmission(transmisison.label);
-        transmissionModalRef.current?.close({duration: 150});
-      }} />
+      <TransmissionModal
+        ref={transmissionModalRef}
+        onSelect={(transmisison) => {
+          setValue("transmission", transmisison.value);
+          setSelectedTransmission(transmisison.label);
+          transmissionModalRef.current?.close({ duration: 150 });
+        }}
+      />
       <FuelTypeModal ref={fuelTypeModalRef} onSelect={() => {}} />
       <BodyTypeModal ref={bodyTypeModalRef} onSelect={() => {}} />
       <DrivetrainModal ref={drivetrainModalRef} onSelect={() => {}} />
@@ -560,5 +537,29 @@ const BottomSheetModalButton = ({
 
       <Entypo name="chevron-down" size={24} color={theme.colors.icon} />
     </Pressable>
+  );
+};
+
+// TODO: maybe can be reused
+const CheckboxRectButton = ({
+  value,
+  label,
+  onPress,
+}: {
+  value: boolean;
+  label: string;
+  onPress: () => void;
+}) => {
+  const onClick = () => {
+    onPress();
+  };
+
+  return (
+    <CustomRectButton onPress={onClick}>
+      <View className="flex-row items-center justify-between space-x-2">
+        <Text className="text-font dark:text-font-dark">{label}</Text>
+        <Checkbox value={value} onValueChange={onClick} />
+      </View>
+    </CustomRectButton>
   );
 };

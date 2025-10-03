@@ -20,7 +20,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import CloseIcon from "@/components/global/CloseIcon";
 import { InputField } from "@/components/ui/InputField";
 import { useSimpleAutoBrandApi } from "@/hooks/useSimpleAutoBrandApi";
-import { useFilterContext } from "@/modules/advertisement/simple-auto/SimpleAutoFormProvider";
+import { useSimpleAutoFormContext } from "@/modules/advertisement/simple-auto/SimpleAutoFormProvider";
 import {
   DefaultConfig,
   GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner,
@@ -92,7 +92,7 @@ const ModelItemScreenFilterModalBlock: FC<props> = ({
   const router = useRouter();
 
   // const { addSelectedModel } = useAutoSelectStore();
-  const { setSelectedBrand, setSelectedModel } = useFilterContext();
+  const { setSelectedBrand, setSelectedModel } = useSimpleAutoFormContext();
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {

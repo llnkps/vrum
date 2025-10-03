@@ -27,25 +27,17 @@ const years = [...Array(100).keys()].map((index) => ({
 }));
 
 type YearModalProps = props & {
-  onChange?: (from: number, till: number) => void;
+  onChange?: (releaseYear: any) => void;
 };
 
 const YearModal = forwardRef<BottomSheetRef, YearModalProps>((props, ref) => {
-  const [fromYear, setFromYear] = useState(years[0].value);
-  const [tillYear, setTillYear] = useState(years[0].value);
+  const [releaseYear, setReleaseYear] = useState(years[0].value);
 
-  const handleChangeFromYear = (
+  const handleReleaseYear = (
     value: ValueChangedEvent<PickerItem<number>>
   ) => {
-    setFromYear(value.item.value);
-    if (props.onChange) props.onChange(value.item.value, tillYear);
-  };
-
-  const handleChangeTillYear = (
-    value: ValueChangedEvent<PickerItem<number>>
-  ) => {
-    setTillYear(value.item.value);
-    if (props.onChange) props.onChange(fromYear, value.item.value);
+    setReleaseYear(value.item.value);
+    if (props.onChange) props.onChange(value.item);
   };
 
   const renderHeaderHandle = useCallback(
@@ -63,23 +55,12 @@ const YearModal = forwardRef<BottomSheetRef, YearModalProps>((props, ref) => {
       <View className="flex-row justify-center gap-x-10">
         <View className="flex-row gap-x-8">
           <Text className="mt-[7.6rem] text-font dark:text-font-dark font-bold text-lg">
-            от
+            Год выпуска
           </Text>
           <CustomWheelPicker
             data={years}
-            value={fromYear}
-            onValueChanged={handleChangeFromYear}
-          />
-        </View>
-
-        <View className="flex-row justify-center gap-x-10">
-          <Text className="mt-[7.6rem] text-font dark:text-font-dark font-bold text-lg">
-            до
-          </Text>
-          <CustomWheelPicker
-            data={years}
-            value={tillYear}
-            onValueChanged={handleChangeTillYear}
+            value={releaseYear}
+            onValueChanged={handleReleaseYear}
           />
         </View>
       </View>

@@ -14,15 +14,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import CloseIcon from "@/components/global/CloseIcon";
 import { InputField } from "@/components/ui/InputField";
 import { useSimpleAutoModelByBrandApi } from "@/hooks/useSimpleAutoModelByBrandApi";
-import { useFilterContext } from "@/modules/advertisement/simple-auto/SimpleAutoFormProvider";
+import { useSimpleAutoFormContext } from "@/modules/advertisement/simple-auto/SimpleAutoFormProvider";
 import { GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner } from "@/openapi/client";
-import { useAutoSelectStore } from "@/state/search-screen/useAutoSelectStore";
 import { Ionicons } from "@expo/vector-icons";
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight ?? 24;
 
 export default function ModalModelItem() {
-  const { selectedBrand } = useFilterContext();
+  const { selectedBrand } = useSimpleAutoFormContext();
 
   const { data, isLoading } = useSimpleAutoModelByBrandApi(
     selectedBrand?.id || null
@@ -87,7 +86,7 @@ const ModalModelItemBlock: FC<props> = ({ models, scrollY, isScrolling }) => {
 
   // const { selectedModels, addSelectedModel } = useAutoSelectStore();
 
-  const { setSelectedModel } = useFilterContext();
+  const { setSelectedModel } = useSimpleAutoFormContext();
 
   const handleSelectModel = (
     item: GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner

@@ -38,9 +38,11 @@ export const Button = ({
   const styles = StyleSheet.create({
     // default
     default: {
-      backgroundColor: "#007bff",
-      borderColor: "#007bff",
+      backgroundColor: theme.colors.button.subtlePressed, // TODO: change it
+      borderColor: "transparent",
     },
+
+    // TODO: update to selected colors
     defaultPressed: {
       backgroundColor: "#0056b3",
       borderColor: "#0056b3",
@@ -83,7 +85,8 @@ export const Button = ({
       <TouchableHighlight
         style={[
           styles.button,
-          appearance === "default" && styles.default,
+          appearance === "default" &&
+            (isSelected ? styles.defaultPressed : styles.default),
           appearance === "subtle" &&
             (isSelected ? styles.subtlePressed : styles.subtle),
           disabled && styles.disabledButton,
