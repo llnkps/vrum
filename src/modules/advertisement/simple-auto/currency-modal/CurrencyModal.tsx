@@ -18,7 +18,7 @@ const options = [
   { label: "EUR", value: "eur" },
 ];
 
-const CurrencyModal = forwardRef<BottomSheetRef, CurrencyModalProps>(
+export const CurrencyModal = forwardRef<BottomSheetRef, CurrencyModalProps>(
   ({ onSelect }, ref) => {
     const [selectedCurrency, setSelectedCurrency] = React.useState<string | undefined>(undefined);
 
@@ -46,6 +46,4 @@ const CurrencyModal = forwardRef<BottomSheetRef, CurrencyModalProps>(
   }
 );
 CurrencyModal.displayName = "CurrencyModal";
-
-export default CurrencyModal;
 

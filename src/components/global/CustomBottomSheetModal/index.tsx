@@ -8,6 +8,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import { BottomSheetVariables } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useTheme } from "@react-navigation/native";
+import { HeaderHandle } from "./header";
 
 export type BottomSheetRef = BottomSheetModal;
 
@@ -51,16 +52,22 @@ const CustomBottomSheetModal = forwardRef<
     []
   );
 
+  const renderDefaultHeader = useCallback(
+    (props: any) => <HeaderHandle {...props} title={title} />,
+    [title]
+  );
+
   return (
     <BottomSheetModal
       ref={ref}
-      index={0}
+      index={0} // initially closed
       snapPoints={memoizedSnapPoints}
       enableDynamicSizing={false}
       backdropComponent={renderBackdrop}
-      handleComponent={handleComponent}
+      handleComponent={handleComponent ?? renderDefaultHeader}
       footerComponent={footerComponent}
       enableContentPanningGesture={enableContentPanningGesture}
+      enablePanDownToClose={true}
       backgroundStyle={{
         backgroundColor: theme.colors.surface,
       }}

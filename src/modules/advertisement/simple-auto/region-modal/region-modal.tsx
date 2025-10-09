@@ -2,9 +2,10 @@ import CustomBottomSheetModal from "@/components/global/CustomBottomSheetModal";
 import { CustomRectButton } from "@/components/ui/button";
 import { useRegionApi } from "@/hooks/useRegionApi";
 import { GetRegionIndex200ResponseInner } from "@/openapi/client";
-import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, BottomSheetScrollView, BottomSheetView } from "@gorhom/bottom-sheet";
 import React, { forwardRef } from "react";
 import { HeaderHandle } from "./header";
+import { ActivityIndicator, Text } from "react-native";
 
 export type BottomSheetRef = BottomSheetModal;
 
@@ -19,7 +20,7 @@ type props = {
 };
 
 export const RegionModal = forwardRef<BottomSheetRef, props>((props, ref) => {
-  const { data: regions } = useRegionApi();
+  const { data: regions, isLoading, error } = useRegionApi();
   const [selectedRegion, setSelectedRegion] = React.useState<
     string | undefined
   >(undefined);
@@ -31,19 +32,28 @@ export const RegionModal = forwardRef<BottomSheetRef, props>((props, ref) => {
       handleComponent={HeaderHandle}
       enableContentPanningGesture={true}
     >
-      <BottomSheetScrollView className="flex-col">
-        {regions?.map((region) => (
-          <CustomRectButton
-            key={region.id}
-            onPress={() => {
-              props.onChange(region);
-              setSelectedRegion(region.slug);
-            }}
-            title={region.name}
-            isSelected={selectedRegion === region.slug}
-          />
-        ))}
-      </BottomSheetScrollView>
+      {isLoading && (
+        <ActivityIndicator size="large" />
+      )}
+      {error ? (
+        <BottomSheetView className="flex-1 justify-center items-center">
+          <Text className="text-font dark:text-font-dark">Произошла ошибка. Приносим извинения!</Text>
+        </BottomSheetView>
+      ) : (
+        <BottomSheetScrollView className="flex-col">
+          {regions?.map((region) => (
+            <CustomRectButton
+              key={region.id}
+              onPress={() => {
+                props.onChange(region);
+                setSelectedRegion(region.slug);
+              }}
+              title={region.name}
+              isSelected={selectedRegion === region.slug}
+            />
+          ))}
+        </BottomSheetScrollView>
+      )}
     </CustomBottomSheetModal>
   );
 });

@@ -1,15 +1,17 @@
 import { FC } from "react";
 
+import { Checkbox as CheckboxExpo } from 'expo-checkbox';
+
 type props = {
-  disabled: boolean;
   value: boolean;
   onValueChange: (newValue: boolean) => void;
+  disabled?: boolean;
 }
 
-export const Checkbox: FC<props> = ({disabled, value, onValueChange}) => {
+export const Checkbox: FC<props> = ({value, onValueChange, disabled = false}) => {
   return (
-    <Checkbox
-      disabled={false}
+    <CheckboxExpo
+      disabled={disabled}
       value={value}
       onValueChange={onValueChange}
     />

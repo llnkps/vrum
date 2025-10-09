@@ -11,9 +11,10 @@ import React, { forwardRef, useState } from "react";
 import { Text } from "react-native";
 import { HeaderHandle } from "./header";
 
+type OptionType = (typeof powerArray)[number];
+
 type PowerModalProps = {
-  onSelectFrom: (value: number) => void;
-  onSelectTo: (value: number) => void;
+  onSelect: (value: OptionType) => void;
 };
 
 const powerArray = Array.from({ length: (1000 - 50) / 10 + 1 }, (_, i) => {
@@ -22,25 +23,13 @@ const powerArray = Array.from({ length: (1000 - 50) / 10 + 1 }, (_, i) => {
 });
 
 const PowerModal = forwardRef<BottomSheetRef, PowerModalProps>(
-  ({ onSelectFrom, onSelectTo }, ref) => {
+  ({ onSelect }, ref) => {
     const [fromYear, setFromYear] = useState(powerArray[0].value);
-    const [tillYear, setTillYear] = useState(powerArray[0].value);
 
-    const handleChangeFrom = (
-      value: ValueChangedEvent<PickerItem<number>>
-    ) => {
+    const handleChange = (value: ValueChangedEvent<PickerItem<number>>) => {
       setFromYear(value.item.value);
-      if (onSelectFrom) {
-        onSelectFrom(value.item.value);
-      }
-    };
-
-    const handleChangeTo = (
-      value: ValueChangedEvent<PickerItem<number>>
-    ) => {
-      setTillYear(value.item.value);
-      if (onSelectTo) {
-        onSelectTo(value.item.value);
+      if (onSelect) {
+        onSelect(value.item);
       }
     };
 
@@ -54,23 +43,12 @@ const PowerModal = forwardRef<BottomSheetRef, PowerModalProps>(
         <BottomSheetView className="flex-row justify-center gap-x-10">
           <BottomSheetView className="flex-row gap-x-8">
             <Text className="mt-[7.6rem] text-font dark:text-font-dark font-bold text-lg">
-              от
+              Мощность (л.с.)
             </Text>
             <CustomWheelPicker
               data={powerArray}
               value={fromYear}
-              onValueChanged={handleChangeFrom}
-            />
-          </BottomSheetView>
-
-          <BottomSheetView className="flex-row justify-center gap-x-10">
-            <Text className="mt-[7.6rem] text-font dark:text-font-dark font-bold text-lg">
-              до
-            </Text>
-            <CustomWheelPicker
-              data={powerArray}
-              value={tillYear}
-              onValueChanged={handleChangeTo}
+              onValueChanged={handleChange}
             />
           </BottomSheetView>
         </BottomSheetView>

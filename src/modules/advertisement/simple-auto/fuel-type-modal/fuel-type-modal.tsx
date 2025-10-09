@@ -1,5 +1,3 @@
-
-
 import CustomBottomSheetModal, {
   BottomSheetRef,
 } from "@/components/global/CustomBottomSheetModal";
@@ -23,13 +21,16 @@ const options = [
 
 const FuelTypeModal = forwardRef<BottomSheetRef, FuelTypeModalProps>(
   ({ onSelect }, ref) => {
-    const [selectedFuelType, setSelectedFuelType] = React.useState<string | undefined>(undefined);
+    const [selectedFuelType, setSelectedFuelType] = React.useState<
+      string | undefined
+    >(undefined);
 
     return (
       <CustomBottomSheetModal
         ref={ref}
-        snapPoints={["60%"]}
+        snapPoints={["35%"]}
         enableContentPanningGesture={true}
+        title={"Тип топлива"}
       >
         <BottomSheetView className="flex-col">
           {options.map((opt) => (

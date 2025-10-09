@@ -1,0 +1,1 @@
+export { CheckboxRectButton } from "./CheckboxRectButton";

@@ -1,37 +1,35 @@
 import { InputField } from "@/components/ui/InputField";
 import { useRouter } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Controller, set, useForm } from "react-hook-form";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useCallback, useEffect, useRef } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { CheckboxRectButton } from "@/components/global/CheckboxRectButton";
 import CloseIcon from "@/components/global/CloseIcon";
-import { Button, CustomRectButton } from "@/components/ui/button";
-import { useSimpleAutoFormContext } from "@/modules/advertisement/simple-auto/SimpleAutoFormProvider";
-import YearModal from "@/modules/advertisement/simple-auto/year-modal/year-modal";
-import TransmissionModal from "@/modules/advertisement/simple-auto/transmission-modal/transmission-modal";
-import FuelTypeModal from "@/modules/advertisement/simple-auto/fuel-type-modal/fuel-type-modal";
-import BodyTypeModal from "@/modules/advertisement/simple-auto/body-type-modal/body-type-modal";
-import DrivetrainModal from "@/modules/advertisement/simple-auto/drivetrain-modal/drivetrain-modal";
-import ConditionModal from "@/modules/advertisement/simple-auto/condition-modal/condition-modal";
-import ColorModal from "@/modules/advertisement/simple-auto/color-modal/color-modal";
-import EngineCapacityModal from "@/modules/advertisement/simple-auto/engine-capacity-modal/engine-capacity-modal";
-import PowerModal from "@/modules/advertisement/simple-auto/power-modal/power-modal";
-import NumberOfOwnersModal from "@/modules/advertisement/simple-auto/number-of-owners-modal/number-of-owners-modal";
-import TradeAllowModal from "@/modules/advertisement/simple-auto/trade-allow-modal/trade-allow-modal";
-import DocumentsOkModal from "@/modules/advertisement/simple-auto/documents-ok-modal/documents-ok-modal";
-import PhotoModal from "@/modules/advertisement/simple-auto/photo-modal/photo-modal";
-import SellerModal from "@/modules/advertisement/simple-auto/seller-modal/seller-modal";
 import { BottomSheetRef } from "@/components/global/CustomBottomSheetModal";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { Button } from "@/components/ui/button";
+import BodyTypeModal from "@/modules/advertisement/simple-auto/body-type-modal/body-type-modal";
+import ColorModal from "@/modules/advertisement/simple-auto/color-modal/color-modal";
+import ConditionModal from "@/modules/advertisement/simple-auto/condition-modal/condition-modal";
+import { CurrencyModal } from "@/modules/advertisement/simple-auto/currency-modal";
+import DocumentsOkModal from "@/modules/advertisement/simple-auto/documents-ok-modal/documents-ok-modal";
+import DrivetrainModal from "@/modules/advertisement/simple-auto/drivetrain-modal/drivetrain-modal";
+import EngineCapacityModal from "@/modules/advertisement/simple-auto/engine-capacity-modal/engine-capacity-modal";
+import FuelTypeModal from "@/modules/advertisement/simple-auto/fuel-type-modal/fuel-type-modal";
+import NumberOfOwnersModal from "@/modules/advertisement/simple-auto/number-of-owners-modal/number-of-owners-modal";
+import PowerModal from "@/modules/advertisement/simple-auto/power-modal/power-modal";
+import { RegionModal } from "@/modules/advertisement/simple-auto/region-modal/region-modal";
+import SellerModal from "@/modules/advertisement/simple-auto/seller-modal/seller-modal";
+import { useSimpleAutoFormContext } from "@/modules/advertisement/simple-auto/SimpleAutoFormProvider";
+import TransmissionModal from "@/modules/advertisement/simple-auto/transmission-modal/transmission-modal";
+import YearModal from "@/modules/advertisement/simple-auto/year-modal/year-modal";
+import { SimpleAutoApi } from "@/openapi/client";
+import { CustomTheme } from "@/theme";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useTheme } from "@react-navigation/native";
-import { CustomTheme } from "@/theme";
 import clsx from "clsx";
-import { RegionModal } from "@/modules/advertisement/simple-auto/region-modal/region-modal";
-import { Checkbox } from "expo-checkbox";
-import { Configuration, SimpleAutoApi } from "@/openapi/client";
-import { CurrencySelect } from "@/modules/advertisement/simple-auto/currency-select";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const pickerOptions = {
   currency: [
@@ -75,6 +73,34 @@ const pickerOptions = {
   ],
 };
 
+type FormValues = {
+  name: string;
+  description: string;
+  price: string;
+  images: [];
+
+  brand?: number;
+  model?: number;
+  releaseYear?: number;
+  region: string;
+  currency: string;
+
+  mileage: string;
+  transmissionType: string;
+  fuelType: string;
+  bodyType: string;
+  driveTrain: string; // привод
+  color: string;
+  power: number;
+  engineCapacity: number;
+
+  tradeAllow: boolean;
+  condition: string;
+  numberOfOwner: string;
+  documentOk: boolean;
+  seller: string;
+};
+
 export default function AddCarPage() {
   // const configuration = new Configuration({
   //       credentials: "include",
@@ -89,40 +115,64 @@ export default function AddCarPage() {
   const {
     selectedBrand,
     selectedModel,
+    selectedReleaseYear,
+    setSelectedReleaseYear,
     selectedRegion,
     setSelectedRegion,
-    selectedTransmission,
-    setSelectedTransmission,
+    selectedCurrency,
+    setSelectedCurrency,
+    selectedTransmissionType,
+    setSelectedTransmissionType,
+    selectedFuelType,
+    setSelectedFuelType,
+    selectedBodyType,
+    setSelectedBodyType,
+    selectedDriveTrain,
+    setSelectedDriveTrain,
+    selectedColor,
+    setSelectedColor,
+    selectedPower,
+    setSelectedPower,
+    selectedEngineCapacity,
+    setSelectedEngineCapacity,
+    selectedTradeAllow,
+    setSelectedTradeAllow,
+    selectedCondition,
+    setSelectedCondition,
+    selectedNumberOfOwner,
+    setSelectedNumberOfOwner,
+    selectedDocumentOk,
+    setSelectedDocumentOk,
   } = useSimpleAutoFormContext();
-  console.log(selectedBrand);
 
-  const { control, handleSubmit, setValue, getValues, reset } = useForm({
-    defaultValues: {
-      name: "",
-      description: "",
-      price: "",
-      currency: "USD",
-      images: [],
-      brand: null,
-      model: null,
-      releaseYear: "",
-      region: "",
+  const { control, handleSubmit, setValue, reset } =
+    useForm<FormValues>({
+      defaultValues: {
+        name: "",
+        description: "",
+        price: "",
+        currency: "",
+        images: [],
+        brand: undefined,
+        model: undefined,
+        releaseYear: undefined,
+        region: "",
 
-      mileage: 0,
-      fuelType: "petrol",
-      transmission: "manual",
-      bodyType: "sedan",
-      drivetrain: "fwd",
-      engineCapacity: 0,
-      power: 0,
-      color: "",
+        mileage: "",
+        fuelType: "",
+        transmissionType: "",
+        bodyType: "",
+        driveTrain: "",
+        engineCapacity: 0,
+        power: 0,
+        color: "",
 
-      tradeAllow: false,
+        tradeAllow: false,
+        condition: "",
+        seller: "",
+      },
+    });
 
-      status: "active",
-      condition: "used",
-    },
-  });
 
   // Form submit handler
   const onSubmit = (data) => {
@@ -174,19 +224,15 @@ export default function AddCarPage() {
   const engineCapacityModalRef = useRef<BottomSheetRef>(null);
   const powerModalRef = useRef<BottomSheetRef>(null);
   const numberOfOwnersModalRef = useRef<BottomSheetRef>(null);
-  const tradeAllowModalRef = useRef<BottomSheetRef>(null);
   const documentsOkModalRef = useRef<BottomSheetRef>(null);
-  const photoModalRef = useRef<BottomSheetRef>(null);
   const sellerModalRef = useRef<BottomSheetRef>(null);
 
   const handlePresentYearModalPress = useCallback(() => {
     yearModalRef.current?.present();
   }, []);
-
   const handlePresentRegionModalPress = useCallback(() => {
     regionModalRef.current?.present();
   }, []);
-
   const handlePresentTransmissionModalPress = useCallback(() => {
     transmissionModalRef.current?.present();
   }, []);
@@ -214,14 +260,8 @@ export default function AddCarPage() {
   const handlePresentNumberOfOwnersModalPress = useCallback(() => {
     numberOfOwnersModalRef.current?.present();
   }, []);
-  const handlePresentTradeAllowModalPress = useCallback(() => {
-    tradeAllowModalRef.current?.present();
-  }, []);
   const handlePresentDocumentsOkModalPress = useCallback(() => {
     documentsOkModalRef.current?.present();
-  }, []);
-  const handlePresentPhotoModalPress = useCallback(() => {
-    photoModalRef.current?.present();
   }, []);
   const handlePresentSellerModalPress = useCallback(() => {
     sellerModalRef.current?.present();
@@ -243,10 +283,14 @@ export default function AddCarPage() {
           <Controller
             control={control}
             name="name"
+            rules={{
+              required: true,
+            }}
             render={({ field }) => {
               return (
                 <InputField
                   {...field}
+                  required
                   label={"Заголовок объявления"}
                   placeholder="Например: BMW X5 2020 года"
                 />
@@ -272,6 +316,9 @@ export default function AddCarPage() {
           <Controller
             control={control}
             name="price"
+            rules={{
+              required: true,
+            }}
             render={({ field }) => {
               return (
                 <InputField
@@ -281,13 +328,56 @@ export default function AddCarPage() {
                   label={"Цена"}
                   keyboardType="numeric"
                   placeholder="1500"
+                  required
                 />
               );
             }}
           />
-          <CurrencySelect
+          <CurrencyModal
             onChange={(currency) => {
               setValue("currency", currency.value);
+            }}
+          />
+
+          <ModalButton
+            label={selectedBrand?.name ?? "Марка"}
+            onPress={() =>
+              router.push("/(app)/advertisement/simple-auto/brand-auto-modal")
+            }
+          />
+          <ModalButton
+            label={selectedModel?.name ?? "Модель"}
+            onPress={() =>
+              router.push(
+                "/(app)/advertisement/simple-auto/brand-auto-type-modal"
+              )
+            }
+          />
+
+          <BottomSheetModalButton
+            label={"Год"}
+            onPress={handlePresentYearModalPress}
+          />
+          <YearModal
+            ref={yearModalRef}
+            onChange={(releaseYear) => {
+              console.log(releaseYear);
+              setValue("releaseYear", releaseYear.value);
+            }}
+          />
+
+          <BottomSheetModalButton
+            label={"Регион"}
+            onPress={handlePresentRegionModalPress}
+            selectedValue={selectedRegion ?? undefined}
+          />
+          <RegionModal
+            ref={regionModalRef}
+            onChange={(region) => {
+              console.log(region);
+              setValue("region", region.slug); // set value for form
+              setSelectedRegion(region.name); // set value for context
+              regionModalRef.current?.close({ duration: 150 });
             }}
           />
         </View>
@@ -302,62 +392,97 @@ export default function AddCarPage() {
           <View className="gap-y-3">
             {/* Buttons to open modals and bottom sheet modals */}
 
-            <ModalButton
-              label={selectedBrand?.name ?? "Марка"}
-              onPress={() =>
-                router.push("/(app)/advertisement/simple-auto/brand-auto-modal")
-              }
-            />
-            <ModalButton
-              label={selectedModel?.name ?? "Модель"}
-              onPress={() =>
-                router.push(
-                  "/(app)/advertisement/simple-auto/brand-auto-type-modal"
-                )
-              }
-            />
-
-            <BottomSheetModalButton
-              label={"Год"}
-              onPress={handlePresentYearModalPress}
-            />
-            <BottomSheetModalButton
-              label={"Регион"}
-              onPress={handlePresentRegionModalPress}
-              selectedValue={selectedRegion ?? undefined}
-            />
             <BottomSheetModalButton
               label={"Коробка передач"}
               onPress={handlePresentTransmissionModalPress}
-              selectedValue={selectedTransmission ?? undefined}
+              selectedValue={selectedTransmissionType ?? undefined}
             />
+            <TransmissionModal
+              ref={transmissionModalRef}
+              onSelect={(transmisison) => {
+                setValue("transmissionType", transmisison.value);
+                setSelectedTransmissionType(transmisison.label);
+                transmissionModalRef.current?.close({ duration: 150 });
+              }}
+            />
+
             <BottomSheetModalButton
               label={"Тип топлива"}
               onPress={handlePresentFuelTypeModalPress}
+              selectedValue={selectedFuelType ?? undefined}
             />
+
+            <FuelTypeModal
+              ref={fuelTypeModalRef}
+              onSelect={(fuelType) => {
+                setValue("fuelType", fuelType.value);
+                setSelectedFuelType(fuelType.label);
+              }}
+            />
+
             <BottomSheetModalButton
               label={"Тип кузова"}
               onPress={handlePresentBodyTypeModalPress}
+              selectedValue={selectedBodyType ?? undefined}
             />
+            <BodyTypeModal
+              ref={bodyTypeModalRef}
+              onSelect={(bodyType) => {
+                setValue("bodyType", bodyType.value);
+                setSelectedFuelType(bodyType.label);
+              }}
+            />
+
             <BottomSheetModalButton
               label={"Привод"}
               onPress={handlePresentDrivetrainModalPress}
+              selectedValue={selectedDriveTrain ?? undefined}
             />
-            <BottomSheetModalButton
-              label={"Состояние"}
-              onPress={handlePresentConditionModalPress}
+            <DrivetrainModal
+              ref={drivetrainModalRef}
+              onSelect={(driveTrain) => {
+                setValue("driveTrain", driveTrain.value);
+                setSelectedFuelType(driveTrain.label);
+              }}
             />
+
             <BottomSheetModalButton
               label={"Цвет"}
               onPress={handlePresentColorModalPress}
+              selectedValue={selectedColor ?? undefined}
             />
+            <ColorModal
+              ref={colorModalRef}
+              onSelect={(color) => {
+                setValue("condition", color.value);
+                setSelectedFuelType(color.label);
+              }}
+            />
+
             <BottomSheetModalButton
               label={"Объем двигателя"}
               onPress={handlePresentEngineCapacityModalPress}
+              selectedValue={selectedEngineCapacity ?? undefined}
             />
+            <EngineCapacityModal
+              ref={engineCapacityModalRef}
+              onSelect={(engineCapacity) => {
+                setValue("engineCapacity", engineCapacity.value);
+                setSelectedFuelType(engineCapacity.label);
+              }}
+            />
+
             <BottomSheetModalButton
               label={"Мощность"}
               onPress={handlePresentPowerModalPress}
+              selectedValue={selectedPower ?? undefined}
+            />
+            <PowerModal
+              ref={powerModalRef}
+              onSelect={(power) => {
+                setValue("power", power.value);
+                setSelectedFuelType(power.label);
+              }}
             />
 
             <Controller
@@ -376,44 +501,72 @@ export default function AddCarPage() {
                 );
               }}
             />
-
-            <BottomSheetModalButton
-              label={"Количество владельцев"}
-              onPress={handlePresentNumberOfOwnersModalPress}
-            />
-
-            <Controller
-              control={control}
-              name="tradeAllow"
-              render={({ field }) => {
-                console.log(field.value);
-                return (
-                  <CheckboxRectButton
-                    label="Обмен возможен - ТОРГ"
-                    value={field.value}
-                    onPress={() => field.onChange(!field.value)} // toggle value
-                  />
-                );
-              }}
-            />
-
-            <BottomSheetModalButton
-              label={"Документы в порядке"}
-              onPress={handlePresentDocumentsOkModalPress}
-            />
-            <BottomSheetModalButton
-              label={"Фото"}
-              onPress={handlePresentPhotoModalPress}
-            />
-
-            <View>
-              <Text>Продавец</Text>
-              <Text>Любой</Text>
-              <Text>Собственник</Text>
-              <Text>Частник</Text>
-              <Text>Компания</Text>
-            </View>
           </View>
+        </View>
+
+        <View className="p-5 rounded-2xl mb-5 bg-surface dark:bg-surface-dark gap-y-3">
+          <BottomSheetModalButton
+            label={"Состояние"}
+            onPress={handlePresentConditionModalPress}
+            selectedValue={selectedCondition ?? undefined}
+          />
+          <ConditionModal
+            ref={conditionModalRef}
+            onSelect={(condition) => {
+              setValue("condition", condition.value);
+              setSelectedFuelType(condition.label);
+            }}
+          />
+
+          <Controller
+            control={control}
+            name="tradeAllow"
+            render={({ field }) => {
+              console.log(field.value);
+              return (
+                <CheckboxRectButton
+                  label="Обмен возможен - ТОРГ"
+                  value={field.value}
+                  onPress={() => field.onChange(!field.value)} // toggle value
+                />
+              );
+            }}
+          />
+          <BottomSheetModalButton
+            label={"Документы в порядке"}
+            onPress={handlePresentDocumentsOkModalPress}
+          />
+          <DocumentsOkModal
+            ref={documentsOkModalRef}
+            onSelect={(document) => {
+              setValue("documentOK", document.value);
+              setSelectedFuelType(document.label);
+            }}
+          />
+
+          <BottomSheetModalButton
+            label={"Количество владельцев"}
+            onPress={handlePresentNumberOfOwnersModalPress}
+            selectedValue={selectedNumberOfOwner ?? undefined}
+          />
+          <NumberOfOwnersModal
+            ref={numberOfOwnersModalRef}
+            onSelect={(numberOfOwner) => {
+              setValue("numberOfOwner", numberOfOwner.value);
+              setSelectedFuelType(numberOfOwner.label);
+            }}
+          />
+          <BottomSheetModalButton
+            label={"Продавец"}
+            onPress={handlePresentSellerModalPress}
+          />
+          <SellerModal
+            ref={sellerModalRef}
+            onSelect={(seller) => {
+              setValue("seller", seller.value);
+              setSelectedFuelType(seller.label);
+            }}
+          />
         </View>
 
         {/* Кнопка создания */}
@@ -421,43 +574,6 @@ export default function AddCarPage() {
           <Text>Создать объявление</Text>
         </Button>
       </KeyboardAwareScrollView>
-
-      <YearModal
-        ref={yearModalRef}
-        onChange={(releaseYear) => {
-          console.log(releaseYear);
-          setValue("releaseYear", releaseYear.value);
-        }}
-      />
-      <RegionModal
-        ref={regionModalRef}
-        onChange={(region) => {
-          console.log(region)
-          setValue("region", region.slug); // set value for form
-          setSelectedRegion(region.name); // set value for context
-          regionModalRef.current?.close({ duration: 150 });
-        }}
-      />
-      <TransmissionModal
-        ref={transmissionModalRef}
-        onSelect={(transmisison) => {
-          setValue("transmission", transmisison.value);
-          setSelectedTransmission(transmisison.label);
-          transmissionModalRef.current?.close({ duration: 150 });
-        }}
-      />
-      <FuelTypeModal ref={fuelTypeModalRef} onSelect={() => {}} />
-      <BodyTypeModal ref={bodyTypeModalRef} onSelect={() => {}} />
-      <DrivetrainModal ref={drivetrainModalRef} onSelect={() => {}} />
-      <ConditionModal ref={conditionModalRef} onSelect={() => {}} />
-      <ColorModal ref={colorModalRef} onSelect={() => {}} />
-      <EngineCapacityModal ref={engineCapacityModalRef} onSelect={() => {}} />
-      <PowerModal ref={powerModalRef} onSelect={() => {}} />
-      <NumberOfOwnersModal ref={numberOfOwnersModalRef} onSelect={() => {}} />
-      <TradeAllowModal ref={tradeAllowModalRef} onSelect={() => {}} />
-      <DocumentsOkModal ref={documentsOkModalRef} onSelect={() => {}} />
-      <PhotoModal ref={photoModalRef} onSelect={() => {}} />
-      <SellerModal ref={sellerModalRef} onSelect={() => {}} />
     </SafeAreaView>
   );
 }
@@ -537,29 +653,5 @@ const BottomSheetModalButton = ({
 
       <Entypo name="chevron-down" size={24} color={theme.colors.icon} />
     </Pressable>
-  );
-};
-
-// TODO: maybe can be reused
-const CheckboxRectButton = ({
-  value,
-  label,
-  onPress,
-}: {
-  value: boolean;
-  label: string;
-  onPress: () => void;
-}) => {
-  const onClick = () => {
-    onPress();
-  };
-
-  return (
-    <CustomRectButton onPress={onClick}>
-      <View className="flex-row items-center justify-between space-x-2">
-        <Text className="text-font dark:text-font-dark">{label}</Text>
-        <Checkbox value={value} onValueChange={onClick} />
-      </View>
-    </CustomRectButton>
   );
 };

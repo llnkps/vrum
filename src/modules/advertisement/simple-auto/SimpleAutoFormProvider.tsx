@@ -1,4 +1,6 @@
-// context/ModalContext.tsx
+// It needs to pass data from models: brand, model.
+// And to display label of field.
+
 import {
   GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner,
   GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner,
@@ -10,37 +12,51 @@ type SimpleAutoFormContextType = {
   setSelectedBrand: (
     brand: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner | null
   ) => void;
-
   selectedModel: GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner | null;
   setSelectedModel: (
     model: GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner | null
   ) => void;
-
-  selectedYear: string | null;
-  setSelectedYear: (year: string | null) => void;
-
+  selectedReleaseYear: string | null;
+  setSelectedReleaseYear: React.Dispatch<string>;
   selectedRegion: string | null;
-  setSelectedRegion: (region: string | null) => void;
-
-  selectedTransmission: string | null;
-  setSelectedTransmission: (transmission: string | null) => void;
-
-  selectedCondition: string | null;
-  setSelectedCondition: (condition: string | null) => void;
-
-  selectedFuelType: string | null;
-  setSelectedFuelType: (fuelType: string | null) => void;
-
-  selectedSellerName: string | null;
-  setSelectedSellerName: (sellerName: string | null) => void;
-
+  setSelectedRegion: React.Dispatch<string>;
   selectedCurrency: string | null;
-  setSelectedCurrency: (currency: string | null) => void;
+  setSelectedCurrency: React.Dispatch<string>;
+
+  selectedTransmissionType: string | null;
+  setSelectedTransmissionType: React.Dispatch<string>;
+  selectedFuelType: string | null;
+  setSelectedFuelType: React.Dispatch<string>;
+  selectedBodyType: string | null;
+  setSelectedBodyType: React.Dispatch<string>;
+  selectedDriveTrain: string | null;
+  setSelectedDriveTrain: React.Dispatch<string>;
+  selectedColor: string | null;
+  setSelectedColor: React.Dispatch<string>;
+  selectedPower: string | null;
+  setSelectedPower: React.Dispatch<string>;
+  selectedEngineCapacity: string | null;
+  setSelectedEngineCapacity: React.Dispatch<string>;
+
+  selectedTradeAllow: boolean | null;
+  setSelectedTradeAllow: React.Dispatch<boolean>;
+  selectedCondition: string | null;
+  setSelectedCondition: React.Dispatch<string>;
+  selectedNumberOfOwner: string | null;
+  setSelectedNumberOfOwner: React.Dispatch<string>;
+  selectedDocumentOk: boolean | null;
+  setSelectedDocumentOk: React.Dispatch<boolean>;
 };
 
-const SimpleAutoFormContext = createContext<SimpleAutoFormContextType | null>(null);
+const SimpleAutoFormContext = createContext<SimpleAutoFormContextType | null>(
+  null
+);
 
-export const SimpleAutoFormProvider = ({ children }: { children: React.ReactNode }) => {
+export const SimpleAutoFormProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const [selectedBrand, setSelectedBrand] =
     useState<GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner | null>(
       null
@@ -49,14 +65,20 @@ export const SimpleAutoFormProvider = ({ children }: { children: React.ReactNode
     useState<GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner | null>(
       null
     );
-  const [selectedYear, setSelectedYear] = useState<string | null>(null);
+  const [selectedReleaseYear, setSelectedReleaseYear] = useState<string | null>(null);
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
-  const [selectedTransmission, setSelectedTransmission] = useState<string | null>(null);
-  const [selectedCondition, setSelectedCondition] = useState<string | null>(null);
-  const [selectedFuelType, setSelectedFuelType] = useState<string | null>(null);
-  const [selectedSellerName, setSelectedSellerName] = useState<string | null>(null);
   const [selectedCurrency, setSelectedCurrency] = useState<string | null>(null);
-
+  const [selectedTransmissionType, setSelectedTransmissionType] = useState<string | null>(null);
+  const [selectedFuelType, setSelectedFuelType] = useState<string | null>(null);
+  const [selectedBodyType, setSelectedBodyType] = useState<string | null>(null);
+  const [selectedDriveTrain, setSelectedDriveTrain] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [selectedPower, setSelectedPower] = useState<string | null>(null);
+  const [selectedEngineCapacity, setSelectedEngineCapacity] = useState<string | null>(null);
+  const [selectedTradeAllow, setSelectedTradeAllow] = useState<boolean | null>(null);
+  const [selectedCondition, setSelectedCondition] = useState<string | null>(null);
+  const [selectedNumberOfOwner, setSelectedNumberOfOwner] = useState<string | null>(null);
+  const [selectedDocumentOk, setSelectedDocumentOk] = useState<boolean | null>(null);
 
   return (
     <SimpleAutoFormContext.Provider
@@ -65,20 +87,34 @@ export const SimpleAutoFormProvider = ({ children }: { children: React.ReactNode
         setSelectedBrand,
         selectedModel,
         setSelectedModel,
-        selectedYear,
-        setSelectedYear,
+        selectedReleaseYear,
+        setSelectedReleaseYear,
         selectedRegion,
         setSelectedRegion,
-        selectedTransmission,
-        setSelectedTransmission,
-        selectedCondition,
-        setSelectedCondition,
-        selectedFuelType,
-        setSelectedFuelType,
-        selectedSellerName,
-        setSelectedSellerName,
         selectedCurrency,
         setSelectedCurrency,
+        selectedTransmissionType,
+        setSelectedTransmissionType,
+        selectedFuelType,
+        setSelectedFuelType,
+        selectedBodyType,
+        setSelectedBodyType,
+        selectedDriveTrain,
+        setSelectedDriveTrain,
+        selectedColor,
+        setSelectedColor,
+        selectedPower,
+        setSelectedPower,
+        selectedEngineCapacity,
+        setSelectedEngineCapacity,
+        selectedTradeAllow,
+        setSelectedTradeAllow,
+        selectedCondition,
+        setSelectedCondition,
+        selectedNumberOfOwner,
+        setSelectedNumberOfOwner,
+        selectedDocumentOk,
+        setSelectedDocumentOk,
       }}
     >
       {children}
@@ -89,7 +125,9 @@ export const SimpleAutoFormProvider = ({ children }: { children: React.ReactNode
 export const useSimpleAutoFormContext = () => {
   const ctx = useContext(SimpleAutoFormContext);
   if (!ctx) {
-    throw new Error("useModalContext must be used within SimpleAutoFormProvider");
+    throw new Error(
+      "useModalContext must be used within SimpleAutoFormProvider"
+    );
   }
   return ctx;
 };
