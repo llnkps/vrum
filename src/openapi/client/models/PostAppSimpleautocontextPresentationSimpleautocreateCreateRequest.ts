@@ -57,6 +57,18 @@ export interface PostAppSimpleautocontextPresentationSimpleautocreateCreateReque
     releaseYear?: number;
     /**
      * 
+     * @type {number}
+     * @memberof PostAppSimpleautocontextPresentationSimpleautocreateCreateRequest
+     */
+    brand?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PostAppSimpleautocontextPresentationSimpleautocreateCreateRequest
+     */
+    model?: number;
+    /**
+     * 
      * @type {Array<object>}
      * @memberof PostAppSimpleautocontextPresentationSimpleautocreateCreateRequest
      */
@@ -86,6 +98,8 @@ export function PostAppSimpleautocontextPresentationSimpleautocreateCreateReques
         'currency': json['currency'] == null ? undefined : json['currency'],
         'region': json['region'] == null ? undefined : json['region'],
         'releaseYear': json['releaseYear'] == null ? undefined : json['releaseYear'],
+        'brand': json['brand'] == null ? undefined : json['brand'],
+        'model': json['model'] == null ? undefined : json['model'],
         'parameters': json['parameters'] == null ? undefined : json['parameters'],
     };
 }
@@ -107,6 +121,8 @@ export function PostAppSimpleautocontextPresentationSimpleautocreateCreateReques
         'currency': value['currency'],
         'region': value['region'],
         'releaseYear': value['releaseYear'],
+        'brand': value['brand'],
+        'model': value['model'],
         'parameters': value['parameters'],
     };
 }

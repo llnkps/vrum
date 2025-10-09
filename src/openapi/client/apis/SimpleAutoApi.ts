@@ -16,6 +16,7 @@
 import * as runtime from '../runtime';
 import type {
   GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner,
+  GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner,
   GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner,
   GetAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfilters200ResponseInner,
   GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters200Response,
@@ -24,6 +25,8 @@ import type {
 import {
     GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInnerFromJSON,
     GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInnerToJSON,
+    GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInnerFromJSON,
+    GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInnerToJSON,
     GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInnerFromJSON,
     GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInnerToJSON,
     GetAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfilters200ResponseInnerFromJSON,
@@ -34,11 +37,18 @@ import {
     PostAppSimpleautocontextPresentationSimpleautocreateCreateRequestToJSON,
 } from '../models/index';
 
+export interface GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerationsRequest {
+    brandId: string;
+    modelId: string;
+}
+
 export interface GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfiltersRequest {
     brandId: string;
 }
 
 export interface GetAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfiltersRequest {
+    page: string;
+    limit: string;
     brand?: string;
     model?: string;
     releaseYear?: number;
@@ -96,6 +106,57 @@ export class SimpleAutoApi extends runtime.BaseAPI {
 
     /**
      */
+    async getAppSimpleautocontextPresentationGenerationgetcollectionGetgenerationsRaw(requestParameters: GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerationsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner>>> {
+        if (requestParameters['brandId'] == null) {
+            throw new runtime.RequiredError(
+                'brandId',
+                'Required parameter "brandId" was null or undefined when calling getAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations().'
+            );
+        }
+
+        if (requestParameters['modelId'] == null) {
+            throw new runtime.RequiredError(
+                'modelId',
+                'Required parameter "modelId" was null or undefined when calling getAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("Bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/api/simple-auto/brands/{brandId}/models/{modelId}/generations`;
+        urlPath = urlPath.replace(`{${"brandId"}}`, encodeURIComponent(String(requestParameters['brandId'])));
+        urlPath = urlPath.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInnerFromJSON));
+    }
+
+    /**
+     */
+    async getAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations(requestParameters: GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerationsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner>> {
+        const response = await this.getAppSimpleautocontextPresentationGenerationgetcollectionGetgenerationsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
     async getAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfiltersRaw(requestParameters: GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfiltersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner>>> {
         if (requestParameters['brandId'] == null) {
             throw new runtime.RequiredError(
@@ -140,6 +201,20 @@ export class SimpleAutoApi extends runtime.BaseAPI {
     /**
      */
     async getAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfiltersRaw(requestParameters: GetAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfiltersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<GetAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfilters200ResponseInner>>> {
+        if (requestParameters['page'] == null) {
+            throw new runtime.RequiredError(
+                'page',
+                'Required parameter "page" was null or undefined when calling getAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfilters().'
+            );
+        }
+
+        if (requestParameters['limit'] == null) {
+            throw new runtime.RequiredError(
+                'limit',
+                'Required parameter "limit" was null or undefined when calling getAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfilters().'
+            );
+        }
+
         const queryParameters: any = {};
 
         if (requestParameters['brand'] != null) {
@@ -160,6 +235,14 @@ export class SimpleAutoApi extends runtime.BaseAPI {
 
         if (requestParameters['filterParameters'] != null) {
             queryParameters['filterParameters'] = requestParameters['filterParameters'];
+        }
+
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
+        }
+
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -187,7 +270,7 @@ export class SimpleAutoApi extends runtime.BaseAPI {
 
     /**
      */
-    async getAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfilters(requestParameters: GetAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfiltersRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<GetAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfilters200ResponseInner>> {
+    async getAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfilters(requestParameters: GetAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfiltersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<GetAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfilters200ResponseInner>> {
         const response = await this.getAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfiltersRaw(requestParameters, initOverrides);
         return await response.value();
     }

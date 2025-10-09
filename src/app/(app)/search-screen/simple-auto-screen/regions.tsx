@@ -35,9 +35,7 @@ export default function RegionScreenFilterModal() {
       isScrolling.value = false;
     }
   })
-  const { selectedModels } = useAutoSelectStore();
 
-  console.log(selectedModels)
   return (
     <>
       <View style={{ height: STATUSBAR_HEIGHT }}>

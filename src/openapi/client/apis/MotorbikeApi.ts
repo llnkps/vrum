@@ -15,20 +15,20 @@
 
 import * as runtime from '../runtime';
 import type {
-  GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner,
   GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters200Response,
+  GetAppSpecautocontextPresentationBrandgetcollectionGetbrands200ResponseInner,
   GetAppSpecautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner,
-  PostAppSimpleautocontextPresentationSimpleautocreateCreateRequest,
+  PostAppSpecautocontextPresentationSpecautocreateCreateRequest,
 } from '../models/index';
 import {
-    GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInnerFromJSON,
-    GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInnerToJSON,
     GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters200ResponseFromJSON,
     GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters200ResponseToJSON,
+    GetAppSpecautocontextPresentationBrandgetcollectionGetbrands200ResponseInnerFromJSON,
+    GetAppSpecautocontextPresentationBrandgetcollectionGetbrands200ResponseInnerToJSON,
     GetAppSpecautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInnerFromJSON,
     GetAppSpecautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInnerToJSON,
-    PostAppSimpleautocontextPresentationSimpleautocreateCreateRequestFromJSON,
-    PostAppSimpleautocontextPresentationSimpleautocreateCreateRequestToJSON,
+    PostAppSpecautocontextPresentationSpecautocreateCreateRequestFromJSON,
+    PostAppSpecautocontextPresentationSpecautocreateCreateRequestToJSON,
 } from '../models/index';
 
 export interface GetAppMotorbikecontextPresentationModelgetcollectionGetcollectionbyfiltersRequest {
@@ -48,7 +48,7 @@ export interface GetAppMotorbikecontextPresentationMotorbikegetoneGetcollectionb
 }
 
 export interface PostAppMotorbikecontextPresentationMotorbikecreateCreateRequest {
-    postAppSimpleautocontextPresentationSimpleautocreateCreateRequest: PostAppSimpleautocontextPresentationSimpleautocreateCreateRequest;
+    postAppSpecautocontextPresentationSpecautocreateCreateRequest: PostAppSpecautocontextPresentationSpecautocreateCreateRequest;
 }
 
 /**
@@ -58,7 +58,7 @@ export class MotorbikeApi extends runtime.BaseAPI {
 
     /**
      */
-    async getAppMotorbikecontextPresentationBrandgetcollectionGetbrandsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner>>> {
+    async getAppMotorbikecontextPresentationBrandgetcollectionGetbrandsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<GetAppSpecautocontextPresentationBrandgetcollectionGetbrands200ResponseInner>>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -81,12 +81,12 @@ export class MotorbikeApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInnerFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(GetAppSpecautocontextPresentationBrandgetcollectionGetbrands200ResponseInnerFromJSON));
     }
 
     /**
      */
-    async getAppMotorbikecontextPresentationBrandgetcollectionGetbrands(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner>> {
+    async getAppMotorbikecontextPresentationBrandgetcollectionGetbrands(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<GetAppSpecautocontextPresentationBrandgetcollectionGetbrands200ResponseInner>> {
         const response = await this.getAppMotorbikecontextPresentationBrandgetcollectionGetbrandsRaw(initOverrides);
         return await response.value();
     }
@@ -235,10 +235,10 @@ export class MotorbikeApi extends runtime.BaseAPI {
     /**
      */
     async postAppMotorbikecontextPresentationMotorbikecreateCreateRaw(requestParameters: PostAppMotorbikecontextPresentationMotorbikecreateCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['postAppSimpleautocontextPresentationSimpleautocreateCreateRequest'] == null) {
+        if (requestParameters['postAppSpecautocontextPresentationSpecautocreateCreateRequest'] == null) {
             throw new runtime.RequiredError(
-                'postAppSimpleautocontextPresentationSimpleautocreateCreateRequest',
-                'Required parameter "postAppSimpleautocontextPresentationSimpleautocreateCreateRequest" was null or undefined when calling postAppMotorbikecontextPresentationMotorbikecreateCreate().'
+                'postAppSpecautocontextPresentationSpecautocreateCreateRequest',
+                'Required parameter "postAppSpecautocontextPresentationSpecautocreateCreateRequest" was null or undefined when calling postAppMotorbikecontextPresentationMotorbikecreateCreate().'
             );
         }
 
@@ -264,7 +264,7 @@ export class MotorbikeApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: PostAppSimpleautocontextPresentationSimpleautocreateCreateRequestToJSON(requestParameters['postAppSimpleautocontextPresentationSimpleautocreateCreateRequest']),
+            body: PostAppSpecautocontextPresentationSpecautocreateCreateRequestToJSON(requestParameters['postAppSpecautocontextPresentationSpecautocreateCreateRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);

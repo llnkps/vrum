@@ -15,20 +15,20 @@
 
 import * as runtime from '../runtime';
 import type {
-  GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner,
   GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters200Response,
+  GetAppSpecautocontextPresentationBrandgetcollectionGetbrands200ResponseInner,
   GetAppSpecautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner,
-  PostAppSimpleautocontextPresentationSimpleautocreateCreateRequest,
+  PostAppSpecautocontextPresentationSpecautocreateCreateRequest,
 } from '../models/index';
 import {
-    GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInnerFromJSON,
-    GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInnerToJSON,
     GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters200ResponseFromJSON,
     GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters200ResponseToJSON,
+    GetAppSpecautocontextPresentationBrandgetcollectionGetbrands200ResponseInnerFromJSON,
+    GetAppSpecautocontextPresentationBrandgetcollectionGetbrands200ResponseInnerToJSON,
     GetAppSpecautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInnerFromJSON,
     GetAppSpecautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInnerToJSON,
-    PostAppSimpleautocontextPresentationSimpleautocreateCreateRequestFromJSON,
-    PostAppSimpleautocontextPresentationSimpleautocreateCreateRequestToJSON,
+    PostAppSpecautocontextPresentationSpecautocreateCreateRequestFromJSON,
+    PostAppSpecautocontextPresentationSpecautocreateCreateRequestToJSON,
 } from '../models/index';
 
 export interface GetAppSpecautocontextPresentationModelgetcollectionGetcollectionbyfiltersRequest {
@@ -47,8 +47,8 @@ export interface GetAppSpecautocontextPresentationSpecautogetoneGetcollectionbyf
     advertismentId: string;
 }
 
-export interface PostAppSpecautocontextPresentationSpecautocreateCreateRequest {
-    postAppSimpleautocontextPresentationSimpleautocreateCreateRequest: PostAppSimpleautocontextPresentationSimpleautocreateCreateRequest;
+export interface PostAppSpecautocontextPresentationSpecautocreateCreateOperationRequest {
+    postAppSpecautocontextPresentationSpecautocreateCreateRequest: PostAppSpecautocontextPresentationSpecautocreateCreateRequest;
 }
 
 /**
@@ -58,7 +58,7 @@ export class SpecAutoApi extends runtime.BaseAPI {
 
     /**
      */
-    async getAppSpecautocontextPresentationBrandgetcollectionGetbrandsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner>>> {
+    async getAppSpecautocontextPresentationBrandgetcollectionGetbrandsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<GetAppSpecautocontextPresentationBrandgetcollectionGetbrands200ResponseInner>>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -81,12 +81,12 @@ export class SpecAutoApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInnerFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(GetAppSpecautocontextPresentationBrandgetcollectionGetbrands200ResponseInnerFromJSON));
     }
 
     /**
      */
-    async getAppSpecautocontextPresentationBrandgetcollectionGetbrands(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner>> {
+    async getAppSpecautocontextPresentationBrandgetcollectionGetbrands(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<GetAppSpecautocontextPresentationBrandgetcollectionGetbrands200ResponseInner>> {
         const response = await this.getAppSpecautocontextPresentationBrandgetcollectionGetbrandsRaw(initOverrides);
         return await response.value();
     }
@@ -234,11 +234,11 @@ export class SpecAutoApi extends runtime.BaseAPI {
 
     /**
      */
-    async postAppSpecautocontextPresentationSpecautocreateCreateRaw(requestParameters: PostAppSpecautocontextPresentationSpecautocreateCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['postAppSimpleautocontextPresentationSimpleautocreateCreateRequest'] == null) {
+    async postAppSpecautocontextPresentationSpecautocreateCreateRaw(requestParameters: PostAppSpecautocontextPresentationSpecautocreateCreateOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['postAppSpecautocontextPresentationSpecautocreateCreateRequest'] == null) {
             throw new runtime.RequiredError(
-                'postAppSimpleautocontextPresentationSimpleautocreateCreateRequest',
-                'Required parameter "postAppSimpleautocontextPresentationSimpleautocreateCreateRequest" was null or undefined when calling postAppSpecautocontextPresentationSpecautocreateCreate().'
+                'postAppSpecautocontextPresentationSpecautocreateCreateRequest',
+                'Required parameter "postAppSpecautocontextPresentationSpecautocreateCreateRequest" was null or undefined when calling postAppSpecautocontextPresentationSpecautocreateCreate().'
             );
         }
 
@@ -264,7 +264,7 @@ export class SpecAutoApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: PostAppSimpleautocontextPresentationSimpleautocreateCreateRequestToJSON(requestParameters['postAppSimpleautocontextPresentationSimpleautocreateCreateRequest']),
+            body: PostAppSpecautocontextPresentationSpecautocreateCreateRequestToJSON(requestParameters['postAppSpecautocontextPresentationSpecautocreateCreateRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -272,7 +272,7 @@ export class SpecAutoApi extends runtime.BaseAPI {
 
     /**
      */
-    async postAppSpecautocontextPresentationSpecautocreateCreate(requestParameters: PostAppSpecautocontextPresentationSpecautocreateCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async postAppSpecautocontextPresentationSpecautocreateCreate(requestParameters: PostAppSpecautocontextPresentationSpecautocreateCreateOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.postAppSpecautocontextPresentationSpecautocreateCreateRaw(requestParameters, initOverrides);
     }
 

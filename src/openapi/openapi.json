@@ -102,6 +102,92 @@
                 }
             }
         },
+        "/api/simple-auto/brands/{brandId}/models/{modelId}/generations": {
+            "get": {
+                "tags": [
+                    "SimpleAuto"
+                ],
+                "operationId": "get_app_simpleautocontext_presentation_generationgetcollection_getgenerations",
+                "parameters": [
+                    {
+                        "name": "brandId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "modelId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns generation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "generation",
+                                        "modifications"
+                                    ],
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "generation": {
+                                                "type": "integer"
+                                            },
+                                            "modifications": {
+                                                "type": "array",
+                                                "items": {
+                                                    "required": [
+                                                        "frames",
+                                                        "restyling",
+                                                        "yearStart",
+                                                        "yearEnd",
+                                                        "images"
+                                                    ],
+                                                    "properties": {
+                                                        "frames": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "restyling": {
+                                                            "type": "integer"
+                                                        },
+                                                        "yearStart": {
+                                                            "type": "integer"
+                                                        },
+                                                        "yearEnd": {
+                                                            "type": "integer"
+                                                        },
+                                                        "images": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/simple-auto/brands/{brandId}/models": {
             "get": {
                 "tags": [
@@ -126,6 +212,11 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
+                                        "required": [
+                                            "id",
+                                            "name",
+                                            "orderNumber"
+                                        ],
                                         "properties": {
                                             "id": {
                                                 "type": "integer"
@@ -203,6 +294,24 @@
                             "items": {
                                 "type": "string"
                             }
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "1"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "25"
                         }
                     }
                 ],
@@ -307,6 +416,12 @@
                                     "releaseYear": {
                                         "type": "integer",
                                         "example": 2025
+                                    },
+                                    "brand": {
+                                        "type": "integer"
+                                    },
+                                    "model": {
+                                        "type": "integer"
                                     },
                                     "parameters": {
                                         "type": "array",

@@ -11,6 +11,7 @@ type InputFieldProps = TextInputProps & {
   Icon?: React.ReactElement;
   ref?: any;
   required?: boolean;
+  error?: string;
 };
 export const InputField = ({
   label,
@@ -20,6 +21,7 @@ export const InputField = ({
   Icon,
   ref,
   required = false,
+  error,
   ...props
 }: InputFieldProps) => {
   const theme = useTheme() as CustomTheme;
@@ -33,17 +35,22 @@ export const InputField = ({
         </Text>
       )}
 
-      <View className="flex-row items-center border border-border dark:border-border-dark rounded-xl px-2 bg-background-input dark:bg-background-input-dark">
+      <View className={`flex-row items-center border rounded-xl px-2 bg-background-input dark:bg-background-input-dark ${error ? 'border-font-danger' : 'border-border dark:border-border-dark'}`}>
         {Icon && Icon}
         <TextInput
           {...props}
           ref={ref}
-          className="flex-1 ml-2 text-base text-font dark:text-font-dark placeholder:text-font dark:placeholder:text-font-dark"
+          className="flex-1 ml-2 text-base text-font dark:text-font-dark"
           onChangeText={onChange}
           value={value}
           placeholderTextColor={theme.colors.input.placeholderColor}
         />
       </View>
+      {error && (
+        <Text className="text-font-danger text-sm mt-1">
+          {error}
+        </Text>
+      )}
     </View>
   );
 };

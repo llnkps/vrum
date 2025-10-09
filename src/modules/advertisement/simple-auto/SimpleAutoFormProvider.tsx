@@ -16,6 +16,8 @@ type SimpleAutoFormContextType = {
   setSelectedModel: (
     model: GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner | null
   ) => void;
+  selectedGeneration: any | null;
+  setSelectedGeneration: (generation: any | null) => void;
   selectedReleaseYear: string | null;
   setSelectedReleaseYear: React.Dispatch<string>;
   selectedRegion: string | null;
@@ -79,6 +81,7 @@ export const SimpleAutoFormProvider = ({
   const [selectedCondition, setSelectedCondition] = useState<string | null>(null);
   const [selectedNumberOfOwner, setSelectedNumberOfOwner] = useState<string | null>(null);
   const [selectedDocumentOk, setSelectedDocumentOk] = useState<boolean | null>(null);
+  const [selectedGeneration, setSelectedGeneration] = useState<any | null>(null);
 
   return (
     <SimpleAutoFormContext.Provider
@@ -87,6 +90,8 @@ export const SimpleAutoFormProvider = ({
         setSelectedBrand,
         selectedModel,
         setSelectedModel,
+        selectedGeneration,
+        setSelectedGeneration,
         selectedReleaseYear,
         setSelectedReleaseYear,
         selectedRegion,

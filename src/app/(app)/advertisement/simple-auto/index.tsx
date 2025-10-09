@@ -1,6 +1,6 @@
 import { InputField } from "@/components/ui/InputField";
 import { useRouter } from "expo-router";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -17,6 +17,7 @@ import DocumentsOkModal from "@/modules/advertisement/simple-auto/documents-ok-m
 import DrivetrainModal from "@/modules/advertisement/simple-auto/drivetrain-modal/drivetrain-modal";
 import EngineCapacityModal from "@/modules/advertisement/simple-auto/engine-capacity-modal/engine-capacity-modal";
 import FuelTypeModal from "@/modules/advertisement/simple-auto/fuel-type-modal/fuel-type-modal";
+import ImagePickerModal from "@/modules/advertisement/simple-auto/image-picker-modal/image-picker-modal";
 import NumberOfOwnersModal from "@/modules/advertisement/simple-auto/number-of-owners-modal/number-of-owners-modal";
 import PowerModal from "@/modules/advertisement/simple-auto/power-modal/power-modal";
 import { RegionModal } from "@/modules/advertisement/simple-auto/region-modal/region-modal";
@@ -29,55 +30,14 @@ import { CustomTheme } from "@/theme";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useTheme } from "@react-navigation/native";
 import clsx from "clsx";
+import * as ImagePicker from "expo-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-
-const pickerOptions = {
-  currency: [
-    { label: "USD ($)", value: "USD" },
-    { label: "EUR (€)", value: "EUR" },
-    { label: "MDL (L)", value: "MDL" },
-    { label: "RUB (₽)", value: "RUB" },
-  ],
-  fuelType: [
-    { label: "Бензин", value: "petrol" },
-    { label: "Дизель", value: "diesel" },
-    { label: "Электро", value: "electric" },
-    { label: "Гибрид", value: "hybrid" },
-    { label: "Газ", value: "gas" },
-  ],
-  transmission: [
-    { label: "Механика", value: "manual" },
-    { label: "Автомат", value: "automatic" },
-    { label: "Робот", value: "robot" },
-    { label: "Вариатор (CVT)", value: "cvt" },
-  ],
-  bodyType: [
-    { label: "Седан", value: "sedan" },
-    { label: "Хэтчбек", value: "hatchback" },
-    { label: "SUV", value: "suv" },
-    { label: "Купе", value: "coupe" },
-    { label: "Универсал", value: "wagon" },
-    { label: "Пикап", value: "pickup" },
-    { label: "Фургон", value: "van" },
-  ],
-  drivetrain: [
-    { label: "Передний (FWD)", value: "fwd" },
-    { label: "Задний (RWD)", value: "rwd" },
-    { label: "Полный (AWD)", value: "awd" },
-    { label: "4x4", value: "4x4" },
-  ],
-  condition: [
-    { label: "Новый", value: "new" },
-    { label: "Б/у", value: "used" },
-    { label: "На запчасти", value: "for parts" },
-  ],
-};
 
 type FormValues = {
   name: string;
   description: string;
   price: string;
-  images: [];
+  images: ImagePicker.ImagePickerAsset[];
 
   brand?: number;
   model?: number;
@@ -102,6 +62,7 @@ type FormValues = {
 };
 
 export default function AddCarPage() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   // const configuration = new Configuration({
   //       credentials: "include",
   //       headers: {
@@ -145,60 +106,104 @@ export default function AddCarPage() {
     setSelectedDocumentOk,
   } = useSimpleAutoFormContext();
 
-  const { control, handleSubmit, setValue, reset } =
-    useForm<FormValues>({
-      defaultValues: {
-        name: "",
-        description: "",
-        price: "",
-        currency: "",
-        images: [],
-        brand: undefined,
-        model: undefined,
-        releaseYear: undefined,
-        region: "",
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm<FormValues>({
+    defaultValues: {
+      name: "",
+      description: "",
+      price: "",
+      currency: "",
+      images: [],
+      brand: undefined,
+      model: undefined,
+      releaseYear: undefined,
+      region: "",
 
-        mileage: "",
-        fuelType: "",
-        transmissionType: "",
-        bodyType: "",
-        driveTrain: "",
-        engineCapacity: 0,
-        power: 0,
-        color: "",
+      mileage: "",
+      fuelType: "",
+      transmissionType: "",
+      bodyType: "",
+      driveTrain: "",
+      engineCapacity: 0,
+      power: 0,
+      color: "",
 
-        tradeAllow: false,
-        condition: "",
-        seller: "",
-      },
-    });
-
+      tradeAllow: false,
+      condition: "",
+      seller: "",
+    },
+  });
 
   // Form submit handler
-  const onSubmit = (data) => {
-    console.log("Form submitted:", data);
-    console.log(selectedBrand, selectedModel);
-    const {
-      name,
-      description,
-      price,
-      currency,
-      region,
-      releaseYear,
-      brand,
-      model,
-      ...additionalFields
-    } = data;
+  const onSubmit = async (data: FormValues) => {
+    try {
+      setIsSubmitting(true);
 
-    simpleAutoClient.postAppSimpleautocontextPresentationSimpleautocreateCreate(
-      {
-        postAppSimpleautocontextPresentationSimpleautocreateCreateRequest: {
-          ...data,
-          // brand: selectedBrand?.id || "",
-          // model: selectedModel?.id || "",
-        },
-      }
-    );
+      const formData = new FormData();
+
+      // Add main fields
+      formData.append("name", data.name);
+      formData.append("description", data.description);
+      formData.append("price", data.price);
+      formData.append("currency", data.currency);
+      formData.append("region", data.region);
+
+      // Add car details
+      if (selectedBrand?.id)
+        formData.append("brand", selectedBrand.id.toString());
+      if (selectedModel?.id)
+        formData.append("model", selectedModel.id.toString());
+      if (data.releaseYear)
+        formData.append("releaseYear", data.releaseYear.toString());
+      if (data.mileage) formData.append("mileage", data.mileage);
+      if (data.transmissionType)
+        formData.append("transmissionType", data.transmissionType);
+      if (data.fuelType) formData.append("fuelType", data.fuelType);
+      if (data.bodyType) formData.append("bodyType", data.bodyType);
+      if (data.driveTrain) formData.append("driveTrain", data.driveTrain);
+      if (data.color) formData.append("color", data.color);
+      if (data.power) formData.append("power", data.power.toString());
+      if (data.engineCapacity)
+        formData.append("engineCapacity", data.engineCapacity.toString());
+
+      // Add additional info
+      formData.append("tradeAllow", data.tradeAllow ? "1" : "0");
+      formData.append("condition", data.condition);
+      formData.append("numberOfOwner", data.numberOfOwner);
+      formData.append("documentOk", data.documentOk ? "1" : "0");
+      formData.append("seller", data.seller);
+
+      // Add images
+      data.images.forEach((image, index) => {
+        const fileExtension = image.uri.split(".").pop();
+        formData.append("images", {
+          uri: image.uri,
+          type: `image/${fileExtension}`,
+          name: `image_${index}.${fileExtension}`,
+        } as any);
+      });
+
+      await simpleAutoClient.postAppSimpleautocontextPresentationSimpleautocreateCreate(
+        {
+          postAppSimpleautocontextPresentationSimpleautocreateCreateRequest:
+            formData as any,
+        }
+      );
+
+      // Success
+      alert("Объявление успешно создано!");
+      router.back();
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("Произошла ошибка при создании объявления. Попробуйте еще раз.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   useEffect(() => {
@@ -226,6 +231,7 @@ export default function AddCarPage() {
   const numberOfOwnersModalRef = useRef<BottomSheetRef>(null);
   const documentsOkModalRef = useRef<BottomSheetRef>(null);
   const sellerModalRef = useRef<BottomSheetRef>(null);
+  const imagePickerModalRef = useRef<BottomSheetRef>(null);
 
   const handlePresentYearModalPress = useCallback(() => {
     yearModalRef.current?.present();
@@ -267,6 +273,10 @@ export default function AddCarPage() {
     sellerModalRef.current?.present();
   }, []);
 
+  const handlePresentImagePickerModalPress = useCallback(() => {
+    imagePickerModalRef.current?.present();
+  }, []);
+
   return (
     <SafeAreaView className="flex-1 bg-background-page dark:bg-background-page-dark">
       <KeyboardAwareScrollView>
@@ -279,18 +289,26 @@ export default function AddCarPage() {
               Основная информация
             </Text>
           </View>
-
           <Controller
             control={control}
             name="name"
             rules={{
-              required: true,
+              required: "Заголовок объявления обязателен",
+              minLength: {
+                value: 10,
+                message: "Заголовок должен содержать минимум 10 символов",
+              },
+              maxLength: {
+                value: 100,
+                message: "Заголовок не должен превышать 100 символов",
+              },
             }}
             render={({ field }) => {
               return (
                 <InputField
                   {...field}
                   required
+                  error={errors.name?.message}
                   label={"Заголовок объявления"}
                   placeholder="Например: BMW X5 2020 года"
                 />
@@ -312,12 +330,30 @@ export default function AddCarPage() {
               );
             }}
           />
-
+          <BottomSheetModalButton
+            label="Добавить фотографии"
+            onPress={handlePresentImagePickerModalPress}
+          />
+          <ImagePickerModal
+            ref={imagePickerModalRef}
+            onSelect={(images) => {
+              setValue("images", images);
+              imagePickerModalRef.current?.close();
+            }}
+          />
           <Controller
             control={control}
             name="price"
             rules={{
-              required: true,
+              required: "Цена обязательна",
+              min: {
+                value: 1,
+                message: "Цена должна быть больше 0",
+              },
+              pattern: {
+                value: /^\d+$/,
+                message: "Введите только цифры",
+              },
             }}
             render={({ field }) => {
               return (
@@ -334,26 +370,35 @@ export default function AddCarPage() {
             }}
           />
           <CurrencyModal
-            onChange={(currency) => {
+            onSelect={(currency) => {
               setValue("currency", currency.value);
+              setSelectedCurrency(currency.label);
             }}
           />
-
           <ModalButton
             label={selectedBrand?.name ?? "Марка"}
             onPress={() =>
               router.push("/(app)/advertisement/simple-auto/brand-auto-modal")
             }
           />
-          <ModalButton
-            label={selectedModel?.name ?? "Модель"}
-            onPress={() =>
-              router.push(
-                "/(app)/advertisement/simple-auto/brand-auto-type-modal"
-              )
-            }
-          />
-
+          {selectedBrand && (
+            <ModalButton
+              label={selectedModel?.name ?? "Модель"}
+              onPress={() =>
+                router.push(
+                  "/(app)/advertisement/simple-auto/brand-auto-type-modal"
+                )
+              }
+            />
+          )}
+          {selectedModel && (
+            <ModalButton
+              label={"Поколение"}
+              onPress={() =>
+                router.push("/(app)/advertisement/simple-auto/generation-modal")
+              }
+            />
+          )}
           <BottomSheetModalButton
             label={"Год"}
             onPress={handlePresentYearModalPress}
@@ -365,7 +410,6 @@ export default function AddCarPage() {
               setValue("releaseYear", releaseYear.value);
             }}
           />
-
           <BottomSheetModalButton
             label={"Регион"}
             onPress={handlePresentRegionModalPress}
@@ -375,8 +419,8 @@ export default function AddCarPage() {
             ref={regionModalRef}
             onChange={(region) => {
               console.log(region);
-              setValue("region", region.slug); // set value for form
-              setSelectedRegion(region.name); // set value for context
+              setValue("region", region.slug || "");
+              setSelectedRegion(region.name || "");
               regionModalRef.current?.close({ duration: 150 });
             }}
           />
@@ -391,7 +435,6 @@ export default function AddCarPage() {
           </View>
           <View className="gap-y-3">
             {/* Buttons to open modals and bottom sheet modals */}
-
             <BottomSheetModalButton
               label={"Коробка передач"}
               onPress={handlePresentTransmissionModalPress}
@@ -405,13 +448,11 @@ export default function AddCarPage() {
                 transmissionModalRef.current?.close({ duration: 150 });
               }}
             />
-
             <BottomSheetModalButton
               label={"Тип топлива"}
               onPress={handlePresentFuelTypeModalPress}
               selectedValue={selectedFuelType ?? undefined}
             />
-
             <FuelTypeModal
               ref={fuelTypeModalRef}
               onSelect={(fuelType) => {
@@ -419,7 +460,6 @@ export default function AddCarPage() {
                 setSelectedFuelType(fuelType.label);
               }}
             />
-
             <BottomSheetModalButton
               label={"Тип кузова"}
               onPress={handlePresentBodyTypeModalPress}
@@ -429,10 +469,9 @@ export default function AddCarPage() {
               ref={bodyTypeModalRef}
               onSelect={(bodyType) => {
                 setValue("bodyType", bodyType.value);
-                setSelectedFuelType(bodyType.label);
+                setSelectedBodyType(bodyType.label);
               }}
             />
-
             <BottomSheetModalButton
               label={"Привод"}
               onPress={handlePresentDrivetrainModalPress}
@@ -442,10 +481,9 @@ export default function AddCarPage() {
               ref={drivetrainModalRef}
               onSelect={(driveTrain) => {
                 setValue("driveTrain", driveTrain.value);
-                setSelectedFuelType(driveTrain.label);
+                setSelectedDriveTrain(driveTrain.label);
               }}
             />
-
             <BottomSheetModalButton
               label={"Цвет"}
               onPress={handlePresentColorModalPress}
@@ -454,11 +492,10 @@ export default function AddCarPage() {
             <ColorModal
               ref={colorModalRef}
               onSelect={(color) => {
-                setValue("condition", color.value);
-                setSelectedFuelType(color.label);
+                setValue("color", color.value);
+                setSelectedColor(color.label);
               }}
             />
-
             <BottomSheetModalButton
               label={"Объем двигателя"}
               onPress={handlePresentEngineCapacityModalPress}
@@ -468,10 +505,9 @@ export default function AddCarPage() {
               ref={engineCapacityModalRef}
               onSelect={(engineCapacity) => {
                 setValue("engineCapacity", engineCapacity.value);
-                setSelectedFuelType(engineCapacity.label);
+                setSelectedEngineCapacity(engineCapacity.value.toString());
               }}
             />
-
             <BottomSheetModalButton
               label={"Мощность"}
               onPress={handlePresentPowerModalPress}
@@ -484,7 +520,6 @@ export default function AddCarPage() {
                 setSelectedFuelType(power.label);
               }}
             />
-
             <Controller
               control={control}
               name="mileage"
@@ -517,7 +552,6 @@ export default function AddCarPage() {
               setSelectedFuelType(condition.label);
             }}
           />
-
           <Controller
             control={control}
             name="tradeAllow"
@@ -539,11 +573,10 @@ export default function AddCarPage() {
           <DocumentsOkModal
             ref={documentsOkModalRef}
             onSelect={(document) => {
-              setValue("documentOK", document.value);
-              setSelectedFuelType(document.label);
+              setValue("documentOk", document.value);
+              setSelectedDocumentOk(document.value);
             }}
           />
-
           <BottomSheetModalButton
             label={"Количество владельцев"}
             onPress={handlePresentNumberOfOwnersModalPress}
@@ -552,8 +585,8 @@ export default function AddCarPage() {
           <NumberOfOwnersModal
             ref={numberOfOwnersModalRef}
             onSelect={(numberOfOwner) => {
-              setValue("numberOfOwner", numberOfOwner.value);
-              setSelectedFuelType(numberOfOwner.label);
+              setValue("numberOfOwner", numberOfOwner.toString());
+              setSelectedNumberOfOwner(numberOfOwner.toString());
             }}
           />
           <BottomSheetModalButton
@@ -570,8 +603,12 @@ export default function AddCarPage() {
         </View>
 
         {/* Кнопка создания */}
-        <Button onPress={handleSubmit(onSubmit)} style={{ marginVertical: 20 }}>
-          <Text>Создать объявление</Text>
+        <Button
+          onPress={handleSubmit(onSubmit)}
+          style={{ marginVertical: 20 }}
+          disabled={isSubmitting}
+        >
+          <Text>{isSubmitting ? "Создание..." : "Создать объявление"}</Text>
         </Button>
       </KeyboardAwareScrollView>
     </SafeAreaView>
