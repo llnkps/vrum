@@ -5,6 +5,8 @@ import { Text, View, ViewStyle, TextStyle, ActivityIndicator } from "react-nativ
 import { RectButton } from "react-native-gesture-handler";
 import Entypo from "@expo/vector-icons/Entypo";
 
+import clsx from "clsx";
+
 type TouchableHighlightRowProps = {
   label: string;
   selectedValue?: string;
@@ -92,14 +94,20 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
           {icon && <View style={{ marginRight: 12 }}>{icon}</View>}
           <View style={{ flex: 1 }}>
             <Text
-              className="text-font dark:text-font-dark font-bold"
+              className={clsx(
+                "text-font dark:text-font-dark font-bold",
+                {
+                  "text-font dark:text-font-dark": !disabled,
+                  "text-font-disabled dark:text-font-disabled-dark": disabled,
+                }
+              )}
               style={labelStyle}
             >
               {label}
             </Text>
             {subtitle && (
               <Text
-                className="text-font-subtle dark:text-font-subtle-dark text-sm"
+                className={clsx("text-font-subtle dark:text-font-subtle-dark text-sm")}
                 style={{ marginTop: 2 }}
               >
                 {subtitle}

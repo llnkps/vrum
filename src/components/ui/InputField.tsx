@@ -40,7 +40,7 @@ export const InputField = ({
         <TextInput
           {...props}
           ref={ref}
-          className="flex-1 ml-2 text-base text-font dark:text-font-dark"
+          className="flex-1 ml-2 text-base text-font dark:text-font-dark placeholder:text-font dark:placeholder:text-font-dark py-2"
           onChangeText={onChange}
           value={value}
           placeholderTextColor={theme.colors.input.placeholderColor}

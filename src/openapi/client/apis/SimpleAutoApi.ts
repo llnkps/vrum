@@ -20,7 +20,6 @@ import type {
   GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner,
   GetAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfilters200ResponseInner,
   GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters200Response,
-  PostAppSimpleautocontextPresentationSimpleautocreateCreateRequest,
 } from '../models/index';
 import {
     GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInnerFromJSON,
@@ -33,8 +32,6 @@ import {
     GetAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfilters200ResponseInnerToJSON,
     GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters200ResponseFromJSON,
     GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters200ResponseToJSON,
-    PostAppSimpleautocontextPresentationSimpleautocreateCreateRequestFromJSON,
-    PostAppSimpleautocontextPresentationSimpleautocreateCreateRequestToJSON,
 } from '../models/index';
 
 export interface GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerationsRequest {
@@ -58,10 +55,6 @@ export interface GetAppSimpleautocontextPresentationSimpleautogetcollectionGetco
 
 export interface GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfiltersRequest {
     advertismentId: string;
-}
-
-export interface PostAppSimpleautocontextPresentationSimpleautocreateCreateOperationRequest {
-    postAppSimpleautocontextPresentationSimpleautocreateCreateRequest: PostAppSimpleautocontextPresentationSimpleautocreateCreateRequest;
 }
 
 /**
@@ -320,19 +313,10 @@ export class SimpleAutoApi extends runtime.BaseAPI {
 
     /**
      */
-    async postAppSimpleautocontextPresentationSimpleautocreateCreateRaw(requestParameters: PostAppSimpleautocontextPresentationSimpleautocreateCreateOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['postAppSimpleautocontextPresentationSimpleautocreateCreateRequest'] == null) {
-            throw new runtime.RequiredError(
-                'postAppSimpleautocontextPresentationSimpleautocreateCreateRequest',
-                'Required parameter "postAppSimpleautocontextPresentationSimpleautocreateCreateRequest" was null or undefined when calling postAppSimpleautocontextPresentationSimpleautocreateCreate().'
-            );
-        }
-
+    async postAppSimpleautocontextPresentationSimpleautocreateCreateRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -350,7 +334,6 @@ export class SimpleAutoApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: PostAppSimpleautocontextPresentationSimpleautocreateCreateRequestToJSON(requestParameters['postAppSimpleautocontextPresentationSimpleautocreateCreateRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -358,8 +341,8 @@ export class SimpleAutoApi extends runtime.BaseAPI {
 
     /**
      */
-    async postAppSimpleautocontextPresentationSimpleautocreateCreate(requestParameters: PostAppSimpleautocontextPresentationSimpleautocreateCreateOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.postAppSimpleautocontextPresentationSimpleautocreateCreateRaw(requestParameters, initOverrides);
+    async postAppSimpleautocontextPresentationSimpleautocreateCreate(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.postAppSimpleautocontextPresentationSimpleautocreateCreateRaw(initOverrides);
     }
 
 }

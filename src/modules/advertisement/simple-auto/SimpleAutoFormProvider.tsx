@@ -9,6 +9,7 @@ import {
 import { createContext, useContext, useState } from "react";
 
 type GenerationType = {
+  id: number;
   generation: number | null;
   modification: GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInnerModificationsInner | null;
 };
@@ -54,6 +55,9 @@ type SimpleAutoFormContextType = {
   setSelectedNumberOfOwner: React.Dispatch<string>;
   selectedDocumentOk: boolean | null;
   setSelectedDocumentOk: React.Dispatch<boolean>;
+
+  selectedSeller: string | null;
+  setSelectedSeller: React.Dispatch<string>;
 };
 
 const SimpleAutoFormContext = createContext<SimpleAutoFormContextType | null>(
@@ -106,6 +110,8 @@ export const SimpleAutoFormProvider = ({
   const [selectedGeneration, setSelectedGeneration] =
     useState<GenerationType | null>(null);
 
+  const [selectedSeller, setSelectedSeller] = useState<string | null>(null);
+
   return (
     <SimpleAutoFormContext.Provider
       value={{
@@ -143,6 +149,8 @@ export const SimpleAutoFormProvider = ({
         setSelectedNumberOfOwner,
         selectedDocumentOk,
         setSelectedDocumentOk,
+        selectedSeller,
+        setSelectedSeller,
       }}
     >
       {children}

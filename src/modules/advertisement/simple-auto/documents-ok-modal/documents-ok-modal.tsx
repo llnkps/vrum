@@ -7,15 +7,15 @@ import { CustomRectButton } from "@/components/ui/button";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
 import React, { forwardRef } from "react";
 
-type DocumentsOkOption = (typeof options)[number];
+// type DocumentsOkOption = (typeof options)[number];
 
 type DocumentsOkModalProps = {
-  onSelect: (value: DocumentsOkOption) => void;
+  onSelect: (value: string) => void;
 };
 
 const options = [
-  { label: "Документы в порядке", value: true },
-  { label: "Проблемы с документами", value: false },
+  { label: "Документы в порядке", value: "ok" },
+  { label: "Проблемы с документами", value: "missing_or_problematic" },
 ];
 
 const DocumentsOkModal = forwardRef<BottomSheetRef, DocumentsOkModalProps>(

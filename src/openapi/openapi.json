@@ -133,12 +133,16 @@
                             "application/json": {
                                 "schema": {
                                     "required": [
+                                        "id",
                                         "generation",
                                         "modifications"
                                     ],
                                     "type": "array",
                                     "items": {
                                         "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            },
                                             "generation": {
                                                 "type": "integer"
                                             },
@@ -146,6 +150,7 @@
                                                 "type": "array",
                                                 "items": {
                                                     "required": [
+                                                        "id",
                                                         "frames",
                                                         "restyling",
                                                         "yearStart",
@@ -153,6 +158,9 @@
                                                         "images"
                                                     ],
                                                     "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
                                                         "frames": {
                                                             "type": "array",
                                                             "items": {
@@ -390,48 +398,8 @@
                     "description": "Simple auto to be created",
                     "required": true,
                     "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "New Product"
-                                    },
-                                    "description": {
-                                        "type": "string",
-                                        "example": "description"
-                                    },
-                                    "price": {
-                                        "type": "string",
-                                        "example": "19.99"
-                                    },
-                                    "currency": {
-                                        "type": "string",
-                                        "example": "usd"
-                                    },
-                                    "region": {
-                                        "type": "string",
-                                        "example": "Chisinau"
-                                    },
-                                    "releaseYear": {
-                                        "type": "integer",
-                                        "example": 2025
-                                    },
-                                    "brand": {
-                                        "type": "integer"
-                                    },
-                                    "model": {
-                                        "type": "integer"
-                                    },
-                                    "parameters": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "object"
-                                        }
-                                    }
-                                },
-                                "type": "object"
-                            }
+                        "multipart/form-data": {
+                            "schema": {}
                         }
                     }
                 },

@@ -13,7 +13,7 @@ type SellerModalProps = {
 
 const options = [
   { label: "Собственник", value: "owner" },
-  { label: "Частник", value: "laywer" },
+  { label: "Частник", value: "private" },
   { label: "Компания", value: "company" },
 ];
 
@@ -26,6 +26,7 @@ const SellerModal = forwardRef<BottomSheetRef, SellerModalProps>(
         ref={ref}
         snapPoints={["35%"]}
         enableContentPanningGesture={true}
+        title="Владелец"
       >
         <BottomSheetView className="flex-col">
           {options.map((opt) => (

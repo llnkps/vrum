@@ -132,6 +132,7 @@ const GenerationList: FC<GenerationListProps> = ({
                 key={`${item.generation}_${modification.restyling}_${modification.yearStart}`}
                 onPress={() =>
                   handleSelectGeneration({
+                    id: item.id,
                     generation: item.generation,
                     modification: modification,
                   })

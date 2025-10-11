@@ -87,7 +87,7 @@ const ModelItemScreenFilterModalBlock: FC<props> = ({
   isScrolling,
 }) => {
   const router = useRouter();
-  const { setSelectedBrand, setSelectedModel } = useSimpleAutoFormContext();
+  const { setSelectedBrand, setSelectedModel, setSelectedGeneration } = useSimpleAutoFormContext();
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -106,6 +106,7 @@ const ModelItemScreenFilterModalBlock: FC<props> = ({
   ) => {
     setSelectedBrand(brand);
     setSelectedModel(null);
+    setSelectedGeneration(null);
     router.dismiss();
   };
 

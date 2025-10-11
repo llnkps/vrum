@@ -85,12 +85,13 @@ type props = {
 
 const ModalModelItemBlock: FC<props> = ({ models, scrollY, isScrolling }) => {
   const router = useRouter();
-  const { setSelectedModel } = useSimpleAutoFormContext();
+  const { setSelectedModel, setSelectedGeneration } = useSimpleAutoFormContext();
 
   const handleSelectModel = (
     item: GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner
   ) => {
     setSelectedModel(item);
+    setSelectedGeneration(null);
     router.dismiss();
   };
 

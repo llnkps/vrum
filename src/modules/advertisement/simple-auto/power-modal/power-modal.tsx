@@ -9,7 +9,6 @@ import {
 } from "@quidone/react-native-wheel-picker";
 import React, { forwardRef, useState } from "react";
 import { Text, View } from "react-native";
-import { HeaderHandle } from "./header";
 
 type OptionType = (typeof powerArray)[number];
 
@@ -34,7 +33,7 @@ const PowerModal = forwardRef<BottomSheetRef, PowerModalProps>(
       <CustomBottomSheetModal
         ref={ref}
         snapPoints={["40%"]}
-        handleComponent={HeaderHandle}
+        title={"Мощность"}
         footerProps={{
           selectedValue: fromYear,
           onConfirm: onSelect,
