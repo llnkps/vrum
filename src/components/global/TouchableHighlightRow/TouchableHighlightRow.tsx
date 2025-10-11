@@ -1,7 +1,7 @@
 import { CustomTheme } from "@/theme";
 import { useTheme } from "@react-navigation/native";
 import { FC, ReactNode } from "react";
-import { Text, View, ViewStyle, TextStyle } from "react-native";
+import { Text, View, ViewStyle, TextStyle, ActivityIndicator } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 import Entypo from "@expo/vector-icons/Entypo";
 
@@ -18,6 +18,7 @@ type TouchableHighlightRowProps = {
   selectedValueStyle?: TextStyle;
   disabled?: boolean;
   subtitle?: string;
+  loading?: boolean;
 };
 
 export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
@@ -33,6 +34,7 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
   selectedValueStyle,
   disabled = false,
   subtitle,
+  loading = false,
 }) => {
   const theme = useTheme() as CustomTheme;
 
@@ -73,7 +75,7 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
   };
 
   const handlePress = () => {
-    if (!disabled) {
+    if (!disabled && !loading) {
       onPress();
     }
   };
@@ -115,19 +117,28 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
         </View>
 
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          {rightIcon && (
-            <Entypo
-              name={rightIcon}
-              size={20}
-              color={disabled ? theme.colors.icon + "80" : theme.colors.icon}
+          {loading ? (
+            <ActivityIndicator
+              size="small"
+              color={theme.colors.icon}
             />
-          )}
-          {showRightArrow && !rightIcon && (
-            <Entypo
-              name="chevron-right"
-              size={20}
-              color={disabled ? theme.colors.icon + "80" : theme.colors.icon}
-            />
+          ) : (
+            <>
+              {rightIcon && (
+                <Entypo
+                  name={rightIcon}
+                  size={20}
+                  color={disabled ? theme.colors.icon + "80" : theme.colors.icon}
+                />
+              )}
+              {showRightArrow && !rightIcon && (
+                <Entypo
+                  name="chevron-right"
+                  size={20}
+                  color={disabled ? theme.colors.icon + "80" : theme.colors.icon}
+                />
+              )}
+            </>
           )}
         </View>
       </RectButton>

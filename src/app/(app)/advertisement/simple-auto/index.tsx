@@ -2,18 +2,18 @@ import { InputField } from "@/components/ui/InputField";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Alert, Image, Pressable, Text, View } from "react-native";
+import { Alert, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { CheckboxRectButton } from "@/components/global/CheckboxRectButton";
 import CloseIcon from "@/components/global/CloseIcon";
 import { BottomSheetRef } from "@/components/global/CustomBottomSheetModal";
 import { TouchableHighlightRow } from "@/components/global/TouchableHighlightRow/TouchableHighlightRow";
-import { Button, CustomRectButton } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import BodyTypeModal from "@/modules/advertisement/simple-auto/body-type-modal/body-type-modal";
 import ColorModal from "@/modules/advertisement/simple-auto/color-modal/color-modal";
 import ConditionModal from "@/modules/advertisement/simple-auto/condition-modal/condition-modal";
-import { CurrencyModal } from "@/modules/advertisement/simple-auto/currency-modal";
+import { CurrencyModal } from "@/modules/advertisement/simple-auto/currency-modal/CurrencyModal";
 import DocumentsOkModal from "@/modules/advertisement/simple-auto/documents-ok-modal/documents-ok-modal";
 import DrivetrainModal from "@/modules/advertisement/simple-auto/drivetrain-modal/drivetrain-modal";
 import EngineCapacityModal from "@/modules/advertisement/simple-auto/engine-capacity-modal/engine-capacity-modal";
@@ -27,10 +27,7 @@ import { useSimpleAutoFormContext } from "@/modules/advertisement/simple-auto/Si
 import TransmissionModal from "@/modules/advertisement/simple-auto/transmission-modal/transmission-modal";
 import YearModal from "@/modules/advertisement/simple-auto/year-modal/year-modal";
 import { SimpleAutoApi } from "@/openapi/client";
-import { CustomTheme } from "@/theme";
-import Entypo from "@expo/vector-icons/Entypo";
-import { useTheme } from "@react-navigation/native";
-import clsx from "clsx";
+import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
@@ -77,6 +74,7 @@ export default function AddCarPage() {
   const {
     selectedBrand,
     selectedModel,
+    selectedGeneration,
     selectedReleaseYear,
     setSelectedReleaseYear,
     selectedRegion,
@@ -343,7 +341,7 @@ export default function AddCarPage() {
   const handlePresentImagePickerModalPress = useCallback(() => {
     imagePickerModalRef.current?.present();
   }, []);
-
+  console.log(selectedReleaseYear);
   return (
     <SafeAreaView className="flex-1 bg-background-page dark:bg-background-page-dark">
       <KeyboardAwareScrollView>
@@ -382,122 +380,12 @@ export default function AddCarPage() {
               );
             }}
           /> */}
-          {/* <Controller
-            control={control}
-            name="description"
-            render={({ field }) => {
-              return (
-                <InputField
-                  {...field}
-                  label={"Описание"}
-                  multiline
-                  textAlignVertical="top"
-                  placeholder="Опишите состояние автомобиля, особенности, дополнительное оборудование..."
-                />
-              );
-            }}
-          /> */}
-          {/* <BottomSheetModalButton */}
-          {/* label="Добавить фотографии" */}
-          {/* onPress={handlePresentImagePickerModalPress} */}
-          {/* /> */}
-          {/* <ImagePickerModal */}
-          {/* ref={imagePickerModalRef} */}
-          {/* onSelect={(images) => { */}
-          {/* setValue("images", images); */}
-          {/* imagePickerModalRef.current?.close(); */}
-          {/* }} */}
-          {/* /> */}
-
-          {/** Display selected images */}
-          {/* <Controller */}
-          {/* control={control} */}
-          {/* name="images" */}
-          {/* render={({ field }) => { */}
-          {/* if (!field.value || field.value.length === 0) { */}
-          {/* return <View />; */}
-          {/* } */}
-          {/*  */}
-          {/* return ( */}
-          {/* <View className="mt-3"> */}
-          {/* <Text className="text-sm text-font-subtle dark:text-font-subtle-dark mb-2"> */}
-          {/* Выбранные фотографии ({field.value.length}) */}
-          {/* </Text> */}
-          {/* <View className="flex-row flex-wrap gap-2"> */}
-          {/* {field.value.map((image, index) => ( */}
-          {/* <View key={index} className="relative"> */}
-          {/* <Image */}
-          {/* source={{ uri: image.uri }} */}
-          {/* className="w-20 h-20 rounded-lg" */}
-          {/* resizeMode="cover" */}
-          {/* /> */}
-          {/* <Pressable */}
-          {/* onPress={() => { */}
-          {/* const newImages = field.value.filter( */}
-          {/* (_, i) => i !== index */}
-          {/* ); */}
-          {/* setValue("images", newImages); */}
-          {/* }} */}
-          {/* className="absolute -top-2 -right-2 bg-red-500 rounded-full w-6 h-6 items-center justify-center" */}
-          {/* > */}
-          {/* <Text className="text-white text-xs font-bold"> */}
-          {/* × */}
-          {/* </Text> */}
-          {/* </Pressable> */}
-          {/* </View> */}
-          {/* ))} */}
-          {/* </View> */}
-          {/* </View> */}
-          {/* ); */}
-          {/* }} */}
-          {/* /> */}
-          {/* <Controller
-            control={control}
-            name="price"
-            rules={{
-              required: "Цена обязательна",
-              min: {
-                value: 1,
-                message: "Цена должна быть больше 0",
-              },
-              pattern: {
-                value: /^\d+$/,
-                message: "Введите только цифры",
-              },
-            }}
-            render={({ field }) => {
-              return (
-                <InputField
-                  ref={field.ref}
-                  value={field.value.toString()}
-                  onChange={(e) => field.onChange(e)}
-                  label={"Цена"}
-                  keyboardType="numeric"
-                  placeholder="1500"
-                  required
-                />
-              );
-            }}
-          /> */}
-          {/* <TouchableHighlightRow
-            variant="bordered"
-            label={selectedCurrency ?? "Валюта"}
-            onPress={() => {}}
-            rightIcon="chevron-down"
-          />
-          <CurrencyModal
-            ref={currencyModalRef}
-            onSelect={(currency) => {
-              setValue("currency", currency.value);
-              setSelectedCurrency(currency.label);
-              currencyModalRef.current?.close({ duration: 150 });
-            }}
-          /> */}
 
           {/** Brand Selection */}
           <TouchableHighlightRow
             variant="bordered"
-            label={selectedBrand?.name ?? "Марка"}
+            label={"Марка"}
+            selectedValue={selectedBrand?.name ?? undefined}
             onPress={() =>
               router.push("/(app)/advertisement/simple-auto/brand-auto-modal")
             }
@@ -506,55 +394,50 @@ export default function AddCarPage() {
 
           <TouchableHighlightRow
             variant="bordered"
-            label={selectedBrand?.name ?? "Марка"}
+            label={"Модель"}
+            selectedValue={selectedModel?.name ?? undefined}
             onPress={() =>
-              router.push("/(app)/advertisement/simple-auto/brand-auto-modal")
+              router.push(
+                "/(app)/advertisement/simple-auto/brand-auto-type-modal"
+              )
             }
             rightIcon="chevron-right"
+            disabled={!selectedBrand}
           />
 
-          {/** Model Selection */}
-          {selectedBrand && (
-            <ModalButton
-              label={selectedModel?.name ?? "Модель"}
-              onPress={() =>
-                router.push(
-                  "/(app)/advertisement/simple-auto/brand-auto-type-modal"
-                )
-              }
-            />
-          )}
-          {selectedModel && (
-            <ModalButton
-              label={"Поколение"}
-              onPress={() =>
-                router.push("/(app)/advertisement/simple-auto/generation-modal")
-              }
-            />
-          )}
-          <BottomSheetModalButton
+          <TouchableHighlightRow
+            variant="bordered"
+            label={"Поколение"}
+            selectedValue={
+              selectedGeneration?.generation
+                ? `${selectedGeneration.generation} поколение ${
+                    selectedGeneration?.modification?.yearStart
+                  } - ${
+                    selectedGeneration?.modification?.yearEnd ?? "н.в."
+                  }, рестайлинг ${selectedGeneration?.modification?.restyling}`
+                : undefined
+            }
+            onPress={() =>
+              router.push("/(app)/advertisement/simple-auto/generation-modal")
+            }
+            rightIcon="chevron-right"
+            disabled={!selectedModel}
+          />
+
+          {/** Year Selection */}
+          <TouchableHighlightRow
+            variant="bordered"
             label={"Год"}
+            selectedValue={selectedReleaseYear ?? undefined}
             onPress={handlePresentYearModalPress}
+            rightIcon="chevron-down"
           />
           <YearModal
             ref={yearModalRef}
             onChange={(releaseYear) => {
-              console.log(releaseYear);
-              setValue("releaseYear", releaseYear.value);
-            }}
-          />
-          <BottomSheetModalButton
-            label={"Регион"}
-            onPress={handlePresentRegionModalPress}
-            selectedValue={selectedRegion ?? undefined}
-          />
-          <RegionModal
-            ref={regionModalRef}
-            onChange={(region) => {
-              console.log(region);
-              setValue("region", region.slug || "");
-              setSelectedRegion(region.name || "");
-              regionModalRef.current?.close({ duration: 150 });
+              setValue("releaseYear", releaseYear);
+              setSelectedReleaseYear(releaseYear);
+              yearModalRef.current?.close({ duration: 150 });
             }}
           />
         </View>
@@ -568,10 +451,13 @@ export default function AddCarPage() {
           </View>
           <View className="gap-y-3">
             {/* Buttons to open modals and bottom sheet modals */}
-            <BottomSheetModalButton
+
+            <TouchableHighlightRow
+              variant="bordered"
               label={"Коробка передач"}
               onPress={handlePresentTransmissionModalPress}
               selectedValue={selectedTransmissionType ?? undefined}
+              rightIcon="chevron-down"
             />
             <TransmissionModal
               ref={transmissionModalRef}
@@ -581,10 +467,13 @@ export default function AddCarPage() {
                 transmissionModalRef.current?.close({ duration: 150 });
               }}
             />
-            <BottomSheetModalButton
+
+            <TouchableHighlightRow
+              variant="bordered"
               label={"Тип топлива"}
               onPress={handlePresentFuelTypeModalPress}
               selectedValue={selectedFuelType ?? undefined}
+              rightIcon="chevron-down"
             />
             <FuelTypeModal
               ref={fuelTypeModalRef}
@@ -594,10 +483,13 @@ export default function AddCarPage() {
                 fuelTypeModalRef.current?.close({ duration: 150 });
               }}
             />
-            <BottomSheetModalButton
+
+            <TouchableHighlightRow
+              variant="bordered"
               label={"Тип кузова"}
               onPress={handlePresentBodyTypeModalPress}
               selectedValue={selectedBodyType ?? undefined}
+              rightIcon="chevron-down"
             />
             <BodyTypeModal
               ref={bodyTypeModalRef}
@@ -607,10 +499,13 @@ export default function AddCarPage() {
                 bodyTypeModalRef.current?.close({ duration: 150 });
               }}
             />
-            <BottomSheetModalButton
+
+            <TouchableHighlightRow
+              variant="bordered"
               label={"Привод"}
               onPress={handlePresentDrivetrainModalPress}
               selectedValue={selectedDriveTrain ?? undefined}
+              rightIcon="chevron-down"
             />
             <DrivetrainModal
               ref={drivetrainModalRef}
@@ -620,10 +515,13 @@ export default function AddCarPage() {
                 drivetrainModalRef.current?.close({ duration: 150 });
               }}
             />
-            <BottomSheetModalButton
+
+            <TouchableHighlightRow
+              variant="bordered"
               label={"Цвет"}
               onPress={handlePresentColorModalPress}
               selectedValue={selectedColor ?? undefined}
+              rightIcon="chevron-down"
             />
             <ColorModal
               ref={colorModalRef}
@@ -633,30 +531,40 @@ export default function AddCarPage() {
                 colorModalRef.current?.close({ duration: 150 });
               }}
             />
-            <BottomSheetModalButton
+
+            <TouchableHighlightRow
+              variant="bordered"
               label={"Объем двигателя"}
               onPress={handlePresentEngineCapacityModalPress}
-              selectedValue={selectedEngineCapacity ?? undefined}
+              selectedValue={
+                selectedEngineCapacity
+                  ? `${selectedEngineCapacity} л`
+                  : undefined
+              }
+              rightIcon="chevron-down"
             />
             <EngineCapacityModal
               ref={engineCapacityModalRef}
               onSelect={(engineCapacity) => {
-                setValue("engineCapacity", engineCapacity.value);
-                setSelectedEngineCapacity(
-                  `${engineCapacity.value.toFixed(1)} л`
-                );
+                setValue("engineCapacity", engineCapacity);
+                setSelectedEngineCapacity(engineCapacity);
               }}
             />
-            <BottomSheetModalButton
+
+            <TouchableHighlightRow
+              variant="bordered"
               label={"Мощность"}
               onPress={handlePresentPowerModalPress}
-              selectedValue={selectedPower ?? undefined}
+              selectedValue={
+                selectedPower ? `${selectedPower} л.с.` : undefined
+              }
+              rightIcon="chevron-down"
             />
             <PowerModal
               ref={powerModalRef}
               onSelect={(power) => {
-                setValue("power", power.value);
-                setSelectedPower(`${power.value} л.с.`);
+                setValue("power", power);
+                setSelectedPower(power);
               }}
             />
             <Controller
@@ -686,18 +594,22 @@ export default function AddCarPage() {
         </View>
 
         <View className="p-5 rounded-2xl mb-5 bg-surface dark:bg-surface-dark gap-y-3">
-          <BottomSheetModalButton
+          <TouchableHighlightRow
+            variant="bordered"
             label={"Состояние"}
             onPress={handlePresentConditionModalPress}
             selectedValue={selectedCondition ?? undefined}
+            rightIcon="chevron-down"
           />
           <ConditionModal
             ref={conditionModalRef}
             onSelect={(condition) => {
               setValue("condition", condition.value);
-              setSelectedFuelType(condition.label);
+              setSelectedCondition(condition.label);
+              conditionModalRef.current?.close({ duration: 150 });
             }}
           />
+
           <Controller
             control={control}
             name="tradeAllow"
@@ -712,21 +624,35 @@ export default function AddCarPage() {
               );
             }}
           />
-          <BottomSheetModalButton
+
+          <TouchableHighlightRow
+            variant="bordered"
             label={"Документы в порядке"}
+            selectedValue={
+              selectedDocumentOk !== undefined
+                ? selectedDocumentOk
+                  ? "Да"
+                  : "Нет"
+                : undefined
+            }
             onPress={handlePresentDocumentsOkModalPress}
+            rightIcon="chevron-down"
           />
           <DocumentsOkModal
             ref={documentsOkModalRef}
             onSelect={(document) => {
               setValue("documentOk", document.value);
               setSelectedDocumentOk(document.value);
+              documentsOkModalRef.current?.close({ duration: 150 });
             }}
           />
-          <BottomSheetModalButton
+
+          <TouchableHighlightRow
+            variant="bordered"
             label={"Количество владельцев"}
             onPress={handlePresentNumberOfOwnersModalPress}
             selectedValue={selectedNumberOfOwner ?? undefined}
+            rightIcon="chevron-down"
           />
           <NumberOfOwnersModal
             ref={numberOfOwnersModalRef}
@@ -735,15 +661,156 @@ export default function AddCarPage() {
               setSelectedNumberOfOwner(numberOfOwner.toString());
             }}
           />
-          <BottomSheetModalButton
+
+          <TouchableHighlightRow
+            variant="bordered"
             label={"Продавец"}
             onPress={handlePresentSellerModalPress}
+            rightIcon="chevron-down"
+            // selectedValue={ ?? undefined}
           />
           <SellerModal
             ref={sellerModalRef}
             onSelect={(seller) => {
               setValue("seller", seller.value);
               setSelectedFuelType(seller.label);
+            }}
+          />
+        </View>
+
+        <View className="p-5 rounded-2xl mb-5 bg-surface dark:bg-surface-dark gap-y-3">
+          <Controller
+            control={control}
+            name="description"
+            render={({ field }) => {
+              return (
+                <InputField
+                  {...field}
+                  label={"Описание"}
+                  multiline
+                  textAlignVertical="top"
+                  placeholder="Опишите состояние автомобиля, особенности, дополнительное оборудование..."
+                />
+              );
+            }}
+          />
+
+          <TouchableHighlightRow
+            variant="bordered"
+            label="Добавить фотографии"
+            onPress={handlePresentImagePickerModalPress}
+          />
+          <ImagePickerModal
+            ref={imagePickerModalRef}
+            onSelect={(images) => {
+              setValue("images", images);
+              imagePickerModalRef.current?.close();
+            }}
+          />
+
+          {/** Display selected images */}
+          <Controller
+            control={control}
+            name="images"
+            render={({ field }) => {
+              if (!field.value || field.value.length === 0) {
+                return <View />;
+              }
+
+              return (
+                <View className="mt-3">
+                  <Text className="text-sm text-font-subtle dark:text-font-subtle-dark mb-2">
+                    Выбранные фотографии ({field.value.length})
+                  </Text>
+                  <View className="flex-row flex-wrap gap-2">
+                    {field.value.map((image, index) => (
+                      <View key={index} className="relative">
+                        <Image
+                          source={{ uri: image.uri }}
+                          className="w-20 h-20 rounded-lg"
+                          contentFit="cover"
+                        />
+                        <Pressable
+                          onPress={() => {
+                            const newImages = field.value.filter(
+                              (_, i) => i !== index
+                            );
+                            setValue("images", newImages);
+                          }}
+                          className="absolute -top-2 -right-2 bg-red-500 rounded-full w-6 h-6 items-center justify-center"
+                        >
+                          <Text className="text-white text-xs font-bold">
+                            ×
+                          </Text>
+                        </Pressable>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              );
+            }}
+          />
+          <View className="flex-1 flex-row gap-x-2">
+            <Controller
+              control={control}
+              name="price"
+              rules={{
+                required: "Цена обязательна",
+                min: {
+                  value: 1,
+                  message: "Цена должна быть больше 0",
+                },
+                pattern: {
+                  value: /^\d+$/,
+                  message: "Введите только цифры",
+                },
+              }}
+              render={({ field }) => {
+                return (
+                  <InputField
+                    ref={field.ref}
+                    value={field.value.toString()}
+                    onChange={(e) => field.onChange(e)}
+                    label={"Цена"}
+                    keyboardType="numeric"
+                    placeholder="1500"
+                    required
+                  />
+                );
+              }}
+            />
+
+            <TouchableHighlightRow
+              variant="bordered"
+              label={"Валюта"}
+              selectedValue={selectedCurrency ?? undefined}
+              onPress={() => handlePresentCurrencyModalPress()}
+              rightIcon="chevron-down"
+            />
+            <CurrencyModal
+              ref={currencyModalRef}
+              onSelect={(currency) => {
+                setValue("currency", currency.value);
+                setSelectedCurrency(currency.label);
+                currencyModalRef.current?.close({ duration: 150 });
+              }}
+            />
+          </View>
+
+          {/** Region Selection */}
+          <TouchableHighlightRow
+            variant="bordered"
+            label={"Регион"}
+            selectedValue={selectedRegion ?? undefined}
+            onPress={handlePresentRegionModalPress}
+            rightIcon="chevron-down"
+          />
+          <RegionModal
+            ref={regionModalRef}
+            onChange={(region) => {
+              setValue("region", region.slug || "");
+              setSelectedRegion(region.name || "");
+              regionModalRef.current?.close({ duration: 150 });
             }}
           />
         </View>
@@ -779,78 +846,5 @@ const Header = () => {
         </Text>
       </View>
     </View>
-  );
-};
-
-const ModalButton = ({
-  label,
-  onPress,
-}: {
-  label: string;
-  onPress: () => void;
-}) => {
-  const theme = useTheme() as CustomTheme;
-
-  return (
-    <Pressable
-      onPress={onPress}
-      className={clsx(
-        "px-4 py-3 flex flex-row justify-between items-center",
-        "bg-background-neutral dark:bg-background-neutral-dark",
-        "rounded-md border border-border dark:border-border-dark"
-      )}
-    >
-      <Text className="text-font dark:text-font-dark font-bold">{label}</Text>
-      <Entypo name="chevron-right" size={24} color={theme.colors.icon} />
-    </Pressable>
-  );
-};
-
-const BottomSheetModalButton = ({
-  label,
-  onPress,
-  selectedValue,
-}: {
-  label: string;
-  onPress: () => void;
-  selectedValue?: string;
-}) => {
-  const theme = useTheme() as CustomTheme;
-  return (
-    // <Pressable
-    //   onPress={onPress}
-    //   className={clsx(
-    //     "px-4 py-3 flex flex-row justify-between items-center",
-    //     "bg-background-neutral dark:bg-background-neutral-dark",
-    //     "rounded-md border border-border dark:border-border-dark"
-    //   )}
-    // >
-    //   <View>
-    //     <Text className="text-font dark:text-font-dark font-bold">{label}</Text>
-    //     {selectedValue && (
-    //       <Text className="text-font-subtle dark:text-font-subtle-dark">
-    //         {selectedValue}
-    //       </Text>
-    //     )}
-    //   </View>
-
-    //   <Entypo name="chevron-down" size={24} color={theme.colors.icon} />
-    // </Pressable>
-    <CustomRectButton
-      onPress={onPress}
-      style={{
-        borderBottomColor: theme.colors.border,
-        borderBottomWidth: 1,
-      }}
-    >
-      <View>
-        <Text className="text-font dark:text-font-dark font-bold">{label}</Text>
-        {selectedValue && (
-          <Text className="text-font-subtle dark:text-font-subtle-dark">
-            {selectedValue}
-          </Text>
-        )}
-      </View>
-    </CustomRectButton>
   );
 };

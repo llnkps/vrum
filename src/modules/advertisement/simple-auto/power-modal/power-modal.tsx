@@ -8,13 +8,13 @@ import {
   ValueChangedEvent,
 } from "@quidone/react-native-wheel-picker";
 import React, { forwardRef, useState } from "react";
-import { Text } from "react-native";
+import { Text, View } from "react-native";
 import { HeaderHandle } from "./header";
 
 type OptionType = (typeof powerArray)[number];
 
 type PowerModalProps = {
-  onSelect: (value: OptionType) => void;
+  onSelect: (value: number) => void;
 };
 
 const powerArray = Array.from({ length: (1000 - 50) / 10 + 1 }, (_, i) => {
@@ -28,9 +28,6 @@ const PowerModal = forwardRef<BottomSheetRef, PowerModalProps>(
 
     const handleChange = (value: ValueChangedEvent<PickerItem<number>>) => {
       setFromYear(value.item.value);
-      if (onSelect) {
-        onSelect(value.item);
-      }
     };
 
     return (
@@ -38,19 +35,22 @@ const PowerModal = forwardRef<BottomSheetRef, PowerModalProps>(
         ref={ref}
         snapPoints={["40%"]}
         handleComponent={HeaderHandle}
-        // enableContentPanningGesture={true}
+        footerProps={{
+          selectedValue: fromYear,
+          onConfirm: onSelect,
+        }}
       >
-        <BottomSheetView className="flex-row justify-center gap-x-10">
-          <BottomSheetView className="flex-row gap-x-8">
-            <Text className="mt-[7.6rem] text-font dark:text-font-dark font-bold text-lg">
-              Мощность (л.с.)
+        <BottomSheetView className="flex-row items-center justify-center gap-x-10 border-1 border-border-focused">
+          <View className="mr-3">
+            <Text className="text-font dark:text-font-dark font-bold text-lg">
+              Мощность (л.с.) =
             </Text>
-            <CustomWheelPicker
-              data={powerArray}
-              value={fromYear}
-              onValueChanged={handleChange}
-            />
-          </BottomSheetView>
+          </View>
+          <CustomWheelPicker
+            data={powerArray}
+            value={fromYear}
+            onValueChanged={handleChange}
+          />
         </BottomSheetView>
       </CustomBottomSheetModal>
     );

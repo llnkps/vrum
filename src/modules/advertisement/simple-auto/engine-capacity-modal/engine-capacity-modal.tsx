@@ -8,12 +8,12 @@ import {
   ValueChangedEvent,
 } from "@quidone/react-native-wheel-picker";
 import React, { forwardRef, useState } from "react";
-import { Text } from "react-native";
+import { Text, View } from "react-native";
 
 type OptionType = (typeof engineCapacity)[number];
 
 type EngineCapacityModalProps = {
-  onSelect: (value: OptionType) => void;
+  onSelect: (value: number) => void;
 };
 
 const engineCapacity = Array.from(
@@ -32,28 +32,29 @@ const EngineCapacityModal = forwardRef<
 
   const handleChange = (value: ValueChangedEvent<PickerItem<number>>) => {
     setValue(value.item.value);
-    if (onSelect) {
-      onSelect(value.item);
-    }
   };
 
   return (
     <CustomBottomSheetModal
       ref={ref}
-      snapPoints={["60%"]}
-      enableContentPanningGesture={true}
+      snapPoints={["40%"]}
+      footerProps={{
+        selectedValue: value,
+        onConfirm: onSelect,
+      }}
+      title="Объем двигателя"
     >
-      <BottomSheetView className="flex-row justify-center gap-x-10">
-        <BottomSheetView className="flex-row gap-x-8">
-          <Text className="mt-[7.6rem] text-font dark:text-font-dark font-bold text-lg">
-            Объем (л.с.)
+      <BottomSheetView className="flex-row items-center justify-center gap-x-10 border-1 border-border-focused">
+        <View className="mr-3">
+          <Text className="text-font dark:text-font-dark font-bold text-lg">
+            Объем (л.с.) =
           </Text>
-          <CustomWheelPicker
-            data={engineCapacity}
-            value={value}
-            onValueChanged={handleChange}
-          />
-        </BottomSheetView>
+        </View>
+        <CustomWheelPicker
+          data={engineCapacity}
+          value={value}
+          onValueChanged={handleChange}
+        />
       </BottomSheetView>
     </CustomBottomSheetModal>
   );

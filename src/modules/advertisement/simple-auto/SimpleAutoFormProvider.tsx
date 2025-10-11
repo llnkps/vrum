@@ -3,9 +3,15 @@
 
 import {
   GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner,
+  GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInnerModificationsInner,
   GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner,
 } from "@/openapi/client";
 import { createContext, useContext, useState } from "react";
+
+type GenerationType = {
+  generation: number | null;
+  modification: GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInnerModificationsInner | null;
+};
 
 type SimpleAutoFormContextType = {
   selectedBrand: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner | null;
@@ -16,8 +22,8 @@ type SimpleAutoFormContextType = {
   setSelectedModel: (
     model: GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner | null
   ) => void;
-  selectedGeneration: any | null;
-  setSelectedGeneration: (generation: any | null) => void;
+  selectedGeneration: GenerationType | null;
+  setSelectedGeneration: (generation: GenerationType | null) => void;
   selectedReleaseYear: string | null;
   setSelectedReleaseYear: React.Dispatch<string>;
   selectedRegion: string | null;
@@ -35,10 +41,10 @@ type SimpleAutoFormContextType = {
   setSelectedDriveTrain: React.Dispatch<string>;
   selectedColor: string | null;
   setSelectedColor: React.Dispatch<string>;
-  selectedPower: string | null;
-  setSelectedPower: React.Dispatch<string>;
-  selectedEngineCapacity: string | null;
-  setSelectedEngineCapacity: React.Dispatch<string>;
+  selectedPower: number | null;
+  setSelectedPower: React.Dispatch<number>;
+  selectedEngineCapacity: number | null;
+  setSelectedEngineCapacity: React.Dispatch<number>;
 
   selectedTradeAllow: boolean | null;
   setSelectedTradeAllow: React.Dispatch<boolean>;
@@ -67,21 +73,38 @@ export const SimpleAutoFormProvider = ({
     useState<GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner | null>(
       null
     );
-  const [selectedReleaseYear, setSelectedReleaseYear] = useState<string | null>(null);
+  const [selectedReleaseYear, setSelectedReleaseYear] = useState<string | null>(
+    null
+  );
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const [selectedCurrency, setSelectedCurrency] = useState<string | null>(null);
-  const [selectedTransmissionType, setSelectedTransmissionType] = useState<string | null>(null);
+  const [selectedTransmissionType, setSelectedTransmissionType] = useState<
+    string | null
+  >(null);
   const [selectedFuelType, setSelectedFuelType] = useState<string | null>(null);
   const [selectedBodyType, setSelectedBodyType] = useState<string | null>(null);
-  const [selectedDriveTrain, setSelectedDriveTrain] = useState<string | null>(null);
+  const [selectedDriveTrain, setSelectedDriveTrain] = useState<string | null>(
+    null
+  );
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
-  const [selectedPower, setSelectedPower] = useState<string | null>(null);
-  const [selectedEngineCapacity, setSelectedEngineCapacity] = useState<string | null>(null);
-  const [selectedTradeAllow, setSelectedTradeAllow] = useState<boolean | null>(null);
-  const [selectedCondition, setSelectedCondition] = useState<string | null>(null);
-  const [selectedNumberOfOwner, setSelectedNumberOfOwner] = useState<string | null>(null);
-  const [selectedDocumentOk, setSelectedDocumentOk] = useState<boolean | null>(null);
-  const [selectedGeneration, setSelectedGeneration] = useState<any | null>(null);
+  const [selectedPower, setSelectedPower] = useState<number | null>(null);
+  const [selectedEngineCapacity, setSelectedEngineCapacity] = useState<
+    number | null
+  >(null);
+  const [selectedTradeAllow, setSelectedTradeAllow] = useState<boolean | null>(
+    null
+  );
+  const [selectedCondition, setSelectedCondition] = useState<string | null>(
+    null
+  );
+  const [selectedNumberOfOwner, setSelectedNumberOfOwner] = useState<
+    string | null
+  >(null);
+  const [selectedDocumentOk, setSelectedDocumentOk] = useState<boolean | null>(
+    null
+  );
+  const [selectedGeneration, setSelectedGeneration] =
+    useState<GenerationType | null>(null);
 
   return (
     <SimpleAutoFormContext.Provider

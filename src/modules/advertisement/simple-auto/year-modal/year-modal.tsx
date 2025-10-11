@@ -1,15 +1,13 @@
 import CustomBottomSheetModal from "@/components/global/CustomBottomSheetModal";
 import CustomWheelPicker from "@/components/global/CustomWheelPicker";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
 import {
   PickerItem,
   ValueChangedEvent,
 } from "@quidone/react-native-wheel-picker";
-import React, { forwardRef, useCallback, useState } from "react";
-import { Vibration, View } from "react-native";
+import React, { forwardRef, useState } from "react";
+import { View } from "react-native";
 import { Text } from "react-native-gesture-handler";
-import { CustomFooter } from "./footer";
-import { HeaderHandle } from "./header";
 
 export type BottomSheetRef = BottomSheetModal;
 
@@ -33,37 +31,34 @@ type YearModalProps = props & {
 const YearModal = forwardRef<BottomSheetRef, YearModalProps>((props, ref) => {
   const [releaseYear, setReleaseYear] = useState(years[0].value);
 
-  const handleReleaseYear = (
-    value: ValueChangedEvent<PickerItem<number>>
-  ) => {
+  const handleReleaseYear = (value: ValueChangedEvent<PickerItem<number>>) => {
     setReleaseYear(value.item.value);
-    if (props.onChange) props.onChange(value.item);
   };
-
-  const renderHeaderHandle = useCallback(
-    (props) => <HeaderHandle {...props} />,
-    []
-  );
 
   return (
     <CustomBottomSheetModal
       ref={ref}
       snapPoints={["40%"]}
-      handleComponent={renderHeaderHandle}
-      footerComponent={CustomFooter}
+      footerProps={{
+        selectedValue: releaseYear,
+        onConfirm: props.onChange,
+      }}
+      title="Год выпуска"
     >
-      <View className="flex-row justify-center gap-x-10">
-        <View className="flex-row gap-x-8">
-          <Text className="mt-[7.6rem] text-font dark:text-font-dark font-bold text-lg">
-            Год выпуска
-          </Text>
+      <BottomSheetView>
+        <View className="flex-row items-center justify-center gap-x-10">
+          <View className="mr-3">
+            <Text className="text-font dark:text-font-dark font-bold text-lg">
+              Год
+            </Text>
+          </View>
           <CustomWheelPicker
             data={years}
             value={releaseYear}
             onValueChanged={handleReleaseYear}
           />
         </View>
-      </View>
+      </BottomSheetView>
     </CustomBottomSheetModal>
   );
 });

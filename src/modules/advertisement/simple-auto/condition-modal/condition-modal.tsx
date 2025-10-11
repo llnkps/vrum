@@ -26,8 +26,9 @@ const ConditionModal = forwardRef<BottomSheetRef, ConditionModalProps>(
     return (
       <CustomBottomSheetModal
         ref={ref}
-        snapPoints={["60%"]}
+        snapPoints={["30%"]}
         enableContentPanningGesture={true}
+        title="Состояние"
       >
         <BottomSheetView className="flex-col">
           {options.map((opt) => (

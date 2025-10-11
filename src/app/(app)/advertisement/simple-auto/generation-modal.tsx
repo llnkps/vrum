@@ -97,10 +97,8 @@ const GenerationList: FC<GenerationListProps> = ({
   const router = useRouter();
   const { setSelectedGeneration } = useSimpleAutoFormContext();
 
-  const handleSelectGeneration = (
-    generation: GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner
-  ) => {
-    setSelectedGeneration(generation);
+  const handleSelectGeneration = (data) => {
+    setSelectedGeneration(data);
     router.dismiss();
   };
 
@@ -132,7 +130,12 @@ const GenerationList: FC<GenerationListProps> = ({
             {item.modifications?.map((modification) => (
               <TouchableHighlight
                 key={`${item.generation}_${modification.restyling}_${modification.yearStart}`}
-                onPress={() => handleSelectGeneration(item)}
+                onPress={() =>
+                  handleSelectGeneration({
+                    generation: item.generation,
+                    modification: modification,
+                  })
+                }
                 className={
                   "p-4 border-b border-border dark:border-border-dark last:border-0"
                 }

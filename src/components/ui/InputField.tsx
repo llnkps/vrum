@@ -27,9 +27,9 @@ export const InputField = ({
   const theme = useTheme() as CustomTheme;
 
   return (
-    <View className="gap-y-1">
+    <View className="gap-y-1 flex-1">
       {label && (
-        <Text className="text-font dark:text-font-dark">
+        <Text className="text-font dark:text-font-dark font-bold">
           {label}
           {required && <Text className="text-font-danger">*</Text>}
         </Text>

@@ -4,7 +4,6 @@ import CustomBottomSheetModal, {
 import { CustomRectButton } from "@/components/ui/button";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
 import React, { forwardRef } from "react";
-import { HeaderHandle } from "./header";
 
 type TransmissionOptionType = (typeof options)[number];
 
@@ -29,8 +28,8 @@ const TransmissionModal = forwardRef<BottomSheetRef, props>(
       <CustomBottomSheetModal
         ref={ref}
         snapPoints={["35%"]}
-        handleComponent={HeaderHandle}
         enableContentPanningGesture={true}
+        title={"Коробка передач"}
       >
         <BottomSheetView className="flex-col">
           {options.map((opt) => (

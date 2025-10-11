@@ -25,8 +25,9 @@ const DocumentsOkModal = forwardRef<BottomSheetRef, DocumentsOkModalProps>(
     return (
       <CustomBottomSheetModal
         ref={ref}
-        snapPoints={["60%"]}
+        snapPoints={["25%"]}
         enableContentPanningGesture={true}
+        title="Документы"
       >
         <BottomSheetView className="flex-col">
           {options.map((opt) => (
