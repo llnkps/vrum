@@ -25,8 +25,9 @@ export const CurrencyModal = forwardRef<BottomSheetRef, CurrencyModalProps>(
     return (
       <CustomBottomSheetModal
         ref={ref}
-        snapPoints={["60%"]}
+        snapPoints={["30%"]}
         enableContentPanningGesture={true}
+        title="Валюта"
       >
         <BottomSheetView className="flex-col">
           {options.map((opt) => (

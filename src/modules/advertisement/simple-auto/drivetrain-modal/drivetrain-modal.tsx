@@ -27,8 +27,9 @@ const DrivetrainModal = forwardRef<BottomSheetRef, DrivetrainModalProps>(
     return (
       <CustomBottomSheetModal
         ref={ref}
-        snapPoints={["60%"]}
+        snapPoints={["30%"]}
         enableContentPanningGesture={true}
+        title="Привод"
       >
         <BottomSheetView className="flex-col">
           {options.map((opt) => (

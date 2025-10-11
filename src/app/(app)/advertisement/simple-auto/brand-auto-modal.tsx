@@ -19,6 +19,8 @@ import {
 const STATUSBAR_HEIGHT = StatusBar.currentHeight ?? 24;
 
 export default function ModelItemScreenFilterModal() {
+  const [searchValue, setSearchValue] = useState("");
+
   const { data, isLoading } = useSimpleAutoBrandApi();
   const [filteredBrands, setFilteredBrands] = useState<
     GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner[]
@@ -47,7 +49,9 @@ export default function ModelItemScreenFilterModal() {
           title="Выберите марку"
           scrollY={scrollY}
           showSearch={true}
+          searchValue={searchValue}
           onSearch={(value) => {
+            setSearchValue(value);
             if (data) {
               const searchValueLowerCase = value.toLowerCase();
               setFilteredBrands(

@@ -2,13 +2,14 @@ import { InputField } from "@/components/ui/InputField";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Pressable, Text, View } from "react-native";
+import { Alert, Image, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { CheckboxRectButton } from "@/components/global/CheckboxRectButton";
 import CloseIcon from "@/components/global/CloseIcon";
 import { BottomSheetRef } from "@/components/global/CustomBottomSheetModal";
-import { Button } from "@/components/ui/button";
+import { TouchableHighlightRow } from "@/components/global/TouchableHighlightRow/TouchableHighlightRow";
+import { Button, CustomRectButton } from "@/components/ui/button";
 import BodyTypeModal from "@/modules/advertisement/simple-auto/body-type-modal/body-type-modal";
 import ColorModal from "@/modules/advertisement/simple-auto/color-modal/color-modal";
 import ConditionModal from "@/modules/advertisement/simple-auto/condition-modal/condition-modal";
@@ -144,43 +145,99 @@ export default function AddCarPage() {
     try {
       setIsSubmitting(true);
 
+      // Validate required fields
+      if (
+        !selectedBrand?.id ||
+        !selectedModel?.id ||
+        !data.releaseYear ||
+        !data.region
+      ) {
+        alert("Пожалуйста, заполните все обязательные поля");
+        return;
+      }
+
+      // Validate images
+      if (!data.images || data.images.length === 0) {
+        alert("Пожалуйста, добавьте хотя бы одно фото");
+        return;
+      }
+
       const formData = new FormData();
 
-      // Add main fields
-      formData.append("name", data.name);
-      formData.append("description", data.description);
-      formData.append("price", data.price);
+      // Add main fields with validation
+      formData.append("name", data.name.trim());
+      formData.append("description", (data.description || "").trim());
+      formData.append("price", data.price.toString());
       formData.append("currency", data.currency);
       formData.append("region", data.region);
 
       // Add car details
-      if (selectedBrand?.id)
-        formData.append("brand", selectedBrand.id.toString());
-      if (selectedModel?.id)
-        formData.append("model", selectedModel.id.toString());
-      if (data.releaseYear)
-        formData.append("releaseYear", data.releaseYear.toString());
-      if (data.mileage) formData.append("mileage", data.mileage);
-      if (data.transmissionType)
+      formData.append("brand", selectedBrand.id.toString());
+      formData.append("model", selectedModel.id.toString());
+      formData.append("releaseYear", data.releaseYear.toString());
+
+      if (data.mileage && !isNaN(Number(data.mileage))) {
+        formData.append("mileage", data.mileage);
+      }
+
+      if (data.transmissionType) {
         formData.append("transmissionType", data.transmissionType);
-      if (data.fuelType) formData.append("fuelType", data.fuelType);
-      if (data.bodyType) formData.append("bodyType", data.bodyType);
-      if (data.driveTrain) formData.append("driveTrain", data.driveTrain);
-      if (data.color) formData.append("color", data.color);
-      if (data.power) formData.append("power", data.power.toString());
-      if (data.engineCapacity)
+      }
+
+      if (data.fuelType) {
+        formData.append("fuelType", data.fuelType);
+      }
+
+      if (data.bodyType) {
+        formData.append("bodyType", data.bodyType);
+      }
+
+      if (data.driveTrain) {
+        formData.append("driveTrain", data.driveTrain);
+      }
+
+      if (data.color) {
+        formData.append("color", data.color);
+      }
+
+      if (data.power && !isNaN(Number(data.power))) {
+        formData.append("power", data.power.toString());
+      }
+
+      if (data.engineCapacity && !isNaN(Number(data.engineCapacity))) {
         formData.append("engineCapacity", data.engineCapacity.toString());
+      }
 
-      // Add additional info
+      // Add additional info with validation
       formData.append("tradeAllow", data.tradeAllow ? "1" : "0");
-      formData.append("condition", data.condition);
-      formData.append("numberOfOwner", data.numberOfOwner);
-      formData.append("documentOk", data.documentOk ? "1" : "0");
-      formData.append("seller", data.seller);
 
-      // Add images
+      if (data.condition) {
+        formData.append("condition", data.condition);
+      }
+
+      if (data.numberOfOwner) {
+        formData.append("numberOfOwner", data.numberOfOwner);
+      }
+
+      formData.append("documentOk", data.documentOk ? "1" : "0");
+
+      if (data.seller) {
+        formData.append("seller", data.seller);
+      }
+
+      // Add images with validation
       data.images.forEach((image, index) => {
-        const fileExtension = image.uri.split(".").pop();
+        if (!image.uri) return;
+
+        const fileExtension = image.uri.split(".").pop()?.toLowerCase();
+        if (!fileExtension) return;
+
+        if (!["jpg", "jpeg", "png"].includes(fileExtension)) {
+          throw new Error(
+            `Неподдерживаемый формат изображения: ${fileExtension}`
+          );
+        }
+
         formData.append("images", {
           uri: image.uri,
           type: `image/${fileExtension}`,
@@ -188,19 +245,26 @@ export default function AddCarPage() {
         } as any);
       });
 
-      await simpleAutoClient.postAppSimpleautocontextPresentationSimpleautocreateCreate(
-        {
-          postAppSimpleautocontextPresentationSimpleautocreateCreateRequest:
-            formData as any,
-        }
-      );
+      const result =
+        await simpleAutoClient.postAppSimpleautocontextPresentationSimpleautocreateCreate(
+          {
+            postAppSimpleautocontextPresentationSimpleautocreateCreateRequest:
+              formData as any,
+          }
+        );
 
-      // Success
-      alert("Объявление успешно создано!");
-      router.back();
+      if (result) {
+        Alert.alert("Успешно", "Объявление успешно создано!", [
+          { text: "OK", onPress: () => router.back() },
+        ]);
+      }
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("Произошла ошибка при создании объявления. Попробуйте еще раз.");
+      Alert.alert(
+        "Ошибка",
+        "Произошла ошибка при создании объявления. Попробуйте еще раз.",
+        [{ text: "OK" }]
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -218,6 +282,7 @@ export default function AddCarPage() {
     }
   }, [selectedModel, setValue]);
 
+  const currencyModalRef = useRef<BottomSheetRef>(null);
   const yearModalRef = useRef<BottomSheetRef>(null);
   const regionModalRef = useRef<BottomSheetRef>(null);
   const transmissionModalRef = useRef<BottomSheetRef>(null);
@@ -233,6 +298,9 @@ export default function AddCarPage() {
   const sellerModalRef = useRef<BottomSheetRef>(null);
   const imagePickerModalRef = useRef<BottomSheetRef>(null);
 
+  const handlePresentCurrencyModalPress = useCallback(() => {
+    currencyModalRef.current?.present();
+  }, []);
   const handlePresentYearModalPress = useCallback(() => {
     yearModalRef.current?.present();
   }, []);
@@ -272,7 +340,6 @@ export default function AddCarPage() {
   const handlePresentSellerModalPress = useCallback(() => {
     sellerModalRef.current?.present();
   }, []);
-
   const handlePresentImagePickerModalPress = useCallback(() => {
     imagePickerModalRef.current?.present();
   }, []);
@@ -289,7 +356,7 @@ export default function AddCarPage() {
               Основная информация
             </Text>
           </View>
-          <Controller
+          {/* <Controller
             control={control}
             name="name"
             rules={{
@@ -314,8 +381,8 @@ export default function AddCarPage() {
                 />
               );
             }}
-          />
-          <Controller
+          /> */}
+          {/* <Controller
             control={control}
             name="description"
             render={({ field }) => {
@@ -329,19 +396,62 @@ export default function AddCarPage() {
                 />
               );
             }}
-          />
-          <BottomSheetModalButton
-            label="Добавить фотографии"
-            onPress={handlePresentImagePickerModalPress}
-          />
-          <ImagePickerModal
-            ref={imagePickerModalRef}
-            onSelect={(images) => {
-              setValue("images", images);
-              imagePickerModalRef.current?.close();
-            }}
-          />
-          <Controller
+          /> */}
+          {/* <BottomSheetModalButton */}
+          {/* label="Добавить фотографии" */}
+          {/* onPress={handlePresentImagePickerModalPress} */}
+          {/* /> */}
+          {/* <ImagePickerModal */}
+          {/* ref={imagePickerModalRef} */}
+          {/* onSelect={(images) => { */}
+          {/* setValue("images", images); */}
+          {/* imagePickerModalRef.current?.close(); */}
+          {/* }} */}
+          {/* /> */}
+
+          {/** Display selected images */}
+          {/* <Controller */}
+          {/* control={control} */}
+          {/* name="images" */}
+          {/* render={({ field }) => { */}
+          {/* if (!field.value || field.value.length === 0) { */}
+          {/* return <View />; */}
+          {/* } */}
+          {/*  */}
+          {/* return ( */}
+          {/* <View className="mt-3"> */}
+          {/* <Text className="text-sm text-font-subtle dark:text-font-subtle-dark mb-2"> */}
+          {/* Выбранные фотографии ({field.value.length}) */}
+          {/* </Text> */}
+          {/* <View className="flex-row flex-wrap gap-2"> */}
+          {/* {field.value.map((image, index) => ( */}
+          {/* <View key={index} className="relative"> */}
+          {/* <Image */}
+          {/* source={{ uri: image.uri }} */}
+          {/* className="w-20 h-20 rounded-lg" */}
+          {/* resizeMode="cover" */}
+          {/* /> */}
+          {/* <Pressable */}
+          {/* onPress={() => { */}
+          {/* const newImages = field.value.filter( */}
+          {/* (_, i) => i !== index */}
+          {/* ); */}
+          {/* setValue("images", newImages); */}
+          {/* }} */}
+          {/* className="absolute -top-2 -right-2 bg-red-500 rounded-full w-6 h-6 items-center justify-center" */}
+          {/* > */}
+          {/* <Text className="text-white text-xs font-bold"> */}
+          {/* × */}
+          {/* </Text> */}
+          {/* </Pressable> */}
+          {/* </View> */}
+          {/* ))} */}
+          {/* </View> */}
+          {/* </View> */}
+          {/* ); */}
+          {/* }} */}
+          {/* /> */}
+          {/* <Controller
             control={control}
             name="price"
             rules={{
@@ -368,19 +478,42 @@ export default function AddCarPage() {
                 />
               );
             }}
+          /> */}
+          {/* <TouchableHighlightRow
+            variant="bordered"
+            label={selectedCurrency ?? "Валюта"}
+            onPress={() => {}}
+            rightIcon="chevron-down"
           />
           <CurrencyModal
+            ref={currencyModalRef}
             onSelect={(currency) => {
               setValue("currency", currency.value);
               setSelectedCurrency(currency.label);
+              currencyModalRef.current?.close({ duration: 150 });
             }}
-          />
-          <ModalButton
+          /> */}
+
+          {/** Brand Selection */}
+          <TouchableHighlightRow
+            variant="bordered"
             label={selectedBrand?.name ?? "Марка"}
             onPress={() =>
               router.push("/(app)/advertisement/simple-auto/brand-auto-modal")
             }
+            rightIcon="chevron-right"
           />
+
+          <TouchableHighlightRow
+            variant="bordered"
+            label={selectedBrand?.name ?? "Марка"}
+            onPress={() =>
+              router.push("/(app)/advertisement/simple-auto/brand-auto-modal")
+            }
+            rightIcon="chevron-right"
+          />
+
+          {/** Model Selection */}
           {selectedBrand && (
             <ModalButton
               label={selectedModel?.name ?? "Модель"}
@@ -458,6 +591,7 @@ export default function AddCarPage() {
               onSelect={(fuelType) => {
                 setValue("fuelType", fuelType.value);
                 setSelectedFuelType(fuelType.label);
+                fuelTypeModalRef.current?.close({ duration: 150 });
               }}
             />
             <BottomSheetModalButton
@@ -470,6 +604,7 @@ export default function AddCarPage() {
               onSelect={(bodyType) => {
                 setValue("bodyType", bodyType.value);
                 setSelectedBodyType(bodyType.label);
+                bodyTypeModalRef.current?.close({ duration: 150 });
               }}
             />
             <BottomSheetModalButton
@@ -482,6 +617,7 @@ export default function AddCarPage() {
               onSelect={(driveTrain) => {
                 setValue("driveTrain", driveTrain.value);
                 setSelectedDriveTrain(driveTrain.label);
+                drivetrainModalRef.current?.close({ duration: 150 });
               }}
             />
             <BottomSheetModalButton
@@ -494,6 +630,7 @@ export default function AddCarPage() {
               onSelect={(color) => {
                 setValue("color", color.value);
                 setSelectedColor(color.label);
+                colorModalRef.current?.close({ duration: 150 });
               }}
             />
             <BottomSheetModalButton
@@ -505,7 +642,9 @@ export default function AddCarPage() {
               ref={engineCapacityModalRef}
               onSelect={(engineCapacity) => {
                 setValue("engineCapacity", engineCapacity.value);
-                setSelectedEngineCapacity(engineCapacity.value.toString());
+                setSelectedEngineCapacity(
+                  `${engineCapacity.value.toFixed(1)} л`
+                );
               }}
             />
             <BottomSheetModalButton
@@ -517,13 +656,19 @@ export default function AddCarPage() {
               ref={powerModalRef}
               onSelect={(power) => {
                 setValue("power", power.value);
-                setSelectedFuelType(power.label);
+                setSelectedPower(`${power.value} л.с.`);
               }}
             />
             <Controller
               control={control}
               name="mileage"
-              render={({ field }) => {
+              rules={{
+                pattern: {
+                  value: /^\d+$/,
+                  message: "Введите только цифры",
+                },
+              }}
+              render={({ field, fieldState: { error } }) => {
                 return (
                   <InputField
                     ref={field.ref}
@@ -532,6 +677,7 @@ export default function AddCarPage() {
                     label={"Пробег (км)"}
                     keyboardType="numeric"
                     placeholder="50000"
+                    error={error?.message}
                   />
                 );
               }}
@@ -671,13 +817,31 @@ const BottomSheetModalButton = ({
 }) => {
   const theme = useTheme() as CustomTheme;
   return (
-    <Pressable
+    // <Pressable
+    //   onPress={onPress}
+    //   className={clsx(
+    //     "px-4 py-3 flex flex-row justify-between items-center",
+    //     "bg-background-neutral dark:bg-background-neutral-dark",
+    //     "rounded-md border border-border dark:border-border-dark"
+    //   )}
+    // >
+    //   <View>
+    //     <Text className="text-font dark:text-font-dark font-bold">{label}</Text>
+    //     {selectedValue && (
+    //       <Text className="text-font-subtle dark:text-font-subtle-dark">
+    //         {selectedValue}
+    //       </Text>
+    //     )}
+    //   </View>
+
+    //   <Entypo name="chevron-down" size={24} color={theme.colors.icon} />
+    // </Pressable>
+    <CustomRectButton
       onPress={onPress}
-      className={clsx(
-        "px-4 py-3 flex flex-row justify-between items-center",
-        "bg-background-neutral dark:bg-background-neutral-dark",
-        "rounded-md border border-border dark:border-border-dark"
-      )}
+      style={{
+        borderBottomColor: theme.colors.border,
+        borderBottomWidth: 1,
+      }}
     >
       <View>
         <Text className="text-font dark:text-font-dark font-bold">{label}</Text>
@@ -687,8 +851,6 @@ const BottomSheetModalButton = ({
           </Text>
         )}
       </View>
-
-      <Entypo name="chevron-down" size={24} color={theme.colors.icon} />
-    </Pressable>
+    </CustomRectButton>
   );
 };

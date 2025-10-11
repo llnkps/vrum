@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router";
 import { FC } from "react";
 import { View } from "react-native";
 import type { SharedValue } from "react-native-reanimated";
@@ -6,11 +7,12 @@ import Animated, {
   interpolate,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import { useRouter } from "expo-router";
 
 import CloseIcon from "@/components/global/CloseIcon";
 import { InputField } from "@/components/ui/InputField";
+import { CustomTheme } from "@/theme";
 import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "@react-navigation/native";
 
 interface HeaderProps {
   title: string;
@@ -31,6 +33,7 @@ export const HeaderSearchBar: FC<HeaderProps> = ({
   searchPlaceholder = "",
   onClose,
 }) => {
+  const theme = useTheme() as CustomTheme;
   const router = useRouter();
   const offsetValue = 140;
 
@@ -105,7 +108,10 @@ export const HeaderSearchBar: FC<HeaderProps> = ({
         {/* Title */}
         <Animated.View style={[{ paddingHorizontal: 12 }, animatedSpacer]}>
           <Animated.Text
-            style={[{ fontWeight: 'bold', color: '#000', fontSize: 20 }, animatedTitle]}
+            style={[
+              { fontWeight: "bold", color: theme.colors.text, fontSize: 20 },
+              animatedTitle,
+            ]}
           >
             {title}
           </Animated.Text>
@@ -118,7 +124,7 @@ export const HeaderSearchBar: FC<HeaderProps> = ({
           <InputField
             Icon={<Ionicons name="search" size={20} color="gray" />}
             value={searchValue}
-            onChangeText={onSearch}
+            onChange={(e) => onSearch(e)}
             placeholder={searchPlaceholder}
           />
         </View>

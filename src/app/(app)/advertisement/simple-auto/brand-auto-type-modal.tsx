@@ -15,6 +15,8 @@ import { GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfil
 const STATUSBAR_HEIGHT = StatusBar.currentHeight ?? 24;
 
 export default function ModalModelItem() {
+  const [searchValue, setSearchValue] = useState("");
+
   const { selectedBrand } = useSimpleAutoFormContext();
 
   const { data, isLoading } = useSimpleAutoModelByBrandApi(
@@ -49,7 +51,9 @@ export default function ModalModelItem() {
           title={selectedBrand?.name || ""}
           scrollY={scrollY}
           showSearch={true}
+          searchValue={searchValue}
           onSearch={(value) => {
+            setSearchValue(value);
             if (data) {
               const searchValueLowerCase = value.toLowerCase();
               setFilteredModels(

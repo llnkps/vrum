@@ -1,7 +1,7 @@
 import { Image } from "expo-image";
-import { FC, useEffect, useState } from "react";
-import { Text, TouchableHighlight, View, StatusBar } from "react-native";
 import { useRouter } from "expo-router";
+import { FC, useEffect, useState } from "react";
+import { StatusBar, Text, TouchableHighlight, View } from "react-native";
 import type { SharedValue } from "react-native-reanimated";
 import Animated, {
   useAnimatedScrollHandler,
@@ -55,10 +55,6 @@ export default function GenerationModal() {
     setFilteredGenerations(filtered);
   }, [searchValue, generations]);
 
-  const handleSearchChange = (...args: any[]) => {
-    setSearchValue(args[0]);
-  };
-
   if (isLoading) {
     return (
       <View className="flex-1 justify-center items-center">
@@ -73,10 +69,7 @@ export default function GenerationModal() {
         <HeaderSearchBar
           title={selectedModel?.name || ""}
           scrollY={scrollY}
-          showSearch={true}
-          onSearch={handleSearchChange}
-          searchValue={searchValue}
-          searchPlaceholder="Поиск поколения"
+          showSearch={false}
           onClose={() => router.dismiss()}
         />
 
@@ -156,7 +149,7 @@ const GenerationList: FC<GenerationListProps> = ({
                           : ""}
                       </Text>
                     </View>
-                    <View className="flex-col gap-y-1 border-l-2 border-border dark:border-border-dark pl-4 mt-2">
+                    <View className="flex-col gap-y-1 border-l-2 border-border dark:border-border-dark pl-4 mb-2">
                       <Text className="text-2xl font-bold text-font dark:text-font-dark">
                         {`${item.generation} поколение`}
                       </Text>
@@ -170,11 +163,6 @@ const GenerationList: FC<GenerationListProps> = ({
                           </Text>
                         ))}
                       </View>
-                      {modification.restyling > 0 && (
-                        <Text className="text-sm italic text-font-secondary dark:text-font-secondary-dark">
-                          {`Рестайлинг ${modification.restyling}`}
-                        </Text>
-                      )}
                     </View>
                   </View>
 

@@ -11,7 +11,6 @@ type Props = PropsWithChildren<
     title?: string;
     appearance?: "default" | "subtle";
     isSelected?: boolean;
-    buttonStyle?: ViewStyle;
   }
 >;
 
@@ -19,7 +18,6 @@ export const CustomRectButton = ({
   loading,
   title,
   style,
-  buttonStyle,
   children,
   onPress,
   appearance = "default",
@@ -40,7 +38,7 @@ export const CustomRectButton = ({
 
   return (
     <RectButton
-      style={[styles.button, style, buttonStyle]}
+      style={[styles.button, style]}
       borderless={false}
       onPress={onPress}
       rippleColor={theme.colors.button.subtlePressed}
