@@ -18,8 +18,8 @@ import type {
   GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner,
   GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner,
   GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner,
-  GetAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfilters200ResponseInner,
   GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters200Response,
+  GetSimpleAutoCollectionPagination200Response,
 } from '../models/index';
 import {
     GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInnerFromJSON,
@@ -28,10 +28,10 @@ import {
     GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInnerToJSON,
     GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInnerFromJSON,
     GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInnerToJSON,
-    GetAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfilters200ResponseInnerFromJSON,
-    GetAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfilters200ResponseInnerToJSON,
     GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters200ResponseFromJSON,
     GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters200ResponseToJSON,
+    GetSimpleAutoCollectionPagination200ResponseFromJSON,
+    GetSimpleAutoCollectionPagination200ResponseToJSON,
 } from '../models/index';
 
 export interface GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerationsRequest {
@@ -43,7 +43,11 @@ export interface GetAppSimpleautocontextPresentationModelgetcollectionGetcollect
     brandId: string;
 }
 
-export interface GetAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfiltersRequest {
+export interface GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfiltersRequest {
+    advertismentId: string;
+}
+
+export interface GetSimpleAutoCollectionPaginationRequest {
     page: string;
     limit: string;
     brand?: string;
@@ -51,10 +55,6 @@ export interface GetAppSimpleautocontextPresentationSimpleautogetcollectionGetco
     releaseYear?: number;
     price?: string;
     filterParameters?: Array<string>;
-}
-
-export interface GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfiltersRequest {
-    advertismentId: string;
 }
 
 /**
@@ -193,18 +193,63 @@ export class SimpleAutoApi extends runtime.BaseAPI {
 
     /**
      */
-    async getAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfiltersRaw(requestParameters: GetAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfiltersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<GetAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfilters200ResponseInner>>> {
+    async getAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfiltersRaw(requestParameters: GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfiltersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters200Response>> {
+        if (requestParameters['advertismentId'] == null) {
+            throw new runtime.RequiredError(
+                'advertismentId',
+                'Required parameter "advertismentId" was null or undefined when calling getAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("Bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/api/simple-auto/advertisments/{advertismentId}`;
+        urlPath = urlPath.replace(`{${"advertismentId"}}`, encodeURIComponent(String(requestParameters['advertismentId'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters200ResponseFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async getAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters(requestParameters: GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfiltersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters200Response> {
+        const response = await this.getAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfiltersRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Get simple auto collection pagination
+     * Get simple auto collection pagination
+     */
+    async getSimpleAutoCollectionPaginationRaw(requestParameters: GetSimpleAutoCollectionPaginationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GetSimpleAutoCollectionPagination200Response>> {
         if (requestParameters['page'] == null) {
             throw new runtime.RequiredError(
                 'page',
-                'Required parameter "page" was null or undefined when calling getAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfilters().'
+                'Required parameter "page" was null or undefined when calling getSimpleAutoCollectionPagination().'
             );
         }
 
         if (requestParameters['limit'] == null) {
             throw new runtime.RequiredError(
                 'limit',
-                'Required parameter "limit" was null or undefined when calling getAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfilters().'
+                'Required parameter "limit" was null or undefined when calling getSimpleAutoCollectionPagination().'
             );
         }
 
@@ -258,56 +303,15 @@ export class SimpleAutoApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(GetAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfilters200ResponseInnerFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) => GetSimpleAutoCollectionPagination200ResponseFromJSON(jsonValue));
     }
 
     /**
+     * Get simple auto collection pagination
+     * Get simple auto collection pagination
      */
-    async getAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfilters(requestParameters: GetAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfiltersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<GetAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfilters200ResponseInner>> {
-        const response = await this.getAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfiltersRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     */
-    async getAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfiltersRaw(requestParameters: GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfiltersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters200Response>> {
-        if (requestParameters['advertismentId'] == null) {
-            throw new runtime.RequiredError(
-                'advertismentId',
-                'Required parameter "advertismentId" was null or undefined when calling getAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("Bearer", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/api/simple-auto/advertisments/{advertismentId}`;
-        urlPath = urlPath.replace(`{${"advertismentId"}}`, encodeURIComponent(String(requestParameters['advertismentId'])));
-
-        const response = await this.request({
-            path: urlPath,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters200ResponseFromJSON(jsonValue));
-    }
-
-    /**
-     */
-    async getAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters(requestParameters: GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfiltersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters200Response> {
-        const response = await this.getAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfiltersRaw(requestParameters, initOverrides);
+    async getSimpleAutoCollectionPagination(requestParameters: GetSimpleAutoCollectionPaginationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GetSimpleAutoCollectionPagination200Response> {
+        const response = await this.getSimpleAutoCollectionPaginationRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

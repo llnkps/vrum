@@ -6,7 +6,6 @@ export * from './GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands2
 export * from './GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner';
 export * from './GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInnerModificationsInner';
 export * from './GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner';
-export * from './GetAppSimpleautocontextPresentationSimpleautogetcollectionGetcollectionbyfilters200ResponseInner';
 export * from './GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters200Response';
 export * from './GetAppSpecautocontextPresentationBrandgetcollectionGetbrands200ResponseInner';
 export * from './GetAppSpecautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner';
@@ -15,5 +14,7 @@ export * from './GetAppUserdomainPresentationGetmeGetme200ResponseRecentProducts
 export * from './GetAppUserdomainPresentationUsersubscriptionfilterUsersubscriptionfiltergetcollectionGetfilters200Response';
 export * from './GetAppUserdomainPresentationUsersubscriptionfilterUsersubscriptionfiltergetcollectionGetfilters200ResponseFilterParametersInner';
 export * from './GetRegionIndex200ResponseInner';
+export * from './GetSimpleAutoCollectionPagination200Response';
+export * from './GetSimpleAutoCollectionPagination200ResponseItemsInner';
 export * from './PostAppSpecautocontextPresentationSpecautocreateCreateRequest';
 export * from './PostAppUserdomainPresentationUsersubscriptionfilterUsersubscriptionfiltercreateCreatefiltersRequest';

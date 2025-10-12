@@ -250,7 +250,9 @@
                 "tags": [
                     "SimpleAuto"
                 ],
-                "operationId": "get_app_simpleautocontext_presentation_simpleautogetcollection_getcollectionbyfilters",
+                "summary": "Get simple auto collection pagination",
+                "description": "Get simple auto collection pagination",
+                "operationId": "getSimpleAutoCollectionPagination",
                 "parameters": [
                     {
                         "name": "brand",
@@ -325,64 +327,73 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Returns products",
+                        "description": "Returns paginated advertisements",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "properties": {
-                                            "name": {
-                                                "type": "string",
-                                                "example": "New Product"
-                                            },
-                                            "description": {
-                                                "type": "string",
-                                                "example": "description"
-                                            },
-                                            "brand": {
-                                                "type": "string",
-                                                "example": "description"
-                                            },
-                                            "model": {
-                                                "type": "string",
-                                                "example": "description"
-                                            },
-                                            "priceFrom": {
-                                                "type": "string",
-                                                "example": "19.99"
-                                            },
-                                            "priceTo": {
-                                                "type": "string",
-                                                "example": "19.99"
-                                            },
-                                            "currency": {
-                                                "type": "string",
-                                                "example": "usd"
-                                            },
-                                            "regions": {
-                                                "type": "array",
-                                                "items": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "releaseYearFrom": {
-                                                "type": "integer",
-                                                "example": 2025
-                                            },
-                                            "releaseYearTo": {
-                                                "type": "integer",
-                                                "example": 2025
-                                            },
-                                            "parameters": {
-                                                "type": "array",
-                                                "items": {
-                                                    "type": "object"
-                                                }
-                                            }
+                                    "properties": {
+                                        "total": {
+                                            "type": "integer",
+                                            "example": 100
                                         },
-                                        "type": "object"
-                                    }
+                                        "currentPage": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "perPage": {
+                                            "type": "integer",
+                                            "example": 25
+                                        },
+                                        "items": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "brand": {
+                                                        "type": "string",
+                                                        "example": "Toyota"
+                                                    },
+                                                    "model": {
+                                                        "type": "string",
+                                                        "example": "Corolla"
+                                                    },
+                                                    "price": {
+                                                        "type": "string",
+                                                        "example": "20000"
+                                                    },
+                                                    "currency": {
+                                                        "type": "string",
+                                                        "example": "usd"
+                                                    },
+                                                    "releaseYear": {
+                                                        "type": "integer",
+                                                        "example": 2020
+                                                    },
+                                                    "region": {
+                                                        "type": "string",
+                                                        "example": "Chisinau"
+                                                    },
+                                                    "createdAt": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-10-12T10:00:00Z"
+                                                    },
+                                                    "images": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string",
+                                                            "example": "/uploads/media/image.jpg"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
