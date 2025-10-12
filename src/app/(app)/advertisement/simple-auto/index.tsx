@@ -31,6 +31,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { useAuthStore } from "@/state/auth/useAuthStore";
 
 type FormValues = {
   description: string;
@@ -69,6 +70,17 @@ export default function AddCarPage() {
   //     });
 
   const router = useRouter();
+  const { isAuthenticated } = useAuthStore();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      Alert.alert("Authentication Required", "You need to be logged in to create an advertisement.", [
+        { text: "Login", onPress: () => router.push("/sign-in") },
+        { text: "Cancel", onPress: () => router.back() }
+      ]);
+    }
+  }, [isAuthenticated]);
+
   const simpleAutoClient = new SimpleAutoApi();
   const {
     selectedBrand,

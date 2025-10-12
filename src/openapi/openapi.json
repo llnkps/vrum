@@ -8,7 +8,7 @@
     },
     "servers": [
         {
-            "url": "http://192.168.100.8:8000/"
+            "url": "http://192.168.2.55:8000/"
         }
     ],
     "paths": {
@@ -1204,6 +1204,69 @@
                 }
             }
         },
+        "/api/user/": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Sign up a new user",
+                "operationId": "userSignUp",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserSignUpDTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User registered successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input or invitation"
+                    }
+                }
+            }
+        },
+        "/api/user/activate": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Activate user account",
+                "operationId": "userActivate",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "token"
+                                ],
+                                "properties": {
+                                    "token": {
+                                        "type": "string",
+                                        "example": "activation-token"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Account activated successfully"
+                    },
+                    "400": {
+                        "description": "Invalid token"
+                    }
+                }
+            }
+        },
         "/api/products/{productSlug}/services": {
             "post": {
                 "tags": [
@@ -1416,6 +1479,31 @@
         }
     },
     "components": {
+        "schemas": {
+            "UserSignUpDTO": {
+                "required": [
+                    "email",
+                    "phoneNumber",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "user@example.com"
+                    },
+                    "phoneNumber": {
+                        "type": "string",
+                        "example": "+1234567890"
+                    },
+                    "password": {
+                        "type": "string",
+                        "minLength": 8,
+                        "example": "securepassword"
+                    }
+                },
+                "type": "object"
+            }
+        },
         "securitySchemes": {
             "Bearer": {
                 "type": "http",

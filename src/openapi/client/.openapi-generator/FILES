@@ -26,5 +26,7 @@ models/GetSimpleAutoCollectionPagination200Response.ts
 models/GetSimpleAutoCollectionPagination200ResponseItemsInner.ts
 models/PostAppSpecautocontextPresentationSpecautocreateCreateRequest.ts
 models/PostAppUserdomainPresentationUsersubscriptionfilterUsersubscriptionfiltercreateCreatefiltersRequest.ts
+models/UserActivateRequest.ts
+models/UserSignUpDTO.ts
 models/index.ts
 runtime.ts

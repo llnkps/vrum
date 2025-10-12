@@ -1,5 +1,5 @@
-import { Link, Stack } from "expo-router";
-import React, { useState } from "react";
+import { Link, Stack, useRouter } from "expo-router";
+import React, { useState, useEffect } from "react";
 import {
   ActivityIndicator,
   Dimensions,
@@ -16,13 +16,22 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import HomeBlock from "@/components/HomeBlock";
 import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
+import { useAuthStore } from "@/state/auth/useAuthStore";
 
 const { width } = Dimensions.get("window");
 
 const data = [];
 
 export default function HomeScreen({ navigation }) {
+  const router = useRouter();
+  const { isAuthenticated } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.replace('/sign-in');
+    }
+  }, [isAuthenticated, router]);
   // const { data } = useQuery({
   //   queryKey: ['homeInfo'],
   //   queryFn: () => getHomeInfo(),

@@ -13,6 +13,7 @@ import { MyDarkTheme, MyLightTheme } from "@/theme";
 import { ThemeProvider } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { useAuthStore } from "@/state/auth/useAuthStore";
 
 // const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 // if (!publishableKey) {
@@ -34,51 +35,26 @@ const queryClient = new QueryClient({
 });
 
 const InitialLayout = () => {
-  // const { isLoaded, isSignedIn } = { isLoaded: true, isSignedIn: true }; // useAuth();
-  // const router = useRouter();
+  const { checkAuth } = useAuthStore();
 
   const [loadedFonts] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
-  // // const segments = useSegments();
-  // // useReactQueryDevTools(queryClient);
+
   useEffect(() => {
     if (loadedFonts) {
       SplashScreen.hideAsync();
     }
   }, [loadedFonts]);
 
-  // useEffect(() => {
-  //   // if (!loaded) return;
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
 
-  //   // const inAuthGroup = segments[1] === '(authenticated)';
-
-  //   const timeout = setTimeout(() => {
-  //     if (isSignedIn) {
-  //       router.replace('/(app)/(authenticated)/(tabs)');
-  //     }
-  //   }, 0);
-
-  //   return () => clearTimeout(timeout)
-
-  // }, [isLoaded, isSignedIn, router]);
-
-  // return (
-  //   <Stack screenOptions={{ headerShown: false }}>
-  //     <Stack.Screen name="login" />
-  //   </Stack>
-  // );
-
-  // const { data: session } = authClient.useSession();
-  const isAuthenticated = true;
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Protected guard={isAuthenticated}>
-        <Stack.Screen name="(app)" />
-      </Stack.Protected>
-      <Stack.Protected guard={!isAuthenticated}>
-        <Stack.Screen name="(auth)" />
-      </Stack.Protected>
+      <Stack.Screen name="(app)" />
+      <Stack.Screen name="(auth)" />
     </Stack>
   );
 };

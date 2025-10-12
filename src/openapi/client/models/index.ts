@@ -18,3 +18,5 @@ export * from './GetSimpleAutoCollectionPagination200Response';
 export * from './GetSimpleAutoCollectionPagination200ResponseItemsInner';
 export * from './PostAppSpecautocontextPresentationSpecautocreateCreateRequest';
 export * from './PostAppUserdomainPresentationUsersubscriptionfilterUsersubscriptionfiltercreateCreatefiltersRequest';
+export * from './UserActivateRequest';
+export * from './UserSignUpDTO';
