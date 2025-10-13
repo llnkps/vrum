@@ -13,6 +13,7 @@ import { MyDarkTheme, MyLightTheme } from "@/theme";
 import { ThemeProvider } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { useThemeStore } from "@/state/theme/useThemeStore";
 import { useAuthStore } from "@/state/auth/useAuthStore";
 
 // const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
@@ -60,12 +61,12 @@ const InitialLayout = () => {
 };
 
 const RootLayout = () => {
-  const colorScheme = useColorScheme();
+  const { isDark } = useThemeStore();
 
   return (
     <GestureHandlerRootView className="flex-1">
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider value={colorScheme === "dark" ? MyDarkTheme : MyLightTheme}>
+        <ThemeProvider value={isDark ? MyDarkTheme : MyLightTheme}>
           <BottomSheetModalProvider>
             <InitialLayout />
           </BottomSheetModalProvider>

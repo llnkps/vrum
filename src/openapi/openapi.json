@@ -8,7 +8,7 @@
     },
     "servers": [
         {
-            "url": "http://192.168.2.55:8000/"
+            "url": "http://192.168.100.8:8000/"
         }
     ],
     "paths": {
@@ -50,8 +50,11 @@
                                                 "type": "string"
                                             }
                                         },
-                                        "refresh_token_expiration": {
-                                            "type": "number"
+                                        "token": {
+                                            "type": "string"
+                                        },
+                                        "refresh_token": {
+                                            "type": "string"
                                         }
                                     },
                                     "type": "object"
@@ -1232,31 +1235,24 @@
             }
         },
         "/api/user/activate": {
-            "post": {
+            "get": {
                 "tags": [
                     "User"
                 ],
                 "summary": "Activate user account",
                 "operationId": "userActivate",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "token"
-                                ],
-                                "properties": {
-                                    "token": {
-                                        "type": "string",
-                                        "example": "activation-token"
-                                    }
-                                },
-                                "type": "object"
-                            }
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "query",
+                        "description": "Activation token",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "activation-token"
                         }
                     }
-                },
+                ],
                 "responses": {
                     "200": {
                         "description": "Account activated successfully"

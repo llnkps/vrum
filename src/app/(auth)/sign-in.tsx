@@ -29,11 +29,10 @@ export default function Index() {
   }, [isAuthenticated, router]);
 
   const onSubmit = async (data: LoginForm) => {
-    console.log(data)
     setLoading(true);
     try {
       await login(data.email, data.password);
-      router.replace('/(app)/(tabs)');
+      router.replace('/(app)/(tabs)/search-tab');
     } catch (error) {
       console.error('Login error:', error);
       Alert.alert('Error', 'Login failed. Please check your credentials.');

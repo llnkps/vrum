@@ -26,12 +26,14 @@ import SellerModal from "@/modules/advertisement/simple-auto/seller-modal/seller
 import { useSimpleAutoFormContext } from "@/modules/advertisement/simple-auto/SimpleAutoFormProvider";
 import TransmissionModal from "@/modules/advertisement/simple-auto/transmission-modal/transmission-modal";
 import YearModal from "@/modules/advertisement/simple-auto/year-modal/year-modal";
-import { ResponseError, SimpleAutoApi } from "@/openapi/client";
+import { createAuthenticatedApiCall } from "@/openapi/auth-utils";
+import { createAuthenticatedConfiguration } from "@/openapi/configurations";
 import { useMutation } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useAuthStore } from "@/state/auth/useAuthStore";
+import { useSimpleAutoAdvertisementCreateMutate } from "@/hooks/useSimpleAutoAdvertisementCreateMutate";
 
 type FormValues = {
   description: string;
@@ -61,14 +63,6 @@ type FormValues = {
 };
 
 export default function AddCarPage() {
-  // const configuration = new Configuration({
-  //       credentials: "include",
-  //       headers: {
-  //         'Bearer': "dsasa"
-  //       },
-  //       accessToken: "das"
-  //     });
-
   const router = useRouter();
   const { isAuthenticated } = useAuthStore();
 
@@ -76,12 +70,13 @@ export default function AddCarPage() {
     if (!isAuthenticated) {
       Alert.alert("Authentication Required", "You need to be logged in to create an advertisement.", [
         { text: "Login", onPress: () => router.push("/sign-in") },
-        { text: "Cancel", onPress: () => router.back() }
+        { text: "Cancel", onPress: () => router.back() },
       ]);
     }
   }, [isAuthenticated]);
 
-  const simpleAutoClient = new SimpleAutoApi();
+
+
   const {
     selectedBrand,
     selectedModel,
@@ -118,64 +113,89 @@ export default function AddCarPage() {
     setSelectedSeller,
   } = useSimpleAutoFormContext();
 
-  const mutateAdvertisement = useMutation({
-    mutationFn: async (formData: FormData) => {
-      const formParams = new FormData();
+  // const mutateAdvertisement = useMutation({
+  //   mutationFn: async (formData: FormData) => {
+  //     const formParams = new FormData();
 
-      formParams.append("description", formData.get("description") as any);
-      formParams.append("price", formData.get("price") as any);
-      formParams.append("currency", formData.get("currency") as any);
-      formParams.append("region", formData.get("region") as any);
-      formParams.append("releaseYear", formData.get("releaseYear") as any);
-      formParams.append("brand", formData.get("brand") as any);
-      formParams.append("model", formData.get("model") as any);
-      formParams.append("generationId", formData.get("generationId") as any);
-      formParams.append("modificationId", formData.get("modificationId") as any);
+  //     formParams.append("description", formData.get("description") as any);
+  //     formParams.append("price", formData.get("price") as any);
+  //     formParams.append("currency", formData.get("currency") as any);
+  //     formParams.append("region", formData.get("region") as any);
+  //     formParams.append("releaseYear", formData.get("releaseYear") as any);
+  //     formParams.append("brand", formData.get("brand") as any);
+  //     formParams.append("model", formData.get("model") as any);
+  //     formParams.append("generationId", formData.get("generationId") as any);
+  //     formParams.append("modificationId", formData.get("modificationId") as any);
 
-      formParams.append("parameters[mileage]", formData.get("mileage") as any);
-      formParams.append("parameters[transmission]", formData.get("transmission_type") as any);
-      formParams.append("parameters[fuel_type]", formData.get("fuel_type") as any);
-      formParams.append("parameters[frame_type]", formData.get("frame_type") as any);
-      formParams.append("parameters[drivetrain_type]", formData.get("drive_train") as any);
-      formParams.append("parameters[color]", formData.get("color") as any);
-      formParams.append("parameters[power]", formData.get("power") as any);
-      formParams.append("parameters[engine_capacity]", formData.get("engine_capacity") as any);
-      formParams.append("parameters[trade_allow]", formData.get("trade_allow") ? "1" : "0");
-      formParams.append("parameters[condition]", formData.get("condition") as any);
-      formParams.append("parameters[number_of_owner]", formData.get("number_of_owner") as any);
-      formParams.append("parameters[document_type]", formData.get("document_ok"));
-      formParams.append("parameters[seller]", formData.get("seller") as any);
+  //     formParams.append("parameters[mileage]", formData.get("mileage") as any);
+  //     formParams.append("parameters[transmission]", formData.get("transmission_type") as any);
+  //     formParams.append("parameters[fuel_type]", formData.get("fuel_type") as any);
+  //     formParams.append("parameters[frame_type]", formData.get("frame_type") as any);
+  //     formParams.append("parameters[drivetrain_type]", formData.get("drive_train") as any);
+  //     formParams.append("parameters[color]", formData.get("color") as any);
+  //     formParams.append("parameters[power]", formData.get("power") as any);
+  //     formParams.append("parameters[engine_capacity]", formData.get("engine_capacity") as any);
+  //     formParams.append("parameters[trade_allow]", formData.get("trade_allow") ? "1" : "0");
+  //     formParams.append("parameters[condition]", formData.get("condition") as any);
+  //     formParams.append("parameters[number_of_owner]", formData.get("number_of_owner") as any);
+  //     formParams.append("parameters[document_type]", formData.get("document_ok"));
+  //     formParams.append("parameters[seller]", formData.get("seller") as any);
 
-      formData.getAll("images").forEach((element) => {
-        formParams.append("images[]", element as any);
-      });
-      try {
-        const res = await simpleAutoClient.postAppSimpleautocontextPresentationSimpleautocreateCreateRaw({
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-          body: formParams,
-        });
-        return res;
-      } catch (e) {
-        console.log("ERROR", e);
-        console.log("EMD");
-        throw e;
+  //     formData.getAll("images").forEach((element) => {
+  //       formParams.append("images[]", element as any);
+  //     });
+
+  //     const res = await simpleAutoClient.postAppSimpleautocontextPresentationSimpleautocreateCreateRaw({
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //       body: formParams,
+  //     });
+  //     return res;
+  //   },
+  //   onSuccess: (e) => {
+  //     console.log("SUCCESS", e);
+  //     // TODO: make something when success
+  //     reset();
+  //     router.push("/(app)/(tabs)/advertisement");
+  //   },
+  //   onError: async (error: ResponseError) => {
+  //     console.log("ERROR", error);
+  //     console.log(await error.response.json());
+  //     console.log("EMD");
+  //     console.log("EMD");
+  //     console.log("EMD");
+  //     // TODO: make something when error
+
+  // const jsonError = await error.response.json();
+
+  // if (jsonError.errors) {
+  //   for (const [field, message] of Object.entries(jsonError.errors)) {
+  //     setError(field, { message });
+  //   }
+  // }
+
+  //   },
+  // });
+
+  const mutateAdvertisement = useSimpleAutoAdvertisementCreateMutate({
+    onSuccess: (data) => {
+      console.log("Advertisement created successfully:", data);
+      // reset();
+      // router.push("/(app)/(tabs)/advertisement");
+    },
+    onError: async (error) => {
+      console.error("Error creating advertisement:", error);
+      const jsonError = await error.response.json();
+
+      if (jsonError.errors) {
+        for (const [field, message] of Object.entries(jsonError.errors)) {
+          setError(field, { message });
+        }
       }
     },
-    onSuccess: (e) => {
-      console.log("SUCCESS", e);
-      // TODO: make something when success
-    },
-    onError: async (error: ResponseError) => {
-      console.log("ERROR", error);
-      console.log(await error.response.json());
-      console.log("EMD");
-      console.log("EMD");
-      console.log("EMD");
-      // TODO: make something when error
-    },
   });
+
 
   const {
     control,
@@ -183,6 +203,7 @@ export default function AddCarPage() {
     setValue,
     reset,
     formState: { errors },
+    setError,
   } = useForm<FormValues>({
     defaultValues: {
       description: "",

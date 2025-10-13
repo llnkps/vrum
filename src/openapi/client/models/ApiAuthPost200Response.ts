@@ -27,10 +27,16 @@ export interface ApiAuthPost200Response {
     roles?: Array<string>;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof ApiAuthPost200Response
      */
-    refreshTokenExpiration?: number;
+    token?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiAuthPost200Response
+     */
+    refreshToken?: string;
 }
 
 /**
@@ -51,7 +57,8 @@ export function ApiAuthPost200ResponseFromJSONTyped(json: any, ignoreDiscriminat
     return {
         
         'roles': json['roles'] == null ? undefined : json['roles'],
-        'refreshTokenExpiration': json['refresh_token_expiration'] == null ? undefined : json['refresh_token_expiration'],
+        'token': json['token'] == null ? undefined : json['token'],
+        'refreshToken': json['refresh_token'] == null ? undefined : json['refresh_token'],
     };
 }
 
@@ -67,7 +74,8 @@ export function ApiAuthPost200ResponseToJSONTyped(value?: ApiAuthPost200Response
     return {
         
         'roles': value['roles'],
-        'refresh_token_expiration': value['refreshTokenExpiration'],
+        'token': value['token'],
+        'refresh_token': value['refreshToken'],
     };
 }
 

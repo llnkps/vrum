@@ -1,13 +1,90 @@
-import React, { useState } from "react";
-import { ScrollView, View, Text, TouchableOpacity, Switch, Image } from "react-native";
+import React, { useState, useEffect } from "react";
+import { ScrollView, View, Text, TouchableOpacity, Switch, Image, Alert } from "react-native";
 import FeatherIcon from "@expo/vector-icons/Feather";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { useAuthStore } from "@/state/auth/useAuthStore";
+import { useThemeStore } from "@/state/theme/useThemeStore";
+import { usePreferencesStore, Language } from "@/state/preferences/usePreferencesStore";
+import { createAuthenticatedConfiguration } from "@/openapi/configurations";
+import { UserApi } from "@/openapi/client";
+import i18n from "@/i18n";
 
 export default function SettingsPage() {
+  const router = useRouter();
+  const { isAuthenticated, logout } = useAuthStore();
+  const { isDark, toggleTheme } = useThemeStore();
+  const { language, location, setLanguage, setLocation } = usePreferencesStore();
+
   const [form, setForm] = useState({
     emailNotifications: true,
     pushNotifications: false,
   });
+
+  // Check authentication
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.replace("/sign-in");
+    }
+  }, [isAuthenticated, router]);
+
+  // Fetch user data
+  const { data: userData } = useQuery({
+    queryKey: ['user-profile'],
+    queryFn: async () => {
+      const userApi = new UserApi(createAuthenticatedConfiguration());
+      return await userApi.getAppUserdomainPresentationGetmeGetme();
+    },
+    enabled: isAuthenticated,
+  });
+
+  // Update location mutation
+  const updateLocationMutation = useMutation({
+    mutationFn: async (newLocation: string) => {
+      // Here you would call your API to update location
+      // For now, just update local state
+      setLocation(newLocation);
+      return newLocation;
+    },
+  });
+
+  const handleLogout = async () => {
+    Alert.alert(
+      "Logout",
+      "Are you sure you want to logout?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Logout",
+          style: "destructive",
+          onPress: async () => {
+            await logout();
+            router.replace("/sign-in");
+          }
+        }
+      ]
+    );
+  };
+
+  const handleLanguageChange = (newLanguage: Language) => {
+    setLanguage(newLanguage);
+    i18n.changeLanguage(newLanguage);
+  };
+
+  const getLanguageDisplayName = (lang: Language) => {
+    const names = {
+      en: 'English',
+      ro: 'Română',
+      ru: 'Русский',
+      uk: 'Українська'
+    };
+    return names[lang];
+  };
+
+  if (!isAuthenticated) {
+    return null; // Will redirect
+  }
 
   return (
     <SafeAreaProvider>
@@ -36,8 +113,12 @@ export default function SettingsPage() {
                 className="w-14 h-14 rounded-xl"
               />
               <View className="flex-1 ml-4">
-                <Text className="text-base font-semibold text-font dark:text-font-dark">John Doe</Text>
-                <Text className="text-sm text-font-subtle dark:text-font-subtle-dark">john@example.com</Text>
+                <Text className="text-base font-semibold text-font dark:text-font-dark">
+                  {userData?.name || 'User'}
+                </Text>
+                <Text className="text-sm text-font-subtle dark:text-font-subtle-dark">
+                  {userData?.email || 'user@example.com'}
+                </Text>
               </View>
               <FeatherIcon name="chevron-right" size={20} color="#A9ABAF" />
             </TouchableOpacity>
@@ -50,14 +131,38 @@ export default function SettingsPage() {
             </Text>
 
             <View className="bg-surface dark:bg-surface-dark rounded-2xl overflow-hidden">
+              {/* Dark Mode Toggle */}
+              <View className="flex-row items-center px-4 py-4 border-b border-border/10 dark:border-border-dark/10">
+                <Text className="text-base text-font dark:text-font-dark">Темная тема</Text>
+                <View className="flex-1" />
+                <Switch
+                  onValueChange={toggleTheme}
+                  value={isDark}
+                  trackColor={{
+                    false: "#D3D5DA",
+                    true: "#1868DB",
+                  }}
+                  thumbColor="#FFFFFF"
+                  ios_backgroundColor="#D3D5DA"
+                />
+              </View>
+
               {/* Language */}
               <TouchableOpacity
                 className="flex-row items-center px-4 py-4 border-b border-border/10 dark:border-border-dark/10 active:opacity-80"
                 activeOpacity={0.7}
+                onPress={() => {
+                  const languages: Language[] = ['en', 'ro', 'ru', 'uk'];
+                  const currentIndex = languages.indexOf(language);
+                  const nextIndex = (currentIndex + 1) % languages.length;
+                  handleLanguageChange(languages[nextIndex]);
+                }}
               >
                 <Text className="text-base text-font dark:text-font-dark">Язык</Text>
                 <View className="flex-1" />
-                <Text className="text-sm font-medium text-font-subtle dark:text-font-subtle-dark mr-2">English</Text>
+                <Text className="text-sm font-medium text-font-subtle dark:text-font-subtle-dark mr-2">
+                  {getLanguageDisplayName(language)}
+                </Text>
                 <FeatherIcon name="chevron-right" size={18} color="#A9ABAF" />
               </TouchableOpacity>
 
@@ -65,11 +170,30 @@ export default function SettingsPage() {
               <TouchableOpacity
                 className="flex-row items-center px-4 py-4 border-b border-border/10 dark:border-border-dark/10 active:opacity-80"
                 activeOpacity={0.7}
+                onPress={() => {
+                  Alert.prompt(
+                    "Update Location",
+                    "Enter your new location:",
+                    [
+                      { text: "Cancel", style: "cancel" },
+                      {
+                        text: "Update",
+                        onPress: (newLocation?: string) => {
+                          if (newLocation) {
+                            updateLocationMutation.mutate(newLocation);
+                          }
+                        }
+                      }
+                    ],
+                    "plain-text",
+                    location
+                  );
+                }}
               >
                 <Text className="text-base text-font dark:text-font-dark">Местоположение</Text>
                 <View className="flex-1" />
                 <Text className="text-sm font-medium text-font-subtle dark:text-font-subtle-dark mr-2">
-                  Los Angeles, CA
+                  {location}
                 </Text>
                 <FeatherIcon name="chevron-right" size={18} color="#A9ABAF" />
               </TouchableOpacity>
@@ -82,8 +206,8 @@ export default function SettingsPage() {
                   onValueChange={(val) => setForm({ ...form, emailNotifications: val })}
                   value={form.emailNotifications}
                   trackColor={{
-                    false: "#D3D5DA", // border
-                    true: "#1868DB", // interactive-primary
+                    false: "#D3D5DA",
+                    true: "#1868DB",
                   }}
                   thumbColor="#FFFFFF"
                   ios_backgroundColor="#D3D5DA"
@@ -138,6 +262,7 @@ export default function SettingsPage() {
             <TouchableOpacity
               className="flex-row items-center bg-surface dark:bg-surface-dark px-4 py-4 justify-center rounded-2xl active:opacity-80"
               activeOpacity={0.7}
+              onPress={handleLogout}
             >
               <Text className="text-base font-semibold text-font-danger dark:text-font-danger-dark">
                 Выйти из аккаунта

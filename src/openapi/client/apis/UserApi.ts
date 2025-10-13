@@ -16,14 +16,11 @@
 import * as runtime from '../runtime';
 import type {
   GetAppUserdomainPresentationGetmeGetme200Response,
-  UserActivateRequest,
   UserSignUpDTO,
 } from '../models/index';
 import {
     GetAppUserdomainPresentationGetmeGetme200ResponseFromJSON,
     GetAppUserdomainPresentationGetmeGetme200ResponseToJSON,
-    UserActivateRequestFromJSON,
-    UserActivateRequestToJSON,
     UserSignUpDTOFromJSON,
     UserSignUpDTOToJSON,
 } from '../models/index';
@@ -32,8 +29,8 @@ export interface PostApiRegisterWithInviteRequest {
     token: string;
 }
 
-export interface UserActivateOperationRequest {
-    userActivateRequest: UserActivateRequest;
+export interface UserActivateRequest {
+    token: string;
 }
 
 export interface UserSignUpRequest {
@@ -129,19 +126,21 @@ export class UserApi extends runtime.BaseAPI {
     /**
      * Activate user account
      */
-    async userActivateRaw(requestParameters: UserActivateOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['userActivateRequest'] == null) {
+    async userActivateRaw(requestParameters: UserActivateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['token'] == null) {
             throw new runtime.RequiredError(
-                'userActivateRequest',
-                'Required parameter "userActivateRequest" was null or undefined when calling userActivate().'
+                'token',
+                'Required parameter "token" was null or undefined when calling userActivate().'
             );
         }
 
         const queryParameters: any = {};
 
-        const headerParameters: runtime.HTTPHeaders = {};
+        if (requestParameters['token'] != null) {
+            queryParameters['token'] = requestParameters['token'];
+        }
 
-        headerParameters['Content-Type'] = 'application/json';
+        const headerParameters: runtime.HTTPHeaders = {};
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -156,10 +155,9 @@ export class UserApi extends runtime.BaseAPI {
 
         const response = await this.request({
             path: urlPath,
-            method: 'POST',
+            method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-            body: UserActivateRequestToJSON(requestParameters['userActivateRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -168,7 +166,7 @@ export class UserApi extends runtime.BaseAPI {
     /**
      * Activate user account
      */
-    async userActivate(requestParameters: UserActivateOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async userActivate(requestParameters: UserActivateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.userActivateRaw(requestParameters, initOverrides);
     }
 

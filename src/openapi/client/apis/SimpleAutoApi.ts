@@ -330,7 +330,8 @@ export class SimpleAutoApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-
+        console.log("Preparing to create advertisement...");
+        console.log(headerParameters);
         let urlPath = `/api/simple-auto/advertisments`;
 
         const response = await this.request({
