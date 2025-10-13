@@ -1,47 +1,58 @@
 import CustomBottomSheetModal from "@/components/global/CustomBottomSheetModal";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { CustomRectButton } from "@/components/ui/button";
+import { useRegionApi } from "@/hooks/useRegionApi";
+import { GetRegionIndex200ResponseInner } from "@/openapi/client";
+import {
+  BottomSheetModal,
+  BottomSheetScrollView,
+  BottomSheetView,
+} from "@gorhom/bottom-sheet";
 import React, { forwardRef } from "react";
-import { Text, View } from "react-native";
+import { ActivityIndicator, Text } from "react-native";
 
 export type BottomSheetRef = BottomSheetModal;
 
 type props = {
-  /** Custom snap points (default: ['50%']) */
-  snapPoints?: string[];
-  /** Optional title at the top */
-  title?: string;
-  /** Content to render inside the bottom sheet */
+  onChange: (region: GetRegionIndex200ResponseInner) => void;
 };
 
 export const RegionModal = forwardRef<BottomSheetRef, props>((props, ref) => {
+  const { data: regions, isLoading, error } = useRegionApi();
+  const [selectedRegion, setSelectedRegion] = React.useState<
+    string | undefined
+  >(undefined);
+
   return (
-    <CustomBottomSheetModal ref={ref} snapPoints={["60%"]}>
-      <View className="p-4 flex-col gap-y-4">
-        <View className="p-2 rounded-md bg-background-neutral-subtle-pressed dark:bg-background-neutral-subtle-dark-pressed">
-          <Text className="text-font dark:text-font-dark text-lg">
-            Все регионы
+    <CustomBottomSheetModal
+      ref={ref}
+      snapPoints={["60%"]}
+      enableContentPanningGesture={true}
+      title={"Выберите регион"}
+    >
+      {isLoading && <ActivityIndicator size="large" />}
+      {error ? (
+        <BottomSheetView className="flex-1 justify-center items-center">
+          <Text className="text-font dark:text-font-dark">
+            Произошла ошибка. Приносим извинения!
           </Text>
-        </View>
-
-        <View className="p-2 rounded-md">
-          <Text className="text-font dark:text-font-dark text-lg">Кишинев</Text>
-        </View>
-
-        <View className="p-2 rounded-md">
-          <Text className="text-font dark:text-font-dark text-lg">Кишинев</Text>
-        </View>
-
-        <View className="p-2 rounded-md">
-          <Text className="text-font dark:text-font-dark text-lg">Кишинев</Text>
-        </View>
-
-        <View className="p-2 rounded-md">
-          <Text className="text-font dark:text-font-dark text-lg">Кишинев</Text>
-        </View>
-      </View>
+        </BottomSheetView>
+      ) : (
+        <BottomSheetScrollView className="flex-col">
+          {regions?.map((region) => (
+            <CustomRectButton
+              key={region.id}
+              onPress={() => {
+                props.onChange(region);
+                setSelectedRegion(region.slug);
+              }}
+              title={region.name}
+              isSelected={selectedRegion === region.slug}
+            />
+          ))}
+        </BottomSheetScrollView>
+      )}
     </CustomBottomSheetModal>
   );
 });
 
 RegionModal.displayName = "RegionModal";
-

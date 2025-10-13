@@ -8,6 +8,7 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import PriceModal from "./price-modal/price-modal";
 import { RegionModal } from "./region-modal/region-modal";
 import YearModal from "./year-modal/year-modal";
+import { GetRegionIndex200ResponseInner } from "@/openapi/client";
 
 export const AutoHeaderScreen = () => {
   const { t } = useTranslation();
@@ -81,7 +82,7 @@ const SearchSection = () => {
     <View className={"px-4 py-3 gap-y-1 bg-background dark:bg-background-dark"}>
       <Pressable
         onPress={() =>
-          router.push("/(app)/simple-auto/(modals)/brand-auto-filter")
+          router.push("/(app)/search-screen/simple-auto-screen/modals/brand-auto-modal-filter")
         }
         className={
           "px-4 py-3 flex flex-row bg-background-neutral dark:bg-background-neutral-dark rounded-t-md border border-border dark:border-border-dark"
@@ -111,7 +112,7 @@ const SearchSection = () => {
         </Pressable>
 
         <Pressable
-          onPress={() => router.push("/search-screen/auto-screen/settings")}
+          onPress={() => router.push("/(app)/search-screen/simple-auto-screen/modals/settings")}
           className={
             "flex-1 px-4 py-3 flex flex-row bg-background-neutral dark:bg-background-neutral-dark border border-border dark:border-border-dark"
           }
@@ -137,9 +138,12 @@ const SearchSection = () => {
       </Pressable>
 
       {/** component for opening year modal */}
+      {/** TODO: move them to shared between creating advertisement */}
       <YearModal ref={yearModalRef} />
       <PriceModal ref={priceModalRef} />
-      <RegionModal ref={regionModalRef} />
+      <RegionModal ref={regionModalRef} onChange={function (region: GetRegionIndex200ResponseInner): void {
+        throw new Error("Function not implemented.");
+      } } />
     </View>
   );
 };
