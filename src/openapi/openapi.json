@@ -8,7 +8,7 @@
     },
     "servers": [
         {
-            "url": "http://192.168.100.8:8000/"
+            "url": "http://localhost:8000/"
         }
     ],
     "paths": {
@@ -204,6 +204,28 @@
                                 "type": "string"
                             }
                         }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
                     }
                 ],
                 "responses": {
@@ -307,6 +329,12 @@
                                     "releaseYear": {
                                         "type": "integer",
                                         "example": 2025
+                                    },
+                                    "brand": {
+                                        "type": "integer"
+                                    },
+                                    "model": {
+                                        "type": "integer"
                                     },
                                     "parameters": {
                                         "type": "array",

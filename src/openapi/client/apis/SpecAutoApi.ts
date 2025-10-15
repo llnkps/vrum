@@ -18,7 +18,7 @@ import type {
   GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner,
   GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters200Response,
   GetAppSpecautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner,
-  PostAppSimpleautocontextPresentationSimpleautocreateCreateRequest,
+  PostAppSpecautocontextPresentationSpecautocreateCreateRequest,
 } from '../models/index';
 import {
     GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInnerFromJSON,
@@ -27,8 +27,8 @@ import {
     GetAppSimpleautocontextPresentationSimpleautogetoneGetcollectionbyfilters200ResponseToJSON,
     GetAppSpecautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInnerFromJSON,
     GetAppSpecautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInnerToJSON,
-    PostAppSimpleautocontextPresentationSimpleautocreateCreateRequestFromJSON,
-    PostAppSimpleautocontextPresentationSimpleautocreateCreateRequestToJSON,
+    PostAppSpecautocontextPresentationSpecautocreateCreateRequestFromJSON,
+    PostAppSpecautocontextPresentationSpecautocreateCreateRequestToJSON,
 } from '../models/index';
 
 export interface GetAppSpecautocontextPresentationModelgetcollectionGetcollectionbyfiltersRequest {
@@ -47,8 +47,8 @@ export interface GetAppSpecautocontextPresentationSpecautogetoneGetcollectionbyf
     advertismentId: string;
 }
 
-export interface PostAppSpecautocontextPresentationSpecautocreateCreateRequest {
-    postAppSimpleautocontextPresentationSimpleautocreateCreateRequest: PostAppSimpleautocontextPresentationSimpleautocreateCreateRequest;
+export interface PostAppSpecautocontextPresentationSpecautocreateCreateOperationRequest {
+    postAppSpecautocontextPresentationSpecautocreateCreateRequest: PostAppSpecautocontextPresentationSpecautocreateCreateRequest;
 }
 
 /**
@@ -234,11 +234,11 @@ export class SpecAutoApi extends runtime.BaseAPI {
 
     /**
      */
-    async postAppSpecautocontextPresentationSpecautocreateCreateRaw(requestParameters: PostAppSpecautocontextPresentationSpecautocreateCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['postAppSimpleautocontextPresentationSimpleautocreateCreateRequest'] == null) {
+    async postAppSpecautocontextPresentationSpecautocreateCreateRaw(requestParameters: PostAppSpecautocontextPresentationSpecautocreateCreateOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['postAppSpecautocontextPresentationSpecautocreateCreateRequest'] == null) {
             throw new runtime.RequiredError(
-                'postAppSimpleautocontextPresentationSimpleautocreateCreateRequest',
-                'Required parameter "postAppSimpleautocontextPresentationSimpleautocreateCreateRequest" was null or undefined when calling postAppSpecautocontextPresentationSpecautocreateCreate().'
+                'postAppSpecautocontextPresentationSpecautocreateCreateRequest',
+                'Required parameter "postAppSpecautocontextPresentationSpecautocreateCreateRequest" was null or undefined when calling postAppSpecautocontextPresentationSpecautocreateCreate().'
             );
         }
 
@@ -264,7 +264,7 @@ export class SpecAutoApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: PostAppSimpleautocontextPresentationSimpleautocreateCreateRequestToJSON(requestParameters['postAppSimpleautocontextPresentationSimpleautocreateCreateRequest']),
+            body: PostAppSpecautocontextPresentationSpecautocreateCreateRequestToJSON(requestParameters['postAppSpecautocontextPresentationSpecautocreateCreateRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -272,7 +272,7 @@ export class SpecAutoApi extends runtime.BaseAPI {
 
     /**
      */
-    async postAppSpecautocontextPresentationSpecautocreateCreate(requestParameters: PostAppSpecautocontextPresentationSpecautocreateCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async postAppSpecautocontextPresentationSpecautocreateCreate(requestParameters: PostAppSpecautocontextPresentationSpecautocreateCreateOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.postAppSpecautocontextPresentationSpecautocreateCreateRaw(requestParameters, initOverrides);
     }
 
