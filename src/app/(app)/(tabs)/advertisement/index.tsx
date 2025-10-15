@@ -1,4 +1,3 @@
-import { CarCard } from '@/components/CarCard';
 import { AddAdsPanel } from '@/components/ui/AddAdsPanel';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'expo-router';
@@ -8,24 +7,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function MyAdvertisement() {
 	const router = useRouter();
-
-	// Mock data for the car card
-	const exampleCarData = {
-		imageUri:
-			'https://motor.ru/thumb/1816x0/filters:quality(75):no_upscale()/imgs/2023/07/06/11/5974391/bd6439ef2f6dc0cc152386bfebb547ec4582bbfe.jpg',
-		name: 'Porsche 911 Brabus 900 Rocket R',
-		description: 'Эксклюзивный тюнинг от Brabus...',
-		brand: 'Porsche',
-		model: '911 Brabus 900',
-		price: '89900000',
-		currency: 'rub',
-		region: 'Москва',
-		releaseYear: 2023,
-		parameters: [
-			{ label: 'Поколение', value: 'VIII (992)', highlighted: true },
-			{ label: 'Пробег', value: '160000' },
-		],
-	};
 
 	return (
 		<SafeAreaView className='flex-1 bg-background-page dark:bg-background-page-dark'>
