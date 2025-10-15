@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-
 export const BASE_PATH = "http://192.168.2.55:8000".replace(/\/+$/, "");
 
 export interface ConfigurationParameters {

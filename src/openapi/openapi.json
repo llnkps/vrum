@@ -409,8 +409,6 @@
                     "description": "Simple auto to be created",
                     "required": true,
                     "content": {
-                        "multipart/form-data": {
-                            "schema": {}
                         }
                     }
                 },
