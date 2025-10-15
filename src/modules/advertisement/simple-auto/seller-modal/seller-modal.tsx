@@ -1,5 +1,3 @@
-
-
 import CustomBottomSheetModal, {
   BottomSheetRef,
 } from "@/components/global/CustomBottomSheetModal";
@@ -7,33 +5,41 @@ import { CustomRectButton } from "@/components/ui/button";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
 import React, { forwardRef } from "react";
 
+type OptionType = (typeof options)[number];
+
 type SellerModalProps = {
-  onSelect: (value: string) => void;
+  onSelect: (value: OptionType) => void;
 };
+
+const options = [
+  { label: "Собственник", value: "owner" },
+  { label: "Частник", value: "private" },
+  { label: "Компания", value: "company" },
+];
 
 const SellerModal = forwardRef<BottomSheetRef, SellerModalProps>(
   ({ onSelect }, ref) => {
-    const [value, setValue] = React.useState<string>("");
+    const [selectedValue, setSelectedValue] = React.useState<string>("");
 
     return (
       <CustomBottomSheetModal
         ref={ref}
-        snapPoints={["60%"]}
+        snapPoints={["35%"]}
         enableContentPanningGesture={true}
+        title="Владелец"
       >
-        <BottomSheetView className="flex-col gap-y-2 p-4">
-          <input
-            type="text"
-            value={value}
-            onChange={e => setValue(e.target.value)}
-            className="p-2 border rounded mb-2"
-            placeholder="Введите имя продавца"
-          />
-          <CustomRectButton
-            title="Выбрать"
-            onPress={() => onSelect(value)}
-            isSelected={false}
-          />
+        <BottomSheetView className="flex-col">
+          {options.map((opt) => (
+            <CustomRectButton
+              key={opt.value}
+              onPress={() => {
+                onSelect(opt);
+                setSelectedValue(opt.value);
+              }}
+              title={opt.label}
+              isSelected={selectedValue === opt.value}
+            />
+          ))}
         </BottomSheetView>
       </CustomBottomSheetModal>
     );

@@ -1,10 +1,9 @@
-
-import React, { forwardRef } from "react";
-import CustomBottomSheetModal, { BottomSheetRef } from "@/components/global/CustomBottomSheetModal";
-import { View, Text, Pressable } from "react-native";
-import { HeaderHandle } from "./header";
-import { BottomSheetView } from "@gorhom/bottom-sheet";
+import CustomBottomSheetModal, {
+  BottomSheetRef,
+} from "@/components/global/CustomBottomSheetModal";
 import { CustomRectButton } from "@/components/ui/button";
+import { BottomSheetView } from "@gorhom/bottom-sheet";
+import React, { forwardRef } from "react";
 
 type TradeOptionType = (typeof options)[number];
 
@@ -17,8 +16,9 @@ const options = [
   { label: "Без торга", value: "trade_disallow" },
 ];
 
-const TradeAllowModal = forwardRef<BottomSheetRef, TradeAllowModalProps>(({ onSelect }, ref) => {
-  const [selectedBodyType, setSelectedBodyType] = React.useState<
+const TradeAllowModal = forwardRef<BottomSheetRef, TradeAllowModalProps>(
+  ({ onSelect }, ref) => {
+    const [selectedBodyType, setSelectedBodyType] = React.useState<
       string | undefined
     >(undefined);
 
@@ -26,8 +26,8 @@ const TradeAllowModal = forwardRef<BottomSheetRef, TradeAllowModalProps>(({ onSe
       <CustomBottomSheetModal
         ref={ref}
         snapPoints={["35%"]}
-        handleComponent={HeaderHandle}
         enableContentPanningGesture={true}
+        title="Торг"
       >
         <BottomSheetView className="flex-col">
           {options.map((opt) => (
@@ -44,7 +44,8 @@ const TradeAllowModal = forwardRef<BottomSheetRef, TradeAllowModalProps>(({ onSe
         </BottomSheetView>
       </CustomBottomSheetModal>
     );
-});
+  }
+);
 TradeAllowModal.displayName = "TradeAllowModal";
 
 export default TradeAllowModal;

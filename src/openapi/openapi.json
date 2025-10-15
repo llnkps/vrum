@@ -8,7 +8,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost:8000/"
+            "url": "http://192.168.2.55:8000/"
         }
     ],
     "paths": {
@@ -102,6 +102,100 @@
                 }
             }
         },
+        "/api/simple-auto/brands/{brandId}/models/{modelId}/generations": {
+            "get": {
+                "tags": [
+                    "SimpleAuto"
+                ],
+                "operationId": "get_app_simpleautocontext_presentation_generationgetcollection_getgenerations",
+                "parameters": [
+                    {
+                        "name": "brandId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "modelId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns generation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "id",
+                                        "generation",
+                                        "modifications"
+                                    ],
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            },
+                                            "generation": {
+                                                "type": "integer"
+                                            },
+                                            "modifications": {
+                                                "type": "array",
+                                                "items": {
+                                                    "required": [
+                                                        "id",
+                                                        "frames",
+                                                        "restyling",
+                                                        "yearStart",
+                                                        "yearEnd",
+                                                        "images"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "frames": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "restyling": {
+                                                            "type": "integer"
+                                                        },
+                                                        "yearStart": {
+                                                            "type": "integer"
+                                                        },
+                                                        "yearEnd": {
+                                                            "type": "integer"
+                                                        },
+                                                        "images": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/simple-auto/brands/{brandId}/models": {
             "get": {
                 "tags": [
@@ -126,6 +220,11 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
+                                        "required": [
+                                            "id",
+                                            "name",
+                                            "orderNumber"
+                                        ],
                                         "properties": {
                                             "id": {
                                                 "type": "integer"
@@ -151,7 +250,9 @@
                 "tags": [
                     "SimpleAuto"
                 ],
-                "operationId": "get_app_simpleautocontext_presentation_simpleautogetcollection_getcollectionbyfilters",
+                "summary": "Get simple auto collection pagination",
+                "description": "Get simple auto collection pagination",
+                "operationId": "getSimpleAutoCollectionPagination",
                 "parameters": [
                     {
                         "name": "brand",
@@ -210,10 +311,8 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
+                            "type": "string",
+                            "example": "1"
                         }
                     },
                     {
@@ -221,73 +320,80 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
+                            "type": "string",
+                            "example": "25"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Returns products",
+                        "description": "Returns paginated advertisements",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "properties": {
-                                            "name": {
-                                                "type": "string",
-                                                "example": "New Product"
-                                            },
-                                            "description": {
-                                                "type": "string",
-                                                "example": "description"
-                                            },
-                                            "brand": {
-                                                "type": "string",
-                                                "example": "description"
-                                            },
-                                            "model": {
-                                                "type": "string",
-                                                "example": "description"
-                                            },
-                                            "priceFrom": {
-                                                "type": "string",
-                                                "example": "19.99"
-                                            },
-                                            "priceTo": {
-                                                "type": "string",
-                                                "example": "19.99"
-                                            },
-                                            "currency": {
-                                                "type": "string",
-                                                "example": "usd"
-                                            },
-                                            "regions": {
-                                                "type": "array",
-                                                "items": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "releaseYearFrom": {
-                                                "type": "integer",
-                                                "example": 2025
-                                            },
-                                            "releaseYearTo": {
-                                                "type": "integer",
-                                                "example": 2025
-                                            },
-                                            "parameters": {
-                                                "type": "array",
-                                                "items": {
-                                                    "type": "object"
-                                                }
-                                            }
+                                    "properties": {
+                                        "total": {
+                                            "type": "integer",
+                                            "example": 100
                                         },
-                                        "type": "object"
-                                    }
+                                        "currentPage": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "perPage": {
+                                            "type": "integer",
+                                            "example": 25
+                                        },
+                                        "items": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "brand": {
+                                                        "type": "string",
+                                                        "example": "Toyota"
+                                                    },
+                                                    "model": {
+                                                        "type": "string",
+                                                        "example": "Corolla"
+                                                    },
+                                                    "price": {
+                                                        "type": "string",
+                                                        "example": "20000"
+                                                    },
+                                                    "currency": {
+                                                        "type": "string",
+                                                        "example": "usd"
+                                                    },
+                                                    "releaseYear": {
+                                                        "type": "integer",
+                                                        "example": 2020
+                                                    },
+                                                    "region": {
+                                                        "type": "string",
+                                                        "example": "Chisinau"
+                                                    },
+                                                    "createdAt": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-10-12T10:00:00Z"
+                                                    },
+                                                    "images": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string",
+                                                            "example": "/uploads/media/image.jpg"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -303,48 +409,6 @@
                     "description": "Simple auto to be created",
                     "required": true,
                     "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "New Product"
-                                    },
-                                    "description": {
-                                        "type": "string",
-                                        "example": "description"
-                                    },
-                                    "price": {
-                                        "type": "string",
-                                        "example": "19.99"
-                                    },
-                                    "currency": {
-                                        "type": "string",
-                                        "example": "usd"
-                                    },
-                                    "region": {
-                                        "type": "string",
-                                        "example": "Chisinau"
-                                    },
-                                    "releaseYear": {
-                                        "type": "integer",
-                                        "example": 2025
-                                    },
-                                    "brand": {
-                                        "type": "integer"
-                                    },
-                                    "model": {
-                                        "type": "integer"
-                                    },
-                                    "parameters": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "object"
-                                        }
-                                    }
-                                },
-                                "type": "object"
-                            }
                         }
                     }
                 },
@@ -1138,6 +1202,69 @@
                 }
             }
         },
+        "/api/user/": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Sign up a new user",
+                "operationId": "userSignUp",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserSignUpDTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User registered successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input or invitation"
+                    }
+                }
+            }
+        },
+        "/api/user/activate": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Activate user account",
+                "operationId": "userActivate",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "token"
+                                ],
+                                "properties": {
+                                    "token": {
+                                        "type": "string",
+                                        "example": "activation-token"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Account activated successfully"
+                    },
+                    "400": {
+                        "description": "Invalid token"
+                    }
+                }
+            }
+        },
         "/api/products/{productSlug}/services": {
             "post": {
                 "tags": [
@@ -1350,6 +1477,31 @@
         }
     },
     "components": {
+        "schemas": {
+            "UserSignUpDTO": {
+                "required": [
+                    "email",
+                    "phoneNumber",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "user@example.com"
+                    },
+                    "phoneNumber": {
+                        "type": "string",
+                        "example": "+1234567890"
+                    },
+                    "password": {
+                        "type": "string",
+                        "minLength": 8,
+                        "example": "securepassword"
+                    }
+                },
+                "type": "object"
+            }
+        },
         "securitySchemes": {
             "Bearer": {
                 "type": "http",

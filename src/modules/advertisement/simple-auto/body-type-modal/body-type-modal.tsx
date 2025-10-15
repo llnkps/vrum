@@ -31,7 +31,7 @@ const BodyTypeModal = forwardRef<BottomSheetRef, BodyTypeModalProps>(
     return (
       <CustomBottomSheetModal
         ref={ref}
-        snapPoints={["60%"]}
+        snapPoints={["45%"]}
         handleComponent={HeaderHandle}
         enableContentPanningGesture={true}
       >

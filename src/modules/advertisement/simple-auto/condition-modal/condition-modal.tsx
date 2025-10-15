@@ -16,7 +16,7 @@ type ConditionModalProps = {
 const options = [
   { label: "Новый", value: "new" },
   { label: "Б/у", value: "used" },
-  { label: "На запчасти", value: "for parts" },
+  { label: "На запчасти", value: "for_parts" },
 ];
 
 const ConditionModal = forwardRef<BottomSheetRef, ConditionModalProps>(
@@ -26,8 +26,9 @@ const ConditionModal = forwardRef<BottomSheetRef, ConditionModalProps>(
     return (
       <CustomBottomSheetModal
         ref={ref}
-        snapPoints={["60%"]}
+        snapPoints={["30%"]}
         enableContentPanningGesture={true}
+        title="Состояние"
       >
         <BottomSheetView className="flex-col">
           {options.map((opt) => (

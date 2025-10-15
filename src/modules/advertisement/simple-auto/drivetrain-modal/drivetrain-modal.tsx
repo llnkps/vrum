@@ -14,10 +14,9 @@ type DrivetrainModalProps = {
 };
 
 const options = [
-  { label: "Передний (FWD)", value: "fwd" },
-  { label: "Задний (RWD)", value: "rwd" },
-  { label: "Полный (AWD)", value: "awd" },
-  { label: "4x4", value: "4x4" },
+  { label: "Передний (FWD)", value: "front" },
+  { label: "Задний (RWD)", value: "rear" },
+  { label: "4x4", value: "4wd" },
 ];
 
 const DrivetrainModal = forwardRef<BottomSheetRef, DrivetrainModalProps>(
@@ -27,8 +26,9 @@ const DrivetrainModal = forwardRef<BottomSheetRef, DrivetrainModalProps>(
     return (
       <CustomBottomSheetModal
         ref={ref}
-        snapPoints={["60%"]}
+        snapPoints={["30%"]}
         enableContentPanningGesture={true}
+        title="Привод"
       >
         <BottomSheetView className="flex-col">
           {options.map((opt) => (

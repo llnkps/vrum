@@ -1,4 +1,8 @@
-import { DarkTheme, DefaultTheme, Theme as NavigationTheme } from '@react-navigation/native';
+import {
+  DarkTheme,
+  DefaultTheme,
+  Theme as NavigationTheme,
+} from "@react-navigation/native";
 
 export interface CustomTheme extends NavigationTheme {
   colors: NavigationTheme["colors"] & {
@@ -13,12 +17,13 @@ export interface CustomTheme extends NavigationTheme {
 
       subtle: string;
       subtlePressed: string;
-    },
+    };
     input: {
       background: string;
       placeholderColor: string;
       borderColor: string;
-    }
+    };
+    border: string;
   };
 }
 
@@ -47,7 +52,9 @@ export const MyLightTheme: CustomTheme = {
       background: "#FFFFFF",
       placeholderColor: "#6B6E76",
       borderColor: "#8C8F97",
-    }
+    },
+
+    border: "#0B120E24",
   },
 };
 
@@ -68,13 +75,15 @@ export const MyDarkTheme: CustomTheme = {
       primaryPressed: "",
 
       subtle: "#00000000",
-      subtlePressed: "#E3E4F21F"
+      subtlePressed: "#E3E4F21F",
     },
 
     input: {
       background: "#242528",
       placeholderColor: "#96999E",
       borderColor: "#7E8188",
-    }
+    },
+
+    border: '#E3E4F21F',
   },
 };

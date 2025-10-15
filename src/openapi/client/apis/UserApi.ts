@@ -16,14 +16,28 @@
 import * as runtime from '../runtime';
 import type {
   GetAppUserdomainPresentationGetmeGetme200Response,
+  UserActivateRequest,
+  UserSignUpDTO,
 } from '../models/index';
 import {
     GetAppUserdomainPresentationGetmeGetme200ResponseFromJSON,
     GetAppUserdomainPresentationGetmeGetme200ResponseToJSON,
+    UserActivateRequestFromJSON,
+    UserActivateRequestToJSON,
+    UserSignUpDTOFromJSON,
+    UserSignUpDTOToJSON,
 } from '../models/index';
 
 export interface PostApiRegisterWithInviteRequest {
     token: string;
+}
+
+export interface UserActivateOperationRequest {
+    userActivateRequest: UserActivateRequest;
+}
+
+export interface UserSignUpRequest {
+    userSignUpDTO: UserSignUpDTO;
 }
 
 /**
@@ -110,6 +124,98 @@ export class UserApi extends runtime.BaseAPI {
      */
     async postApiRegisterWithInvite(requestParameters: PostApiRegisterWithInviteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.postApiRegisterWithInviteRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Activate user account
+     */
+    async userActivateRaw(requestParameters: UserActivateOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['userActivateRequest'] == null) {
+            throw new runtime.RequiredError(
+                'userActivateRequest',
+                'Required parameter "userActivateRequest" was null or undefined when calling userActivate().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("Bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/api/user/activate`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserActivateRequestToJSON(requestParameters['userActivateRequest']),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Activate user account
+     */
+    async userActivate(requestParameters: UserActivateOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.userActivateRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Sign up a new user
+     */
+    async userSignUpRaw(requestParameters: UserSignUpRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['userSignUpDTO'] == null) {
+            throw new runtime.RequiredError(
+                'userSignUpDTO',
+                'Required parameter "userSignUpDTO" was null or undefined when calling userSignUp().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("Bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/api/user/`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserSignUpDTOToJSON(requestParameters['userSignUpDTO']),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Sign up a new user
+     */
+    async userSignUp(requestParameters: UserSignUpRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.userSignUpRaw(requestParameters, initOverrides);
     }
 
 }

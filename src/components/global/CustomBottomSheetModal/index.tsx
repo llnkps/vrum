@@ -8,6 +8,8 @@ import {
 } from "@gorhom/bottom-sheet";
 import { BottomSheetVariables } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useTheme } from "@react-navigation/native";
+import { HeaderHandle } from "./header";
+import { DefaultFooter } from "./footer";
 
 export type BottomSheetRef = BottomSheetModal;
 
@@ -21,6 +23,12 @@ type CustomBottomSheetProps = {
   enableContentPanningGesture?: boolean;
   /** Content to render inside the bottom sheet */
   children: ReactNode;
+  /** Footer callbacks */
+  footerProps?: {
+    selectedValue?: any;
+    onConfirm?: (value?: any) => void;
+    onCancel?: () => void;
+  };
 };
 
 const CustomBottomSheetModal = forwardRef<
@@ -34,6 +42,7 @@ const CustomBottomSheetModal = forwardRef<
     handleComponent,
     footerComponent,
     enableContentPanningGesture = false,
+    footerProps,
   } = props;
 
   const memoizedSnapPoints = useMemo(() => snapPoints, [snapPoints]);
@@ -51,16 +60,36 @@ const CustomBottomSheetModal = forwardRef<
     []
   );
 
+  const renderDefaultHeader = useCallback(
+    (props: any) => <HeaderHandle {...props} title={title} />,
+    [title]
+  );
+
+  const renderDefaultFooter = useCallback(
+    (footerComponentProps: BottomSheetFooterProps) => (
+      <DefaultFooter
+        {...footerComponentProps}
+        selectedValue={footerProps?.selectedValue}
+        onConfirm={footerProps?.onConfirm}
+        onCancel={footerProps?.onCancel}
+      />
+    ),
+    [footerProps?.selectedValue, footerProps?.onConfirm, footerProps?.onCancel]
+  );
+
+  const finalFooterComponent = footerComponent || (footerProps ? renderDefaultFooter : undefined);
+
   return (
     <BottomSheetModal
       ref={ref}
-      index={0}
+      index={0} // initially closed
       snapPoints={memoizedSnapPoints}
       enableDynamicSizing={false}
       backdropComponent={renderBackdrop}
-      handleComponent={handleComponent}
-      footerComponent={footerComponent}
+      handleComponent={handleComponent ?? renderDefaultHeader}
+      footerComponent={finalFooterComponent}
       enableContentPanningGesture={enableContentPanningGesture}
+      enablePanDownToClose={true}
       backgroundStyle={{
         backgroundColor: theme.colors.surface,
       }}

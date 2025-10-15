@@ -14,6 +14,7 @@ export default function ModalsLayout() {
         <Stack.Screen name="index" />
         <Stack.Screen name="brand-auto-modal" />
         <Stack.Screen name="brand-auto-type-modal" />
+        <Stack.Screen name="generation-modal" />
       </Stack>
     </SimpleAutoFormProvider>
   );

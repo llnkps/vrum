@@ -7,16 +7,18 @@ import {
 import React, { memo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-interface HeaderHandleProps extends BottomSheetHandleProps {}
+interface HeaderHandleProps extends BottomSheetHandleProps {
+  title?: string;
+}
 
-const HeaderHandleComponent = ({ ...rest }: HeaderHandleProps) => {
+const HeaderHandleComponent = ({ title, ...rest }: HeaderHandleProps) => {
   const { dismiss } = useBottomSheetModal();
 
   return (
     <BottomSheetHandle {...rest}>
       <View style={styles.header}>
-        <Text className="text-font dark:text-font-dark font-bold text-2xl">
-          Год
+        <Text className="text-font dark:text-font-dark text-lg font-bold">
+          {title ?? "Title modal"}
         </Text>
         <CloseIcon onPress={() => dismiss()} />
       </View>
@@ -30,25 +32,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-  },
-  container: {
-    paddingBottom: 12,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(0,0,0,0.075)",
-    zIndex: 99999,
-  },
-  title: {
-    marginTop: 16,
-    fontSize: 20,
-    lineHeight: 20,
-    textAlign: "center",
-    fontWeight: "bold",
-    color: "black",
-  },
-  indicator: {
-    height: 4,
-    opacity: 0.5,
+    paddingHorizontal: 14,
   },
 });
 
