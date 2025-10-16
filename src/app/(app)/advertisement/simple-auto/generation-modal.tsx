@@ -9,7 +9,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { HeaderSearchBar } from "@/components/global/HeaderSearchBar";
+import { HeaderSearchBar } from "@/components/global/header/HeaderSearchBar";
 import { useGenerationsByModelApi } from "@/hooks/useGenerationsByModelApi";
 import { useSimpleAutoFormContext } from "@/modules/advertisement/simple-auto/SimpleAutoFormProvider";
 import {

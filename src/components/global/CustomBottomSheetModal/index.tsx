@@ -1,4 +1,5 @@
-import React, { FC, forwardRef, ReactNode, useCallback, useMemo } from "react";
+import React, { FC, forwardRef, ReactNode, useCallback, useMemo, useState, useEffect } from "react";
+import { Keyboard, Dimensions } from "react-native";
 
 import { CustomTheme } from "@/theme";
 import {
@@ -36,7 +37,7 @@ const CustomBottomSheetModal = forwardRef<
   CustomBottomSheetProps
 >((props, ref) => {
   const {
-    snapPoints = ["50%"],
+    snapPoints: initialSnapPoints = ["25%", "50%", "90%"],
     title,
     children,
     handleComponent,
@@ -45,7 +46,40 @@ const CustomBottomSheetModal = forwardRef<
     footerProps,
   } = props;
 
-  const memoizedSnapPoints = useMemo(() => snapPoints, [snapPoints]);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      (e) => {
+        setKeyboardVisible(true);
+        setKeyboardHeight(e.endCoordinates.height);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false);
+        setKeyboardHeight(0);
+      }
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
+  const memoizedSnapPoints = useMemo(() => {
+    if (keyboardVisible) {
+      const screenHeight = Dimensions.get('window').height;
+      const availableHeight = screenHeight - keyboardHeight - 50; // Reduced from 100px to 50px for header/footer
+      const maxSnapPoint = Math.max(availableHeight / screenHeight * 100, 80); // Increased minimum from 50% to 60%
+      return [`${Math.min(maxSnapPoint, 95)}%`];
+    }
+    return initialSnapPoints;
+  }, [initialSnapPoints, keyboardVisible, keyboardHeight]);
 
   const theme = useTheme() as CustomTheme;
 
@@ -66,15 +100,15 @@ const CustomBottomSheetModal = forwardRef<
   );
 
   const renderDefaultFooter = useCallback(
-    (footerComponentProps: BottomSheetFooterProps) => (
+    (props: BottomSheetFooterProps) => (
       <DefaultFooter
-        {...footerComponentProps}
+        {...props}
         selectedValue={footerProps?.selectedValue}
         onConfirm={footerProps?.onConfirm}
         onCancel={footerProps?.onCancel}
       />
     ),
-    [footerProps?.selectedValue, footerProps?.onConfirm, footerProps?.onCancel]
+    [footerProps]
   );
 
   const finalFooterComponent = footerComponent || (footerProps ? renderDefaultFooter : undefined);
@@ -82,14 +116,17 @@ const CustomBottomSheetModal = forwardRef<
   return (
     <BottomSheetModal
       ref={ref}
-      index={0} // initially closed
+      index={keyboardVisible ? 0 : 0} // Stay at current index when keyboard is visible
       snapPoints={memoizedSnapPoints}
       enableDynamicSizing={false}
       backdropComponent={renderBackdrop}
       handleComponent={handleComponent ?? renderDefaultHeader}
       footerComponent={finalFooterComponent}
       enableContentPanningGesture={enableContentPanningGesture}
-      enablePanDownToClose={true}
+      enablePanDownToClose={!keyboardVisible} // Disable pan down when keyboard is visible
+      keyboardBehavior="interactive"
+      keyboardBlurBehavior="restore"
+      android_keyboardInputMode="adjustResize"
       backgroundStyle={{
         backgroundColor: theme.colors.surface,
       }}

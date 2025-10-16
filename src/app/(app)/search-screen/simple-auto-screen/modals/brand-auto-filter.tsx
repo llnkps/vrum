@@ -7,14 +7,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { CustomRectButton } from "@/components/ui/button";
 import FilterBadge from "@/components/global/FilterBadge";
-import { HeaderSearchBar } from "@/components/global/HeaderSearchBar/HeaderSearchBar";
+import { HeaderSearchBar } from "@/components/global/header/HeaderSearchBar/HeaderSearchBar";
 import { useSimpleAutoBrandApi } from "@/hooks/useSimpleAutoBrandApi";
 import { DefaultConfig, GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner, GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner } from "@/openapi/client";
 import { useAutoSelectStore, selectSelectedBrands } from "@/state/search-screen/useAutoSelectStore";
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight ?? 24;
 
-export default function ModelItemScreenFilterModal() {
+export default function BrandAutoFilter() {
   const router = useRouter();
   const store = useAutoSelectStore();
   const selectedBrands = selectSelectedBrands(store);
@@ -89,7 +89,7 @@ export default function ModelItemScreenFilterModal() {
           </View>
         )}
 
-        <ModelItemScreenFilterModalBlock brands={filteredBrands} scrollY={scrollY} isScrolling={isScrolling} setCurrentBrand={setCurrentBrand} selectedModelsByBrand={selectedModelsByBrand} />
+        <BrandAutoList brands={filteredBrands} scrollY={scrollY} isScrolling={isScrolling} setCurrentBrand={setCurrentBrand} selectedModelsByBrand={selectedModelsByBrand} />
 
         {/* Fixed Button */}
         <View className="absolute bottom-2 left-0 right-0 px-3 pb-6">
@@ -110,7 +110,7 @@ type props = {
   selectedModelsByBrand: Record<number, GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner[]>;
 };
 
-const ModelItemScreenFilterModalBlock: FC<props> = ({ brands, scrollY, isScrolling, setCurrentBrand, selectedModelsByBrand }) => {
+const BrandAutoList: FC<props> = ({ brands, scrollY, isScrolling, setCurrentBrand, selectedModelsByBrand }) => {
   const router = useRouter();
 
   const scrollHandler = useAnimatedScrollHandler({

@@ -14,13 +14,16 @@ type TouchableHighlightRowProps = {
   icon?: ReactNode;
   rightIcon?: keyof typeof Entypo.glyphMap;
   showRightArrow?: boolean;
-  variant?: "default" | "bordered" | "plain";
+  variant?: "default" | "bordered" | "plain" | "button";
   containerStyle?: ViewStyle;
   labelStyle?: TextStyle;
   selectedValueStyle?: TextStyle;
   disabled?: boolean;
   subtitle?: string;
   loading?: boolean;
+  fullWidth?: boolean;
+  centerText?: boolean;
+  selectedValueMode?: "under" | "replace";
 };
 
 export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
@@ -37,19 +40,22 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
   disabled = false,
   subtitle,
   loading = false,
+  fullWidth = false,
+  centerText = false,
+  selectedValueMode = "under",
 }) => {
   const theme = useTheme() as CustomTheme;
 
   const getButtonStyle = () => {
     return {
       paddingVertical: 12,
-      paddingHorizontal: 16,
+      paddingHorizontal: 14,
     };
   };
 
   const getContainerStyle = () => {
     const baseStyle: ViewStyle = {
-      flex: 1,
+      flex: fullWidth ? 1 : undefined,
     };
 
     switch (variant) {
@@ -63,6 +69,16 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
       case "plain":
         return {
           ...baseStyle,
+          ...containerStyle,
+        };
+      case "button":
+        return {
+          ...baseStyle,
+          backgroundColor: theme.colors.button.neutral,
+          borderColor: theme.colors.border,
+          borderWidth: 1,
+          borderRadius: 8,
+          marginVertical: 2,
           ...containerStyle,
         };
       default:
@@ -86,69 +102,82 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
     <View style={getContainerStyle()}>
       <RectButton
         onPress={handlePress}
-        style={{ ...getButtonStyle(), flex: 1, flexDirection: "row", alignItems: "center" }}
+        style={{ ...getButtonStyle(), flexDirection: "row", alignItems: "center", justifyContent: centerText ? "center" : "space-between" }}
         rippleColor={theme.colors.border}
         enabled={!disabled}
       >
-        <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
-          {icon && <View style={{ marginRight: 12 }}>{icon}</View>}
-          <View style={{ flex: 1 }}>
-            <Text
-              className={clsx(
-                "text-font dark:text-font-dark font-bold",
-                {
-                  "text-font dark:text-font-dark": !disabled,
-                  "text-font-disabled dark:text-font-disabled-dark": disabled,
-                }
-              )}
-              style={labelStyle}
-            >
-              {label}
-            </Text>
-            {subtitle && (
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          {icon && <View style={{ marginRight: 2 }}>{icon}</View>}
+          <View>
+            {selectedValue && selectedValueMode === "replace" ? (
               <Text
-                className={clsx("text-font-subtle dark:text-font-subtle-dark text-sm")}
-                style={{ marginTop: 2 }}
-              >
-                {subtitle}
-              </Text>
-            )}
-            {selectedValue && (
-              <Text
-                className="text-font-subtle dark:text-font-subtle-dark"
+                className="text-font-subtle dark:text-font-subtle-dark  font-bold text-lg"
                 style={selectedValueStyle}
               >
                 {selectedValue}
               </Text>
+            ) : (
+              <>
+                <Text
+                  className={clsx(
+                    "text-font dark:text-font-dark font-bold",
+                    {
+                      "text-font dark:text-font-dark": !disabled,
+                      "text-font-disabled dark:text-font-disabled-dark": disabled,
+                    }
+                  )}
+                  style={labelStyle}
+                >
+                  {label}
+                </Text>
+                {subtitle && (
+                  <Text
+                    className={clsx("text-font-subtle dark:text-font-subtle-dark text-sm")}
+                    style={{ marginTop: 2 }}
+                  >
+                    {subtitle}
+                  </Text>
+                )}
+                {selectedValue && selectedValueMode === "under" && (
+                  <Text
+                    className="text-font-subtle dark:text-font-subtle-dark"
+                    style={selectedValueStyle}
+                  >
+                    {selectedValue}
+                  </Text>
+                )}
+              </>
             )}
           </View>
         </View>
 
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          {loading ? (
-            <ActivityIndicator
-              size="small"
-              color={theme.colors.icon}
-            />
-          ) : (
-            <>
-              {rightIcon && (
-                <Entypo
-                  name={rightIcon}
-                  size={20}
-                  color={disabled ? theme.colors.icon + "80" : theme.colors.icon}
-                />
-              )}
-              {showRightArrow && !rightIcon && (
-                <Entypo
-                  name="chevron-right"
-                  size={20}
-                  color={disabled ? theme.colors.icon + "80" : theme.colors.icon}
-                />
-              )}
-            </>
-          )}
-        </View>
+        {!centerText && (
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            {loading ? (
+              <ActivityIndicator
+                size="small"
+                color={theme.colors.icon}
+              />
+            ) : (
+              <>
+                {rightIcon && (
+                  <Entypo
+                    name={rightIcon}
+                    size={20}
+                    color={disabled ? theme.colors.icon + "80" : theme.colors.icon}
+                  />
+                )}
+                {showRightArrow && !rightIcon && (
+                  <Entypo
+                    name="chevron-right"
+                    size={20}
+                    color={disabled ? theme.colors.icon + "80" : theme.colors.icon}
+                  />
+                )}
+              </>
+            )}
+          </View>
+        )}
       </RectButton>
     </View>
   );

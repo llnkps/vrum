@@ -6,7 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { CheckboxRectButton } from "@/components/global/CheckboxRectButton/CheckboxRectButton";
 import FilterBadge from "@/components/global/FilterBadge";
-import { HeaderSearchBar } from "@/components/global/HeaderSearchBar/HeaderSearchBar";
+import { HeaderSearchBar } from "@/components/global/header/HeaderSearchBar/HeaderSearchBar";
 import { CustomRectButton } from "@/components/ui/button";
 import { useSimpleAutoModelByBrandApi } from "@/hooks/useSimpleAutoModelByBrandApi";
 import { GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner } from "@/openapi/client";
@@ -16,7 +16,7 @@ import { useAutoSelectStore } from "@/state/search-screen/useAutoSelectStore";
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight ?? 24;
 
-export default function ModalModelItem() {
+export default function ModelFilter() {
   const router = useRouter();
 
   const [searchValue, setSearchValue] = useState("");
@@ -100,7 +100,7 @@ export default function ModalModelItem() {
           <View style={{ height: 50 }}></View>
         )}
 
-        <ModalModelItemBlock models={filteredModels} scrollY={scrollY} isScrolling={isScrolling} selectedModelsByBrand={selectedModelsByBrand} />
+        <ModelList models={filteredModels} scrollY={scrollY} isScrolling={isScrolling} selectedModelsByBrand={selectedModelsByBrand} />
 
         {/* Fixed Button */}
         <View className="absolute bottom-2 left-0 right-0 px-3 pb-6">
@@ -120,7 +120,7 @@ type props = {
   selectedModelsByBrand: Record<number, GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner[]>;
 };
 
-const ModalModelItemBlock: FC<props> = ({ models, scrollY, isScrolling, selectedModelsByBrand }) => {
+const ModelList: FC<props> = ({ models, scrollY, isScrolling, selectedModelsByBrand }) => {
   const router = useRouter();
   const { addSelectedModel, removeSelectedModel, currentBrand } = useAutoSelectStore();
 

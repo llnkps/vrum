@@ -6,7 +6,7 @@ import Animated, { useAnimatedScrollHandler, useSharedValue } from "react-native
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { CheckboxRectButton } from "@/components/global/CheckboxRectButton/CheckboxRectButton";
-import { HeaderSearchBar } from "@/components/global/HeaderSearchBar";
+import { HeaderSearchBar } from "@/components/global/header/HeaderSearchBar";
 import { useGenerationsByModelApi } from "@/hooks/useGenerationsByModelApi";
 import { GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner } from "@/openapi/client";
 import { useAutoSelectStore, selectSelectedBrands, selectSelectedModels, selectSelectedGenerations } from "@/state/search-screen/useAutoSelectStore";
@@ -14,7 +14,7 @@ import { CustomRectButton } from "@/components/ui/button/CustomRectButton";
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight ?? 24;
 
-export default function GenerationModal() {
+export default function GenerationFilter() {
   const router = useRouter();
   const store = useAutoSelectStore();
   const selectedBrands = selectSelectedBrands(store);
