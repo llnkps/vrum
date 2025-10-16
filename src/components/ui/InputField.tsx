@@ -27,7 +27,7 @@ export const InputField = ({
   const theme = useTheme() as CustomTheme;
 
   return (
-    <View className="gap-y-1 flex-1">
+    <View className="gap-y-1">
       {label && (
         <Text className="text-font dark:text-font-dark font-bold">
           {label}
@@ -40,7 +40,7 @@ export const InputField = ({
         <TextInput
           {...props}
           ref={ref}
-          className="flex-1 ml-2 text-base text-font dark:text-font-dark placeholder:text-font dark:placeholder:text-font-dark py-2"
+          className="flex-1 ml-2 text-base text-font dark:text-font-dark py-2"
           onChangeText={onChange}
           value={value}
           placeholderTextColor={theme.colors.input.placeholderColor}

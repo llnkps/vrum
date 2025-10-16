@@ -41,7 +41,7 @@ export const MyLightTheme: CustomTheme = {
     surface: "#FFFFFF",
 
     button: {
-      primary: "",
+      primary: "#bd0016",
       primaryPressed: "",
 
       subtle: "#00000000",
@@ -71,7 +71,7 @@ export const MyDarkTheme: CustomTheme = {
     surface: "#1F1F21",
 
     button: {
-      primary: "",
+      primary: "#c4172b",
       primaryPressed: "",
 
       subtle: "#00000000",

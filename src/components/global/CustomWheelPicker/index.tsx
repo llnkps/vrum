@@ -14,7 +14,7 @@ import OverlayComponent from "./OverlayComponent";
 import PickerItemContainer from "./PickerItemContainer";
 
 type props<ItemT extends PickerItem<any>> = {
-  data: ReadonlyArray<ItemT>;
+  data: readonly ItemT[];
   value: ItemT["value"];
   onValueChanging?: OnValueChanging<ItemT>;
   onValueChanged?: OnValueChanged<ItemT>;

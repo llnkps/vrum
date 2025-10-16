@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from "react";
-import { ActivityIndicator, RefreshControl, Text, View, TouchableOpacity } from "react-native";
+import { ActivityIndicator, RefreshControl, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
 
 import { HeaderBrand } from "@/components/global/Header";
 import { useSimpleGetCollectionPagination } from "@/hooks/useSimpleGetCollectionPagination";
@@ -11,46 +10,41 @@ import { SpecAutoHeaderScreen, SpecAutoItemScreen } from "@/modules/search-scree
 import { HeaderCategory } from "@/modules/search-screen/HeaderCategory";
 import { AutoHeaderScreen, AutoItemScreen } from "@/modules/search-screen/simple-auto-tab/auto-screen";
 import { ActiveScreen } from "@/modules/search-screen/types";
-import { useAutoSelectStore } from "@/state/search-screen/useAutoSelectStore";
+import { DefaultConfig } from "@/openapi/client";
+import { selectSelectedBrands, selectSelectedModels, useAutoSelectStore } from "@/state/search-screen/useAutoSelectStore";
 import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
-import { DefaultConfig } from "@/openapi/client";
+import { useRouter } from "expo-router";
 
-const renderContent = (activeScreen: ActiveScreen) => {
-  if (activeScreen === "auto") {
-    return {
-      header: AutoHeaderScreen,
-      item: AutoItemScreen,
-    };
-  } else if (activeScreen === "auto_detail") {
-    return {
-      header: AutoDetailHeaderScreen,
-      item: AutoDetailItemScreen,
-    };
-  } else if (activeScreen === "spec_auto") {
-    return {
-      header: SpecAutoHeaderScreen,
-      item: SpecAutoItemScreen,
-    };
-  } else if (activeScreen === "moto") {
-    return {
-      header: MotoHeaderScreen,
-      item: MotoItemScreen,
-    };
-  }
-  // Add other conditions for different screens if needed
-  return null;
+const SCREEN_CONFIGS: Record<ActiveScreen, { header: React.ComponentType; item: React.ComponentType<{ item: any }> } | null> = {
+  auto: {
+    header: AutoHeaderScreen,
+    item: AutoItemScreen,
+  },
+  auto_detail: {
+    header: AutoDetailHeaderScreen,
+    item: AutoDetailItemScreen,
+  },
+  spec_auto: {
+    header: SpecAutoHeaderScreen,
+    item: SpecAutoItemScreen,
+  },
+  moto: {
+    header: MotoHeaderScreen,
+    item: MotoItemScreen,
+  },
 };
+
+const renderContent = (activeScreen: ActiveScreen) => SCREEN_CONFIGS[activeScreen];
 
 export default function SearchScreen() {
   const [activeSreen, setActiveSreen] = useState<ActiveScreen>("auto");
   const { header: HeaderScreen } = renderContent(activeSreen) || {};
   const router = useRouter();
 
-  const { selectedBrands, selectedModels, selectedGenerations } = useAutoSelectStore();
-
-  console.log("INDEX -------------------");
-  console.log(selectedModels);
+  const store = useAutoSelectStore();
+  const selectedBrands = selectSelectedBrands(store);
+  const selectedModels = selectSelectedModels(store);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch, isRefetching } = useSimpleGetCollectionPagination({
     brand: selectedBrands?.map((brand) => brand.id).join(",") || undefined,
@@ -81,7 +75,7 @@ export default function SearchScreen() {
             {HeaderScreen && <HeaderScreen />}
 
             {/* Selected Filters Display */}
-            {(selectedBrands.length > 0 || selectedModels.length > 0 || selectedGenerations.length > 0) && (
+            {/* {(selectedBrands.length > 0 || selectedModels.length > 0 || selectedGenerations.length > 0) && (
               <View className="mx-4 mb-4 p-4 bg-surface dark:bg-surface-dark rounded-2xl">
                 <Text className="text-lg font-semibold text-font dark:text-font-dark mb-2">Выбранные фильтры:</Text>
 
@@ -109,7 +103,7 @@ export default function SearchScreen() {
                   </Text>
                 </TouchableOpacity>
               </View>
-            )}
+            )} */}
           </>
         }
         keyExtractor={(item) => item.id?.toString() || `item-${Math.random()}`}

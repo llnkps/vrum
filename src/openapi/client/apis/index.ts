@@ -1,5 +1,5 @@
 /* tslint:disable */
-/* eslint-disable */
+ 
 export * from './LoginApi';
 export * from './MotorbikeApi';
 export * from './RegionApi';

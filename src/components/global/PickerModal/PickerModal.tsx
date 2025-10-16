@@ -12,7 +12,7 @@ export const PickerModal = ({
   visible: boolean;
   onClose: () => void;
   title: string;
-  options: Array<{ label: string; value: string }>;
+  options: { label: string; value: string }[];
   selectedValue: string;
   onValueChange: (value: string) => void;
 }) => {

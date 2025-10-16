@@ -2,23 +2,23 @@ import { useRouter } from "expo-router";
 import { FC, useEffect, useState } from "react";
 import { StatusBar, Text, TouchableHighlight, View } from "react-native";
 import type { SharedValue } from "react-native-reanimated";
-import Animated, {
-  useAnimatedScrollHandler,
-  useSharedValue,
-} from "react-native-reanimated";
+import Animated, { useAnimatedScrollHandler, useSharedValue } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { CheckboxRectButton } from "@/components/global/CheckboxRectButton/CheckboxRectButton";
 import { HeaderSearchBar } from "@/components/global/HeaderSearchBar";
 import { useGenerationsByModelApi } from "@/hooks/useGenerationsByModelApi";
 import { GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner } from "@/openapi/client";
-import { useAutoSelectStore } from "@/state/search-screen/useAutoSelectStore";
+import { useAutoSelectStore, selectSelectedBrands, selectSelectedModels, selectSelectedGenerations } from "@/state/search-screen/useAutoSelectStore";
+import { CustomRectButton } from "@/components/ui/button/CustomRectButton";
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight ?? 24;
 
 export default function GenerationModal() {
   const router = useRouter();
-  const { selectedBrands, selectedModels } = useAutoSelectStore();
+  const store = useAutoSelectStore();
+  const selectedBrands = selectSelectedBrands(store);
+  const selectedModels = selectSelectedModels(store);
   const selectedBrand = selectedBrands[0];
 
   const { data: generations, isLoading } = useGenerationsByModelApi(
@@ -26,9 +26,7 @@ export default function GenerationModal() {
     selectedModels?.[0]?.id?.toString() || null // Use first selected model for now
   );
 
-  const [filteredGenerations, setFilteredGenerations] = useState(
-    generations || []
-  );
+  const [filteredGenerations, setFilteredGenerations] = useState(generations || []);
 
   const scrollY = useSharedValue(0);
   const isScrolling = useSharedValue(false);
@@ -47,33 +45,48 @@ export default function GenerationModal() {
     );
   }
 
+  const handleShowAds = () => {
+    router.dismiss();
+  };
+
   return (
     <>
       <SafeAreaView className="flex-1 px-3 gap-y-4">
-        <HeaderSearchBar
-          title="Выберите поколение"
-          scrollY={scrollY}
-          showSearch={false}
-          onClose={() => router.dismiss()}
-        />
+        <HeaderSearchBar title="Выберите поколение" scrollY={scrollY} showSearch={false} onClose={() => router.dismiss()} />
 
         {/* Selected Models Display */}
         {selectedModels.length > 0 && (
           <View className="p-4 bg-surface dark:bg-surface-dark rounded-2xl">
-            <Text className="text-sm font-semibold text-font-subtlest dark:text-font-subtlest-dark mb-2">
-              Выбранные модели:
-            </Text>
-            <Text className="text-font dark:text-font-dark">
-              {selectedModels.map(m => m.name).join(", ")}
-            </Text>
+            <Text className="text-sm font-semibold text-font-subtlest dark:text-font-subtlest-dark mb-2">Выбранные модели:</Text>
+            <Text className="text-font dark:text-font-dark">{selectedModels.map((m) => m.name).join(", ")}</Text>
           </View>
         )}
+        {/* {(selectedModelsByBrand[currentBrand?.id!]?.length || 0) > 0 && (
+          <View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              className="mt-2"
+              style={{ height: 50 }}
+              contentContainerStyle={{ alignItems: "center", paddingVertical: 8 }}
+            >
+              {selectedModelsByBrand[currentBrand?.id!]?.map((model) => (
+                <View key={model.id} className="self-start mr-2">
+                  <FilterBadge label={model.name || ""} onRemove={() => removeSelectedModel(model.id!)} />
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+        )} */}
 
-        <GenerationList
-          generations={filteredGenerations}
-          scrollY={scrollY}
-          isScrolling={isScrolling}
-        />
+        <GenerationList generations={filteredGenerations} scrollY={scrollY} isScrolling={isScrolling} />
+
+        {/* Fixed Button */}
+        <View className="absolute bottom-2 left-0 right-0 px-3 pb-6">
+          <CustomRectButton onPress={handleShowAds} appearance="primary">
+            <Text className="text-center text-white font-semibold">Показать объявления</Text>
+          </CustomRectButton>
+        </View>
       </SafeAreaView>
     </>
   );
@@ -85,20 +98,15 @@ type GenerationListProps = {
   isScrolling: SharedValue<boolean>;
 };
 
-const GenerationList: FC<GenerationListProps> = ({
-  generations,
-  scrollY,
-  isScrolling,
-}) => {
-  const router = useRouter();
-  const { selectedGenerations, addSelectedGeneration } = useAutoSelectStore();
+const GenerationList: FC<GenerationListProps> = ({ generations, scrollY, isScrolling }) => {
+  const store = useAutoSelectStore();
+  const selectedGenerations = selectSelectedGenerations(store);
+  const { addSelectedGeneration } = store;
 
-  const handleSelectGeneration = (generation: GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner) => {
+  const handleSelectGeneration = (
+    generation: GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner
+  ) => {
     addSelectedGeneration(generation);
-  };
-
-  const handleContinue = () => {
-    router.dismiss(); // Go back to index.tsx
   };
 
   const scrollHandler = useAnimatedScrollHandler({
@@ -140,20 +148,6 @@ const GenerationList: FC<GenerationListProps> = ({
         updateCellsBatchingPeriod={50}
         removeClippedSubviews={true}
       />
-
-      {selectedGenerations.length > 0 && (
-        <View className="mt-4">
-          <TouchableHighlight
-            onPress={handleContinue}
-            className="bg-brand px-4 py-3 rounded-2xl"
-            underlayColor="#123263"
-          >
-            <Text className="text-center text-white font-semibold">
-              Продолжить ({selectedGenerations.length})
-            </Text>
-          </TouchableHighlight>
-        </View>
-      )}
     </View>
   );
 };

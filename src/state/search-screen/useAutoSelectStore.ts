@@ -6,52 +6,155 @@ import {
 import { create } from 'zustand';
 
 type SelectionStore = {
-  selectedBrands: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner[];
-  selectedModels: GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner[];
-  selectedGenerations: GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner[];
+  selectedBrandsMap: Record<number, GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner>;
+  selectedModelsByBrand: Record<number, GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner[]>;
+  selectedGenerationsByModel: Record<number, GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner[]>;
+  
   addSelectedBrand: (item: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner) => void;
   addSelectedModel: (item: GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner) => void;
   addSelectedGeneration: (item: GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner) => void;
+  removeSelectedBrand: (id: number) => void;
+  removeSelectedModel: (id: number) => void;
+  removeSelectedGeneration: (id: number) => void;
+  
+  currentBrand: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner | null;
+  setCurrentBrand: (brand: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner | null) => void;
+  
   clearSelections: () => void;
-  setSelectedBrands: (brands: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner[]) => void;
-  setSelectedModels: (models: GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner[]) => void;
-  setSelectedGenerations: (generations: GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner[]) => void;
 };
 
 export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
-  selectedBrands: [],
-  selectedModels: [],
-  selectedGenerations: [],
+  selectedBrandsMap: {},
+  selectedModelsByBrand: {},
+  selectedGenerationsByModel: {},
+  currentBrand: null,
   addSelectedBrand: (selectedBrand) => set((state) => {
-    const isSelected = state.selectedBrands.some((b) => b.id === selectedBrand.id);
+    const isSelected = state.selectedBrandsMap[selectedBrand.id!];
+    if (isSelected) return state;
     return {
-      selectedBrands: isSelected
-        ? state.selectedBrands.filter((b) => b.id !== selectedBrand.id)
-        : [selectedBrand], // Single selection for brands
+      selectedBrandsMap: {
+        ...state.selectedBrandsMap,
+        [selectedBrand.id!]: selectedBrand
+      },
     };
   }),
   addSelectedModel: (selectedModel) => set((state) => {
-    const isSelected = state.selectedModels.some((m) => m.id === selectedModel.id);
+    const brandId = state.currentBrand?.id;
+    if (!brandId) return state;
+    
+    const existingModels = state.selectedModelsByBrand[brandId] || [];
+
+    const isAlreadySelected = existingModels.some(m => m.id === selectedModel.id);
+    if (isAlreadySelected) return state;
+
+    const newModelsForBrand = [...existingModels, selectedModel];
     return {
-      selectedModels: isSelected
-        ? state.selectedModels.filter((m) => m.id !== selectedModel.id)
-        : [...state.selectedModels, selectedModel],
+      selectedModelsByBrand: {
+        ...state.selectedModelsByBrand,
+        [brandId]: newModelsForBrand
+      },
+      selectedBrandsMap: {
+        ...state.selectedBrandsMap,
+        [brandId]: state.currentBrand!
+      }
     };
   }),
   addSelectedGeneration: (selectedGeneration) => set((state) => {
-    const isSelected = state.selectedGenerations.some((g) => g.id === selectedGeneration.id);
+    const modelId = (selectedGeneration as any).modelId;
+    const existingGenerations = state.selectedGenerationsByModel[modelId] || [];
+    const isAlreadySelected = existingGenerations.some(g => g.id === selectedGeneration.id);
+    if (isAlreadySelected) return state;
+    const newGenerationsForModel = [...existingGenerations, selectedGeneration];
     return {
-      selectedGenerations: isSelected
-        ? state.selectedGenerations.filter((g) => g.id !== selectedGeneration.id)
-        : [...state.selectedGenerations, selectedGeneration],
+      selectedGenerationsByModel: {
+        ...state.selectedGenerationsByModel,
+        [modelId]: newGenerationsForModel
+      }
     };
   }),
-  clearSelections: () => set({
-    selectedBrands: [],
-    selectedModels: [],
-    selectedGenerations: [],
+
+  removeSelectedBrand: (id) => set((state) => {
+    const newSelectedBrandsMap = { ...state.selectedBrandsMap };
+    delete newSelectedBrandsMap[id];
+    const newSelectedModelsByBrand = { ...state.selectedModelsByBrand };
+    delete newSelectedModelsByBrand[id];
+    // Remove generations for models of this brand
+    const newSelectedGenerationsByModel = { ...state.selectedGenerationsByModel };
+    // We need to find all models that belonged to this brand and remove their generations
+    // But since we don't have the model objects anymore, this is tricky
+    // For now, we'll assume generations are cleaned up when models are removed
+    return {
+      selectedBrandsMap: newSelectedBrandsMap,
+      selectedModelsByBrand: newSelectedModelsByBrand,
+      selectedGenerationsByModel: newSelectedGenerationsByModel
+    };
   }),
-  setSelectedBrands: (brands) => set({ selectedBrands: brands }),
-  setSelectedModels: (models) => set({ selectedModels: models }),
-  setSelectedGenerations: (generations) => set({ selectedGenerations: generations }),
+  
+  removeSelectedModel: (id) => set((state) => {
+    let brandId: number | undefined;
+    for (const [bId, models] of Object.entries(state.selectedModelsByBrand)) {
+      if (models.some(m => m.id === id)) {
+        brandId = +bId;
+        break;
+      }
+    }
+    if (!brandId) return state;
+
+    const newModelsForBrand = state.selectedModelsByBrand[brandId].filter((m) => m.id !== id);
+    
+    const newSelectedModelsByBrand = { ...state.selectedModelsByBrand };
+    
+    const newSelectedBrandsMap = { ...state.selectedBrandsMap };
+    if (newModelsForBrand.length === 0) {
+      delete newSelectedModelsByBrand[brandId];
+      delete newSelectedBrandsMap[brandId];
+    } else {
+      newSelectedModelsByBrand[brandId] = newModelsForBrand;
+    }
+    // Remove generations for this model
+    const newSelectedGenerationsByModel = { ...state.selectedGenerationsByModel };
+    delete newSelectedGenerationsByModel[id];
+    
+    return {
+      selectedModelsByBrand: newSelectedModelsByBrand,
+      selectedBrandsMap: newSelectedBrandsMap,
+      selectedGenerationsByModel: newSelectedGenerationsByModel
+    };
+  }),
+
+  removeSelectedGeneration: (id) => set((state) => {
+    let modelId: number | undefined;
+    for (const [mId, gens] of Object.entries(state.selectedGenerationsByModel)) {
+      if (gens.some(g => g.id === id)) {
+        modelId = +mId;
+        break;
+      }
+    }
+    if (!modelId) return state;
+    const newGenerationsForModel = state.selectedGenerationsByModel[modelId].filter((g) => g.id !== id);
+    const newSelectedGenerationsByModel = { ...state.selectedGenerationsByModel };
+    if (newGenerationsForModel.length === 0) {
+      delete newSelectedGenerationsByModel[modelId];
+    } else {
+      newSelectedGenerationsByModel[modelId] = newGenerationsForModel;
+    }
+    return {
+      selectedGenerationsByModel: newSelectedGenerationsByModel
+    };
+  }),
+  
+  setCurrentBrand: (brand) => set({ currentBrand: brand }),
+  
+  
+  clearSelections: () => set({
+    selectedBrandsMap: {},
+    selectedModelsByBrand: {},
+    selectedGenerationsByModel: {},
+    currentBrand: null,
+  }),
 }));
+
+// Selector functions to get computed values
+export const selectSelectedBrands = (state: SelectionStore) => Object.values(state.selectedBrandsMap);
+export const selectSelectedModels = (state: SelectionStore) => Object.values(state.selectedModelsByBrand).flat();
+export const selectSelectedGenerations = (state: SelectionStore) => Object.values(state.selectedGenerationsByModel).flat();

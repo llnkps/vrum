@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import { FC } from "react";
-import { View } from "react-native";
+import { Text, View } from "react-native";
 import type { SharedValue } from "react-native-reanimated";
 import Animated, {
   Extrapolation,

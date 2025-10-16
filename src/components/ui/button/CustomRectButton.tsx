@@ -9,7 +9,7 @@ type Props = PropsWithChildren<
   RectButtonProps & {
     loading?: boolean;
     title?: string;
-    appearance?: "default" | "subtle";
+    appearance?: "primary" | "default" | "subtle";
     isSelected?: boolean;
   }
 >;
@@ -29,16 +29,27 @@ export const CustomRectButton = ({
     button: {
       paddingVertical: 12,
       paddingHorizontal: 24,
+      borderRadius: 8,
     },
     text: {
       color: theme.colors.text,
       fontSize: 16,
     },
+
+    primary: {
+      backgroundColor: "#1868DB",
+      color: "#fff",
+      borderColor: "transparent",
+    },
   });
 
   return (
     <RectButton
-      style={[styles.button, style]}
+      style={[
+        styles.button, 
+        appearance === "primary" && styles.primary,
+        style
+      ]}
       borderless={false}
       onPress={onPress}
       rippleColor={theme.colors.button.subtlePressed}

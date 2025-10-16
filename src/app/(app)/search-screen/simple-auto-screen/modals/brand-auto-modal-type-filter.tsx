@@ -1,11 +1,13 @@
 import { useRouter } from "expo-router";
 import { FC, useEffect, useState } from "react";
-import { StatusBar, Text, TouchableHighlight, View } from "react-native";
+import { ScrollView, StatusBar, Text, TouchableHighlight, View } from "react-native";
 import Animated, { useAnimatedScrollHandler, useSharedValue } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { CheckboxRectButton } from "@/components/global/CheckboxRectButton/CheckboxRectButton";
+import FilterBadge from "@/components/global/FilterBadge";
 import { HeaderSearchBar } from "@/components/global/HeaderSearchBar/HeaderSearchBar";
+import { CustomRectButton } from "@/components/ui/button";
 import { useSimpleAutoModelByBrandApi } from "@/hooks/useSimpleAutoModelByBrandApi";
 import { GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner } from "@/openapi/client";
 import { useAutoSelectStore } from "@/state/search-screen/useAutoSelectStore";
@@ -15,9 +17,11 @@ import { useAutoSelectStore } from "@/state/search-screen/useAutoSelectStore";
 const STATUSBAR_HEIGHT = StatusBar.currentHeight ?? 24;
 
 export default function ModalModelItem() {
+  const router = useRouter();
+
   const [searchValue, setSearchValue] = useState("");
-  const { selectedBrands } = useAutoSelectStore();
-  const selectedBrand = selectedBrands[0]; // Get the first (and only) selected brand
+  const { removeSelectedModel, currentBrand, selectedModelsByBrand } = useAutoSelectStore();
+  const selectedBrand = currentBrand;
 
   const { data, isLoading } = useSimpleAutoModelByBrandApi(selectedBrand?.id ? selectedBrand.id.toString() : "");
   const [filteredModels, setFilteredModels] = useState<
@@ -33,6 +37,16 @@ export default function ModalModelItem() {
       setFilteredModels(data);
     }
   }, [data]);
+
+  useEffect(() => {
+    if (!currentBrand) {
+      router.back(); // Go back if no brand is selected
+    }
+  }, [currentBrand, router]);
+
+  const handleShowAds = () => {
+    router.dismiss();
+  };
 
   if (isLoading) {
     return (
@@ -65,7 +79,35 @@ export default function ModalModelItem() {
           searchPlaceholder="Марка или модель"
         />
 
-        <ModalModelItemBlock models={filteredModels} scrollY={scrollY} isScrolling={isScrolling} />
+        {(selectedModelsByBrand[currentBrand?.id!]?.length || 0) > 0 && (
+          <View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              className="mt-2"
+              style={{ height: 50 }}
+              contentContainerStyle={{ alignItems: "center", paddingVertical: 8 }}
+            >
+              {selectedModelsByBrand[currentBrand?.id!]?.map((model) => (
+                <View key={model.id} className="self-start mr-2">
+                  <FilterBadge label={model.name || ""} onRemove={() => removeSelectedModel(model.id!)} />
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+        )}
+        {(selectedModelsByBrand[currentBrand?.id!]?.length || 0) === 0 && (
+          <View style={{ height: 50 }}></View>
+        )}
+
+        <ModalModelItemBlock models={filteredModels} scrollY={scrollY} isScrolling={isScrolling} selectedModelsByBrand={selectedModelsByBrand} />
+
+        {/* Fixed Button */}
+        <View className="absolute bottom-2 left-0 right-0 px-3 pb-6">
+          <CustomRectButton onPress={handleShowAds} appearance="primary">
+            <Text className="text-center text-white font-semibold">Показать объявления</Text>
+          </CustomRectButton>
+        </View>
       </SafeAreaView>
     </>
   );
@@ -75,11 +117,12 @@ type props = {
   models: GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner[];
   scrollY: any;
   isScrolling: any;
+  selectedModelsByBrand: Record<number, GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner[]>;
 };
 
-const ModalModelItemBlock: FC<props> = ({ models, scrollY, isScrolling }) => {
+const ModalModelItemBlock: FC<props> = ({ models, scrollY, isScrolling, selectedModelsByBrand }) => {
   const router = useRouter();
-  const { selectedModels, addSelectedModel } = useAutoSelectStore();
+  const { addSelectedModel, removeSelectedModel, currentBrand } = useAutoSelectStore();
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -96,7 +139,15 @@ const ModalModelItemBlock: FC<props> = ({ models, scrollY, isScrolling }) => {
   const handleSelectModel = (
     item: GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner
   ) => {
-    addSelectedModel(item);
+    console.log("================")
+    console.log(item)
+    const isSelected = selectedModelsByBrand[currentBrand?.id!]?.some((m) => m.id === item.id) || false;
+    console.log(isSelected)
+    if (isSelected) {
+      removeSelectedModel(item.id!);
+    } else {
+      addSelectedModel(item);
+    }
   };
 
   const handleContinue = () => {
@@ -116,14 +167,8 @@ const ModalModelItemBlock: FC<props> = ({ models, scrollY, isScrolling }) => {
             paddingBottom: 120 + STATUSBAR_HEIGHT + 100,
           }}
           renderItem={({ item }) => {
-            const isSelected = selectedModels.some((m) => m.id === item.id);
-            return (
-              <CheckboxRectButton
-                value={isSelected}
-                label={item.name || ""}
-                onPress={() => handleSelectModel(item)}
-              />
-            );
+            const isSelected = selectedModelsByBrand[currentBrand?.id!]?.some((m) => m.id === item.id) || false;
+            return <CheckboxRectButton value={isSelected} label={item.name || ""} onPress={() => handleSelectModel(item)} />;
           }}
           initialNumToRender={18}
           windowSize={10}
@@ -132,20 +177,6 @@ const ModalModelItemBlock: FC<props> = ({ models, scrollY, isScrolling }) => {
           removeClippedSubviews={true}
         />
       </View>
-
-      {selectedModels.length > 0 && (
-        <View className="mt-4">
-          <TouchableHighlight
-            onPress={handleContinue}
-            className="bg-brand px-4 py-3 rounded-2xl"
-            underlayColor="#123263"
-          >
-            <Text className="text-center text-white font-semibold">
-              Продолжить ({selectedModels.length})
-            </Text>
-          </TouchableHighlight>
-        </View>
-      )}
     </>
   );
 };
