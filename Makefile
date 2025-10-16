@@ -9,11 +9,14 @@ HOST_IP := $(shell \
 	fi \
 )
 
+# Allow overriding server URL via command line: make gfa SERVER_URL=http://custom-url:8000/
+SERVER_URL ?= http://$(HOST_IP):8000/
+
 gfa:
 	cd ./src/openapi/ && \
 	docker exec -i vrump-api_php php bin/console nelmio:apidoc:dump \
 		--format=json \
-		--server-url "http://localhost:8000/" \
+		--server-url "$(SERVER_URL)" \
 		> openapi.json && \
 	ls -lrt && echo ${PWD} && \
 	docker run --rm -v ${PWD}/src/openapi:/local openapitools/openapi-generator-cli \
