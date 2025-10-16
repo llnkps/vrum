@@ -1,99 +1,99 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Pressable } from 'react-native';
-import { Image } from 'expo-image';
-import { Ionicons } from '@expo/vector-icons';
-import {FavoriteItem} from "@/components/favorites/types";
+import { View, Text, Pressable, Image } from 'react-native';
 
-type FavoriteCardProps = {
-  item: FavoriteItem;
-  onPress?: () => void;
-  onToggleFavorite?: () => void;
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+
+interface ProductParameter {
+	label: string;
+	value: string;
+	highlighted?: boolean;
+}
+
+interface ProductData {
+	imageUri?: string;
+	name?: string;
+	description?: string;
+	brand: string;
+	model: string;
+	price: string;
+	currency: string;
+	region: string;
+	releaseYear: number;
+	parameters?: ProductParameter[];
+}
+
+type CarCardProps = {
+	item: ProductData;
+	onPress?: () => void;
+	onToggleFavorite?: () => void;
 };
 
-export const CarCard = ({ item, onPress, onToggleFavorite }: FavoriteCardProps) => {
-  return (
-    <Pressable
-      className="bg-surface dark:bg-surface-dark rounded-xl mb-4 overflow-hidden shadow-sm border border-border dark:border-border-dark"
-      onPress={onPress}
-      android_ripple={{ color: '#f3f4f6' }}
-    >
-      {/* Header */}
-      <View className="flex-row justify-between items-start px-4 pt-4">
-        <View className="flex-1 pr-3">
-          <Text className="text-font dark:text-font-dark text-lg font-semibold leading-tight" numberOfLines={2}>
-            {item.title}
-          </Text>
-          {item.subtitle && (
-            <Text className="text-font-subtlest dark:text-font-subtlest-dark  text-sm mt-1" numberOfLines={1}>
-              {item.subtitle}
-            </Text>
-          )}
-        </View>
+export const CarCard = ({ item, onPress, onToggleFavorite }: CarCardProps) => {
+	// Форматирование цены
+	const getFormattedPrice = () => {
+		const price = parseFloat(item.price);
+		const currencySymbol = item.currency === 'usd' ? '$' : 'mdl';
+		return `${price.toLocaleString('ru-RU')} ${currencySymbol}`;
+	};
 
-        <TouchableOpacity
-          onPress={onToggleFavorite}
-          className="p-2 -mr-2 -mt-2"
-          activeOpacity={0.7}
-        >
-          <Ionicons name="star" size={22} color="#EF4444" />
-        </TouchableOpacity>
-      </View>
+	const router = useRouter();
 
-      {/* Price and Tag */}
-      <View className="flex-row items-center px-4 mt-3">
-        <Text className="text-font dark:text-font-dark text-xl font-bold mr-3">
-          {item.price}
-        </Text>
-        {item.tag && (
-          <View className="bg-background-warning dark:bg-background-warning-dark rounded-full px-3 py-1">
-            <Text className="text-font-warning dark:text-font-warning-dark text-xs font-medium">
-              {item.tag}
-            </Text>
-          </View>
-        )}
-      </View>
+	return (
+		<Pressable
+			className='bg-surface dark:bg-surface-dark rounded-xl mb-4 overflow-hidden shadow-sm border border-border dark:border-border-dark'
+			onPress={() => {
+				const params = new URLSearchParams();
+				params.set('data', JSON.stringify(item));
+				router.push(`/car-details?${params.toString()}`);
+			}}
+			android_ripple={{ color: '#f3f4f6' }}
+		>
+			{/* Фото */}
+			<View className='relative' style={{ height: 144 }}>
+				{item.imageUri ? (
+					<Image
+						source={{
+							uri: item.imageUri,
+						}}
+						className='w-full h-full'
+						resizeMode='cover'
+					/>
+				) : (
+					<View className='w-full h-full bg-gray-200 items-center justify-center'>
+						<Ionicons name='car-outline' size={48} color='#9CA3AF' />
+					</View>
+				)}
+			</View>
 
-      {/* Images */}
-      {item.images && item.images.length > 0 && (
-        <View className="flex-row mt-4">
-          {item.images.slice(0, 2).map((imageUri, index) => (
-            <Image
-              key={index}
-              source={item.images}
-              style={{
-                height: 128,
-                width: item.images!.length === 1 ? '100%' : '75%',
-              }}
-              contentFit="cover"
-              transition={200}
-            />
-          ))}
-          {item.images.length > 2 && (
-            <View className="absolute bottom-2 right-2 bg-black/70 rounded-full px-2 py-1">
-              <Text className="text-white text-xs font-medium">
-                +{item.images.length - 2}
-              </Text>
-            </View>
-          )}
-        </View>
-      )}
+			{/* Бренд, модель, год */}
+			<View className='px-4 pt-4'>
+				<Text
+					className='text-font dark:text-font-dark text-lg font-semibold leading-tight'
+					numberOfLines={2}
+				>
+					{item.name || `${item.brand} ${item.model}, ${item.releaseYear}`}
+				</Text>
+			</View>
 
-      {/* Description and Location */}
-      <View className="px-4 py-4">
-        {item.description && (
-          <Text className="text-font-subtle dark:text-font-subtle-dark text-sm leading-5 mb-2" numberOfLines={2}>
-            {item.description}
-          </Text>
-        )}
-        {item.location && (
-          <View className="flex-row items-center">
-            <Ionicons name="location-outline" size={14} color="#9CA3AF" />
-            <Text className="text-font-subtlest dark:text-font-subtlest-dark text-sm ml-1">
-              {item.location}
-            </Text>
-          </View>
-        )}
-      </View>
-    </Pressable>
-  );
+			{/* Цена */}
+			<View className='px-4 pt-1'>
+				<Text className='text-font dark:text-font-dark text-xl font-bold'>
+					{getFormattedPrice()}
+				</Text>
+			</View>
+
+			{/* Город */}
+			<View className='px-4 py-2'>
+				{item.region && (
+					<View className='flex-row items-center'>
+						<Ionicons name='location-outline' size={14} color='#9CA3AF' />
+						<Text className='text-font-subtlest dark:text-font-subtlest-dark text-sm ml-1'>
+							{item.region}
+						</Text>
+					</View>
+				)}
+			</View>
+		</Pressable>
+	);
 };

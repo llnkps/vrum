@@ -160,6 +160,14 @@ export class SimpleAutoApi extends runtime.BaseAPI {
 
         const queryParameters: any = {};
 
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
+        }
+
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
+        }
+
         const headerParameters: runtime.HTTPHeaders = {};
 
         if (this.configuration && this.configuration.accessToken) {
@@ -186,6 +194,7 @@ export class SimpleAutoApi extends runtime.BaseAPI {
 
     /**
      */
+
     async getAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters(requestParameters: GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfiltersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner>> {
         const response = await this.getAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfiltersRaw(requestParameters, initOverrides);
         return await response.value();
