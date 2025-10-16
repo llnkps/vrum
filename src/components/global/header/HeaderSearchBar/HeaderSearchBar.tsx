@@ -9,7 +9,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import CloseIcon from "@/components/global/CloseIcon";
-import { InputField } from "@/components/ui/InputField";
+import { InputField } from "@/components/ui/input/InputField/InputField";
 import { CustomTheme } from "@/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";

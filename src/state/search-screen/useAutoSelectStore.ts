@@ -10,12 +10,22 @@ type SelectionStore = {
   selectedModelsByBrand: Record<number, GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner[]>;
   selectedGenerationsByModel: Record<number, GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner[]>;
   
+  // Filter states
+  priceFilter: { min?: number; max?: number } | null;
+  yearFilter: { min?: number; max?: number } | null;
+  regionFilter: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner | null; // Using brand type as placeholder, should be region type
+  
   addSelectedBrand: (item: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner) => void;
   addSelectedModel: (item: GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner) => void;
   addSelectedGeneration: (item: GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner) => void;
   removeSelectedBrand: (id: number) => void;
   removeSelectedModel: (id: number) => void;
   removeSelectedGeneration: (id: number) => void;
+  
+  // Filter actions
+  setPriceFilter: (price: { min?: number; max?: number } | null) => void;
+  setYearFilter: (year: { min?: number; max?: number } | null) => void;
+  setRegionFilter: (region: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner | null) => void;
   
   currentBrand: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner | null;
   setCurrentBrand: (brand: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner | null) => void;
@@ -27,6 +37,9 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
   selectedBrandsMap: {},
   selectedModelsByBrand: {},
   selectedGenerationsByModel: {},
+  priceFilter: null,
+  yearFilter: null,
+  regionFilter: null,
   currentBrand: null,
   addSelectedBrand: (selectedBrand) => set((state) => {
     const isSelected = state.selectedBrandsMap[selectedBrand.id!];
@@ -145,11 +158,18 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
   
   setCurrentBrand: (brand) => set({ currentBrand: brand }),
   
+  // Filter setters
+  setPriceFilter: (price) => set({ priceFilter: price }),
+  setYearFilter: (year) => set({ yearFilter: year }),
+  setRegionFilter: (region) => set({ regionFilter: region }),
   
   clearSelections: () => set({
     selectedBrandsMap: {},
     selectedModelsByBrand: {},
     selectedGenerationsByModel: {},
+    priceFilter: null,
+    yearFilter: null,
+    regionFilter: null,
     currentBrand: null,
   }),
 }));

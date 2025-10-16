@@ -7,7 +7,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { HeaderSearchBar } from "@/components/global/HeaderSearchBar/HeaderSearchBar";
+import { HeaderSearchBar } from "@/components/global/header/HeaderSearchBar/HeaderSearchBar";
 import { useSimpleAutoModelByBrandApi } from "@/hooks/useSimpleAutoModelByBrandApi";
 import { useSimpleAutoFormContext } from "@/modules/advertisement/simple-auto/SimpleAutoFormProvider";
 import { GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner } from "@/openapi/client";

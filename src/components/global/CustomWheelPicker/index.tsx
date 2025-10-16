@@ -19,6 +19,7 @@ type props<ItemT extends PickerItem<any>> = {
   onValueChanging?: OnValueChanging<ItemT>;
   onValueChanged?: OnValueChanged<ItemT>;
   keyExtractor?: KeyExtractor<ItemT>;
+  label?: string;
 };
 
 // render our item container to not have the default animation
@@ -26,12 +27,12 @@ const renderItemContainer: RenderItemContainer<any> = ({ key, ...props }) => (
   <PickerItemContainer key={key} {...props} />
 );
 
-const CustomizedPicker = (props: props<T>) => {
-  const { data, value, onValueChanged, onValueChanging, keyExtractor } = props;
+const CustomizedPicker = <ItemT extends PickerItem<any>>(props: props<ItemT>) => {
+  const { data, value, onValueChanged, onValueChanging, label } = props;
   const theme = useTheme() as CustomTheme;
 
   const renderOverlay: RenderOverlay = (props) => (
-    <OverlayComponent {...props} />
+    <OverlayComponent {...props} label={label} />
   );
 
   return (
@@ -47,12 +48,7 @@ const CustomizedPicker = (props: props<T>) => {
       }}
       visibleItemCount={7}
       itemTextStyle={{
-        color: theme.colors.text, // TODO: by some reasons theme colors doesn't work here
-      }}
-      overlayItemStyle={{
-        borderColor: theme.colors.border,
-        borderTopWidth: 1,
-        borderBottomWidth: 1,
+        color: theme.colors.text,
       }}
     />
   );

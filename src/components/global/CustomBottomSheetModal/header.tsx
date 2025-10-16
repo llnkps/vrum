@@ -20,7 +20,7 @@ const HeaderHandleComponent = ({ title, ...rest }: HeaderHandleProps) => {
         <Text className="text-font dark:text-font-dark text-lg font-bold">
           {title ?? "Title modal"}
         </Text>
-        <CloseIcon onPress={() => dismiss()} />
+        <CloseIcon onPress={() => dismiss()} className={"p-2"} />
       </View>
     </BottomSheetHandle>
   );

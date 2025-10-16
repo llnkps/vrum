@@ -1,28 +1,47 @@
 import { FC } from "react";
-import { GestureResponderEvent, TouchableOpacity } from "react-native";
+import { ViewStyle, TextStyle } from "react-native";
 
 import { CustomTheme } from "@/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
 
-import clsx from "clsx";
+import { RectButton } from "react-native-gesture-handler";
 
-type props = {
-  onPress: (e: GestureResponderEvent) => void;
-  className?: string;
+type CloseIconProps = {
+  onPress?: (pointerInside: boolean) => void;
   size?: number;
+  color?: string;
+  containerStyle?: ViewStyle;
+  iconStyle?: TextStyle;
+  disabled?: boolean;
 };
 
-const CloseIcon: FC<props> = ({ onPress, className, size = 22 }) => {
+const CloseIcon: FC<CloseIconProps> = ({
+  onPress,
+  size = 22,
+  color,
+  containerStyle,
+  iconStyle,
+  disabled = false,
+}) => {
   const theme = useTheme() as CustomTheme;
 
+  const iconColor = color || theme.colors.icon;
+
+  const defaultContainerStyle: ViewStyle = {
+    borderRadius: 9999,
+    padding: 8,
+  };
+
   return (
-    <TouchableOpacity
-      onPress={(e) => onPress(e)}
-      className={clsx("p-1", className)}
+    <RectButton
+      onPress={onPress}
+      style={[defaultContainerStyle, containerStyle]}
+      enabled={!disabled}
+      rippleColor={theme.colors.button.subtlePressed}
     >
-      <Ionicons name="close" size={size} color={theme.colors.icon} />
-    </TouchableOpacity>
+      <Ionicons name="close" size={size} color={iconColor} style={iconStyle} />
+    </RectButton>
   );
 };
 

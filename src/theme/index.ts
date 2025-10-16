@@ -17,6 +17,8 @@ export interface CustomTheme extends NavigationTheme {
 
       subtle: string;
       subtlePressed: string;
+
+      neutral: string;
     };
     input: {
       background: string;
@@ -46,6 +48,8 @@ export const MyLightTheme: CustomTheme = {
 
       subtle: "#00000000",
       subtlePressed: "#0B120E24",
+
+      neutral: "#0515240F"
     },
 
     input: {
@@ -76,6 +80,8 @@ export const MyDarkTheme: CustomTheme = {
 
       subtle: "#00000000",
       subtlePressed: "#E3E4F21F",
+
+      neutral: "#CECED912",
     },
 
     input: {

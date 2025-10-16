@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { FlatList, View } from 'react-native';
 
-import { CarCard } from '@/components/CarCard';
+import { CarCard } from '@/components/global/AdvertisementCard/AdvertisementCard';
 import { FavoriteItem } from './types';
 import EmptyState from './EmptyState';
 

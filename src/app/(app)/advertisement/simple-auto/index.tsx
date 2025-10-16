@@ -1,4 +1,4 @@
-import { InputField } from "@/components/ui/InputField";
+import { InputField } from "@/components/ui/input/InputField/InputField";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
