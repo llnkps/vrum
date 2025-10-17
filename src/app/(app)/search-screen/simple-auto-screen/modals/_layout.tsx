@@ -12,7 +12,7 @@ export default function ModalsLayout() {
         options={{ presentation: 'modal', headerShown: false }}
       />
       <Stack.Screen
-        name="brand-auto-type-filter"
+        name="model-filter"
         options={{ presentation: 'modal', headerShown: false }}
       />
       <Stack.Screen

@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FC, useEffect, useState } from 'react';
 import { StatusBar, Text, TouchableHighlight, View, ScrollView, Dimensions } from 'react-native';
 import Animated, {
@@ -24,6 +24,7 @@ const STATUSBAR_HEIGHT = StatusBar.currentHeight ?? 24;
 
 export default function BrandAutoFilter() {
   const router = useRouter();
+  const searchParams = useLocalSearchParams();
   const store = useAutoSelectStore();
   const selectedBrands = selectSelectedBrands(store);
   const { removeSelectedBrand, setCurrentBrand, selectedModelsByBrand } = store;
@@ -101,14 +102,19 @@ export default function BrandAutoFilter() {
           isScrolling={isScrolling}
           setCurrentBrand={setCurrentBrand}
           selectedModelsByBrand={selectedModelsByBrand}
+          searchParams={searchParams}
         />
 
         {/* Fixed Button */}
         <View className="absolute bottom-2 left-0 right-0 px-3 pb-6">
           <CustomRectButton
-            onPress={() =>
-              router.replace('/(app)/search-screen/simple-auto-screen/modals/simple-auto-modal')
-            }
+            onPress={() => {
+              if (searchParams.from === 'settings') {
+                router.replace('/(app)/search-screen/simple-auto-screen/modals/settings');
+              } else {
+                router.replace('/(app)/search-screen/simple-auto-screen/modals/simple-auto-modal');
+              }
+            }}
             appearance="primary"
           >
             <Text className="text-center font-semibold text-white">Показать объявления</Text>
@@ -130,6 +136,7 @@ type props = {
     number,
     GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner[]
   >;
+  searchParams: any;
 };
 
 const BrandAutoList: FC<props> = ({
@@ -138,6 +145,7 @@ const BrandAutoList: FC<props> = ({
   isScrolling,
   setCurrentBrand,
   selectedModelsByBrand,
+  searchParams,
 }) => {
   const router = useRouter();
 
@@ -157,7 +165,8 @@ const BrandAutoList: FC<props> = ({
     brand: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner
   ) => {
     setCurrentBrand(brand);
-    router.push('/search-screen/simple-auto-screen/modals/model-filter');
+    const fromParam = searchParams.from === 'settings' ? '?from=settings' : '';
+    router.push(`/search-screen/simple-auto-screen/modals/model-filter${fromParam}`);
   };
 
   return (

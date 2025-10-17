@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FC, useEffect, useState } from 'react';
 import { ScrollView, StatusBar, Text, TouchableHighlight, View } from 'react-native';
 import Animated, { useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated';
@@ -18,6 +18,7 @@ const STATUSBAR_HEIGHT = StatusBar.currentHeight ?? 24;
 
 export default function ModelFilter() {
   const router = useRouter();
+  const searchParams = useLocalSearchParams();
 
   const [searchValue, setSearchValue] = useState('');
   const { removeSelectedModel, currentBrand, selectedModelsByBrand } = useAutoSelectStore();
@@ -111,9 +112,13 @@ export default function ModelFilter() {
         {/* Fixed Button */}
         <View className="absolute bottom-2 left-0 right-0 px-3 pb-6">
           <CustomRectButton
-            onPress={() =>
-              router.replace('/(app)/search-screen/simple-auto-screen/modals/simple-auto-modal')
-            }
+            onPress={() => {
+              if (searchParams.from === 'settings') {
+                router.replace('/(app)/search-screen/simple-auto-screen/modals/settings');
+              } else {
+                router.replace('/(app)/search-screen/simple-auto-screen/modals/simple-auto-modal');
+              }
+            }}
             appearance="primary"
           >
             <Text className="text-center font-semibold text-white">Показать объявления</Text>
