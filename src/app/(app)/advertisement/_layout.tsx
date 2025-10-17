@@ -10,6 +10,9 @@ export default function ModalsLayout() {
       }}
     >
       <Stack.Screen name="simple-auto" />
+      <Stack.Screen name="spec-auto" />
+      <Stack.Screen name="motorbike" />
+      <Stack.Screen name="details" />
     </Stack>
   );
 }
