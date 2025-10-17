@@ -97,7 +97,6 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
       onPress();
     }
   };
-
   return (
     <View style={getContainerStyle()}>
       <RectButton

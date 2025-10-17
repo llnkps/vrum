@@ -1,11 +1,11 @@
-import React, { FC, memo, useState, useEffect } from "react";
-import { Image, Text, View } from "react-native";
+import React, { FC, memo, useState } from "react";
+import { Text, View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
+import { Image } from "expo-image";
 
 import { DefaultConfig, GetSimpleAutoCollectionPagination200ResponseItemsInner } from "@/openapi/client";
 import { Ionicons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
-import { useRouter } from "expo-router";
 // Optimized Image Item Component
 const ImageItem: FC<{ imageUri: string }> = memo(({ imageUri }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -17,21 +17,21 @@ const ImageItem: FC<{ imageUri: string }> = memo(({ imageUri }) => {
         height: 128,
         marginRight: 8,
         borderRadius: 8,
-        overflow: 'hidden',
-        backgroundColor: '#f3f4f6',
+        overflow: "hidden",
+        backgroundColor: "#f3f4f6",
       }}
     >
       {isLoading && (
         <View
           style={{
-            position: 'absolute',
+            position: "absolute",
             top: 0,
             left: 0,
             right: 0,
             bottom: 0,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#f3f4f6',
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#f3f4f6",
             borderRadius: 8,
           }}
         >
@@ -43,12 +43,13 @@ const ImageItem: FC<{ imageUri: string }> = memo(({ imageUri }) => {
           uri: imageUri,
         }}
         style={{
-          width: '100%',
-          height: '100%',
+          width: "100%",
+          height: "100%",
           borderRadius: 8,
         }}
-        resizeMode="cover"
-        onLoadEnd={() => setIsLoading(false)}
+        contentFit="cover"
+        cachePolicy="memory-disk"
+        onLoad={() => setIsLoading(false)}
         onError={() => setIsLoading(false)}
       />
     </View>
@@ -59,13 +60,12 @@ ImageItem.displayName = "ImageItem";
 
 type props = {
   item: GetSimpleAutoCollectionPagination200ResponseItemsInner;
-  onPress?: () => void;
+  onPress: () => void;
   onToggleFavorite?: () => void;
   isFavorite?: boolean;
-  visibleIds?: string[];
 };
 
-export const AdvertisementCard: FC<props> = memo(({ item, onPress, onToggleFavorite, isFavorite = false, visibleIds = [] }) => {
+export const AdvertisementCard: FC<props> = memo(({ item, onPress, onToggleFavorite, isFavorite = false }) => {
   // Форматирование цены
   const getFormattedPrice = () => {
     if (!item.price) return "Цена не указана";
@@ -81,22 +81,8 @@ export const AdvertisementCard: FC<props> = memo(({ item, onPress, onToggleFavor
     return date.toLocaleDateString("ru-RU");
   };
 
-  const router = useRouter();
-
-  // Preload images for better performance
-  useEffect(() => {
-    if (item.images && item.images.length > 0 && item.id && visibleIds.includes(item.id)) {
-      // Preload next few images
-      const imagesToPreload = item.images.slice(0, 3);
-      imagesToPreload.forEach((imageUri) => {
-        const fullUri = DefaultConfig.basePath + "/" + imageUri;
-        Image.prefetch(fullUri);
-      });
-    }
-  }, [item.images, item.id, visibleIds]);
-
-	return (
-    <RectButton
+  return (
+    <View
       style={{
         backgroundColor: "#ffffff",
         borderRadius: 12,
@@ -108,56 +94,54 @@ export const AdvertisementCard: FC<props> = memo(({ item, onPress, onToggleFavor
         borderWidth: 1,
         borderColor: "#e5e7eb",
       }}
-      onPress={() => {
-        if (onPress) {
-          onPress();
-        } else {
-          const params = new URLSearchParams();
-          params.set("data", JSON.stringify(item));
-          router.push(`/car-details?${params.toString()}`);
-        }
-      }}
-      rippleColor="#f3f4f6"
     >
-      {/* Title: Brand, Model, Year with Favorite Asterisk */}
-      <View className="px-4 pt-4 flex-row items-center justify-between">
-        <Text className="text-font dark:text-font-dark text-lg font-semibold leading-tight flex-1" numberOfLines={1}>
-          {item.brand} {item.model}, {item.releaseYear}
-        </Text>
-        <RectButton
-          onPress={() => {
-            onToggleFavorite?.();
-          }}
-          style={{ marginLeft: 8, padding: 4 }}
-          rippleColor="transparent"
-        >
-          <Ionicons name={isFavorite ? "heart" : "heart-outline"} size={20} color={isFavorite ? "#ef4444" : "#9CA3AF"} />
-        </RectButton>
-      </View>
-
-      {/* Generation */}
-      {/* {item.generation && (
-        <View className="px-4 pt-1">
-          <Text className="text-font-subtlest dark:text-font-subtlest-dark text-sm">{item.generation}</Text>
+      {/* Pressable area for the main content */}
+      <RectButton
+        style={{
+          paddingHorizontal: 16,
+          paddingTop: 16,
+          paddingBottom: item.images && item.images.length > 0 ? 12 : 16,
+        }}
+        onPress={onPress}
+      >
+        {/* Title: Brand, Model, Year with Favorite Asterisk */}
+        <View className="flex-row items-center justify-between">
+          <Text className="text-font dark:text-font-dark text-lg font-semibold leading-tight flex-1" numberOfLines={1}>
+            {item.brand} {item.model}, {item.releaseYear}
+          </Text>
+          <RectButton
+            onPress={() => {
+              onToggleFavorite?.();
+            }}
+            style={{ marginLeft: 8, padding: 4 }}
+            rippleColor="transparent"
+          >
+            <Ionicons name={isFavorite ? "heart" : "heart-outline"} size={20} color={isFavorite ? "#ef4444" : "#9CA3AF"} />
+          </RectButton>
         </View>
-      )} */}
 
-      {/* Price */}
-      <View className="px-4 pt-2">
-        <Text className="text-font dark:text-font-dark text-xl font-bold">{getFormattedPrice()}</Text>
-      </View>
+        {/* Generation */}
+        {/* {item.generation && (
+          <View className="pt-1">
+            <Text className="text-font-subtlest dark:text-font-subtlest-dark text-sm">{item.generation}</Text>
+          </View>
+        )} */}
 
-      {/* Images Horizontal FlashList */}
-      {item.images && item.images.length > 0 && item.id && visibleIds.includes(item.id) && (
+        {/* Price */}
+        <View className="pt-2">
+          <Text className="text-font dark:text-font-dark text-xl font-bold">{getFormattedPrice()}</Text>
+        </View>
+      </RectButton>
+
+      {/* Images Horizontal FlashList - Not pressable */}
+      {item.images && item.images.length > 0 && (
         <View className="px-4 pt-3">
           <FlashList
             horizontal
             data={item.images.slice(0, 5)}
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ paddingRight: 16 }}
-            renderItem={({ item: image, index }) => (
-              <ImageItem imageUri={DefaultConfig.basePath + "/" + image} />
-            )}
+            renderItem={({ item: image, index }) => <ImageItem imageUri={DefaultConfig.basePath + image} />}
           />
         </View>
       )}
@@ -186,7 +170,7 @@ export const AdvertisementCard: FC<props> = memo(({ item, onPress, onToggleFavor
         </View>
       )} */}
 
-      {/* Region and Created Date */}
+      {/* Region and Created Date - Not pressable */}
       <View className="px-4 py-3 flex-row items-center justify-between">
         {item.region && (
           <View className="flex-row items-center">
@@ -196,8 +180,11 @@ export const AdvertisementCard: FC<props> = memo(({ item, onPress, onToggleFavor
         )}
         {item.createdAt && <Text className="text-font-subtlest dark:text-font-subtlest-dark text-xs">{getFormattedDate()}</Text>}
       </View>
-    </RectButton>
+    </View>
   );
 });
 
 AdvertisementCard.displayName = "AdvertisementCard";
+
+// Export as CarCard for backward compatibility
+export const CarCard = AdvertisementCard;

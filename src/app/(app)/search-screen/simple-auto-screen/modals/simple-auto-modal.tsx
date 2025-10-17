@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { ActivityIndicator, RefreshControl, Text, View } from "react-native";
 
@@ -10,6 +10,7 @@ import { AdvertisementCard } from "@/components/global/AdvertisementCard/Adverti
 import { HeaderBackSaveFilter } from "@/components/global/header";
 import { TouchableHighlightRow } from "@/components/global/TouchableHighlightRow";
 import { useSimpleGetCollectionPagination } from "@/hooks/useSimpleGetCollectionPagination";
+import { useImagePrefetch } from "@/hooks/useImagePrefetch";
 import { selectSelectedBrands, selectSelectedModels, useAutoSelectStore } from "@/state/search-screen/useAutoSelectStore";
 import { Ionicons } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -36,6 +37,8 @@ export default function SimpleAutoModal() {
     return data?.pages?.flatMap((page) => page.data) || [];
   }, [data]);
 
+  const { onViewableItemsChanged } = useImagePrefetch(flattenedData);
+
   const yearModalRef = useRef<BottomSheetModal>(null);
   const priceModalRef = useRef<BottomSheetModal>(null);
   const regionModalRef = useRef<BottomSheetModal>(null);
@@ -52,44 +55,13 @@ export default function SimpleAutoModal() {
     regionModalRef.current?.present();
   }, []);
 
-  // const quickFilters = [
-  //   { label: "+100 км", type: "recommended" },
-  //   { label: "+200 км", type: "fromOwners" },
-  //   { label: "Новые", type: "new" },
-  //   { label: "до $5к", type: "price", value: 5000 },
-  //   { label: "до $10к", type: "price", value: 10000 },
-  //   { label: "до $15к", type: "price", value: 15000 },
-  // ];
-
-  // const handleQuickFilterPress = useCallback(
-  //   (filter: (typeof quickFilters)[0]) => {
-  //     if (filter.type === "price") {
-  //       // Set price filter with max value
-  //       store.setPriceFilter({ min: undefined, max: filter.value });
-  //     } else if (filter.type === "recommended") {
-  //       // Handle recommended filter - you might need to add this to your store
-  //       // For now, just clear other filters or set a special flag
-  //     } else if (filter.type === "fromOwners") {
-  //       // Handle from owners filter
-  //     } else if (filter.type === "new") {
-  //       // Handle new items filter - maybe set year to current year
-  //       store.setYearFilter({ min: new Date().getFullYear(), max: undefined });
-  //     }
-  //   },
-  //   [store]
-  // );
-
-  const [visibleIds, setVisibleIds] = useState<string[]>([]);
-  const onViewableItemsChanged = useCallback(({ viewableItems }: { viewableItems: any[] }) => {
-    setVisibleIds(viewableItems.map((v) => v.item.id));
-  }, []);
-
   return (
     <SafeAreaView className="flex-1">
       <FlashList
         numColumns={1}
         data={flattenedData}
         removeClippedSubviews={true}
+        maxItemsInRecyclePool={10}
         ListHeaderComponent={
           <>
             {/* <HeaderBrand /> */}
@@ -99,15 +71,13 @@ export default function SimpleAutoModal() {
             <HeaderBackSaveFilter />
 
             <View className={"px-4 py-3 gap-y-1"}>
-              <View className="flex-1">
-                <TouchableHighlightRow
-                  variant="button"
-                  label={"Марка, модель, поколение"}
-                  selectedValue={undefined}
-                  onPress={() => router.push("/(app)/search-screen/simple-auto-screen/modals/brand-auto-filter")}
-                  showRightArrow={false}
-                />
-              </View>
+              <TouchableHighlightRow
+                variant="button"
+                label={"Марка, модель, поколение"}
+                selectedValue={undefined}
+                onPress={() => router.push("/(app)/search-screen/simple-auto-screen/modals/brand-auto-filter")}
+                showRightArrow={false}
+              />
 
               <View className={"flex flex-row gap-1"}>
                 <TouchableHighlightRow
@@ -171,7 +141,14 @@ export default function SimpleAutoModal() {
         refreshControl={<RefreshControl tintColor={"blue"} refreshing={isRefetching} onRefresh={refetch} />}
         ListEmptyComponent={<Text className="text-center p-4">No data available</Text>}
         renderItem={({ item, index }) => {
-          return <AdvertisementCard item={item} visibleIds={visibleIds} />;
+          return <AdvertisementCard 
+            item={item} 
+            onPress={() => {
+              const params = new URLSearchParams();
+              params.set("data", JSON.stringify(item));
+              router.push(`/car-details?${params.toString()}`);
+            }}
+          />;
         }}
         onEndReachedThreshold={0.2}
         onEndReached={() => hasNextPage && !isFetchingNextPage && fetchNextPage()}
