@@ -6574,6 +6574,11 @@ react-is@^19.1.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-19.1.1.tgz#038ebe313cf18e1fd1235d51c87360eb87f7c36a"
   integrity sha512-tr41fA15Vn8p4X9ntI+yCyeGSf1TlYaY5vlTZfQmeLBrFo3psOPX6HhTDnFNL9uj3EhP0KAQ80cugCl4b4BERA==
 
+react-native-collapsible@^1.6.2:
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/react-native-collapsible/-/react-native-collapsible-1.6.2.tgz#3b67fa402a6ba3c291022f5db8f345083862c3d8"
+  integrity sha512-MCOBVJWqHNjnDaGkvxX997VONmJeebh6wyJxnHEgg0L1PrlcXU1e/bo6eK+CDVFuMrCafw8Qh4DOv/C4V/+Iew==
+
 react-native-css-interop@0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/react-native-css-interop/-/react-native-css-interop-0.2.1.tgz#2d08ad4a971babeba17af4b731ba542eef79ed08"

@@ -4,6 +4,11 @@ import FilterBadge from '@/components/global/FilterBadge';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
 import { CustomRectButton, SelectableButton } from '@/components/ui/button';
 import {
+  getEngineCapacityDisplayValue,
+  getMileageDisplayValue,
+  getPowerDisplayValue,
+  getPriceDisplayValue,
+  getYearDisplayValue,
   selectSelectedBrands,
   selectSelectedGenerations,
   selectSelectedModels,
@@ -11,36 +16,43 @@ import {
 } from '@/state/search-screen/useAutoSelectStore';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { ScrollView, StatusBar, Text, View } from 'react-native';
+import Collapsible from 'react-native-collapsible';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BodyTypeFilterBottomSheet } from '@/components/filters/BodyTypeFilterBottomSheet';
 import { ColorFilterBottomSheet } from '@/components/filters/ColorFilterBottomSheet';
 import { DrivetrainFilterBottomSheet } from '@/components/filters/DrivetrainFilterBottomSheet';
+import EngineCapacityFilterBottomSheet from '@/components/filters/EngineCapacityFilterBottomSheet';
 import { FuelTypeFilterBottomSheet } from '@/components/filters/FuelTypeFilterBottomSheet';
 import { NumberOfOwnersFilterBottomSheet } from '@/components/filters/NumberOfOwnersFilterBottomSheet';
+import PowerFilterBottomSheet from '@/components/filters/PowerFilterBottomSheet';
 import { PriceBottomSheet } from '@/components/filters/PriceFilterBottomSheet';
 import { SellerFilterBottomSheet } from '@/components/filters/SellerFilterBottomSheet';
 import { TransmissionFilterBottomSheet } from '@/components/filters/TransmissionFilterBottomSheet';
 import { YearBottomSheet } from '@/components/filters/YearFilterBottomSheet';
 import CloseIcon from '@/components/global/CloseIcon';
 import { useRouter } from 'expo-router';
-import { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
+import MileageFilterBottomSheet from '@/components/filters/MileageFilterBottomSheet/MileageFilterBottomSheet';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 
 const SettingScreenFilter = () => {
   const router = useRouter();
-  const regionBottomSheetRef = useRef<BottomSheetModal>(null);
 
+  const regionBottomSheetRef = useRef<BottomSheetModal>(null);
   const yearModalRef = useRef<BottomSheetModal>(null);
   const priceModalRef = useRef<BottomSheetModal>(null);
   const transmissionModalRef = useRef<BottomSheetModal>(null);
   const fuelTypeModalRef = useRef<BottomSheetModal>(null);
+  const mileageModalRef = useRef<BottomSheetModal>(null);
   const drivetrainModalRef = useRef<BottomSheetModal>(null);
   const bodyTypeModalRef = useRef<BottomSheetModal>(null);
   const colorModalRef = useRef<BottomSheetModal>(null);
   const numberOfOwnersModalRef = useRef<BottomSheetModal>(null);
   const sellerModalRef = useRef<BottomSheetModal>(null);
+  const engineCapacityModalRef = useRef<BottomSheetModal>(null);
+  const powerModalRef = useRef<BottomSheetModal>(null);
 
   const handlePresentYearModalPress = useCallback(() => {
     yearModalRef.current?.present();
@@ -62,6 +74,10 @@ const SettingScreenFilter = () => {
     drivetrainModalRef.current?.present();
   }, []);
 
+  const handlePresentMileageModalPress = useCallback(() => {
+    mileageModalRef.current?.present();
+  }, []);
+
   const handlePresentBodyTypeModalPress = useCallback(() => {
     bodyTypeModalRef.current?.present();
   }, []);
@@ -77,6 +93,16 @@ const SettingScreenFilter = () => {
   const handlePresentSellerModalPress = useCallback(() => {
     sellerModalRef.current?.present();
   }, []);
+
+  const handlePresentEngineCapacityModalPress = useCallback(() => {
+    engineCapacityModalRef.current?.present();
+  }, []);
+
+  const handlePresentPowerModalPress = useCallback(() => {
+    powerModalRef.current?.present();
+  }, []);
+
+  const [isBrandSectionCollapsed, setIsBrandSectionCollapsed] = useState(true);
 
   const store = useAutoSelectStore();
   const {
@@ -103,6 +129,9 @@ const SettingScreenFilter = () => {
     setColor,
     setYearRange,
     setPriceRange,
+    setEngineCapacityRange,
+    setPowerRange,
+    setMileageRange,
     setNumberOfOwners,
     setSeller,
   } = store;
@@ -110,7 +139,6 @@ const SettingScreenFilter = () => {
   const selectedBrands = selectSelectedBrands(store);
   const selectedModels = selectSelectedModels(store);
   const selectedGenerations = selectSelectedGenerations(store);
-
   return (
     <>
       <View style={{ height: STATUSBAR_HEIGHT }}>
@@ -123,24 +151,9 @@ const SettingScreenFilter = () => {
       <ScrollView>
         <View className="mt-2 gap-y-4 p-2">
           <View className="flex-row rounded-lg bg-surface dark:bg-surface-dark">
-            <SelectableButton
-              appearance="subtle"
-              title="Все"
-              isSelected={tab === 'all'}
-              onPress={() => setTab('all')}
-            />
-            <SelectableButton
-              appearance="subtle"
-              title="С пробегом"
-              isSelected={tab === 'old'}
-              onPress={() => setTab('old')}
-            />
-            <SelectableButton
-              appearance="subtle"
-              title="Новые"
-              isSelected={tab === 'new'}
-              onPress={() => setTab('new')}
-            />
+            <SelectableButton appearance="subtle" title="Все" isSelected={tab === 'all'} onPress={() => setTab('all')} />
+            <SelectableButton appearance="subtle" title="С пробегом" isSelected={tab === 'old'} onPress={() => setTab('old')} />
+            <SelectableButton appearance="subtle" title="Новые" isSelected={tab === 'new'} onPress={() => setTab('new')} />
           </View>
 
           <View className="gap-y-2">
@@ -152,69 +165,78 @@ const SettingScreenFilter = () => {
               rightIcon="chevron-down"
             />
             {selectedRegions.length > 0 && (
-              <ScrollView horizontal>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {selectedRegions.map(region => (
-                  <FilterBadge
-                    key={region.id}
-                    label={region.name || ''}
-                    onRemove={() => {
-                      const updatedRegions = selectedRegions.filter(r => r.id !== region.id);
-                      setSelectedRegions(updatedRegions);
-                    }}
-                  />
+                  <View key={region.id} className="mr-2">
+                    <FilterBadge
+                      label={region.name || ''}
+                      onRemove={() => {
+                        const updatedRegions = selectedRegions.filter(r => r.id !== region.id);
+                        setSelectedRegions(updatedRegions);
+                      }}
+                    />
+                  </View>
                 ))}
               </ScrollView>
             )}
           </View>
+
           <View className="gap-y-1">
             <TouchableHighlightRow
               variant="button"
               label="Марка, модель, поколение"
-              selectedValue={selectedBrands.map(b => b.name).join(', ')}
-              selectedValueMode="replace"
-              onPress={() =>
-                router.push(
-                  '/(app)/search-screen/simple-auto-screen/modals/brand-auto-filter?from=settings'
-                )
-              }
+              onPress={() => router.push('/(app)/search-screen/simple-auto-screen/modals/brand-auto-filter?from=settings')}
               showRightArrow
             />
+            {selectedBrands.length !== 0 && (
+              <>
+                {selectedBrands.map(brand => {
+                  const selectedModels = store.getSelectedModelsByBrand(brand.id);
+                  return (
+                    <React.Fragment key={brand.id}>
+                      <TouchableHighlightRow
+                        variant="button"
+                        label="Марка, модель, поколение"
+                        selectedValue={brand.name}
+                        selectedValueMode="replace"
+                        onPress={() => setIsBrandSectionCollapsed(!isBrandSectionCollapsed)}
+                        showRightArrow
+                        rightIcon={isBrandSectionCollapsed ? 'chevron-down' : 'chevron-up'}
+                      />
+                      <Collapsible collapsed={isBrandSectionCollapsed}>
+                        <View className="ml-4 gap-y-1">
+                          <TouchableHighlightRow
+                            variant="button"
+                            label="Модель"
+                            selectedValue={selectedModels.map(m => m.name).join(', ')}
+                            selectedValueMode="replace"
+                            onPress={() => router.push('/(app)/search-screen/simple-auto-screen/modals/model-filter?from=settings')}
+                            showRightArrow
+                          />
 
-            {selectedBrands.length > 0 && (
-              <TouchableHighlightRow
-                variant="button"
-                label="Модель"
-                selectedValue={selectedModels.map(m => m.name).join(', ')}
-                selectedValueMode="replace"
-                onPress={() =>
-                  router.push(
-                    '/(app)/search-screen/simple-auto-screen/modals/model-filter?from=settings'
-                  )
-                }
-                showRightArrow
-              />
-            )}
-
-            {selectedModels.length > 0 && (
-              <TouchableHighlightRow
-                variant="button"
-                label="Поколение"
-                selectedValue={selectedGenerations.map(m => `${m.generation} поколение`).join(', ')}
-                selectedValueMode="replace"
-                onPress={() =>
-                  router.push(
-                    '/(app)/search-screen/simple-auto-screen/modals/generation-filter?from=settings'
-                  )
-                }
-                showRightArrow
-              />
+                          {selectedModels.length > 0 && (
+                            <TouchableHighlightRow
+                              variant="button"
+                              label="Поколение"
+                              selectedValue={selectedGenerations.map(m => `${m.generation} поколение`).join(', ')}
+                              selectedValueMode="replace"
+                              onPress={() => router.push('/(app)/search-screen/simple-auto-screen/modals/generation-filter?from=settings')}
+                              showRightArrow
+                            />
+                          )}
+                        </View>
+                      </Collapsible>
+                    </React.Fragment>
+                  );
+                })}
+              </>
             )}
           </View>
 
           <View className="flex-col rounded-lg bg-surface p-2 dark:bg-surface-dark">
             <TouchableHighlightRow
               label="Год"
-              // selectedValue={getYearDisplayValue()}
+              selectedValue={getYearDisplayValue(store)}
               onPress={handlePresentYearModalPress}
               variant="bordered"
               showRightArrow={false}
@@ -223,7 +245,7 @@ const SettingScreenFilter = () => {
 
             <TouchableHighlightRow
               label="Цена"
-              // selectedValue={getPriceDisplayValue()}
+              selectedValue={getPriceDisplayValue(store)}
               onPress={handlePresentPriceModalPress}
               variant="plain"
               showRightArrow={false}
@@ -231,19 +253,12 @@ const SettingScreenFilter = () => {
             />
 
             <YearBottomSheet ref={yearModalRef} onChange={yearRange => setYearRange(yearRange)} />
-            <PriceBottomSheet
-              ref={priceModalRef}
-              onChange={priceRange => setPriceRange(priceRange)}
-            />
+            <PriceBottomSheet ref={priceModalRef} onChange={priceRange => setPriceRange(priceRange)} />
           </View>
 
           <View className="flex-col rounded-lg bg-surface dark:bg-surface-dark">
             <CheckboxRectButton label="Непроданные" value={onlyUnsold} onPress={toggleOnlyUnsold} />
-            <CheckboxRectButton
-              label="Только с фото"
-              value={onlyWithPhotos}
-              onPress={toggleOnlyWithPhotos}
-            />
+            <CheckboxRectButton label="Только с фото" value={onlyWithPhotos} onPress={toggleOnlyWithPhotos} />
             <CheckboxRectButton label="Документы" value={false} onPress={() => {}} />
             <CheckboxRectButton label="Повреждения" value={false} onPress={() => {}} />
           </View>
@@ -254,14 +269,23 @@ const SettingScreenFilter = () => {
               onPress={handlePresentTransmissionModalPress}
               showRightArrow
               variant="bordered"
-              selectedValue={transmission}
+              selectedValue={transmission?.map(t => t.label).join(', ')}
               rightIcon="chevron-down"
             />
             <TouchableHighlightRow
               label="Объем двигателя"
-              onPress={() => {}}
+              onPress={handlePresentEngineCapacityModalPress}
               showRightArrow
               variant="bordered"
+              selectedValue={getEngineCapacityDisplayValue(store)}
+              rightIcon="chevron-down"
+            />
+            <TouchableHighlightRow
+              label="Мощность"
+              onPress={handlePresentPowerModalPress}
+              showRightArrow
+              variant="bordered"
+              selectedValue={getPowerDisplayValue(store)}
               rightIcon="chevron-down"
             />
             <TouchableHighlightRow
@@ -269,7 +293,7 @@ const SettingScreenFilter = () => {
               onPress={handlePresentFuelTypeModalPress}
               showRightArrow
               variant="bordered"
-              selectedValue={fuelType}
+              selectedValue={fuelType?.map(t => t.label).join(', ')}
               rightIcon="chevron-down"
             />
             <TouchableHighlightRow
@@ -277,28 +301,17 @@ const SettingScreenFilter = () => {
               onPress={handlePresentDrivetrainModalPress}
               showRightArrow
               variant="bordered"
-              selectedValue={drivetrain}
+              selectedValue={drivetrain?.map(t => t.label).join(', ')}
               rightIcon="chevron-down"
             />
-            <TouchableHighlightRow
-              label="Расположения руля"
-              onPress={() => {}}
-              showRightArrow
-              variant="bordered"
-              rightIcon="chevron-down"
-            />
-            <TouchableHighlightRow
-              label="Мощность"
-              onPress={() => {}}
-              showRightArrow
-              variant="bordered"
-              rightIcon="chevron-down"
-            />
+            <TouchableHighlightRow label="Расположения руля" onPress={() => {}} showRightArrow variant="bordered" rightIcon="chevron-down" />
+            
             <TouchableHighlightRow
               label="Пробег"
-              onPress={() => {}}
+              onPress={handlePresentMileageModalPress}
               showRightArrow
               variant="bordered"
+              selectedValue={getMileageDisplayValue(store)}
               rightIcon="chevron-down"
             />
             <TouchableHighlightRow
@@ -306,7 +319,7 @@ const SettingScreenFilter = () => {
               onPress={handlePresentBodyTypeModalPress}
               showRightArrow
               variant="bordered"
-              selectedValue={bodyType}
+              selectedValue={bodyType?.map(t => t.label).join(', ')}
               rightIcon="chevron-down"
             />
             <TouchableHighlightRow
@@ -314,7 +327,7 @@ const SettingScreenFilter = () => {
               onPress={handlePresentColorModalPress}
               showRightArrow
               variant="plain"
-              selectedValue={color}
+              selectedValue={color?.map(c => c.label).join(', ')}
               rightIcon="chevron-down"
             />
           </View>
@@ -325,7 +338,7 @@ const SettingScreenFilter = () => {
               onPress={handlePresentNumberOfOwnersModalPress}
               showRightArrow
               variant="bordered"
-              selectedValue={numberOfOwners}
+              selectedValue={numberOfOwners?.map(t => t.label).join(', ')}
               rightIcon="chevron-down"
             />
             <TouchableHighlightRow
@@ -333,7 +346,7 @@ const SettingScreenFilter = () => {
               onPress={handlePresentSellerModalPress}
               showRightArrow
               variant="plain"
-              selectedValue={seller}
+              selectedValue={seller?.map(s => s.label).join(', ')}
               rightIcon="chevron-down"
             />
           </View>
@@ -341,77 +354,68 @@ const SettingScreenFilter = () => {
       </ScrollView>
 
       <View className="px-4 py-8">
-        <CustomRectButton
-          onPress={() =>
-            router.replace('/(app)/search-screen/simple-auto-screen/modals/simple-auto-modal')
-          }
-          appearance="primary"
-        >
+        <CustomRectButton onPress={() => router.replace('/(app)/search-screen/simple-auto-screen/modals/simple-auto-modal')} appearance="primary">
           <Text className="text-center font-semibold text-white">Показать объявления</Text>
         </CustomRectButton>
       </View>
 
-      <RegionBottomSheet
-        ref={regionBottomSheetRef}
-        multiple
-        onChange={regions => setSelectedRegions(Array.isArray(regions) ? regions : [regions])}
-      />
+      <RegionBottomSheet ref={regionBottomSheetRef} multiple onChange={regions => setSelectedRegions(Array.isArray(regions) ? regions : [regions])} />
 
       <TransmissionFilterBottomSheet
         ref={transmissionModalRef}
-        onSelect={(option: { label: string; value: string }) => {
-          setTransmission(option.value);
-          transmissionModalRef.current?.close({ duration: 150 });
+        onChange={options => {
+          setTransmission(options);
         }}
       />
 
       <FuelTypeFilterBottomSheet
         ref={fuelTypeModalRef}
-        onSelect={(option: { label: string; value: string }) => {
-          setFuelType(option.value);
-          fuelTypeModalRef.current?.close({ duration: 150 });
+        onChange={options => {
+          setFuelType(options);
         }}
       />
 
       <DrivetrainFilterBottomSheet
         ref={drivetrainModalRef}
-        onSelect={(option: { label: string; value: string }) => {
-          setDrivetrain(option.value);
-          drivetrainModalRef.current?.close({ duration: 150 });
+        onChange={options => {
+          setDrivetrain(options);
         }}
+      />
+
+      <MileageFilterBottomSheet
+        ref={mileageModalRef}
+        onChange={range => setMileageRange(range)}
       />
 
       <BodyTypeFilterBottomSheet
         ref={bodyTypeModalRef}
-        onSelect={(option: { label: string; value: string }) => {
-          setBodyType(option.value);
-          bodyTypeModalRef.current?.close({ duration: 150 });
+        onChange={options => {
+          setBodyType(options);
         }}
       />
 
       <ColorFilterBottomSheet
         ref={colorModalRef}
-        onSelect={(option: { label: string; value: string }) => {
-          setColor(option.value);
-          colorModalRef.current?.close({ duration: 150 });
+        onChange={options => {
+          setColor(options);
         }}
       />
 
       <NumberOfOwnersFilterBottomSheet
         ref={numberOfOwnersModalRef}
-        onSelect={(option: { label: string; value: string }) => {
-          setNumberOfOwners(option.value);
-          numberOfOwnersModalRef.current?.close({ duration: 150 });
+        onChange={options => {
+          setNumberOfOwners(options);
         }}
       />
 
       <SellerFilterBottomSheet
         ref={sellerModalRef}
-        onSelect={(option: { label: string; value: string }) => {
-          setSeller(option.value);
-          sellerModalRef.current?.close({ duration: 150 });
+        onChange={options => {
+          setSeller(options);
         }}
       />
+      <EngineCapacityFilterBottomSheet ref={engineCapacityModalRef} onChange={range => setEngineCapacityRange(range)} />
+      <PowerFilterBottomSheet ref={powerModalRef} onChange={range => setPowerRange(range)} />
     </>
   );
 };

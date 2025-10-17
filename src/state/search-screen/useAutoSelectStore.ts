@@ -1,53 +1,50 @@
 import {
   GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner,
-  GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner,
   GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner,
+  GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner,
   GetRegionIndex200ResponseInner,
 } from '@/openapi/client';
 import { create } from 'zustand';
 
+
+type BottomSheetOptionType = {
+  value: string;
+  label: string;
+}
+
 type SelectionStore = {
-  selectedBrandsMap: Record<
-    number,
-    GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner
-  >;
-  selectedModelsByBrand: Record<
-    number,
-    GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner[]
-  >;
-  selectedGenerationsByModel: Record<
-    number,
-    GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner[]
-  >;
+  selectedBrandsMap: Record<number, GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner>;
+  selectedModelsByBrand: Record<number, GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner[]>;
+  selectedGenerationsByModel: Record<number, GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner[]>;
+
+  getSelectedModelsByBrand: (brandId: number) => GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner[];
+  getSelectedGenerationsByModel: (modelId: number) => GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner[];
 
   // Filter states
   tab: 'all' | 'old' | 'new';
   selectedRegions: GetRegionIndex200ResponseInner[];
   onlyUnsold: boolean;
   onlyWithPhotos: boolean;
-  transmission?: string;
-  fuelType?: string;
-  drivetrain?: string;
-  bodyType?: string;
-  color?: string;
-  condition?: string;
-  documentsOk?: string;
-  numberOfOwners?: string;
-  seller?: string;
-  tradeAllow?: string;
-  currency?: string;
+  transmission?: BottomSheetOptionType[];
+  fuelType?: BottomSheetOptionType[];
+  drivetrain?: BottomSheetOptionType[];
+  bodyType?: BottomSheetOptionType[];
+  color?: BottomSheetOptionType[];
+  condition?: BottomSheetOptionType[];
+  documentsOk?: BottomSheetOptionType[];
+  numberOfOwners?: BottomSheetOptionType[];
+  seller?: BottomSheetOptionType[];
+  tradeAllow?: BottomSheetOptionType[];
+  currency?: BottomSheetOptionType[];
   priceRange?: { min?: number; max?: number };
   yearRange?: { min?: number; max?: number };
+  engineCapacityRange?: { min?: number; max?: number };
+  powerRange?: { min?: number; max?: number };
+  mileageRange?: { min?: number; max?: number };
 
-  addSelectedBrand: (
-    item: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner
-  ) => void;
-  addSelectedModel: (
-    item: GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner
-  ) => void;
-  addSelectedGeneration: (
-    item: GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner
-  ) => void;
+  addSelectedBrand: (item: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner) => void;
+  addSelectedModel: (item: GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner) => void;
+  addSelectedGeneration: (item: GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner) => void;
   removeSelectedBrand: (id: number) => void;
   removeSelectedModel: (id: number) => void;
   removeSelectedGeneration: (id: number) => void;
@@ -59,25 +56,26 @@ type SelectionStore = {
   removeRegion: (regionId: number) => void;
   toggleOnlyUnsold: () => void;
   toggleOnlyWithPhotos: () => void;
-  setTransmission: (value: string | undefined) => void;
-  setFuelType: (value: string | undefined) => void;
-  setDrivetrain: (value: string | undefined) => void;
-  setBodyType: (value: string | undefined) => void;
-  setColor: (value: string | undefined) => void;
-  setCondition: (value: string | undefined) => void;
-  setDocumentsOk: (value: string | undefined) => void;
-  setNumberOfOwners: (value: string | undefined) => void;
-  setSeller: (value: string | undefined) => void;
-  setTradeAllow: (value: string | undefined) => void;
-  setCurrency: (value: string | undefined) => void;
+  setTransmission: (value: BottomSheetOptionType[] | undefined) => void;
+  setFuelType: (value: BottomSheetOptionType[] | undefined) => void;
+  setDrivetrain: (value: BottomSheetOptionType[] | undefined) => void;
+  setBodyType: (value: BottomSheetOptionType[] | undefined) => void;
+  setColor: (value: BottomSheetOptionType[] | undefined) => void;
+  setCondition: (value: BottomSheetOptionType[] | undefined) => void;
+  setDocumentsOk: (value: BottomSheetOptionType[] | undefined) => void;
+  setNumberOfOwners: (value: BottomSheetOptionType[] | undefined) => void;
+  setSeller: (value: BottomSheetOptionType[] | undefined) => void;
+  setTradeAllow: (value: BottomSheetOptionType[] | undefined) => void;
+  setCurrency: (value: BottomSheetOptionType[] | undefined) => void;
   setPriceRange: (range: { min?: number; max?: number } | undefined) => void;
   setYearRange: (range: { min?: number; max?: number } | undefined) => void;
+  setEngineCapacityRange: (range: { min?: number; max?: number } | undefined) => void;
+  setPowerRange: (range: { min?: number; max?: number } | undefined) => void;
+  setMileageRange: (range: { min?: number; max?: number } | undefined) => void;
   resetFilters: () => void;
 
   currentBrand: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner | null;
-  setCurrentBrand: (
-    brand: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner | null
-  ) => void;
+  setCurrentBrand: (brand: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner | null) => void;
 
   clearSelections: () => void;
 };
@@ -92,6 +90,16 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
   onlyUnsold: false,
   onlyWithPhotos: false,
   currentBrand: null,
+
+  getSelectedModelsByBrand: (brandId: number) => {
+    const state = get();
+    return state.selectedModelsByBrand[brandId] || [];
+  },
+  getSelectedGenerationsByModel: (modelId: number) => {
+    const state = get();
+    return state.selectedGenerationsByModel[modelId] || [];
+  },
+
   addSelectedBrand: selectedBrand =>
     set(state => {
       const isSelected = state.selectedBrandsMap[selectedBrand.id!];
@@ -118,10 +126,6 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
         selectedModelsByBrand: {
           ...state.selectedModelsByBrand,
           [brandId]: newModelsForBrand,
-        },
-        selectedBrandsMap: {
-          ...state.selectedBrandsMap,
-          [brandId]: state.currentBrand!,
         },
       };
     }),
@@ -201,9 +205,7 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
         }
       }
       if (!modelId) return state;
-      const newGenerationsForModel = state.selectedGenerationsByModel[modelId].filter(
-        g => g.id !== id
-      );
+      const newGenerationsForModel = state.selectedGenerationsByModel[modelId].filter(g => g.id !== id);
       const newSelectedGenerationsByModel = { ...state.selectedGenerationsByModel };
       if (newGenerationsForModel.length === 0) {
         delete newSelectedGenerationsByModel[modelId];
@@ -243,6 +245,9 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
   setCurrency: value => set({ currency: value }),
   setPriceRange: range => set({ priceRange: range }),
   setYearRange: range => set({ yearRange: range }),
+  setEngineCapacityRange: range => set({ engineCapacityRange: range }),
+  setPowerRange: range => set({ powerRange: range }),
+  setMileageRange: range => set({ mileageRange: range }),
   resetFilters: () =>
     set({
       tab: 'all',
@@ -262,6 +267,9 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
       currency: undefined,
       priceRange: undefined,
       yearRange: undefined,
+      engineCapacityRange: undefined,
+      powerRange: undefined,
+      mileageRange: undefined,
     }),
 
   clearSelections: () =>
@@ -286,14 +294,59 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
       currency: undefined,
       priceRange: undefined,
       yearRange: undefined,
+      engineCapacityRange: undefined,
+      powerRange: undefined,
+      mileageRange: undefined,
       currentBrand: null,
     }),
 }));
 
 // Selector functions to get computed values
-export const selectSelectedBrands = (state: SelectionStore) =>
-  Object.values(state.selectedBrandsMap);
-export const selectSelectedModels = (state: SelectionStore) =>
-  Object.values(state.selectedModelsByBrand).flat();
-export const selectSelectedGenerations = (state: SelectionStore) =>
-  Object.values(state.selectedGenerationsByModel).flat();
+export const selectSelectedBrands = (state: SelectionStore) => Object.values(state.selectedBrandsMap);
+export const selectSelectedModels = (state: SelectionStore) => Object.values(state.selectedModelsByBrand).flat();
+export const selectSelectedGenerations = (state: SelectionStore) => Object.values(state.selectedGenerationsByModel).flat();
+
+export const getYearDisplayValue = (state: SelectionStore) => {
+  if (!state.yearRange) return undefined;
+  const { min, max } = state.yearRange;
+  if (min && max) return `${min} - ${max}`;
+  if (min) return `от ${min}`;
+  if (max) return `до ${max}`;
+  return undefined;
+};
+
+export const getPriceDisplayValue = (state: SelectionStore) => {
+  if (!state.priceRange) return undefined;
+  const { min, max } = state.priceRange;
+  if (min && max) return `${min} - ${max}`;
+  if (min) return `от ${min}`;
+  if (max) return `до ${max}`;
+  return undefined;
+};
+
+export const getEngineCapacityDisplayValue = (state: SelectionStore) => {
+  if (!state.engineCapacityRange) return undefined;
+  const { min, max } = state.engineCapacityRange;
+  if (min && max) return `${min} - ${max}`;
+  if (min) return `от ${min}`;
+  if (max) return `до ${max}`;
+  return undefined;
+};
+
+export const getPowerDisplayValue = (state: SelectionStore) => {
+  if (!state.powerRange) return undefined;
+  const { min, max } = state.powerRange;
+  if (min && max) return `${min} - ${max}`;
+  if (min) return `от ${min}`;
+  if (max) return `до ${max}`;
+  return undefined;
+};
+
+export const getMileageDisplayValue = (state: SelectionStore) => {
+  if (!state.mileageRange) return undefined;
+  const { min, max } = state.mileageRange;
+  if (min && max) return `${min} - ${max}`;
+  if (min) return `от ${min}`;
+  if (max) return `до ${max}`;
+  return undefined;
+};

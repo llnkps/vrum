@@ -79,15 +79,13 @@ export const HeaderSearchBar: FC<HeaderProps> = ({
     <View>
       <Animated.View style={[{ paddingHorizontal: 8 }, animatedHeader]}>
         {/* Back button */}
-        <CloseIcon onPress={handleClose} />
+        <View className="self-start">
+          <CloseIcon onPress={handleClose} />
+        </View>
 
         {/* Title */}
         <Animated.View style={[{ paddingHorizontal: 12 }, animatedSpacer]}>
-          <Animated.Text
-            style={[{ fontWeight: 'bold', color: theme.colors.text, fontSize: 20 }, animatedTitle]}
-          >
-            {title}
-          </Animated.Text>
+          <Animated.Text style={[{ fontWeight: 'bold', color: theme.colors.text, fontSize: 20 }, animatedTitle]}>{title}</Animated.Text>
         </Animated.View>
       </Animated.View>
 

@@ -11,17 +11,17 @@ type YearModalProps = {
   onChange?: (year: { min?: number; max?: number }) => void;
 };
 
+const years = [
+  { value: undefined as number | undefined, label: '--' },
+  ...[...Array(100).keys()].map(index => ({
+    value: 2025 - index,
+    label: (2025 - index).toString(),
+  })),
+];
+
 export const YearBottomSheet = forwardRef<BottomSheetRef, YearModalProps>((props, ref) => {
   const [minYear, setMinYear] = useState<number | undefined>(undefined);
   const [maxYear, setMaxYear] = useState<number | undefined>(undefined);
-
-  const years = [
-    { value: undefined as number | undefined, label: '--' },
-    ...[...Array(100).keys()].map(index => ({
-      value: 2025 - index,
-      label: (2025 - index).toString(),
-    })),
-  ];
 
   const handleMinYearChange = (value: ValueChangedEvent<PickerItem<number>>) => {
     setMinYear(value.item.value);
@@ -47,21 +47,11 @@ export const YearBottomSheet = forwardRef<BottomSheetRef, YearModalProps>((props
       <BottomSheetView>
         <View className="flex-row items-center justify-center gap-x-10 px-4 pt-5">
           <View className="flex-1">
-            <CustomWheelPicker
-              data={years}
-              value={minYear}
-              onValueChanged={handleMinYearChange}
-              label="От"
-            />
+            <CustomWheelPicker data={years} value={minYear} onValueChanged={handleMinYearChange} label="От" />
           </View>
 
           <View className="flex-1">
-            <CustomWheelPicker
-              data={years}
-              value={maxYear}
-              onValueChanged={handleMaxYearChange}
-              label="До"
-            />
+            <CustomWheelPicker data={years} value={maxYear} onValueChanged={handleMaxYearChange} label="До" />
           </View>
         </View>
       </BottomSheetView>

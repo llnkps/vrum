@@ -56,7 +56,7 @@ const DefaultFooterComponent = ({
     >
       <View
         style={{
-          paddingBottom: Math.max(bottomSafeArea, 16),
+          paddingBottom: Math.max(bottomSafeArea, 16), // to close gap with safe area
         }}
       >
         <View className="w-full p-2">

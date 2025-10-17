@@ -9,6 +9,8 @@ import {
 } from '@/openapi/client';
 import { Ionicons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
+import { CustomTheme } from '@/theme';
+import { useTheme } from '@react-navigation/native';
 // Optimized Image Item Component
 const ImageItem: FC<{ imageUri: string }> = memo(({ imageUri }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -70,6 +72,9 @@ type props = {
 
 export const AdvertisementCard: FC<props> = memo(
   ({ item, onPress, onToggleFavorite, isFavorite = false }) => {
+
+    const theme = useTheme() as CustomTheme;
+
     // Форматирование цены
     const getFormattedPrice = () => {
       if (!item.price) return 'Цена не указана';
@@ -88,7 +93,7 @@ export const AdvertisementCard: FC<props> = memo(
     return (
       <RectButton
         style={{
-          backgroundColor: '#ffffff',
+          backgroundColor: theme.colors.card,
           borderRadius: 12,
           marginBottom: 16,
           overflow: 'hidden',
@@ -96,10 +101,9 @@ export const AdvertisementCard: FC<props> = memo(
           shadowRadius: 4,
           shadowOffset: { width: 0, height: 2 },
           borderWidth: 1,
-          borderColor: '#e5e7eb',
         }}
         onPress={onPress}
-        rippleColor="#f3f4f6"
+        rippleColor={theme.colors.button.subtlePressed}
       >
         <View style={{ position: 'relative' }}>
           {/* Pressable area for the main content */}

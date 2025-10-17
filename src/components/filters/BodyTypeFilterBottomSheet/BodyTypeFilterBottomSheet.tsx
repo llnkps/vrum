@@ -1,12 +1,12 @@
 import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
-import { CustomRectButton } from '@/components/ui/button';
+import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
 
 type BodyTypeOption = (typeof options)[number];
 
 type BodyTypeModalProps = {
-  onSelect: (value: BodyTypeOption) => void;
+  onChange: (values: BodyTypeOption[]) => void;
 };
 
 const options = [
@@ -20,8 +20,21 @@ const options = [
 ];
 
 export const BodyTypeFilterBottomSheet = forwardRef<BottomSheetRef, BodyTypeModalProps>(
-  ({ onSelect }, ref) => {
-    const [selectedBodyType, setSelectedBodyType] = React.useState<string | undefined>(undefined);
+  ({ onChange }, ref) => {
+    const [selectedBodyTypes, setSelectedBodyTypes] = React.useState<BodyTypeOption[]>([]);
+
+    const handleToggle = (option: BodyTypeOption) => {
+      const isSelected = selectedBodyTypes.some(t => t.value === option.value);
+      if (isSelected) {
+        setSelectedBodyTypes(selectedBodyTypes.filter(t => t.value !== option.value));
+      } else {
+        setSelectedBodyTypes([...selectedBodyTypes, option]);
+      }
+    };
+
+    const handleConfirm = () => {
+      onChange(selectedBodyTypes);
+    };
 
     return (
       <CustomBottomSheetModal
@@ -29,17 +42,17 @@ export const BodyTypeFilterBottomSheet = forwardRef<BottomSheetRef, BodyTypeModa
         snapPoints={['45%']}
         enableContentPanningGesture={true}
         title="Кузова"
+        footerProps={{
+          onConfirm: handleConfirm,
+        }}
       >
         <BottomSheetView className="flex-col">
           {options.map(opt => (
-            <CustomRectButton
+            <CheckboxRectButton
               key={opt.value}
-              onPress={() => {
-                onSelect(opt);
-                setSelectedBodyType(opt.value);
-              }}
-              title={opt.label}
-              isSelected={selectedBodyType === opt.value}
+              label={opt.label}
+              value={selectedBodyTypes.some(t => t.value === opt.value)}
+              onPress={() => handleToggle(opt)}
             />
           ))}
         </BottomSheetView>

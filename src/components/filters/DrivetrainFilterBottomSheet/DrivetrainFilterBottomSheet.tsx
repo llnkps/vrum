@@ -1,12 +1,12 @@
 import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
-import { CustomRectButton } from '@/components/ui/button';
+import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
 
 type DrivetrainOption = (typeof options)[number];
 
 type DrivetrainFilterBottomSheetProps = {
-  onSelect: (value: DrivetrainOption) => void;
+  onChange: (values: DrivetrainOption[]) => void;
 };
 
 const options = [
@@ -18,8 +18,21 @@ const options = [
 export const DrivetrainFilterBottomSheet = forwardRef<
   BottomSheetRef,
   DrivetrainFilterBottomSheetProps
->(({ onSelect }, ref) => {
-  const [selectedDrivetrain, setSelectedDrivetrain] = React.useState<string | undefined>(undefined);
+>(({ onChange }, ref) => {
+  const [selectedDrivetrains, setSelectedDrivetrains] = React.useState<DrivetrainOption[]>([]);
+
+  const handleToggle = (option: DrivetrainOption) => {
+    const isSelected = selectedDrivetrains.some(t => t.value === option.value);
+    if (isSelected) {
+      setSelectedDrivetrains(selectedDrivetrains.filter(t => t.value !== option.value));
+    } else {
+      setSelectedDrivetrains([...selectedDrivetrains, option]);
+    }
+  };
+
+  const handleConfirm = () => {
+    onChange(selectedDrivetrains);
+  };
 
   return (
     <CustomBottomSheetModal
@@ -27,17 +40,17 @@ export const DrivetrainFilterBottomSheet = forwardRef<
       snapPoints={['30%']}
       enableContentPanningGesture={true}
       title="Привод"
+      footerProps={{
+        onConfirm: handleConfirm,
+      }}
     >
       <BottomSheetView className="flex-col">
         {options.map(opt => (
-          <CustomRectButton
+          <CheckboxRectButton
             key={opt.value}
-            onPress={() => {
-              onSelect(opt);
-              setSelectedDrivetrain(opt.value);
-            }}
-            title={opt.label}
-            isSelected={selectedDrivetrain === opt.value}
+            label={opt.label}
+            value={selectedDrivetrains.some(t => t.value === opt.value)}
+            onPress={() => handleToggle(opt)}
           />
         ))}
       </BottomSheetView>

@@ -1,12 +1,12 @@
 import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
-import { CustomRectButton } from '@/components/ui/button';
+import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
 
 type FuelTypeOption = (typeof options)[number];
 
 type FuelTypeFilterBottomSheetProps = {
-  onSelect: (value: FuelTypeOption) => void;
+  onChange: (values: FuelTypeOption[]) => void;
 };
 
 const options = [
@@ -18,8 +18,21 @@ const options = [
 ];
 
 export const FuelTypeFilterBottomSheet = forwardRef<BottomSheetRef, FuelTypeFilterBottomSheetProps>(
-  ({ onSelect }, ref) => {
-    const [selectedFuelType, setSelectedFuelType] = React.useState<string | undefined>(undefined);
+  ({ onChange }, ref) => {
+    const [selectedFuelTypes, setSelectedFuelTypes] = React.useState<FuelTypeOption[]>([]);
+
+    const handleToggle = (option: FuelTypeOption) => {
+      const isSelected = selectedFuelTypes.some(t => t.value === option.value);
+      if (isSelected) {
+        setSelectedFuelTypes(selectedFuelTypes.filter(t => t.value !== option.value));
+      } else {
+        setSelectedFuelTypes([...selectedFuelTypes, option]);
+      }
+    };
+
+    const handleConfirm = () => {
+      onChange(selectedFuelTypes);
+    };
 
     return (
       <CustomBottomSheetModal
@@ -27,17 +40,17 @@ export const FuelTypeFilterBottomSheet = forwardRef<BottomSheetRef, FuelTypeFilt
         snapPoints={['35%']}
         enableContentPanningGesture={true}
         title={'Тип топлива'}
+        footerProps={{
+          onConfirm: handleConfirm,
+        }}
       >
         <BottomSheetView className="flex-col">
           {options.map(opt => (
-            <CustomRectButton
+            <CheckboxRectButton
               key={opt.value}
-              onPress={() => {
-                onSelect(opt);
-                setSelectedFuelType(opt.value);
-              }}
-              title={opt.label}
-              isSelected={selectedFuelType === opt.value}
+              label={opt.label}
+              value={selectedFuelTypes.some(t => t.value === opt.value)}
+              onPress={() => handleToggle(opt)}
             />
           ))}
         </BottomSheetView>

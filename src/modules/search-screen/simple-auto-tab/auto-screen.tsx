@@ -7,7 +7,7 @@ import { PriceBottomSheet } from '@/components/filters/PriceFilterBottomSheet';
 import { RegionBottomSheet } from '@/components/filters/RegionBottomSheet';
 import { YearBottomSheet } from '@/components/filters/YearFilterBottomSheet';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
-import { useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
+import { getPriceDisplayValue, getYearDisplayValue, useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
 import { Ionicons } from '@expo/vector-icons';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
@@ -32,26 +32,8 @@ export const AutoHeaderScreen = () => {
     regionModalRef.current?.present();
   }, []);
 
-  const getYearDisplayValue = () => {
-    if (!store.yearFilter) return undefined;
-    const { min, max } = store.yearFilter;
-    if (min && max) return `${min} - ${max}`;
-    if (min) return `от ${min}`;
-    if (max) return `до ${max}`;
-    return undefined;
-  };
-
-  const getPriceDisplayValue = () => {
-    if (!store.priceFilter) return undefined;
-    const { min, max } = store.priceFilter;
-    if (min && max) return `${min} - ${max}`;
-    if (min) return `от ${min}`;
-    if (max) return `до ${max}`;
-    return undefined;
-  };
-
   const getRegionDisplayValue = () => {
-    return store.regionFilter?.name;
+    return store.selectedRegions?.map(region => region.name).join(', ');
   };
 
   const quickFilters = [
@@ -67,7 +49,7 @@ export const AutoHeaderScreen = () => {
     (filter: (typeof quickFilters)[0]) => {
       if (filter.type === 'price') {
         // Set price filter with max value
-        store.setPriceFilter({ min: undefined, max: filter.value });
+        store.setPriceRange({ min: undefined, max: filter.value });
       } else if (filter.type === 'recommended') {
         // Handle recommended filter - you might need to add this to your store
         // For now, just clear other filters or set a special flag
@@ -75,7 +57,7 @@ export const AutoHeaderScreen = () => {
         // Handle from owners filter
       } else if (filter.type === 'new') {
         // Handle new items filter - maybe set year to current year
-        store.setYearFilter({ min: new Date().getFullYear(), max: undefined });
+        store.setYearRange({ min: new Date().getFullYear(), max: undefined });
       }
     },
     [store]
@@ -95,7 +77,7 @@ export const AutoHeaderScreen = () => {
         <View className={'flex-row gap-1'}>
           <TouchableHighlightRow
             label="Год"
-            selectedValue={getYearDisplayValue()}
+            selectedValue={getYearDisplayValue(store)}
             onPress={handlePresentYearModalPress}
             variant="button"
             showRightArrow={false}
@@ -104,7 +86,7 @@ export const AutoHeaderScreen = () => {
 
           <TouchableHighlightRow
             label="Цена"
-            selectedValue={getPriceDisplayValue()}
+            selectedValue={getPriceDisplayValue(store)}
             onPress={handlePresentPriceModalPress}
             variant="button"
             showRightArrow={false}
@@ -130,11 +112,11 @@ export const AutoHeaderScreen = () => {
 
         <YearBottomSheet
           ref={yearModalRef}
-          onChange={yearRange => store.setYearFilter(yearRange)}
+          onChange={yearRange => store.setYearRange(yearRange)}
         />
         <PriceBottomSheet
           ref={priceModalRef}
-          onChange={priceRange => store.setPriceFilter(priceRange)}
+          onChange={priceRange => store.setPriceRange(priceRange)}
         />
         <RegionBottomSheet
           ref={regionModalRef}
@@ -142,9 +124,9 @@ export const AutoHeaderScreen = () => {
             // Handle both single region and array of regions
             if (Array.isArray(region)) {
               // For now, take the first region if multiple are selected
-              store.setRegionFilter(region[0]);
+              store.setSelectedRegions(region);
             } else {
-              store.setRegionFilter(region);
+              store.addRegion(region);
             }
           }}
         />
