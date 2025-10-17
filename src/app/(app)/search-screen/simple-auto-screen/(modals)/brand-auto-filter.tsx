@@ -105,9 +105,9 @@ export default function BrandAutoFilter() {
           <CustomRectButton
             onPress={() => {
               if (searchParams.from === 'settings') {
-                router.replace('/(app)/search-screen/simple-auto-screen/modals/settings');
+                router.replace('/(app)/search-screen/simple-auto-screen/(modals)/settings');
               } else {
-                router.replace('/(app)/search-screen/simple-auto-screen/modals/simple-auto-modal');
+                router.replace('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal');
               }
             }}
             appearance="primary"
@@ -149,7 +149,7 @@ const BrandAutoList: FC<props> = ({ brands, scrollY, isScrolling, setCurrentBran
     addSelectedBrand(brand);
     setCurrentBrand(brand);
     const fromParam = searchParams.from === 'settings' ? '?from=settings' : '';
-    router.push(`/search-screen/simple-auto-screen/modals/model-filter${fromParam}`);
+    router.push(`/search-screen/simple-auto-screen/(modals)/model-filter${fromParam}`);
   };
 
   return (

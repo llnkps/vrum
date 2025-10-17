@@ -69,7 +69,7 @@ export const AutoHeaderScreen = () => {
         <TouchableHighlightRow
           label="Марка, модель, поколение"
           onPress={() =>
-            router.push('/(app)/search-screen/simple-auto-screen/modals/brand-auto-filter')
+            router.push('/(app)/search-screen/simple-auto-screen/(modals)/brand-auto-filter')
           }
           variant="button"
           showRightArrow={false}
@@ -95,7 +95,7 @@ export const AutoHeaderScreen = () => {
 
           <TouchableHighlightRow
             label="Параметры"
-            onPress={() => router.push('/(app)/search-screen/simple-auto-screen/modals/settings')}
+            onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/settings')}
             variant="button"
             icon={<Ionicons name="options-sharp" size={20} color="white" />}
             showRightArrow={false}
@@ -136,7 +136,7 @@ export const AutoHeaderScreen = () => {
         <TouchableHighlightRow
           label={t('searchScreen.auto.searchPlaceholder')}
           onPress={() =>
-            router.push('/(app)/search-screen/simple-auto-screen/modals/simple-auto-modal')
+            router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal')
           }
           variant="button"
           showRightArrow={false}
