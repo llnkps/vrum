@@ -82,7 +82,7 @@ export const AdvertisementCard: FC<props> = memo(({ item, onPress, onToggleFavor
   };
 
   return (
-    <View
+    <RectButton
       style={{
         backgroundColor: "#ffffff",
         borderRadius: 12,
@@ -94,93 +94,96 @@ export const AdvertisementCard: FC<props> = memo(({ item, onPress, onToggleFavor
         borderWidth: 1,
         borderColor: "#e5e7eb",
       }}
+      onPress={onPress}
+      rippleColor="#f3f4f6"
     >
-      {/* Pressable area for the main content */}
-      <RectButton
-        style={{
-          paddingHorizontal: 16,
-          paddingTop: 16,
-          paddingBottom: item.images && item.images.length > 0 ? 12 : 16,
-        }}
-        onPress={onPress}
-      >
-        {/* Title: Brand, Model, Year with Favorite Asterisk */}
-        <View className="flex-row items-center justify-between">
-          <Text className="text-font dark:text-font-dark text-lg font-semibold leading-tight flex-1" numberOfLines={1}>
-            {item.brand} {item.model}, {item.releaseYear}
-          </Text>
-          <RectButton
-            onPress={() => {
-              onToggleFavorite?.();
-            }}
-            style={{ marginLeft: 8, padding: 4 }}
-            rippleColor="transparent"
-          >
-            <Ionicons name={isFavorite ? "heart" : "heart-outline"} size={20} color={isFavorite ? "#ef4444" : "#9CA3AF"} />
-          </RectButton>
+      <View style={{ position: "relative" }}>
+        {/* Pressable area for the main content */}
+        <View
+          style={{
+            paddingHorizontal: 16,
+            paddingTop: 16,
+            paddingBottom: 12,
+          }}
+        >
+          {/* Title: Brand, Model, Year with Favorite Asterisk */}
+          <View className="flex-row items-center justify-between">
+            <Text className="text-font dark:text-font-dark text-lg font-semibold leading-tight flex-1" numberOfLines={1}>
+              {item.brand} {item.model}, {item.releaseYear}
+            </Text>
+            <RectButton
+              onPress={() => {
+                onToggleFavorite?.();
+              }}
+              style={{ marginLeft: 8, padding: 4 }}
+              rippleColor="transparent"
+            >
+              <Ionicons name={isFavorite ? "heart" : "heart-outline"} size={20} color={isFavorite ? "#ef4444" : "#9CA3AF"} />
+            </RectButton>
+          </View>
+
+          {/* Generation */}
+          {/* {item.generation && (
+            <View className="pt-1">
+              <Text className="text-font-subtlest dark:text-font-subtlest-dark text-sm">{item.generation}</Text>
+            </View>
+          )} */}
+
+          {/* Price */}
+          <View className="pt-2">
+            <Text className="text-font dark:text-font-dark text-xl font-bold">{getFormattedPrice()}</Text>
+          </View>
         </View>
 
-        {/* Generation */}
-        {/* {item.generation && (
-          <View className="pt-1">
-            <Text className="text-font-subtlest dark:text-font-subtlest-dark text-sm">{item.generation}</Text>
+        {/* Images Horizontal FlashList - positioned within the card */}
+        {item.images && item.images.length > 0 && (
+          <View className="px-4 pb-3">
+            <FlashList
+              horizontal
+              data={item.images.slice(0, 5)}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingRight: 16 }}
+              renderItem={({ item: image, index }) => <ImageItem imageUri={DefaultConfig.basePath + image} />}
+            />
+          </View>
+        )}
+
+        {/* Additional Parameters */}
+        {/* {item.parameters && item.parameters.length > 0 && (
+          <View className="px-4 pt-3">
+            <View className="flex-row flex-wrap gap-2">
+              {item.parameters.slice(0, 4).map((param, index) => (
+                <View
+                  key={index}
+                  className={`px-2 py-1 rounded-full ${
+                    param.highlighted ? "bg-primary dark:bg-primary-dark" : "bg-surface-2 dark:bg-surface-2-dark"
+                  }`}
+                >
+                  <Text
+                    className={`text-xs font-medium ${
+                      param.highlighted ? "text-font-on-primary dark:text-font-on-primary-dark" : "text-font dark:text-font-dark"
+                    }`}
+                  >
+                    {param.label}: {param.value}
+                  </Text>
+                </View>
+              ))}
+            </View>
           </View>
         )} */}
 
-        {/* Price */}
-        <View className="pt-2">
-          <Text className="text-font dark:text-font-dark text-xl font-bold">{getFormattedPrice()}</Text>
+        {/* Region and Created Date */}
+        <View className="px-4 py-3 flex-row items-center justify-between">
+          {item.region && (
+            <View className="flex-row items-center">
+              <Ionicons name="location-outline" size={14} color="#9CA3AF" />
+              <Text className="text-font-subtlest dark:text-font-subtlest-dark text-sm ml-1">{item.region}</Text>
+            </View>
+          )}
+          {item.createdAt && <Text className="text-font-subtlest dark:text-font-subtlest-dark text-xs">{getFormattedDate()}</Text>}
         </View>
-      </RectButton>
-
-      {/* Images Horizontal FlashList - Not pressable */}
-      {item.images && item.images.length > 0 && (
-        <View className="px-4 pt-3">
-          <FlashList
-            horizontal
-            data={item.images.slice(0, 5)}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingRight: 16 }}
-            renderItem={({ item: image, index }) => <ImageItem imageUri={DefaultConfig.basePath + image} />}
-          />
-        </View>
-      )}
-
-      {/* Additional Parameters */}
-      {/* {item.parameters && item.parameters.length > 0 && (
-        <View className="px-4 pt-3">
-          <View className="flex-row flex-wrap gap-2">
-            {item.parameters.slice(0, 4).map((param, index) => (
-              <View
-                key={index}
-                className={`px-2 py-1 rounded-full ${
-                  param.highlighted ? "bg-primary dark:bg-primary-dark" : "bg-surface-2 dark:bg-surface-2-dark"
-                }`}
-              >
-                <Text
-                  className={`text-xs font-medium ${
-                    param.highlighted ? "text-font-on-primary dark:text-font-on-primary-dark" : "text-font dark:text-font-dark"
-                  }`}
-                >
-                  {param.label}: {param.value}
-                </Text>
-              </View>
-            ))}
-          </View>
-        </View>
-      )} */}
-
-      {/* Region and Created Date - Not pressable */}
-      <View className="px-4 py-3 flex-row items-center justify-between">
-        {item.region && (
-          <View className="flex-row items-center">
-            <Ionicons name="location-outline" size={14} color="#9CA3AF" />
-            <Text className="text-font-subtlest dark:text-font-subtlest-dark text-sm ml-1">{item.region}</Text>
-          </View>
-        )}
-        {item.createdAt && <Text className="text-font-subtlest dark:text-font-subtlest-dark text-xs">{getFormattedDate()}</Text>}
       </View>
-    </View>
+    </RectButton>
   );
 });
 
