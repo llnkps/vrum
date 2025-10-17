@@ -150,7 +150,7 @@ export const AutoHeaderScreen = () => {
               <TouchableOpacity
                 key={index}
                 onPress={() => handleQuickFilterPress(filter)}
-                className="rounded-full border border-border bg-surface px-4 py-2 dark:border-border-dark dark:bg-surface-dark"
+                className="mr-2 rounded-full border border-border bg-surface px-4 py-2 dark:border-border-dark dark:bg-surface-dark"
               >
                 <Text className="text-sm font-medium text-font dark:text-font-dark">
                   {filter.label}

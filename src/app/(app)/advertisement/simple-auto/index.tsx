@@ -10,22 +10,22 @@ import CloseIcon from '@/components/global/CloseIcon';
 import { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow/TouchableHighlightRow';
 import { Button } from '@/components/ui/button';
-import BodyTypeModal from '@/modules/advertisement/simple-auto/body-type-modal/body-type-modal';
-import ColorModal from '@/modules/advertisement/simple-auto/color-modal/color-modal';
-import ConditionModal from '@/modules/advertisement/simple-auto/condition-modal/condition-modal';
-import { CurrencyModal } from '@/modules/advertisement/simple-auto/currency-modal/CurrencyModal';
-import DocumentsOkModal from '@/modules/advertisement/simple-auto/documents-ok-modal/documents-ok-modal';
-import DrivetrainModal from '@/modules/advertisement/simple-auto/drivetrain-modal/drivetrain-modal';
-import EngineCapacityModal from '@/modules/advertisement/simple-auto/engine-capacity-modal/engine-capacity-modal';
-import FuelTypeModal from '@/modules/advertisement/simple-auto/fuel-type-modal/fuel-type-modal';
+import { BodyTypeCreateBottomSheet } from '@/components/create/BodyTypeCreateBottomSheet';
+import { ColorCreateBottomSheet } from '@/components/create/ColorCreateBottomSheet';
+import { ConditionCreateBottomSheet } from '@/components/create/ConditionCreateBottomSheet';
+import { CurrencyCreateBottomSheet } from '@/components/create/CurrencyCreateBottomSheet';
+import { DocumentsOkCreateBottomSheet } from '@/components/create/DocumentsOkCreateBottomSheet';
+import { DrivetrainCreateBottomSheet } from '@/components/create/DrivetrainCreateBottomSheet';
+import { EngineCapacityCreateBottomSheet } from '@/components/create/EngineCapacityCreateBottomSheet';
+import { FuelTypeCreateBottomSheet } from '@/components/create/FuelTypeCreateBottomSheet';
 import ImagePickerModal from '@/modules/advertisement/simple-auto/image-picker-modal/image-picker-modal';
-import NumberOfOwnersModal from '@/modules/advertisement/simple-auto/number-of-owners-modal/number-of-owners-modal';
-import PowerModal from '@/modules/advertisement/simple-auto/power-modal/power-modal';
-import { RegionModal } from '@/modules/advertisement/simple-auto/region-modal/region-modal';
-import SellerModal from '@/modules/advertisement/simple-auto/seller-modal/seller-modal';
+import { NumberOfOwnersCreateBottomSheet } from '@/components/create/NumberOfOwnersCreateBottomSheet';
+import { PowerCreateBottomSheet } from '@/components/create/PowerCreateBottomSheet';
+import { RegionCreateBottomSheet } from '@/components/create/RegionCreateBottomSheet';
+import { SellerCreateBottomSheet } from '@/components/create/SellerCreateBottomSheet';
+import { TransmissionCreateBottomSheet } from '@/components/create/TransmissionCreateBottomSheet';
+import { YearCreateBottomSheet } from '@/components/create/YearCreateBottomSheet';
 import { useSimpleAutoFormContext } from '@/modules/advertisement/simple-auto/SimpleAutoFormProvider';
-import TransmissionModal from '@/modules/advertisement/simple-auto/transmission-modal/transmission-modal';
-import YearModal from '@/modules/advertisement/simple-auto/year-modal/year-modal';
 import { createAuthenticatedApiCall } from '@/openapi/auth-utils';
 import { createAuthenticatedConfiguration } from '@/openapi/configurations';
 import { useMutation } from '@tanstack/react-query';
@@ -500,11 +500,11 @@ export default function AddCarPage() {
             onPress={handlePresentYearModalPress}
             rightIcon="chevron-down"
           />
-          <YearModal
+          <YearCreateBottomSheet
             ref={yearModalRef}
             onChange={releaseYear => {
               setValue('releaseYear', releaseYear);
-              setSelectedReleaseYear(releaseYear);
+              setSelectedReleaseYear(releaseYear?.toString() || '');
               yearModalRef.current?.close({ duration: 150 });
             }}
           />
@@ -525,11 +525,11 @@ export default function AddCarPage() {
               selectedValue={selectedTransmissionType ?? undefined}
               rightIcon="chevron-down"
             />
-            <TransmissionModal
+            <TransmissionCreateBottomSheet
               ref={transmissionModalRef}
-              onSelect={transmisison => {
-                setValue('transmission_type', transmisison.value);
-                setSelectedTransmissionType(transmisison.label);
+              onChange={transmission => {
+                setValue('transmission_type', transmission?.value || '');
+                setSelectedTransmissionType(transmission?.label || '');
                 transmissionModalRef.current?.close({ duration: 150 });
               }}
             />
@@ -541,11 +541,11 @@ export default function AddCarPage() {
               selectedValue={selectedFuelType ?? undefined}
               rightIcon="chevron-down"
             />
-            <FuelTypeModal
+            <FuelTypeCreateBottomSheet
               ref={fuelTypeModalRef}
-              onSelect={fuelType => {
-                setValue('fuel_type', fuelType.value);
-                setSelectedFuelType(fuelType.label);
+              onChange={fuelType => {
+                setValue('fuel_type', fuelType?.value || '');
+                setSelectedFuelType(fuelType?.label || '');
                 fuelTypeModalRef.current?.close({ duration: 150 });
               }}
             />
@@ -557,11 +557,11 @@ export default function AddCarPage() {
               selectedValue={selectedBodyType ?? undefined}
               rightIcon="chevron-down"
             />
-            <BodyTypeModal
+            <BodyTypeCreateBottomSheet
               ref={bodyTypeModalRef}
-              onSelect={frameType => {
-                setValue('frame_type', frameType.value);
-                setSelectedBodyType(frameType.label);
+              onChange={bodyType => {
+                setValue('frame_type', bodyType?.value || '');
+                setSelectedBodyType(bodyType?.label || '');
                 bodyTypeModalRef.current?.close({ duration: 150 });
               }}
             />
@@ -573,11 +573,11 @@ export default function AddCarPage() {
               selectedValue={selectedDriveTrain ?? undefined}
               rightIcon="chevron-down"
             />
-            <DrivetrainModal
+            <DrivetrainCreateBottomSheet
               ref={drivetrainModalRef}
-              onSelect={driveTrain => {
-                setValue('drive_train', driveTrain.value);
-                setSelectedDriveTrain(driveTrain.label);
+              onChange={drivetrain => {
+                setValue('drive_train', drivetrain?.value || '');
+                setSelectedDriveTrain(drivetrain?.label || '');
                 drivetrainModalRef.current?.close({ duration: 150 });
               }}
             />
@@ -589,11 +589,11 @@ export default function AddCarPage() {
               selectedValue={selectedColor ?? undefined}
               rightIcon="chevron-down"
             />
-            <ColorModal
+            <ColorCreateBottomSheet
               ref={colorModalRef}
-              onSelect={color => {
-                setValue('color', color.value);
-                setSelectedColor(color.label);
+              onChange={color => {
+                setValue('color', color?.value || '');
+                setSelectedColor(color?.label || '');
                 colorModalRef.current?.close({ duration: 150 });
               }}
             />
@@ -605,11 +605,12 @@ export default function AddCarPage() {
               selectedValue={selectedEngineCapacity ? `${selectedEngineCapacity} л` : undefined}
               rightIcon="chevron-down"
             />
-            <EngineCapacityModal
+            <EngineCapacityCreateBottomSheet
               ref={engineCapacityModalRef}
-              onSelect={engineCapacity => {
-                setValue('engine_capacity', engineCapacity);
-                setSelectedEngineCapacity(engineCapacity);
+              onChange={engineCapacity => {
+                setValue('engine_capacity', engineCapacity || 0);
+                setSelectedEngineCapacity(engineCapacity || 0);
+                engineCapacityModalRef.current?.close({ duration: 150 });
               }}
             />
 
@@ -620,11 +621,12 @@ export default function AddCarPage() {
               selectedValue={selectedPower ? `${selectedPower} л.с.` : undefined}
               rightIcon="chevron-down"
             />
-            <PowerModal
+            <PowerCreateBottomSheet
               ref={powerModalRef}
-              onSelect={power => {
-                setValue('power', power);
-                setSelectedPower(power);
+              onChange={power => {
+                setValue('power', power || 0);
+                setSelectedPower(power || 0);
+                powerModalRef.current?.close({ duration: 150 });
               }}
             />
             <Controller
@@ -661,11 +663,11 @@ export default function AddCarPage() {
             selectedValue={selectedCondition ?? undefined}
             rightIcon="chevron-down"
           />
-          <ConditionModal
+          <ConditionCreateBottomSheet
             ref={conditionModalRef}
-            onSelect={condition => {
-              setValue('condition', condition.value);
-              setSelectedCondition(condition.label);
+            onChange={condition => {
+              setValue('condition', condition?.value || '');
+              setSelectedCondition(condition?.label || '');
               conditionModalRef.current?.close({ duration: 150 });
             }}
           />
@@ -694,11 +696,12 @@ export default function AddCarPage() {
             onPress={handlePresentDocumentsOkModalPress}
             rightIcon="chevron-down"
           />
-          <DocumentsOkModal
+          <DocumentsOkCreateBottomSheet
             ref={documentsOkModalRef}
-            onSelect={document => {
-              setValue('document_ok', document.value);
-              setSelectedDocumentOk(document.value);
+            onChange={document => {
+              const isOk = document?.value === 'ok';
+              setValue('document_ok', isOk);
+              setSelectedDocumentOk(isOk);
               documentsOkModalRef.current?.close({ duration: 150 });
             }}
           />
@@ -710,11 +713,11 @@ export default function AddCarPage() {
             selectedValue={selectedNumberOfOwner ?? undefined}
             rightIcon="chevron-down"
           />
-          <NumberOfOwnersModal
+          <NumberOfOwnersCreateBottomSheet
             ref={numberOfOwnersModalRef}
-            onSelect={numberOfOwner => {
-              setValue('number_of_owner', numberOfOwner.value);
-              setSelectedNumberOfOwner(numberOfOwner.label);
+            onChange={numberOfOwner => {
+              setValue('number_of_owner', numberOfOwner?.value || '');
+              setSelectedNumberOfOwner(numberOfOwner?.label || '');
               numberOfOwnersModalRef.current?.close({ duration: 150 });
             }}
           />
@@ -726,11 +729,11 @@ export default function AddCarPage() {
             rightIcon="chevron-down"
             selectedValue={selectedSeller ?? undefined}
           />
-          <SellerModal
+          <SellerCreateBottomSheet
             ref={sellerModalRef}
-            onSelect={seller => {
-              setValue('seller', seller.value);
-              setSelectedSeller(seller.label);
+            onChange={seller => {
+              setValue('seller', seller?.value || '');
+              setSelectedSeller(seller?.label || '');
               sellerModalRef.current?.close({ duration: 150 });
             }}
           />
@@ -847,11 +850,11 @@ export default function AddCarPage() {
               onPress={() => handlePresentCurrencyModalPress()}
               rightIcon="chevron-down"
             />
-            <CurrencyModal
+            <CurrencyCreateBottomSheet
               ref={currencyModalRef}
-              onSelect={currency => {
-                setValue('currency', currency.value);
-                setSelectedCurrency(currency.label);
+              onChange={currency => {
+                setValue('currency', currency?.value || '');
+                setSelectedCurrency(currency?.label || '');
                 currencyModalRef.current?.close({ duration: 150 });
               }}
             />
@@ -865,11 +868,11 @@ export default function AddCarPage() {
             onPress={handlePresentRegionModalPress}
             rightIcon="chevron-down"
           />
-          <RegionModal
+          <RegionCreateBottomSheet
             ref={regionModalRef}
             onChange={region => {
-              setValue('region', region.slug || '');
-              setSelectedRegion(region.name || '');
+              setValue('region', region?.id?.toString() || '');
+              setSelectedRegion(region?.name || '');
               regionModalRef.current?.close({ duration: 150 });
             }}
           />
