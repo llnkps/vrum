@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { ScrollView, View, Text, TouchableOpacity, Switch, Image, Alert } from "react-native";
-import FeatherIcon from "@expo/vector-icons/Feather";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { useAuthStore } from "@/state/auth/useAuthStore";
-import { useThemeStore } from "@/state/theme/useThemeStore";
-import { usePreferencesStore, Language } from "@/state/preferences/usePreferencesStore";
-import { createAuthenticatedConfiguration } from "@/openapi/configurations";
-import { UserApi } from "@/openapi/client";
-import i18n from "@/i18n";
+import React, { useState, useEffect } from 'react';
+import { ScrollView, View, Text, TouchableOpacity, Switch, Image, Alert } from 'react-native';
+import FeatherIcon from '@expo/vector-icons/Feather';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { useAuthStore } from '@/state/auth/useAuthStore';
+import { useThemeStore } from '@/state/theme/useThemeStore';
+import { usePreferencesStore, Language } from '@/state/preferences/usePreferencesStore';
+import { createAuthenticatedConfiguration } from '@/openapi/configurations';
+import { UserApi } from '@/openapi/client';
+import i18n from '@/i18n';
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -25,13 +25,13 @@ export default function SettingsPage() {
   // Check authentication
   useEffect(() => {
     if (!isAuthenticated) {
-      router.replace("/sign-in");
+      router.replace('/sign-in');
     }
   }, [isAuthenticated, router]);
 
   // Fetch user data
   const { data: userData } = useQuery({
-    queryKey: ["user-profile"],
+    queryKey: ['user-profile'],
     queryFn: async () => {
       const userApi = new UserApi(createAuthenticatedConfiguration());
       return await userApi.getAppUserdomainPresentationGetmeGetme();
@@ -50,14 +50,14 @@ export default function SettingsPage() {
   });
 
   const handleLogout = async () => {
-    Alert.alert("Logout", "Are you sure you want to logout?", [
-      { text: "Cancel", style: "cancel" },
+    Alert.alert('Logout', 'Are you sure you want to logout?', [
+      { text: 'Cancel', style: 'cancel' },
       {
-        text: "Logout",
-        style: "destructive",
+        text: 'Logout',
+        style: 'destructive',
         onPress: async () => {
           await logout();
-          router.replace("/sign-in");
+          router.replace('/sign-in');
         },
       },
     ]);
@@ -70,10 +70,10 @@ export default function SettingsPage() {
 
   const getLanguageDisplayName = (lang: Language) => {
     const names = {
-      en: "English",
-      ro: "Română",
-      ru: "Русский",
-      uk: "Українська",
+      en: 'English',
+      ro: 'Română',
+      ru: 'Русский',
+      uk: 'Українська',
     };
     return names[lang];
   };
@@ -85,7 +85,7 @@ export default function SettingsPage() {
   return (
     <SafeAreaView className="flex-1 bg-background-neutral dark:bg-background-neutral-dark">
       {/* Header */}
-      <View className="px-5 py-4 border-b border-border/10 dark:border-border-dark/10">
+      <View className="border-b border-border/10 px-5 py-4 dark:border-border-dark/10">
         <Text className="text-2xl font-bold text-font dark:text-font-dark">Настройки</Text>
       </View>
 
@@ -93,23 +93,27 @@ export default function SettingsPage() {
       <ScrollView className="px-5 py-2" showsVerticalScrollIndicator={false}>
         {/* Account Section */}
         <View className="py-4">
-          <Text className="text-sm font-semibold text-font-subtlest dark:text-font-subtlest-dark uppercase tracking-wide pl-3 mb-3">
+          <Text className="mb-3 pl-3 text-sm font-semibold uppercase tracking-wide text-font-subtlest dark:text-font-subtlest-dark">
             Аккаунт
           </Text>
 
           <TouchableOpacity
-            className="flex-row items-center bg-surface dark:bg-surface-dark p-4 rounded-2xl active:opacity-80"
+            className="flex-row items-center rounded-2xl bg-surface p-4 active:opacity-80 dark:bg-surface-dark"
             activeOpacity={0.7}
           >
             <Image
               source={{
-                uri: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&auto=format&fit=facearea&w=256&h=256&q=80",
+                uri: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&auto=format&fit=facearea&w=256&h=256&q=80',
               }}
-              className="w-14 h-14 rounded-xl"
+              className="h-14 w-14 rounded-xl"
             />
-            <View className="flex-1 ml-4">
-              <Text className="text-base font-semibold text-font dark:text-font-dark">{userData?.name || "User"}</Text>
-              <Text className="text-sm text-font-subtle dark:text-font-subtle-dark">{userData?.email || "user@example.com"}</Text>
+            <View className="ml-4 flex-1">
+              <Text className="text-base font-semibold text-font dark:text-font-dark">
+                {userData?.name || 'User'}
+              </Text>
+              <Text className="text-sm text-font-subtle dark:text-font-subtle-dark">
+                {userData?.email || 'user@example.com'}
+              </Text>
             </View>
             <FeatherIcon name="chevron-right" size={20} color="#A9ABAF" />
           </TouchableOpacity>
@@ -117,21 +121,21 @@ export default function SettingsPage() {
 
         {/* Preferences */}
         <View className="py-4">
-          <Text className="text-sm font-semibold text-font-subtlest dark:text-font-subtlest-dark uppercase tracking-wide pl-3 mb-3">
+          <Text className="mb-3 pl-3 text-sm font-semibold uppercase tracking-wide text-font-subtlest dark:text-font-subtlest-dark">
             Предпочтения
           </Text>
 
-          <View className="bg-surface dark:bg-surface-dark rounded-2xl overflow-hidden">
+          <View className="overflow-hidden rounded-2xl bg-surface dark:bg-surface-dark">
             {/* Dark Mode Toggle */}
-            <View className="flex-row items-center px-4 py-4 border-b border-border/10 dark:border-border-dark/10">
+            <View className="flex-row items-center border-b border-border/10 px-4 py-4 dark:border-border-dark/10">
               <Text className="text-base text-font dark:text-font-dark">Темная тема</Text>
               <View className="flex-1" />
               <Switch
                 onValueChange={toggleTheme}
                 value={isDark}
                 trackColor={{
-                  false: "#D3D5DA",
-                  true: "#1868DB",
+                  false: '#D3D5DA',
+                  true: '#1868DB',
                 }}
                 thumbColor="#FFFFFF"
                 ios_backgroundColor="#D3D5DA"
@@ -140,10 +144,10 @@ export default function SettingsPage() {
 
             {/* Language */}
             <TouchableOpacity
-              className="flex-row items-center px-4 py-4 border-b border-border/10 dark:border-border-dark/10 active:opacity-80"
+              className="flex-row items-center border-b border-border/10 px-4 py-4 active:opacity-80 dark:border-border-dark/10"
               activeOpacity={0.7}
               onPress={() => {
-                const languages: Language[] = ["en", "ro", "ru", "uk"];
+                const languages: Language[] = ['en', 'ro', 'ru', 'uk'];
                 const currentIndex = languages.indexOf(language);
                 const nextIndex = (currentIndex + 1) % languages.length;
                 handleLanguageChange(languages[nextIndex]);
@@ -151,7 +155,7 @@ export default function SettingsPage() {
             >
               <Text className="text-base text-font dark:text-font-dark">Язык</Text>
               <View className="flex-1" />
-              <Text className="text-sm font-medium text-font-subtle dark:text-font-subtle-dark mr-2">
+              <Text className="mr-2 text-sm font-medium text-font-subtle dark:text-font-subtle-dark">
                 {getLanguageDisplayName(language)}
               </Text>
               <FeatherIcon name="chevron-right" size={18} color="#A9ABAF" />
@@ -159,16 +163,16 @@ export default function SettingsPage() {
 
             {/* Location */}
             <TouchableOpacity
-              className="flex-row items-center px-4 py-4 border-b border-border/10 dark:border-border-dark/10 active:opacity-80"
+              className="flex-row items-center border-b border-border/10 px-4 py-4 active:opacity-80 dark:border-border-dark/10"
               activeOpacity={0.7}
               onPress={() => {
                 Alert.prompt(
-                  "Update Location",
-                  "Enter your new location:",
+                  'Update Location',
+                  'Enter your new location:',
                   [
-                    { text: "Cancel", style: "cancel" },
+                    { text: 'Cancel', style: 'cancel' },
                     {
-                      text: "Update",
+                      text: 'Update',
                       onPress: (newLocation?: string) => {
                         if (newLocation) {
                           updateLocationMutation.mutate(newLocation);
@@ -176,27 +180,29 @@ export default function SettingsPage() {
                       },
                     },
                   ],
-                  "plain-text",
+                  'plain-text',
                   location
                 );
               }}
             >
               <Text className="text-base text-font dark:text-font-dark">Местоположение</Text>
               <View className="flex-1" />
-              <Text className="text-sm font-medium text-font-subtle dark:text-font-subtle-dark mr-2">{location}</Text>
+              <Text className="mr-2 text-sm font-medium text-font-subtle dark:text-font-subtle-dark">
+                {location}
+              </Text>
               <FeatherIcon name="chevron-right" size={18} color="#A9ABAF" />
             </TouchableOpacity>
 
             {/* Email Notifications */}
-            <View className="flex-row items-center px-4 py-4 border-b border-border/10 dark:border-border-dark/10">
+            <View className="flex-row items-center border-b border-border/10 px-4 py-4 dark:border-border-dark/10">
               <Text className="text-base text-font dark:text-font-dark">Email уведомления</Text>
               <View className="flex-1" />
               <Switch
-                onValueChange={(val) => setForm({ ...form, emailNotifications: val })}
+                onValueChange={val => setForm({ ...form, emailNotifications: val })}
                 value={form.emailNotifications}
                 trackColor={{
-                  false: "#D3D5DA",
-                  true: "#1868DB",
+                  false: '#D3D5DA',
+                  true: '#1868DB',
                 }}
                 thumbColor="#FFFFFF"
                 ios_backgroundColor="#D3D5DA"
@@ -208,11 +214,11 @@ export default function SettingsPage() {
               <Text className="text-base text-font dark:text-font-dark">Push уведомления</Text>
               <View className="flex-1" />
               <Switch
-                onValueChange={(val) => setForm({ ...form, pushNotifications: val })}
+                onValueChange={val => setForm({ ...form, pushNotifications: val })}
                 value={form.pushNotifications}
                 trackColor={{
-                  false: "#D3D5DA",
-                  true: "#1868DB",
+                  false: '#D3D5DA',
+                  true: '#1868DB',
                 }}
                 thumbColor="#FFFFFF"
                 ios_backgroundColor="#D3D5DA"
@@ -223,44 +229,53 @@ export default function SettingsPage() {
 
         {/* Resources */}
         <View className="py-4">
-          <Text className="text-sm font-semibold text-font-subtlest dark:text-font-subtlest-dark uppercase tracking-wide pl-3 mb-3">
+          <Text className="mb-3 pl-3 text-sm font-semibold uppercase tracking-wide text-font-subtlest dark:text-font-subtlest-dark">
             Ресурсы
           </Text>
 
-          <View className="bg-surface dark:bg-surface-dark rounded-2xl overflow-hidden">
-            {["Связаться с нами", "Сообщить об ошибке", "Оценить в App Store", "Условия и конфиденциальность"].map(
-              (item, index) => (
-                <TouchableOpacity
-                  key={index}
-                  className={`flex-row items-center px-4 py-4 active:opacity-80 ${
-                    index !== 3 ? "border-b border-border/10 dark:border-border-dark/10" : ""
-                  }`}
-                  activeOpacity={0.7}
-                >
-                  <Text className="text-base text-font dark:text-font-dark">{item}</Text>
-                  <View className="flex-1" />
-                  <FeatherIcon name="chevron-right" size={18} color="#A9ABAF" />
-                </TouchableOpacity>
-              )
-            )}
+          <View className="overflow-hidden rounded-2xl bg-surface dark:bg-surface-dark">
+            {[
+              'Связаться с нами',
+              'Сообщить об ошибке',
+              'Оценить в App Store',
+              'Условия и конфиденциальность',
+            ].map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                className={`flex-row items-center px-4 py-4 active:opacity-80 ${
+                  index !== 3 ? 'border-b border-border/10 dark:border-border-dark/10' : ''
+                }`}
+                activeOpacity={0.7}
+              >
+                <Text className="text-base text-font dark:text-font-dark">{item}</Text>
+                <View className="flex-1" />
+                <FeatherIcon name="chevron-right" size={18} color="#A9ABAF" />
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
 
         {/* Logout */}
         <View className="py-4">
           <TouchableOpacity
-            className="flex-row items-center bg-surface dark:bg-surface-dark px-4 py-4 justify-center rounded-2xl active:opacity-80"
+            className="flex-row items-center justify-center rounded-2xl bg-surface px-4 py-4 active:opacity-80 dark:bg-surface-dark"
             activeOpacity={0.7}
             onPress={handleLogout}
           >
-            <Text className="text-base font-semibold text-font-danger dark:text-font-danger-dark">Выйти из аккаунта</Text>
+            <Text className="text-base font-semibold text-font-danger dark:text-font-danger-dark">
+              Выйти из аккаунта
+            </Text>
           </TouchableOpacity>
         </View>
 
         {/* Footer */}
-        <View className="py-8 items-center">
-          <Text className="text-xs text-center text-font-subtlest dark:text-font-subtlest-dark">App Version 2.24 #50491</Text>
-          <Text className="text-xs text-center text-font-subtlest dark:text-font-subtlest-dark mt-1">Сделано с ❤️ в Молдове</Text>
+        <View className="items-center py-8">
+          <Text className="text-center text-xs text-font-subtlest dark:text-font-subtlest-dark">
+            App Version 2.24 #50491
+          </Text>
+          <Text className="mt-1 text-center text-xs text-font-subtlest dark:text-font-subtlest-dark">
+            Сделано с ❤️ в Молдове
+          </Text>
         </View>
       </ScrollView>
     </SafeAreaView>

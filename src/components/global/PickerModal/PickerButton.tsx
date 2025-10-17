@@ -1,10 +1,10 @@
-import { Text, TouchableOpacity, useColorScheme } from "react-native";
+import { Text, TouchableOpacity, useColorScheme } from 'react-native';
 
 export const PickerButton = ({
   label,
   value,
   onPress,
-  placeholder = "Выберите...",
+  placeholder = 'Выберите...',
 }: {
   label: string;
   value: string;
@@ -19,10 +19,10 @@ export const PickerButton = ({
       className={`
         ${
           colorScheme
-            ? "bg-background-input-dark border-border-input-dark"
-            : "bg-background-input border-border-input"
+            ? 'border-border-input-dark bg-background-input-dark'
+            : 'border-border-input bg-background-input'
         } 
-        border px-4 py-3 rounded-xl flex-row justify-between items-center
+        flex-row items-center justify-between rounded-xl border px-4 py-3
         active:opacity-70
       `}
     >
@@ -30,20 +30,16 @@ export const PickerButton = ({
         className={`text-base ${
           value
             ? colorScheme
-              ? "text-font-dark"
-              : "text-font"
+              ? 'text-font-dark'
+              : 'text-font'
             : colorScheme
-            ? "text-font-subtlest-dark"
-            : "text-font-subtlest"
+              ? 'text-font-subtlest-dark'
+              : 'text-font-subtlest'
         }`}
       >
         {value || placeholder}
       </Text>
-      <Text
-        className={`text-lg ${
-          colorScheme ? "text-font-subtle-dark" : "text-font-subtle"
-        }`}
-      >
+      <Text className={`text-lg ${colorScheme ? 'text-font-subtle-dark' : 'text-font-subtle'}`}>
         ▼
       </Text>
     </TouchableOpacity>

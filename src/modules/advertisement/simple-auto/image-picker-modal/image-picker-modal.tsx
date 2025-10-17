@@ -1,12 +1,10 @@
-import CustomBottomSheetModal, {
-  BottomSheetRef,
-} from "@/components/global/CustomBottomSheetModal";
-import { CustomRectButton } from "@/components/ui/button";
-import { BottomSheetView } from "@gorhom/bottom-sheet";
-import React, { forwardRef } from "react";
-import * as ImagePicker from "expo-image-picker";
-import { View, Image, ScrollView, Text, TouchableOpacity } from "react-native";
-import { useFieldArray } from "react-hook-form";
+import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
+import { CustomRectButton } from '@/components/ui/button';
+import { BottomSheetView } from '@gorhom/bottom-sheet';
+import React, { forwardRef } from 'react';
+import * as ImagePicker from 'expo-image-picker';
+import { View, Image, ScrollView, Text, TouchableOpacity } from 'react-native';
+import { useFieldArray } from 'react-hook-form';
 
 type ImagePickerModalProps = {
   onSelect: (images: ImagePicker.ImagePickerAsset[]) => void;
@@ -18,7 +16,7 @@ const ImagePickerModal = forwardRef<BottomSheetRef, ImagePickerModalProps>(
   ({ onSelect, control, maxImages = 10 }, ref) => {
     const { fields, append, remove } = useFieldArray({
       control,
-      name: "images", // The name of your array field in the form
+      name: 'images', // The name of your array field in the form
     });
 
     const pickImages = async () => {
@@ -56,8 +54,8 @@ const ImagePickerModal = forwardRef<BottomSheetRef, ImagePickerModalProps>(
       }
 
       const { status } = await ImagePicker.requestCameraPermissionsAsync();
-      if (status !== "granted") {
-        alert("Sorry, we need camera permissions to make this work!");
+      if (status !== 'granted') {
+        alert('Sorry, we need camera permissions to make this work!');
         return;
       }
 
@@ -88,41 +86,26 @@ const ImagePickerModal = forwardRef<BottomSheetRef, ImagePickerModalProps>(
     };
 
     return (
-      <CustomBottomSheetModal
-        ref={ref}
-        snapPoints={["80%"]}
-        enableContentPanningGesture={true}
-      >
-        <BottomSheetView className="flex-col p-4 gap-y-4">
+      <CustomBottomSheetModal ref={ref} snapPoints={['80%']} enableContentPanningGesture={true}>
+        <BottomSheetView className="flex-col gap-y-4 p-4">
           {fields.length > 0 && (
             <ScrollView horizontal className="h-24">
               {fields.map((field, index) => (
                 <View key={field.id} className="relative mr-2">
-                  <Image
-                    source={{ uri: (field as any).uri }}
-                    className="w-24 h-24 rounded-md"
-                  />
+                  <Image source={{ uri: (field as any).uri }} className="h-24 w-24 rounded-md" />
                   <TouchableOpacity
                     onPress={() => removeImage(index)}
-                    className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 items-center justify-center"
+                    className="absolute -right-2 -top-2 h-6 w-6 items-center justify-center rounded-full bg-red-500"
                   >
-                    <Text className="text-white text-xs font-bold">×</Text>
+                    <Text className="text-xs font-bold text-white">×</Text>
                   </TouchableOpacity>
                 </View>
               ))}
             </ScrollView>
           )}
           <View className="gap-y-2">
-            <CustomRectButton
-              title="Выбрать из галереи"
-              onPress={pickImages}
-              isSelected={false}
-            />
-            <CustomRectButton
-              title="Сделать фото"
-              onPress={takePhoto}
-              isSelected={false}
-            />
+            <CustomRectButton title="Выбрать из галереи" onPress={pickImages} isSelected={false} />
+            <CustomRectButton title="Сделать фото" onPress={takePhoto} isSelected={false} />
           </View>
           {fields.length > 0 && (
             <View className="mt-2">
@@ -137,6 +120,6 @@ const ImagePickerModal = forwardRef<BottomSheetRef, ImagePickerModalProps>(
   }
 );
 
-ImagePickerModal.displayName = "ImagePickerModal";
+ImagePickerModal.displayName = 'ImagePickerModal';
 
 export default ImagePickerModal;

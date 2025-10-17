@@ -1,15 +1,15 @@
-import { CustomTheme } from "@/theme";
-import { Feather } from "@expo/vector-icons";
-import { useTheme } from "@react-navigation/native";
-import React, { PropsWithChildren } from "react";
-import { ActivityIndicator, StyleSheet, Text, View, ViewStyle } from "react-native";
-import { RectButton, RectButtonProps } from "react-native-gesture-handler";
+import { CustomTheme } from '@/theme';
+import { Feather } from '@expo/vector-icons';
+import { useTheme } from '@react-navigation/native';
+import React, { PropsWithChildren } from 'react';
+import { ActivityIndicator, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { RectButton, RectButtonProps } from 'react-native-gesture-handler';
 
 type Props = PropsWithChildren<
   RectButtonProps & {
     loading?: boolean;
     title?: string;
-    appearance?: "primary" | "default" | "subtle";
+    appearance?: 'primary' | 'default' | 'subtle';
     isSelected?: boolean;
   }
 >;
@@ -20,7 +20,7 @@ export const CustomRectButton = ({
   style,
   children,
   onPress,
-  appearance = "default",
+  appearance = 'default',
   isSelected = false,
 }: Props) => {
   const theme = useTheme() as CustomTheme;
@@ -37,19 +37,15 @@ export const CustomRectButton = ({
     },
 
     primary: {
-      backgroundColor: "#1868DB",
-      color: "#fff",
-      borderColor: "transparent",
+      backgroundColor: '#1868DB',
+      color: '#fff',
+      borderColor: 'transparent',
     },
   });
 
   return (
     <RectButton
-      style={[
-        styles.button, 
-        appearance === "primary" && styles.primary,
-        style
-      ]}
+      style={[styles.button, appearance === 'primary' && styles.primary, style]}
       borderless={false}
       onPress={onPress}
       rippleColor={theme.colors.button.subtlePressed}
@@ -59,11 +55,9 @@ export const CustomRectButton = ({
           <ActivityIndicator size="small" color="white" />
         ) : (
           <>
-            <View className="flex-row justify-between items-center">
+            <View className="flex-row items-center justify-between">
               <Text style={styles.text}>{title}</Text>
-              {isSelected && (
-                <Feather name="check" size={18} color={theme.colors.icon} />
-              )}
+              {isSelected && <Feather name="check" size={18} color={theme.colors.icon} />}
             </View>
           </>
         ))}

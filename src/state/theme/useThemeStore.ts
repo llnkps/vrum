@@ -1,7 +1,7 @@
-import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
-import * as SecureStore from "expo-secure-store";
-import { Appearance } from "react-native";
+import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import * as SecureStore from 'expo-secure-store';
+import { Appearance } from 'react-native';
 
 interface ThemeState {
   isDark: boolean;
@@ -24,13 +24,13 @@ const storage = {
 
 export const useThemeStore = create<ThemeState>()(
   persist(
-    (set) => ({
+    set => ({
       isDark: Appearance.getColorScheme() === 'dark',
-      toggleTheme: () => set((state) => ({ isDark: !state.isDark })),
+      toggleTheme: () => set(state => ({ isDark: !state.isDark })),
       setTheme: (isDark: boolean) => set({ isDark }),
     }),
     {
-      name: "theme-storage",
+      name: 'theme-storage',
       storage: createJSONStorage(() => storage),
     }
   )

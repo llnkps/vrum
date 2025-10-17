@@ -1,7 +1,7 @@
-import { LoginApi, UserApi } from "@/openapi/client";
-import * as SecureStore from "expo-secure-store";
-import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
+import { LoginApi, UserApi } from '@/openapi/client';
+import * as SecureStore from 'expo-secure-store';
+import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 interface User {
   id: string;
@@ -54,10 +54,10 @@ export const useAuthStore = create<AuthState>()(
 
           const token = response.token;
           const refreshToken = response.refreshToken;
-          const user = { id: "temp", email, tel: "" };
+          const user = { id: 'temp', email, tel: '' };
           set({ isAuthenticated: true, user, token, refreshToken });
         } catch (error) {
-          console.error("Login error:", error);
+          console.error('Login error:', error);
           throw error;
         }
       },
@@ -78,21 +78,21 @@ export const useAuthStore = create<AuthState>()(
         const { refreshToken } = get();
         if (!refreshToken) return false;
         try {
-          const response = await fetch("http://192.168.2.55:8000/api/token/refresh", {
-            method: "POST",
+          const response = await fetch('http://192.168.2.55:8000/api/token/refresh', {
+            method: 'POST',
             headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${refreshToken}`,
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${refreshToken}`,
             },
           });
-          if (!response.ok) throw new Error("Refresh failed");
+          if (!response.ok) throw new Error('Refresh failed');
           const data = await response.json();
           const newToken = data.token;
           const newRefreshToken = data.refreshToken;
           set({ token: newToken, refreshToken: newRefreshToken });
           return true;
         } catch (error) {
-          console.error("Refresh token error:", error);
+          console.error('Refresh token error:', error);
           set({ isAuthenticated: false, user: null, token: null, refreshToken: null });
           return false;
         }
@@ -101,15 +101,15 @@ export const useAuthStore = create<AuthState>()(
         const { refreshToken } = get();
         if (refreshToken) {
           try {
-            await fetch("http://192.168.2.55:8000/api/token/invalidate", {
-              method: "POST",
+            await fetch('http://192.168.2.55:8000/api/token/invalidate', {
+              method: 'POST',
               headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${refreshToken}`,
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${refreshToken}`,
               },
             });
           } catch (error) {
-            console.error("Invalidate error:", error);
+            console.error('Invalidate error:', error);
           }
         }
         set({ isAuthenticated: false, user: null, token: null, refreshToken: null });
@@ -121,7 +121,7 @@ export const useAuthStore = create<AuthState>()(
             const userApi = new UserApi();
             const response = await userApi.getAppUserdomainPresentationGetmeGetmeRaw();
             const userData = await response.value();
-            const user = { id: "current", email: userData.email || "", tel: "" };
+            const user = { id: 'current', email: userData.email || '', tel: '' };
             set({ isAuthenticated: true, user });
           } catch (error: any) {
             if (error.response?.status === 401) {
@@ -143,7 +143,7 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: "auth-storage",
+      name: 'auth-storage',
       storage: createJSONStorage(() => storage),
     }
   )

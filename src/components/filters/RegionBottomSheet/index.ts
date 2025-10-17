@@ -1,1 +1,1 @@
-export {RegionBottomSheet} from "./RegionBottomSheet";
+export { RegionBottomSheet } from './RegionBottomSheet';

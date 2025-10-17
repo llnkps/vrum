@@ -1,15 +1,11 @@
-import CustomBottomSheetModal from "@/components/global/CustomBottomSheetModal";
-import { CheckboxRectButton } from "@/components/global/CheckboxRectButton";
-import { CustomRectButton } from "@/components/ui/button";
-import { useRegionApi } from "@/hooks/useRegionApi";
-import { GetRegionIndex200ResponseInner } from "@/openapi/client";
-import {
-  BottomSheetModal,
-  BottomSheetScrollView,
-  BottomSheetView,
-} from "@gorhom/bottom-sheet";
-import React, { forwardRef } from "react";
-import { ActivityIndicator, Text } from "react-native";
+import CustomBottomSheetModal from '@/components/global/CustomBottomSheetModal';
+import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
+import { CustomRectButton } from '@/components/ui/button';
+import { useRegionApi } from '@/hooks/api/useRegionApi';
+import { GetRegionIndex200ResponseInner } from '@/openapi/client';
+import { BottomSheetModal, BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
+import React, { forwardRef } from 'react';
+import { ActivityIndicator, Text } from 'react-native';
 
 export type BottomSheetRef = BottomSheetModal;
 
@@ -23,9 +19,9 @@ export const RegionBottomSheet = forwardRef<BottomSheetRef, props>((props, ref) 
   const [selectedRegions, setSelectedRegions] = React.useState<GetRegionIndex200ResponseInner[]>(
     props.multiple ? [] : []
   );
-  const [selectedRegion, setSelectedRegion] = React.useState<GetRegionIndex200ResponseInner | undefined>(
-    undefined
-  );
+  const [selectedRegion, setSelectedRegion] = React.useState<
+    GetRegionIndex200ResponseInner | undefined
+  >(undefined);
 
   const handleRegionToggle = (region: GetRegionIndex200ResponseInner) => {
     if (props.multiple) {
@@ -59,28 +55,28 @@ export const RegionBottomSheet = forwardRef<BottomSheetRef, props>((props, ref) 
   return (
     <CustomBottomSheetModal
       ref={ref}
-      snapPoints={["60%"]}
+      snapPoints={['60%']}
       enableContentPanningGesture={true}
-      title={props.multiple ? "Выберите регионы" : "Выберите регион"}
+      title={props.multiple ? 'Выберите регионы' : 'Выберите регион'}
       footerProps={{
         onConfirm: handleConfirm,
       }}
     >
       {isLoading && <ActivityIndicator size="large" />}
       {error ? (
-        <BottomSheetView className="flex-1 justify-center items-center">
+        <BottomSheetView className="flex-1 items-center justify-center">
           <Text className="text-font dark:text-font-dark">
             Произошла ошибка. Приносим извинения!
           </Text>
         </BottomSheetView>
       ) : (
         <BottomSheetScrollView className="flex-col" enableFooterMarginAdjustment={true}>
-          {regions?.map((region) => {
+          {regions?.map(region => {
             if (props.multiple) {
               return (
                 <CheckboxRectButton
                   key={region.id}
-                  label={region.name || ""}
+                  label={region.name || ''}
                   value={isRegionSelected(region)}
                   onPress={() => handleRegionToggle(region)}
                 />
@@ -102,4 +98,4 @@ export const RegionBottomSheet = forwardRef<BottomSheetRef, props>((props, ref) 
   );
 });
 
-RegionBottomSheet.displayName = "RegionBottomSheet";
+RegionBottomSheet.displayName = 'RegionBottomSheet';

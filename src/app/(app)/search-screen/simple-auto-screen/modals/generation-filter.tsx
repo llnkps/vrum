@@ -1,16 +1,21 @@
-import { useRouter } from "expo-router";
-import { FC, useEffect, useState } from "react";
-import { StatusBar, Text, TouchableHighlight, View } from "react-native";
-import type { SharedValue } from "react-native-reanimated";
-import Animated, { useAnimatedScrollHandler, useSharedValue } from "react-native-reanimated";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from 'expo-router';
+import { FC, useEffect, useState } from 'react';
+import { StatusBar, Text, TouchableHighlight, View } from 'react-native';
+import type { SharedValue } from 'react-native-reanimated';
+import Animated, { useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { CheckboxRectButton } from "@/components/global/CheckboxRectButton/CheckboxRectButton";
-import { HeaderSearchBar } from "@/components/global/header/HeaderSearchBar";
-import { useGenerationsByModelApi } from "@/hooks/useGenerationsByModelApi";
-import { GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner } from "@/openapi/client";
-import { useAutoSelectStore, selectSelectedBrands, selectSelectedModels, selectSelectedGenerations } from "@/state/search-screen/useAutoSelectStore";
-import { CustomRectButton } from "@/components/ui/button/CustomRectButton";
+import { CheckboxRectButton } from '@/components/global/CheckboxRectButton/CheckboxRectButton';
+import { HeaderSearchBar } from '@/components/global/header/HeaderSearchBar';
+import { useGenerationsByModelApi } from '@/hooks/api/useGenerationsByModelApi';
+import { GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner } from '@/openapi/client';
+import {
+  useAutoSelectStore,
+  selectSelectedBrands,
+  selectSelectedModels,
+  selectSelectedGenerations,
+} from '@/state/search-screen/useAutoSelectStore';
+import { CustomRectButton } from '@/components/ui/button/CustomRectButton';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight ?? 24;
 
@@ -39,7 +44,7 @@ export default function GenerationFilter() {
 
   if (isLoading) {
     return (
-      <View className="flex-1 justify-center items-center">
+      <View className="flex-1 items-center justify-center">
         <Text className="text-font dark:text-font-dark">Loading...</Text>
       </View>
     );
@@ -51,14 +56,23 @@ export default function GenerationFilter() {
 
   return (
     <>
-      <SafeAreaView className="flex-1 px-3 gap-y-4">
-        <HeaderSearchBar title="Выберите поколение" scrollY={scrollY} showSearch={false} onClose={() => router.dismiss()} />
+      <SafeAreaView className="flex-1 gap-y-4 px-3">
+        <HeaderSearchBar
+          title="Выберите поколение"
+          scrollY={scrollY}
+          showSearch={false}
+          onClose={() => router.dismiss()}
+        />
 
         {/* Selected Models Display */}
         {selectedModels.length > 0 && (
-          <View className="p-4 bg-surface dark:bg-surface-dark rounded-2xl">
-            <Text className="text-sm font-semibold text-font-subtlest dark:text-font-subtlest-dark mb-2">Выбранные модели:</Text>
-            <Text className="text-font dark:text-font-dark">{selectedModels.map((m) => m.name).join(", ")}</Text>
+          <View className="rounded-2xl bg-surface p-4 dark:bg-surface-dark">
+            <Text className="mb-2 text-sm font-semibold text-font-subtlest dark:text-font-subtlest-dark">
+              Выбранные модели:
+            </Text>
+            <Text className="text-font dark:text-font-dark">
+              {selectedModels.map(m => m.name).join(', ')}
+            </Text>
           </View>
         )}
         {/* {(selectedModelsByBrand[currentBrand?.id!]?.length || 0) > 0 && (
@@ -79,12 +93,21 @@ export default function GenerationFilter() {
           </View>
         )} */}
 
-        <GenerationList generations={filteredGenerations} scrollY={scrollY} isScrolling={isScrolling} />
+        <GenerationList
+          generations={filteredGenerations}
+          scrollY={scrollY}
+          isScrolling={isScrolling}
+        />
 
         {/* Fixed Button */}
         <View className="absolute bottom-2 left-0 right-0 px-3 pb-6">
-          <CustomRectButton onPress={handleShowAds} appearance="primary">
-            <Text className="text-center text-white font-semibold">Показать объявления</Text>
+          <CustomRectButton
+            onPress={() =>
+              router.replace('/(app)/search-screen/simple-auto-screen/modals/simple-auto-modal')
+            }
+            appearance="primary"
+          >
+            <Text className="text-center font-semibold text-white">Показать объявления</Text>
           </CustomRectButton>
         </View>
       </SafeAreaView>
@@ -110,7 +133,7 @@ const GenerationList: FC<GenerationListProps> = ({ generations, scrollY, isScrol
   };
 
   const scrollHandler = useAnimatedScrollHandler({
-    onScroll: (event) => {
+    onScroll: event => {
       scrollY.value = event.contentOffset.y;
     },
     onBeginDrag: () => {
@@ -125,7 +148,7 @@ const GenerationList: FC<GenerationListProps> = ({ generations, scrollY, isScrol
     <View className="mt-2">
       <Animated.FlatList
         data={generations}
-        keyExtractor={(item) => `${item.generation}`}
+        keyExtractor={item => `${item.generation}`}
         scrollEventThrottle={16}
         onScroll={scrollHandler}
         showsVerticalScrollIndicator={false}
@@ -133,7 +156,7 @@ const GenerationList: FC<GenerationListProps> = ({ generations, scrollY, isScrol
           paddingBottom: 120 + STATUSBAR_HEIGHT + 100,
         }}
         renderItem={({ item }) => {
-          const isSelected = selectedGenerations.some((g) => g.id === item.id);
+          const isSelected = selectedGenerations.some(g => g.id === item.id);
           return (
             <CheckboxRectButton
               value={isSelected}

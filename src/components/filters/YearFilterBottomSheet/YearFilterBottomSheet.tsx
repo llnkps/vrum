@@ -1,9 +1,9 @@
-import CustomBottomSheetModal from "@/components/global/CustomBottomSheetModal";
-import CustomWheelPicker from "@/components/global/CustomWheelPicker";
-import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
-import { PickerItem, ValueChangedEvent } from "@quidone/react-native-wheel-picker";
-import React, { forwardRef, useState } from "react";
-import { View } from "react-native";
+import CustomBottomSheetModal from '@/components/global/CustomBottomSheetModal';
+import CustomWheelPicker from '@/components/global/CustomWheelPicker';
+import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
+import { PickerItem, ValueChangedEvent } from '@quidone/react-native-wheel-picker';
+import React, { forwardRef, useState } from 'react';
+import { View } from 'react-native';
 
 export type BottomSheetRef = BottomSheetModal;
 
@@ -16,8 +16,8 @@ export const YearBottomSheet = forwardRef<BottomSheetRef, YearModalProps>((props
   const [maxYear, setMaxYear] = useState<number | undefined>(undefined);
 
   const years = [
-    { value: undefined as number | undefined, label: "--" },
-    ...[...Array(100).keys()].map((index) => ({
+    { value: undefined as number | undefined, label: '--' },
+    ...[...Array(100).keys()].map(index => ({
       value: 2025 - index,
       label: (2025 - index).toString(),
     })),
@@ -38,20 +38,30 @@ export const YearBottomSheet = forwardRef<BottomSheetRef, YearModalProps>((props
   return (
     <CustomBottomSheetModal
       ref={ref}
-      snapPoints={["50%"]}
+      snapPoints={['50%']}
       footerProps={{
         onConfirm: handleConfirm,
       }}
       title="Год выпуска"
     >
       <BottomSheetView>
-        <View className="pt-5 flex-row items-center justify-center gap-x-10 px-4">
+        <View className="flex-row items-center justify-center gap-x-10 px-4 pt-5">
           <View className="flex-1">
-            <CustomWheelPicker data={years} value={minYear} onValueChanged={handleMinYearChange} label="От" />
+            <CustomWheelPicker
+              data={years}
+              value={minYear}
+              onValueChanged={handleMinYearChange}
+              label="От"
+            />
           </View>
 
           <View className="flex-1">
-            <CustomWheelPicker data={years} value={maxYear} onValueChanged={handleMaxYearChange} label="До" />
+            <CustomWheelPicker
+              data={years}
+              value={maxYear}
+              onValueChanged={handleMaxYearChange}
+              label="До"
+            />
           </View>
         </View>
       </BottomSheetView>
@@ -59,4 +69,4 @@ export const YearBottomSheet = forwardRef<BottomSheetRef, YearModalProps>((props
   );
 });
 
-YearBottomSheet.displayName = "YearBottomSheet";
+YearBottomSheet.displayName = 'YearBottomSheet';

@@ -1,11 +1,11 @@
-import { CustomTheme } from "@/theme";
-import { useTheme } from "@react-navigation/native";
-import { FC, ReactNode } from "react";
-import { Text, View, ViewStyle, TextStyle, ActivityIndicator } from "react-native";
-import { RectButton } from "react-native-gesture-handler";
-import Entypo from "@expo/vector-icons/Entypo";
+import { CustomTheme } from '@/theme';
+import { useTheme } from '@react-navigation/native';
+import { FC, ReactNode } from 'react';
+import { Text, View, ViewStyle, TextStyle, ActivityIndicator } from 'react-native';
+import { RectButton } from 'react-native-gesture-handler';
+import Entypo from '@expo/vector-icons/Entypo';
 
-import clsx from "clsx";
+import clsx from 'clsx';
 
 type TouchableHighlightRowProps = {
   label: string;
@@ -14,7 +14,7 @@ type TouchableHighlightRowProps = {
   icon?: ReactNode;
   rightIcon?: keyof typeof Entypo.glyphMap;
   showRightArrow?: boolean;
-  variant?: "default" | "bordered" | "plain" | "button";
+  variant?: 'default' | 'bordered' | 'plain' | 'button';
   containerStyle?: ViewStyle;
   labelStyle?: TextStyle;
   selectedValueStyle?: TextStyle;
@@ -23,7 +23,7 @@ type TouchableHighlightRowProps = {
   loading?: boolean;
   fullWidth?: boolean;
   centerText?: boolean;
-  selectedValueMode?: "under" | "replace";
+  selectedValueMode?: 'under' | 'replace';
 };
 
 export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
@@ -33,7 +33,7 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
   icon,
   rightIcon,
   showRightArrow = true,
-  variant = "default",
+  variant = 'default',
   containerStyle,
   labelStyle,
   selectedValueStyle,
@@ -42,7 +42,7 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
   loading = false,
   fullWidth = false,
   centerText = false,
-  selectedValueMode = "under",
+  selectedValueMode = 'under',
 }) => {
   const theme = useTheme() as CustomTheme;
 
@@ -59,19 +59,19 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
     };
 
     switch (variant) {
-      case "bordered":
+      case 'bordered':
         return {
           ...baseStyle,
           borderBottomColor: theme.colors.border,
           borderBottomWidth: 1,
           ...containerStyle,
         };
-      case "plain":
+      case 'plain':
         return {
           ...baseStyle,
           ...containerStyle,
         };
-      case "button":
+      case 'button':
         return {
           ...baseStyle,
           backgroundColor: theme.colors.button.neutral,
@@ -101,16 +101,21 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
     <View style={getContainerStyle()}>
       <RectButton
         onPress={handlePress}
-        style={{ ...getButtonStyle(), flexDirection: "row", alignItems: "center", justifyContent: centerText ? "center" : "space-between" }}
+        style={{
+          ...getButtonStyle(),
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: centerText ? 'center' : 'space-between',
+        }}
         rippleColor={theme.colors.border}
         enabled={!disabled}
       >
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           {icon && <View style={{ marginRight: 2 }}>{icon}</View>}
           <View>
-            {selectedValue && selectedValueMode === "replace" ? (
+            {selectedValue && selectedValueMode === 'replace' ? (
               <Text
-                className="text-font-subtle dark:text-font-subtle-dark  font-bold text-lg"
+                className="text-lg font-bold  text-font-subtle dark:text-font-subtle-dark"
                 style={selectedValueStyle}
               >
                 {selectedValue}
@@ -118,26 +123,23 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
             ) : (
               <>
                 <Text
-                  className={clsx(
-                    "text-font dark:text-font-dark font-bold",
-                    {
-                      "text-font dark:text-font-dark": !disabled,
-                      "text-font-disabled dark:text-font-disabled-dark": disabled,
-                    }
-                  )}
+                  className={clsx('font-bold text-font dark:text-font-dark', {
+                    'text-font dark:text-font-dark': !disabled,
+                    'text-font-disabled dark:text-font-disabled-dark': disabled,
+                  })}
                   style={labelStyle}
                 >
                   {label}
                 </Text>
                 {subtitle && (
                   <Text
-                    className={clsx("text-font-subtle dark:text-font-subtle-dark text-sm")}
+                    className={clsx('text-sm text-font-subtle dark:text-font-subtle-dark')}
                     style={{ marginTop: 2 }}
                   >
                     {subtitle}
                   </Text>
                 )}
-                {selectedValue && selectedValueMode === "under" && (
+                {selectedValue && selectedValueMode === 'under' && (
                   <Text
                     className="text-font-subtle dark:text-font-subtle-dark"
                     style={selectedValueStyle}
@@ -151,26 +153,23 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
         </View>
 
         {!centerText && (
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             {loading ? (
-              <ActivityIndicator
-                size="small"
-                color={theme.colors.icon}
-              />
+              <ActivityIndicator size="small" color={theme.colors.icon} />
             ) : (
               <>
                 {rightIcon && (
                   <Entypo
                     name={rightIcon}
                     size={20}
-                    color={disabled ? theme.colors.icon + "80" : theme.colors.icon}
+                    color={disabled ? theme.colors.icon + '80' : theme.colors.icon}
                   />
                 )}
                 {showRightArrow && !rightIcon && (
                   <Entypo
                     name="chevron-right"
                     size={20}
-                    color={disabled ? theme.colors.icon + "80" : theme.colors.icon}
+                    color={disabled ? theme.colors.icon + '80' : theme.colors.icon}
                   />
                 )}
               </>

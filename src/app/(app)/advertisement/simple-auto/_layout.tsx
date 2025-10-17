@@ -1,5 +1,5 @@
-import { SimpleAutoFormProvider } from "@/modules/advertisement/simple-auto/SimpleAutoFormProvider";
-import { Stack } from "expo-router";
+import { SimpleAutoFormProvider } from '@/modules/advertisement/simple-auto/SimpleAutoFormProvider';
+import { Stack } from 'expo-router';
 
 export default function ModalsLayout() {
   return (
@@ -7,8 +7,8 @@ export default function ModalsLayout() {
       <Stack
         screenOptions={{
           headerShown: false,
-          presentation: "modal",
-          animation: "slide_from_bottom",
+          presentation: 'modal',
+          animation: 'slide_from_bottom',
         }}
       >
         <Stack.Screen name="index" />

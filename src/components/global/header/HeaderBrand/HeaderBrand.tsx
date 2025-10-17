@@ -6,7 +6,7 @@ export const HeaderBrand = () => {
   return (
     <View className="flex-row items-center justify-center gap-1">
       <Ionicons name="heart-outline" size={22} color="red" />
-      <Text className="text-font dark:text-font-dark text-lg font-bold">VRUM</Text>
+      <Text className="text-lg font-bold text-font dark:text-font-dark">VRUM</Text>
     </View>
   );
-}
+};

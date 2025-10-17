@@ -1,11 +1,11 @@
-import { FC } from "react";
-import { ViewStyle, TextStyle } from "react-native";
+import { FC } from 'react';
+import { ViewStyle, TextStyle } from 'react-native';
 
-import { CustomTheme } from "@/theme";
-import { Ionicons } from "@expo/vector-icons";
-import { useTheme } from "@react-navigation/native";
+import { CustomTheme } from '@/theme';
+import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '@react-navigation/native';
 
-import { RectButton } from "react-native-gesture-handler";
+import { RectButton } from 'react-native-gesture-handler';
 
 type CloseIconProps = {
   onPress?: (pointerInside: boolean) => void;

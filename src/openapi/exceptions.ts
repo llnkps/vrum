@@ -1,4 +1,4 @@
-import { ResponseError } from "./client/runtime";
+import { ResponseError } from './client/runtime';
 
 // Base custom exception class
 export class CustomException extends Error {
@@ -14,59 +14,59 @@ export class CustomException extends Error {
 
 // Authentication exceptions
 export class AuthenticationException extends CustomException {
-  constructor(message: string = "Authentication failed", code?: string) {
+  constructor(message: string = 'Authentication failed', code?: string) {
     super(message, 401, code);
   }
 }
 
 export class TokenExpiredException extends AuthenticationException {
-  constructor(message: string = "Access token has expired") {
-    super(message, "TOKEN_EXPIRED");
+  constructor(message: string = 'Access token has expired') {
+    super(message, 'TOKEN_EXPIRED');
   }
 }
 
 export class TokenRefreshException extends AuthenticationException {
-  constructor(message: string = "Failed to refresh token") {
-    super(message, "TOKEN_REFRESH_FAILED");
+  constructor(message: string = 'Failed to refresh token') {
+    super(message, 'TOKEN_REFRESH_FAILED');
   }
 }
 
 export class InvalidTokenException extends AuthenticationException {
-  constructor(message: string = "Invalid or malformed token") {
-    super(message, "INVALID_TOKEN");
+  constructor(message: string = 'Invalid or malformed token') {
+    super(message, 'INVALID_TOKEN');
   }
 }
 
 // Authorization exceptions
 export class AuthorizationException extends CustomException {
-  constructor(message: string = "Access denied", code?: string) {
+  constructor(message: string = 'Access denied', code?: string) {
     super(message, 403, code);
   }
 }
 
 // Network exceptions
 export class NetworkException extends CustomException {
-  constructor(message: string = "Network error", code?: string) {
+  constructor(message: string = 'Network error', code?: string) {
     super(message, 503, code);
   }
 }
 
 export class ServiceUnavailableException extends NetworkException {
-  constructor(message: string = "Service temporarily unavailable") {
-    super(message, "SERVICE_UNAVAILABLE");
+  constructor(message: string = 'Service temporarily unavailable') {
+    super(message, 'SERVICE_UNAVAILABLE');
   }
 }
 
 // Validation exceptions
 export class ValidationException extends CustomException {
-  constructor(message: string = "Validation failed", code?: string) {
+  constructor(message: string = 'Validation failed', code?: string) {
     super(message, 400, code);
   }
 }
 
 export class MissingParameterException extends ValidationException {
   constructor(parameter: string) {
-    super(`Missing required parameter: ${parameter}`, "MISSING_PARAMETER");
+    super(`Missing required parameter: ${parameter}`, 'MISSING_PARAMETER');
   }
 }
 
@@ -129,7 +129,7 @@ export function getErrorDetails(error: unknown): {
   }
 
   return {
-    name: "UnknownError",
+    name: 'UnknownError',
     message: String(error),
   };
 }

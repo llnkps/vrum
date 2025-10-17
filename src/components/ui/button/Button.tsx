@@ -1,6 +1,6 @@
-import { CustomTheme } from "@/theme";
-import { useTheme } from "@react-navigation/native";
-import React, { PropsWithChildren } from "react";
+import { CustomTheme } from '@/theme';
+import { useTheme } from '@react-navigation/native';
+import React, { PropsWithChildren } from 'react';
 import {
   ActivityIndicator,
   StyleSheet,
@@ -9,13 +9,13 @@ import {
   TouchableHighlightProps,
   View,
   ViewStyle,
-} from "react-native";
+} from 'react-native';
 
 type Props = PropsWithChildren<
   TouchableHighlightProps & {
     loading?: boolean;
     title?: string;
-    appearance?: "default" | "subtle";
+    appearance?: 'default' | 'subtle';
     isSelected?: boolean;
     buttonStyle?: ViewStyle;
   }
@@ -30,7 +30,7 @@ export const Button = ({
   style,
   buttonStyle,
   children,
-  appearance = "default",
+  appearance = 'default',
   isSelected = false,
 }: Props) => {
   const theme = useTheme() as CustomTheme;
@@ -39,33 +39,33 @@ export const Button = ({
     // default
     default: {
       backgroundColor: theme.colors.button.subtlePressed, // TODO: change it
-      borderColor: "transparent",
+      borderColor: 'transparent',
     },
 
     // TODO: update to selected colors
     defaultPressed: {
-      backgroundColor: "#0056b3",
-      borderColor: "#0056b3",
+      backgroundColor: '#0056b3',
+      borderColor: '#0056b3',
     },
 
     // Subtle
     subtle: {
       backgroundColor: theme.colors.button.subtle,
-      borderColor: "transparent",
+      borderColor: 'transparent',
     },
     subtlePressed: {
       backgroundColor: theme.colors.button.subtlePressed,
-      borderColor: "transparent",
+      borderColor: 'transparent',
     },
 
     container: {
-      alignItems: "center",
-      justifyContent: "center",
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     button: {
-      width: "100%",
-      alignItems: "center",
-      justifyContent: "center",
+      width: '100%',
+      alignItems: 'center',
+      justifyContent: 'center',
       paddingVertical: 6,
       paddingHorizontal: 20,
       borderRadius: 8,
@@ -75,8 +75,8 @@ export const Button = ({
       // backgroundColor: Colors.disabled,
     },
     label: {
-      color: "#ffffff",
-      fontWeight: "700",
+      color: '#ffffff',
+      fontWeight: '700',
     },
   });
 
@@ -85,17 +85,15 @@ export const Button = ({
       <TouchableHighlight
         style={[
           styles.button,
-          appearance === "default" &&
-            (isSelected ? styles.defaultPressed : styles.default),
-          appearance === "subtle" &&
-            (isSelected ? styles.subtlePressed : styles.subtle),
+          appearance === 'default' && (isSelected ? styles.defaultPressed : styles.default),
+          appearance === 'subtle' && (isSelected ? styles.subtlePressed : styles.subtle),
           disabled && styles.disabledButton,
           buttonStyle,
         ]}
         disabled={disabled || loading}
         onPressIn={onPressIn}
         onPress={onPress}
-        underlayColor={"#5944ed"}
+        underlayColor={'#5944ed'}
       >
         {children ||
           (loading ? (

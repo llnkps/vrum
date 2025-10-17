@@ -1,7 +1,7 @@
-import clsx from "clsx";
-import React from "react";
-import { Text, View } from "react-native";
-import CloseIcon from "../CloseIcon";
+import clsx from 'clsx';
+import React from 'react';
+import { Text, View } from 'react-native';
+import CloseIcon from '../CloseIcon';
 
 export type FilterBadgeProps = {
   label: string;
@@ -20,11 +20,14 @@ const FilterBadge: React.FC<FilterBadgeProps> = ({ label, onRemove, className, t
   return (
     <View
       className={clsx(
-        "flex-row items-center bg-background-neutral-bold dark:bg-background-neutral-bold px-2 py-1 rounded-md gap-1",
+        'flex-row items-center gap-1 rounded-md bg-background-neutral-bold px-2 py-1 dark:bg-background-neutral-bold',
         className
       )}
     >
-      <Text numberOfLines={1} className={clsx("text-font dark:text-font-dark font-bold", textClassName)}>
+      <Text
+        numberOfLines={1}
+        className={clsx('font-bold text-font dark:text-font-dark', textClassName)}
+      >
         {label}
       </Text>
       <CloseIcon size={14} onPress={onRemove} className="rounded-full px-2" />

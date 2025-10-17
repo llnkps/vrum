@@ -1,11 +1,19 @@
-import { ResponseError } from "@/openapi/client";
-import { useAuthStore } from "@/state/auth/useAuthStore";
-import { useRouter } from "expo-router";
-import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { ActivityIndicator, Alert, Image, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ResponseError } from '@/openapi/client';
+import { useAuthStore } from '@/state/auth/useAuthStore';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface SignupForm {
   email: string;
@@ -26,21 +34,20 @@ export default function Index() {
     watch,
     setError,
   } = useForm<SignupForm>({
-    mode: "onChange",
+    mode: 'onChange',
   });
 
-  const password = watch("password");
+  const password = watch('password');
   const onSubmit = async (data: SignupForm) => {
     if (data.password !== data.repeatPassword) {
-      Alert.alert("Error", "Passwords do not match");
+      Alert.alert('Error', 'Passwords do not match');
       return;
     }
     setLoading(true);
     try {
       await signup(data.email, data.tel, data.password);
-      router.replace("/activation-message");
+      router.replace('/activation-message');
     } catch (error: any) {
-
       const jsonError = await error.response.json();
 
       if (jsonError.errors) {
@@ -49,7 +56,7 @@ export default function Index() {
         }
       }
 
-      Alert.alert("Error", "Signup failed. Please try again.");
+      Alert.alert('Error', 'Signup failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -58,32 +65,34 @@ export default function Index() {
   return (
     <SafeAreaView className="flex-1 bg-surface dark:bg-surface-dark">
       <KeyboardAwareScrollView
-        contentContainerStyle={{ flexGrow: 1, justifyContent: "center", alignItems: "center" }}
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}
         enableOnAndroid={true}
         extraScrollHeight={180}
       >
         {loading && <ActivityIndicator size="large" />}
-        <View className="w-full items-center gap-8 max-w-md mx-auto px-4">
+        <View className="mx-auto w-full max-w-md items-center gap-8 px-4">
           <Image
-            source={require("@/assets/images/preview-logo.png")}
+            source={require('@/assets/images/preview-logo.png')}
             style={{
-              width: "100%",
+              width: '100%',
               height: 300,
               aspectRatio: 1,
             }}
             tintColor="#FF6F61"
             resizeMode="contain"
           />
-          <Text className="text-3xl font-bold text-font dark:text-font-dark mb-2">Create Account</Text>
+          <Text className="mb-2 text-3xl font-bold text-font dark:text-font-dark">
+            Create Account
+          </Text>
 
           <View className="w-full gap-4">
             <Controller
               control={control}
               rules={{
-                required: "Email is required",
+                required: 'Email is required',
                 pattern: {
                   value: /^\S+@\S+$/i,
-                  message: "Invalid email address",
+                  message: 'Invalid email address',
                 },
               }}
               render={({ field: { onChange, onBlur, value } }) => (
@@ -92,7 +101,7 @@ export default function Index() {
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
-                  className="w-full p-3 border border-gray-300 rounded-lg bg-white"
+                  className="w-full rounded-lg border border-gray-300 bg-white p-3"
                   keyboardType="email-address"
                   autoCapitalize="none"
                 />
@@ -104,7 +113,7 @@ export default function Index() {
             <Controller
               control={control}
               rules={{
-                required: "Phone number is required",
+                required: 'Phone number is required',
               }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
@@ -112,7 +121,7 @@ export default function Index() {
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
-                  className="w-full p-3 border border-gray-300 rounded-lg bg-white"
+                  className="w-full rounded-lg border border-gray-300 bg-white p-3"
                   keyboardType="phone-pad"
                 />
               )}
@@ -123,10 +132,10 @@ export default function Index() {
             <Controller
               control={control}
               rules={{
-                required: "Password is required",
+                required: 'Password is required',
                 minLength: {
                   value: 6,
-                  message: "Password must be at least 6 characters",
+                  message: 'Password must be at least 6 characters',
                 },
               }}
               render={({ field: { onChange, onBlur, value } }) => (
@@ -136,7 +145,7 @@ export default function Index() {
                   onChangeText={onChange}
                   value={value}
                   secureTextEntry
-                  className="w-full p-3 border border-gray-300 rounded-lg bg-white"
+                  className="w-full rounded-lg border border-gray-300 bg-white p-3"
                 />
               )}
               name="password"
@@ -146,8 +155,8 @@ export default function Index() {
             <Controller
               control={control}
               rules={{
-                required: "Please repeat your password",
-                validate: (value) => value === password || "Passwords do not match",
+                required: 'Please repeat your password',
+                validate: value => value === password || 'Passwords do not match',
               }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
@@ -156,18 +165,24 @@ export default function Index() {
                   onChangeText={onChange}
                   value={value}
                   secureTextEntry
-                  className="w-full p-3 border border-gray-300 rounded-lg bg-white"
+                  className="w-full rounded-lg border border-gray-300 bg-white p-3"
                 />
               )}
               name="repeatPassword"
             />
-            {errors.repeatPassword && <Text className="text-red-500">{errors.repeatPassword.message}</Text>}
+            {errors.repeatPassword && (
+              <Text className="text-red-500">{errors.repeatPassword.message}</Text>
+            )}
 
-            <TouchableOpacity className="w-full bg-blue-500 py-3 rounded-lg" onPress={handleSubmit(onSubmit)} disabled={loading}>
-              <Text className="text-white text-center font-semibold">Sign Up</Text>
+            <TouchableOpacity
+              className="w-full rounded-lg bg-blue-500 py-3"
+              onPress={handleSubmit(onSubmit)}
+              disabled={loading}
+            >
+              <Text className="text-center font-semibold text-white">Sign Up</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => router.push("/sign-in")}>
+            <TouchableOpacity onPress={() => router.push('/sign-in')}>
               <Text className="text-center text-blue-500">Already have an account? Sign In</Text>
             </TouchableOpacity>
           </View>

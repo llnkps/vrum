@@ -1,18 +1,14 @@
-import { useRouter } from "expo-router";
-import { FC } from "react";
-import { Text, View } from "react-native";
-import type { SharedValue } from "react-native-reanimated";
-import Animated, {
-  Extrapolation,
-  interpolate,
-  useAnimatedStyle,
-} from "react-native-reanimated";
+import { useRouter } from 'expo-router';
+import { FC } from 'react';
+import { Text, View } from 'react-native';
+import type { SharedValue } from 'react-native-reanimated';
+import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 
-import CloseIcon from "@/components/global/CloseIcon";
-import { InputField } from "@/components/ui/input/InputField/InputField";
-import { CustomTheme } from "@/theme";
-import { Ionicons } from "@expo/vector-icons";
-import { useTheme } from "@react-navigation/native";
+import CloseIcon from '@/components/global/CloseIcon';
+import { InputField } from '@/components/ui/input/InputField/InputField';
+import { CustomTheme } from '@/theme';
+import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '@react-navigation/native';
 
 interface HeaderProps {
   title: string;
@@ -29,8 +25,8 @@ export const HeaderSearchBar: FC<HeaderProps> = ({
   scrollY,
   showSearch = false,
   onSearch,
-  searchValue = "",
-  searchPlaceholder = "",
+  searchValue = '',
+  searchPlaceholder = '',
   onClose,
 }) => {
   const theme = useTheme() as CustomTheme;
@@ -53,26 +49,11 @@ export const HeaderSearchBar: FC<HeaderProps> = ({
 
   // Title (font size + vertical shift)
   const animatedTitle = useAnimatedStyle(() => {
-    const fontSize = interpolate(
-      scrollY.value,
-      [0, offsetValue],
-      [24, 18],
-      Extrapolation.CLAMP
-    );
+    const fontSize = interpolate(scrollY.value, [0, offsetValue], [24, 18], Extrapolation.CLAMP);
 
-    const translateY = interpolate(
-      scrollY.value,
-      [0, offsetValue],
-      [0, -32],
-      Extrapolation.CLAMP
-    );
+    const translateY = interpolate(scrollY.value, [0, offsetValue], [0, -32], Extrapolation.CLAMP);
 
-    const translateX = interpolate(
-      scrollY.value,
-      [0, offsetValue],
-      [0, 40],
-      Extrapolation.CLAMP
-    );
+    const translateX = interpolate(scrollY.value, [0, offsetValue], [0, 40], Extrapolation.CLAMP);
 
     return {
       fontSize,
@@ -82,12 +63,7 @@ export const HeaderSearchBar: FC<HeaderProps> = ({
 
   // Spacing between back button and title
   const animatedSpacer = useAnimatedStyle(() => {
-    const marginLeft = interpolate(
-      scrollY.value,
-      [0, 0],
-      [0, 8],
-      Extrapolation.CLAMP
-    );
+    const marginLeft = interpolate(scrollY.value, [0, 0], [0, 8], Extrapolation.CLAMP);
     return { marginLeft };
   });
 
@@ -108,10 +84,7 @@ export const HeaderSearchBar: FC<HeaderProps> = ({
         {/* Title */}
         <Animated.View style={[{ paddingHorizontal: 12 }, animatedSpacer]}>
           <Animated.Text
-            style={[
-              { fontWeight: "bold", color: theme.colors.text, fontSize: 20 },
-              animatedTitle,
-            ]}
+            style={[{ fontWeight: 'bold', color: theme.colors.text, fontSize: 20 }, animatedTitle]}
           >
             {title}
           </Animated.Text>
@@ -124,7 +97,7 @@ export const HeaderSearchBar: FC<HeaderProps> = ({
           <InputField
             Icon={<Ionicons name="search" size={20} color="gray" />}
             value={searchValue}
-            onChange={(e) => onSearch(e)}
+            onChange={e => onSearch(e)}
             placeholder={searchPlaceholder}
           />
         </View>
@@ -132,4 +105,4 @@ export const HeaderSearchBar: FC<HeaderProps> = ({
     </View>
   );
 };
-HeaderSearchBar.displayName = "HeaderSearchBar";
+HeaderSearchBar.displayName = 'HeaderSearchBar';

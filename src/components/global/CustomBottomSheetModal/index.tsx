@@ -1,12 +1,16 @@
-import React, { FC, forwardRef, ReactNode, useCallback, useMemo } from "react";
-import { KeyboardAvoidingView, Platform } from "react-native";
+import React, { FC, forwardRef, ReactNode, useCallback, useMemo } from 'react';
+import { KeyboardAvoidingView, Platform } from 'react-native';
 
-import { CustomTheme } from "@/theme";
-import { BottomSheetBackdrop, BottomSheetFooterProps, BottomSheetModal } from "@gorhom/bottom-sheet";
-import { BottomSheetVariables } from "@gorhom/bottom-sheet/lib/typescript/types";
-import { useTheme } from "@react-navigation/native";
-import { DefaultFooter } from "./footer";
-import { HeaderHandle } from "./header";
+import { CustomTheme } from '@/theme';
+import {
+  BottomSheetBackdrop,
+  BottomSheetFooterProps,
+  BottomSheetModal,
+} from '@gorhom/bottom-sheet';
+import { BottomSheetVariables } from '@gorhom/bottom-sheet/lib/typescript/types';
+import { useTheme } from '@react-navigation/native';
+import { DefaultFooter } from './footer';
+import { HeaderHandle } from './header';
 
 export type BottomSheetRef = BottomSheetModal;
 
@@ -30,7 +34,7 @@ type CustomBottomSheetProps = {
 
 const CustomBottomSheetModal = forwardRef<BottomSheetRef, CustomBottomSheetProps>((props, ref) => {
   const {
-    snapPoints = ["25%", "50%", "90%"],
+    snapPoints = ['25%', '50%', '90%'],
     title,
     children,
     handleComponent,
@@ -48,7 +52,10 @@ const CustomBottomSheetModal = forwardRef<BottomSheetRef, CustomBottomSheetProps
     []
   );
 
-  const renderDefaultHeader = useCallback((props: any) => <HeaderHandle {...props} title={title} />, [title]);
+  const renderDefaultHeader = useCallback(
+    (props: any) => <HeaderHandle {...props} title={title} />,
+    [title]
+  );
 
   const renderDefaultFooter = useCallback(
     (props: BottomSheetFooterProps) => (
@@ -83,12 +90,12 @@ const CustomBottomSheetModal = forwardRef<BottomSheetRef, CustomBottomSheetProps
       }}
     >
       {/* <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}> */}
-        {children}
+      {children}
       {/* </KeyboardAvoidingView> */}
     </BottomSheetModal>
   );
 });
 
-CustomBottomSheetModal.displayName = "CustomBottomSheetModal";
+CustomBottomSheetModal.displayName = 'CustomBottomSheetModal';
 
 export default CustomBottomSheetModal;

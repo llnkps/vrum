@@ -1,14 +1,14 @@
-import React, { memo, useCallback } from "react";
-import { View } from "react-native";
+import React, { memo, useCallback } from 'react';
+import { View } from 'react-native';
 import {
   BottomSheetFooter,
   BottomSheetFooterProps,
   useBottomSheetModal,
-} from "@gorhom/bottom-sheet";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useTheme } from "@react-navigation/native";
-import { CustomTheme } from "@/theme";
-import { CustomRectButton } from "@/components/ui/button";
+} from '@gorhom/bottom-sheet';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTheme } from '@react-navigation/native';
+import { CustomTheme } from '@/theme';
+import { CustomRectButton } from '@/components/ui/button';
 
 interface DefaultFooterProps extends BottomSheetFooterProps {
   selectedValue?: any;
@@ -59,17 +59,10 @@ const DefaultFooterComponent = ({
           paddingBottom: Math.max(bottomSafeArea, 16),
         }}
       >
-        <View className="p-2 w-full">
-          <View className="flex-row gap-x-3 justify-end">
-            <CustomRectButton
-              onPress={handleCancel}
-              title="Отмена"
-              appearance="subtle"
-            />
-            <CustomRectButton
-              onPress={handleConfirm}
-              title="Подтвердить"
-            />
+        <View className="w-full p-2">
+          <View className="flex-row justify-end gap-x-3">
+            <CustomRectButton onPress={handleCancel} title="Отмена" appearance="subtle" />
+            <CustomRectButton onPress={handleConfirm} title="Подтвердить" />
           </View>
         </View>
       </View>
@@ -80,4 +73,6 @@ const DefaultFooterComponent = ({
 export const DefaultFooter = memo(DefaultFooterComponent);
 
 // Export a function that creates the footer content for custom positioning
-export const createCustomFooter = (props: DefaultFooterProps) => <DefaultFooterComponent {...props} />;
+export const createCustomFooter = (props: DefaultFooterProps) => (
+  <DefaultFooterComponent {...props} />
+);

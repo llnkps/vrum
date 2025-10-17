@@ -1,1 +1,1 @@
-export { TouchableHighlightRow } from "./TouchableHighlightRow";
+export { TouchableHighlightRow } from './TouchableHighlightRow';

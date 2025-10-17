@@ -1,4 +1,3 @@
-
 import clsx from 'clsx';
 import { Text, TouchableHighlight, View } from 'react-native';
 
@@ -9,27 +8,28 @@ import HeaderSpecAuto from '@/assets/images/header-specauto-icon.svg';
 
 import { ActiveScreen } from './types';
 
-export const HeaderCategory = ({ activeScreen, setActiveScreen }: {
+export const HeaderCategory = ({
+  activeScreen,
+  setActiveScreen,
+}: {
   activeScreen: ActiveScreen;
   setActiveScreen: React.Dispatch<React.SetStateAction<ActiveScreen>>;
 }) => {
-
   const handleChangeScreen = (screen: ActiveScreen) => {
     setActiveScreen(screen);
-  }
+  };
 
   // TODO: update buttons styles
 
   return (
     <View className="flex-row items-center justify-center gap-2 px-4 py-3">
       {/* Left side: Location */}
-      <TouchableHighlight className={clsx(
-        "bg-background-neutral dark:bg-background-neutral-dark rounded-md p-2",
-        {
-          "bg-background-neutral-pressed dark:bg-background-neutral-dark-pressed": activeScreen === "auto",
-        }
-      )}
-        onPress={() => handleChangeScreen("auto")}
+      <TouchableHighlight
+        className={clsx('rounded-md bg-background-neutral p-2 dark:bg-background-neutral-dark', {
+          'bg-background-neutral-pressed dark:bg-background-neutral-dark-pressed':
+            activeScreen === 'auto',
+        })}
+        onPress={() => handleChangeScreen('auto')}
         activeOpacity={0.6}
         underlayColor="#DDDDDD"
       >
@@ -39,13 +39,12 @@ export const HeaderCategory = ({ activeScreen, setActiveScreen }: {
         </View>
       </TouchableHighlight>
 
-      <TouchableHighlight className={clsx(
-        "bg-background-neutral dark:bg-background-neutral-dark rounded-md p-2",
-        {
-          "bg-background-neutral-pressed dark:bg-background-neutral-dark-pressed": activeScreen === "spec_auto",
-        }
-      )}
-        onPress={() => handleChangeScreen("spec_auto")}
+      <TouchableHighlight
+        className={clsx('rounded-md bg-background-neutral p-2 dark:bg-background-neutral-dark', {
+          'bg-background-neutral-pressed dark:bg-background-neutral-dark-pressed':
+            activeScreen === 'spec_auto',
+        })}
+        onPress={() => handleChangeScreen('spec_auto')}
       >
         <View className="flex-col items-center justify-center">
           <HeaderSpecAuto />
@@ -53,13 +52,12 @@ export const HeaderCategory = ({ activeScreen, setActiveScreen }: {
         </View>
       </TouchableHighlight>
 
-      <TouchableHighlight className={clsx(
-        "bg-background-neutral dark:bg-background-neutral-dark rounded-md p-2",
-        {
-          "bg-background-neutral-pressed dark:bg-background-neutral-dark-pressed": activeScreen === "auto_detail",
-        }
-      )}
-        onPress={() => handleChangeScreen("auto_detail")}
+      <TouchableHighlight
+        className={clsx('rounded-md bg-background-neutral p-2 dark:bg-background-neutral-dark', {
+          'bg-background-neutral-pressed dark:bg-background-neutral-dark-pressed':
+            activeScreen === 'auto_detail',
+        })}
+        onPress={() => handleChangeScreen('auto_detail')}
       >
         <View className="flex-col items-center justify-center">
           <HeaderBreak />
@@ -67,13 +65,12 @@ export const HeaderCategory = ({ activeScreen, setActiveScreen }: {
         </View>
       </TouchableHighlight>
 
-      <TouchableHighlight className={clsx(
-        "bg-background-neutral dark:bg-background-neutral-dark rounded-md p-2",
-        {
-          "bg-background-neutral-pressed dark:bg-background-neutral-dark-pressed": activeScreen === "moto",
-        }
-      )}
-        onPress={() => handleChangeScreen("moto")}
+      <TouchableHighlight
+        className={clsx('rounded-md bg-background-neutral p-2 dark:bg-background-neutral-dark', {
+          'bg-background-neutral-pressed dark:bg-background-neutral-dark-pressed':
+            activeScreen === 'moto',
+        })}
+        onPress={() => handleChangeScreen('moto')}
       >
         <View className="flex-col items-center justify-center">
           <HeaderMoto />
@@ -82,4 +79,4 @@ export const HeaderCategory = ({ activeScreen, setActiveScreen }: {
       </TouchableHighlight>
     </View>
   );
-}
+};

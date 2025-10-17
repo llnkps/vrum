@@ -1,12 +1,15 @@
 // !!!
 // TODO: it's not used for now. but it will be used later after clicking by regions in RegionModal
 
-
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StatusBar, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native';
 import Animated, {
-    Extrapolation, interpolate, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue
+  Extrapolation,
+  interpolate,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
 } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -33,18 +36,14 @@ export default function RegionScreenFilterModal() {
     },
     onEndDrag: () => {
       isScrolling.value = false;
-    }
-  })
+    },
+  });
 
   return (
     <>
       <View style={{ height: STATUSBAR_HEIGHT }}>
         <SafeAreaView>
-          <StatusBar
-            translucent
-            backgroundColor={"red"}
-            barStyle={'light-content'}
-          />
+          <StatusBar translucent backgroundColor={'red'} barStyle={'light-content'} />
         </SafeAreaView>
       </View>
 
@@ -60,15 +59,16 @@ export default function RegionScreenFilterModal() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 120 + STATUSBAR_HEIGHT + 100 }} // HEADER + STATUSBAR + 100 so list doesn't hide under button
           renderItem={({ item, index }) => (
-
             <TouchableHighlight
-              onPress={() => router.push({
-                pathname: "/search-screen/auto-screen/brand-auto-type-filter",
-                params: {
-                  ...item
-                }
-              })}
-              className={"p-4 border-b border-border dark:border-border-dark last:border-0"}
+              onPress={() =>
+                router.push({
+                  pathname: '/search-screen/auto-screen/brand-auto-type-filter',
+                  params: {
+                    ...item,
+                  },
+                })
+              }
+              className={'border-b border-border p-4 last:border-0 dark:border-border-dark'}
             >
               <View className="flex-row gap-x-4">
                 {/* <Image source={require(`@/data/auto-icons/${item.filepath}`)} /> */}
@@ -76,28 +76,26 @@ export default function RegionScreenFilterModal() {
               </View>
             </TouchableHighlight>
           )}
-
-          initialNumToRender={10}      // how many items to render at first
-          windowSize={10}              // number of screen heights to render around
-          maxToRenderPerBatch={10}     // batch size
+          initialNumToRender={10} // how many items to render at first
+          windowSize={10} // number of screen heights to render around
+          maxToRenderPerBatch={10} // batch size
           updateCellsBatchingPeriod={50} // delay in ms between renders
-          removeClippedSubviews={true} // 
+          removeClippedSubviews={true} //
         />
       </View>
 
-      <View className="absolute left-0 right-0 bottom-2 p-8">
-        <TouchableOpacity className="bg-background-brand-bold rounded-md py-3 items-center">
+      <View className="absolute bottom-2 left-0 right-0 p-8">
+        <TouchableOpacity className="items-center rounded-md bg-background-brand-bold py-3">
           <Text style={{ color: 'white', fontWeight: 'bold' }}>Continue</Text>
         </TouchableOpacity>
       </View>
     </>
-  )
+  );
 }
-
 
 const Header = ({ scrollY, setFilteredData, initialData }) => {
   const router = useRouter();
-  const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useState('');
 
   const offsetValue = 140;
 
@@ -105,19 +103,19 @@ const Header = ({ scrollY, setFilteredData, initialData }) => {
   useEffect(() => {
     if (searchValue) {
       const searchValueLowerCase = searchValue.toLowerCase();
-      setFilteredData(initialData.filter(i => {
-        const nameLowerCase = i.name.toLowerCase();
-        if (nameLowerCase.includes(searchValueLowerCase)) {
-          return true;
-        }
-        return false;
-      }))
+      setFilteredData(
+        initialData.filter(i => {
+          const nameLowerCase = i.name.toLowerCase();
+          if (nameLowerCase.includes(searchValueLowerCase)) {
+            return true;
+          }
+          return false;
+        })
+      );
     } else {
-      setFilteredData(initialData)
+      setFilteredData(initialData);
     }
-
-  }, [searchValue, setFilteredData, initialData])
-
+  }, [searchValue, setFilteredData, initialData]);
 
   // Header container (bg + height)
   const animatedHeader = useAnimatedStyle(() => {
@@ -185,7 +183,10 @@ const Header = ({ scrollY, setFilteredData, initialData }) => {
 
           {/* Title */}
           <Animated.View style={animatedSpacer} className="px-3">
-            <Animated.Text style={[animatedTitle]} className="font-bold text-font dark:text-font-dark">
+            <Animated.Text
+              style={[animatedTitle]}
+              className="font-bold text-font dark:text-font-dark"
+            >
               Марки
             </Animated.Text>
           </Animated.View>
@@ -196,7 +197,7 @@ const Header = ({ scrollY, setFilteredData, initialData }) => {
           <InputField
             Icon={<Ionicons name="search" size={20} color="gray" />}
             value={searchValue}
-            onChange={(value) => setSearchValue(value)}
+            onChange={value => setSearchValue(value)}
             placeholder="Марка или модель"
           />
         </View>
@@ -204,11 +205,6 @@ const Header = ({ scrollY, setFilteredData, initialData }) => {
     </>
   );
 };
-
-
-
-
-
 
 // TODO: check if we can reuse it
 

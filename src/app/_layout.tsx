@@ -1,20 +1,20 @@
-import "react-native-reanimated";
-import "./globals.css";
-import "@/i18n"; // Import your i18n configuration
+import 'react-native-reanimated';
+import './globals.css';
+import '@/i18n'; // Import your i18n configuration
 
-import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
-import { LogBox, useColorScheme } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useFonts } from 'expo-font';
+import { Stack } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+import { LogBox, useColorScheme } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import { MyDarkTheme, MyLightTheme } from "@/theme";
-import { ThemeProvider } from "@react-navigation/native";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { useThemeStore } from "@/state/theme/useThemeStore";
-import { useAuthStore } from "@/state/auth/useAuthStore";
+import { MyDarkTheme, MyLightTheme } from '@/theme';
+import { ThemeProvider } from '@react-navigation/native';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { useThemeStore } from '@/state/theme/useThemeStore';
+import { useAuthStore } from '@/state/auth/useAuthStore';
 
 // const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 // if (!publishableKey) {
@@ -22,7 +22,7 @@ import { useAuthStore } from "@/state/auth/useAuthStore";
 //     'Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env'
 //   );
 // }
-LogBox.ignoreLogs(["Clerk: Clerk has been loaded with development keys"]);
+LogBox.ignoreLogs(['Clerk: Clerk has been loaded with development keys']);
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -39,7 +39,7 @@ const InitialLayout = () => {
   const { checkAuth } = useAuthStore();
 
   const [loadedFonts] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
   useEffect(() => {

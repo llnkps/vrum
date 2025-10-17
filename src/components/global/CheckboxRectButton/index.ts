@@ -1,1 +1,1 @@
-export { CheckboxRectButton } from "./CheckboxRectButton";
+export { CheckboxRectButton } from './CheckboxRectButton';

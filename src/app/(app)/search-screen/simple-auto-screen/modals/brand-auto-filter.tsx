@@ -1,16 +1,24 @@
-import { Image } from "expo-image";
-import { useRouter } from "expo-router";
-import { FC, useEffect, useState } from "react";
-import { StatusBar, Text, TouchableHighlight, View, ScrollView, Dimensions } from "react-native";
-import Animated, { useAnimatedScrollHandler, useSharedValue, SlideInRight } from "react-native-reanimated";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
+import { FC, useEffect, useState } from 'react';
+import { StatusBar, Text, TouchableHighlight, View, ScrollView, Dimensions } from 'react-native';
+import Animated, {
+  useAnimatedScrollHandler,
+  useSharedValue,
+  SlideInRight,
+} from 'react-native-reanimated';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { CustomRectButton } from "@/components/ui/button";
-import FilterBadge from "@/components/global/FilterBadge";
-import { HeaderSearchBar } from "@/components/global/header/HeaderSearchBar/HeaderSearchBar";
-import { useSimpleAutoBrandApi } from "@/hooks/useSimpleAutoBrandApi";
-import { DefaultConfig, GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner, GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner } from "@/openapi/client";
-import { useAutoSelectStore, selectSelectedBrands } from "@/state/search-screen/useAutoSelectStore";
+import { CustomRectButton } from '@/components/ui/button';
+import FilterBadge from '@/components/global/FilterBadge';
+import { HeaderSearchBar } from '@/components/global/header/HeaderSearchBar/HeaderSearchBar';
+import { useSimpleAutoBrandApi } from '@/hooks/api/useSimpleAutoBrandApi';
+import {
+  DefaultConfig,
+  GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner,
+  GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner,
+} from '@/openapi/client';
+import { useAutoSelectStore, selectSelectedBrands } from '@/state/search-screen/useAutoSelectStore';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight ?? 24;
 
@@ -19,10 +27,12 @@ export default function BrandAutoFilter() {
   const store = useAutoSelectStore();
   const selectedBrands = selectSelectedBrands(store);
   const { removeSelectedBrand, setCurrentBrand, selectedModelsByBrand } = store;
-  const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useState('');
   const { data, isLoading } = useSimpleAutoBrandApi();
-  const [filteredBrands, setFilteredBrands] = useState<GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner[]>([]);
-  
+  const [filteredBrands, setFilteredBrands] = useState<
+    GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner[]
+  >([]);
+
   const scrollY = useSharedValue(0);
   const isScrolling = useSharedValue(false);
 
@@ -32,13 +42,9 @@ export default function BrandAutoFilter() {
     }
   }, [data]);
 
-  const handleShowAds = () => {
-    router.dismiss();
-  };
-
   if (isLoading) {
     return (
-      <View className="flex-1 justify-center items-center">
+      <View className="flex-1 items-center justify-center">
         <Text className="text-font dark:text-font-dark">Loading...</Text>
       </View>
     );
@@ -46,18 +52,18 @@ export default function BrandAutoFilter() {
 
   return (
     <>
-      <SafeAreaView className="flex-1 px-3 gap-y-4">
+      <SafeAreaView className="flex-1 gap-y-4 px-3">
         <HeaderSearchBar
           title="Выберите марку"
           scrollY={scrollY}
           showSearch={true}
           searchValue={searchValue}
-          onSearch={(value) => {
+          onSearch={value => {
             setSearchValue(value);
             if (data) {
               const searchValueLowerCase = value.toLowerCase();
               setFilteredBrands(
-                data.filter((i) => {
+                data.filter(i => {
                   if (!i.name) return false;
                   return i.name.toLowerCase().includes(searchValueLowerCase);
                 })
@@ -76,11 +82,11 @@ export default function BrandAutoFilter() {
               style={{ height: 50 }}
               contentContainerStyle={{ alignItems: 'center', paddingVertical: 8 }}
             >
-              {selectedBrands.map((brand) => (
+              {selectedBrands.map(brand => (
                 // <Animated.View key={brand.id} entering={SlideInRight.duration(300)} className="self-start mr-2">
-                <View key={brand.id} className="self-start mr-2">
+                <View key={brand.id} className="mr-2 self-start">
                   <FilterBadge
-                    label={brand.name || ""}
+                    label={brand.name || ''}
                     onRemove={() => removeSelectedBrand(brand.id!)}
                   />
                 </View>
@@ -89,12 +95,23 @@ export default function BrandAutoFilter() {
           </View>
         )}
 
-        <BrandAutoList brands={filteredBrands} scrollY={scrollY} isScrolling={isScrolling} setCurrentBrand={setCurrentBrand} selectedModelsByBrand={selectedModelsByBrand} />
+        <BrandAutoList
+          brands={filteredBrands}
+          scrollY={scrollY}
+          isScrolling={isScrolling}
+          setCurrentBrand={setCurrentBrand}
+          selectedModelsByBrand={selectedModelsByBrand}
+        />
 
         {/* Fixed Button */}
         <View className="absolute bottom-2 left-0 right-0 px-3 pb-6">
-          <CustomRectButton onPress={handleShowAds} appearance="primary">
-            <Text className="text-center text-white font-semibold">Показать объявления</Text>
+          <CustomRectButton
+            onPress={() =>
+              router.replace('/(app)/search-screen/simple-auto-screen/modals/simple-auto-modal')
+            }
+            appearance="primary"
+          >
+            <Text className="text-center font-semibold text-white">Показать объявления</Text>
           </CustomRectButton>
         </View>
       </SafeAreaView>
@@ -106,15 +123,26 @@ type props = {
   brands: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner[];
   scrollY: any;
   isScrolling: any;
-  setCurrentBrand: (brand: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner | null) => void;
-  selectedModelsByBrand: Record<number, GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner[]>;
+  setCurrentBrand: (
+    brand: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner | null
+  ) => void;
+  selectedModelsByBrand: Record<
+    number,
+    GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner[]
+  >;
 };
 
-const BrandAutoList: FC<props> = ({ brands, scrollY, isScrolling, setCurrentBrand, selectedModelsByBrand }) => {
+const BrandAutoList: FC<props> = ({
+  brands,
+  scrollY,
+  isScrolling,
+  setCurrentBrand,
+  selectedModelsByBrand,
+}) => {
   const router = useRouter();
 
   const scrollHandler = useAnimatedScrollHandler({
-    onScroll: (event) => {
+    onScroll: event => {
       scrollY.value = event.contentOffset.y;
     },
     onBeginDrag: () => {
@@ -125,9 +153,11 @@ const BrandAutoList: FC<props> = ({ brands, scrollY, isScrolling, setCurrentBran
     },
   });
 
-  const handleSelectBrand = (brand: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner) => {
+  const handleSelectBrand = (
+    brand: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner
+  ) => {
     setCurrentBrand(brand);
-    router.push("/search-screen/simple-auto-screen/modals/brand-auto-modal-type-filter");
+    router.push('/search-screen/simple-auto-screen/modals/model-filter');
   };
 
   return (
@@ -135,7 +165,7 @@ const BrandAutoList: FC<props> = ({ brands, scrollY, isScrolling, setCurrentBran
       <View className="mt-2">
         <Animated.FlatList
           data={brands}
-          keyExtractor={(item) => `${item.id}`}
+          keyExtractor={item => `${item.id}`}
           scrollEventThrottle={16}
           onScroll={scrollHandler}
           showsVerticalScrollIndicator={false}
@@ -147,12 +177,12 @@ const BrandAutoList: FC<props> = ({ brands, scrollY, isScrolling, setCurrentBran
             return (
               <TouchableHighlight
                 onPress={() => handleSelectBrand(item)}
-                className={"p-4 border-b border-border dark:border-border-dark last:border-0"}
+                className={'border-b border-border p-4 last:border-0 dark:border-border-dark'}
               >
                 <View className="flex-row gap-x-4">
                   <Image
                     source={{
-                      uri: DefaultConfig.basePath + "/" + item.imageFilePath,
+                      uri: DefaultConfig.basePath + '/' + item.imageFilePath,
                     }}
                     style={{ width: 25, height: 25 }}
                     contentFit="cover"

@@ -1,11 +1,11 @@
-import React, { memo } from "react";
-import { type StyleProp, type ViewStyle, StyleSheet, Text, View } from "react-native";
-import { useTheme } from "@react-navigation/native";
-import { CustomTheme } from "@/theme";
+import React, { memo } from 'react';
+import { type StyleProp, type ViewStyle, StyleSheet, Text, View } from 'react-native';
+import { useTheme } from '@react-navigation/native';
+import { CustomTheme } from '@/theme';
 
 type OverlayProps = {
   itemHeight: number;
-  pickerWidth: number | "auto" | `${number}%`;
+  pickerWidth: number | 'auto' | `${number}%`;
   overlayItemStyle: StyleProp<ViewStyle> | undefined;
   label?: string;
 };
@@ -13,10 +13,10 @@ type OverlayProps = {
 const Overlay = ({ itemHeight, overlayItemStyle, label }: OverlayProps) => {
   const theme = useTheme() as CustomTheme;
 
-  const displayLabel = label ? `${label}` : "";
+  const displayLabel = label ? `${label}` : '';
 
   return (
-    <View style={[styles.overlayContainer]} pointerEvents={"none"}>
+    <View style={[styles.overlayContainer]} pointerEvents={'none'}>
       <View
         style={[
           styles.selection,
@@ -37,16 +37,16 @@ const Overlay = ({ itemHeight, overlayItemStyle, label }: OverlayProps) => {
 const styles = StyleSheet.create({
   overlayContainer: {
     ...StyleSheet.absoluteFillObject,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   selection: {
-    backgroundColor: "#00000022",
+    backgroundColor: '#00000022',
     borderRadius: 8,
-    alignSelf: "stretch",
+    alignSelf: 'stretch',
   },
   labelContainer: {
-    position: "absolute",
+    position: 'absolute',
     left: 10,
     paddingHorizontal: 8,
     paddingVertical: 4,
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   },
   labelText: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
 });
 export default memo(Overlay);

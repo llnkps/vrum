@@ -1,11 +1,11 @@
-import CloseIcon from "@/components/global/CloseIcon";
+import CloseIcon from '@/components/global/CloseIcon';
 import {
   BottomSheetHandle,
   useBottomSheetModal,
   type BottomSheetHandleProps,
-} from "@gorhom/bottom-sheet";
-import React, { memo } from "react";
-import { StyleSheet, Text, View } from "react-native";
+} from '@gorhom/bottom-sheet';
+import React, { memo } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
 interface HeaderHandleProps extends BottomSheetHandleProps {
   title?: string;
@@ -17,10 +17,10 @@ const HeaderHandleComponent = ({ title, ...rest }: HeaderHandleProps) => {
   return (
     <BottomSheetHandle {...rest}>
       <View style={styles.header}>
-        <Text className="text-font dark:text-font-dark text-lg font-bold">
-          {title ?? "Title modal"}
+        <Text className="text-lg font-bold text-font dark:text-font-dark">
+          {title ?? 'Title modal'}
         </Text>
-        <CloseIcon onPress={() => dismiss()} className={"p-2"} />
+        <CloseIcon onPress={() => dismiss()} className={'p-2'} />
       </View>
     </BottomSheetHandle>
   );
@@ -29,9 +29,9 @@ const HeaderHandleComponent = ({ title, ...rest }: HeaderHandleProps) => {
 const styles = StyleSheet.create({
   header: {
     flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: 14,
   },
 });

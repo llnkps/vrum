@@ -1,6 +1,14 @@
 import { useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
-import { ActivityIndicator, Alert, Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useForm, Controller } from 'react-hook-form';
 import { Ionicons } from '@expo/vector-icons';
@@ -18,7 +26,11 @@ export default function Index() {
   const router = useRouter();
   const { login, isAuthenticated } = useAuthStore();
 
-  const { control, handleSubmit, formState: { errors } } = useForm<LoginForm>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginForm>({
     mode: 'onChange',
   });
 
@@ -76,10 +88,8 @@ export default function Index() {
           enableOnAndroid={true}
           extraScrollHeight={100}
         >
-          {loading && (
-            <ActivityIndicator size="large" />
-          )}
-          <View className="w-full items-center gap-8 max-w-md mx-auto px-4">
+          {loading && <ActivityIndicator size="large" />}
+          <View className="mx-auto w-full max-w-md items-center gap-8 px-4">
             <Image
               source={require('@/assets/images/preview-logo.png')}
               style={{
@@ -87,10 +97,12 @@ export default function Index() {
                 height: 400,
                 aspectRatio: 1,
               }}
-              tintColor='#FF6F61'
+              tintColor="#FF6F61"
               resizeMode="contain"
             />
-            <Text className="text-3xl font-bold text-font dark:text-font-dark mb-2">Your journey starts here</Text>
+            <Text className="mb-2 text-3xl font-bold text-font dark:text-font-dark">
+              Your journey starts here
+            </Text>
 
             <View className="w-full gap-4">
               <Controller
@@ -108,7 +120,7 @@ export default function Index() {
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value}
-                    className="w-full p-3 border border-gray-300 rounded-lg bg-white"
+                    className="w-full rounded-lg border border-gray-300 bg-white p-3"
                     keyboardType="email-address"
                     autoCapitalize="none"
                   />
@@ -133,7 +145,7 @@ export default function Index() {
                     onChangeText={onChange}
                     value={value}
                     secureTextEntry
-                    className="w-full p-3 border border-gray-300 rounded-lg bg-white"
+                    className="w-full rounded-lg border border-gray-300 bg-white p-3"
                   />
                 )}
                 name="password"
@@ -141,22 +153,27 @@ export default function Index() {
               {errors.password && <Text className="text-red-500">{errors.password.message}</Text>}
 
               <TouchableOpacity
-                className="w-full bg-blue-500 py-3 rounded-lg"
+                className="w-full rounded-lg bg-blue-500 py-3"
                 onPress={handleSubmit(onSubmit)}
                 disabled={loading}
               >
-                <Text className="text-white text-center font-semibold">Sign In</Text>
+                <Text className="text-center font-semibold text-white">Sign In</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                className="w-full flex-row justify-center items-center bg-white py-3 rounded-lg border border-gray-300"
-                onPress={handleGoogleSignIn}>
+                className="w-full flex-row items-center justify-center rounded-lg border border-gray-300 bg-white py-3"
+                onPress={handleGoogleSignIn}
+              >
                 <Ionicons name="logo-google" size={24} color="black" className="mr-2" />
-                <Text className="text-black text-center font-semibold ml-2">Continue with Google</Text>
+                <Text className="ml-2 text-center font-semibold text-black">
+                  Continue with Google
+                </Text>
               </TouchableOpacity>
 
               <TouchableOpacity onPress={() => router.push('/sign-up')}>
-                <Text className="text-center text-blue-500">Don&apos;t have an account? Sign Up</Text>
+                <Text className="text-center text-blue-500">
+                  Don&apos;t have an account? Sign Up
+                </Text>
               </TouchableOpacity>
             </View>
           </View>

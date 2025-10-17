@@ -1,39 +1,39 @@
-import { InputField } from "@/components/ui/input/InputField/InputField";
-import { useRouter } from "expo-router";
-import { useCallback, useEffect, useRef } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { Alert, Pressable, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { InputField } from '@/components/ui/input/InputField/InputField';
+import { useRouter } from 'expo-router';
+import { useCallback, useEffect, useRef } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { Alert, Pressable, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { CheckboxRectButton } from "@/components/global/CheckboxRectButton";
-import CloseIcon from "@/components/global/CloseIcon";
-import { BottomSheetRef } from "@/components/global/CustomBottomSheetModal";
-import { TouchableHighlightRow } from "@/components/global/TouchableHighlightRow/TouchableHighlightRow";
-import { Button } from "@/components/ui/button";
-import BodyTypeModal from "@/modules/advertisement/simple-auto/body-type-modal/body-type-modal";
-import ColorModal from "@/modules/advertisement/simple-auto/color-modal/color-modal";
-import ConditionModal from "@/modules/advertisement/simple-auto/condition-modal/condition-modal";
-import { CurrencyModal } from "@/modules/advertisement/simple-auto/currency-modal/CurrencyModal";
-import DocumentsOkModal from "@/modules/advertisement/simple-auto/documents-ok-modal/documents-ok-modal";
-import DrivetrainModal from "@/modules/advertisement/simple-auto/drivetrain-modal/drivetrain-modal";
-import EngineCapacityModal from "@/modules/advertisement/simple-auto/engine-capacity-modal/engine-capacity-modal";
-import FuelTypeModal from "@/modules/advertisement/simple-auto/fuel-type-modal/fuel-type-modal";
-import ImagePickerModal from "@/modules/advertisement/simple-auto/image-picker-modal/image-picker-modal";
-import NumberOfOwnersModal from "@/modules/advertisement/simple-auto/number-of-owners-modal/number-of-owners-modal";
-import PowerModal from "@/modules/advertisement/simple-auto/power-modal/power-modal";
-import { RegionModal } from "@/modules/advertisement/simple-auto/region-modal/region-modal";
-import SellerModal from "@/modules/advertisement/simple-auto/seller-modal/seller-modal";
-import { useSimpleAutoFormContext } from "@/modules/advertisement/simple-auto/SimpleAutoFormProvider";
-import TransmissionModal from "@/modules/advertisement/simple-auto/transmission-modal/transmission-modal";
-import YearModal from "@/modules/advertisement/simple-auto/year-modal/year-modal";
-import { createAuthenticatedApiCall } from "@/openapi/auth-utils";
-import { createAuthenticatedConfiguration } from "@/openapi/configurations";
-import { useMutation } from "@tanstack/react-query";
-import { Image } from "expo-image";
-import * as ImagePicker from "expo-image-picker";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { useAuthStore } from "@/state/auth/useAuthStore";
-import { useSimpleAutoAdvertisementCreateMutate } from "@/hooks/useSimpleAutoAdvertisementCreateMutate";
+import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
+import CloseIcon from '@/components/global/CloseIcon';
+import { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
+import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow/TouchableHighlightRow';
+import { Button } from '@/components/ui/button';
+import BodyTypeModal from '@/modules/advertisement/simple-auto/body-type-modal/body-type-modal';
+import ColorModal from '@/modules/advertisement/simple-auto/color-modal/color-modal';
+import ConditionModal from '@/modules/advertisement/simple-auto/condition-modal/condition-modal';
+import { CurrencyModal } from '@/modules/advertisement/simple-auto/currency-modal/CurrencyModal';
+import DocumentsOkModal from '@/modules/advertisement/simple-auto/documents-ok-modal/documents-ok-modal';
+import DrivetrainModal from '@/modules/advertisement/simple-auto/drivetrain-modal/drivetrain-modal';
+import EngineCapacityModal from '@/modules/advertisement/simple-auto/engine-capacity-modal/engine-capacity-modal';
+import FuelTypeModal from '@/modules/advertisement/simple-auto/fuel-type-modal/fuel-type-modal';
+import ImagePickerModal from '@/modules/advertisement/simple-auto/image-picker-modal/image-picker-modal';
+import NumberOfOwnersModal from '@/modules/advertisement/simple-auto/number-of-owners-modal/number-of-owners-modal';
+import PowerModal from '@/modules/advertisement/simple-auto/power-modal/power-modal';
+import { RegionModal } from '@/modules/advertisement/simple-auto/region-modal/region-modal';
+import SellerModal from '@/modules/advertisement/simple-auto/seller-modal/seller-modal';
+import { useSimpleAutoFormContext } from '@/modules/advertisement/simple-auto/SimpleAutoFormProvider';
+import TransmissionModal from '@/modules/advertisement/simple-auto/transmission-modal/transmission-modal';
+import YearModal from '@/modules/advertisement/simple-auto/year-modal/year-modal';
+import { createAuthenticatedApiCall } from '@/openapi/auth-utils';
+import { createAuthenticatedConfiguration } from '@/openapi/configurations';
+import { useMutation } from '@tanstack/react-query';
+import { Image } from 'expo-image';
+import * as ImagePicker from 'expo-image-picker';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useAuthStore } from '@/state/auth/useAuthStore';
+import { useSimpleAutoAdvertisementCreateMutate } from '@/hooks/api/useSimpleAutoAdvertisementCreateMutate';
 
 type FormValues = {
   description: string;
@@ -68,14 +68,16 @@ export default function AddCarPage() {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      Alert.alert("Authentication Required", "You need to be logged in to create an advertisement.", [
-        { text: "Login", onPress: () => router.push("/sign-in") },
-        { text: "Cancel", onPress: () => router.back() },
-      ]);
+      Alert.alert(
+        'Authentication Required',
+        'You need to be logged in to create an advertisement.',
+        [
+          { text: 'Login', onPress: () => router.push('/sign-in') },
+          { text: 'Cancel', onPress: () => router.back() },
+        ]
+      );
     }
   }, [isAuthenticated]);
-
-
 
   const {
     selectedBrand,
@@ -179,13 +181,13 @@ export default function AddCarPage() {
   // });
 
   const mutateAdvertisement = useSimpleAutoAdvertisementCreateMutate({
-    onSuccess: (data) => {
-      console.log("Advertisement created successfully:", data);
+    onSuccess: data => {
+      console.log('Advertisement created successfully:', data);
       // reset();
       // router.push("/(app)/(tabs)/advertisement");
     },
-    onError: async (error) => {
-      console.error("Error creating advertisement:", error);
+    onError: async error => {
+      console.error('Error creating advertisement:', error);
       const jsonError = await error.response.json();
 
       if (jsonError.errors) {
@@ -196,7 +198,6 @@ export default function AddCarPage() {
     },
   });
 
-
   const {
     control,
     handleSubmit,
@@ -206,27 +207,27 @@ export default function AddCarPage() {
     setError,
   } = useForm<FormValues>({
     defaultValues: {
-      description: "",
-      price: "",
-      currency: "",
+      description: '',
+      price: '',
+      currency: '',
       images: [],
       brand: undefined,
       model: undefined,
       releaseYear: undefined,
-      region: "",
+      region: '',
 
-      mileage: "",
-      fuel_type: "",
-      transmission_type: "",
-      frame_type: "",
-      drive_train: "",
+      mileage: '',
+      fuel_type: '',
+      transmission_type: '',
+      frame_type: '',
+      drive_train: '',
       engine_capacity: 0,
       power: 0,
-      color: "",
+      color: '',
 
       trade_allow: false,
-      condition: "",
-      seller: "",
+      condition: '',
+      seller: '',
     },
   });
 
@@ -237,91 +238,91 @@ export default function AddCarPage() {
     try {
       // Validate required fields
       if (!selectedBrand?.id || !selectedModel?.id || !data.releaseYear || !data.region) {
-        alert("Пожалуйста, заполните все обязательные поля");
+        alert('Пожалуйста, заполните все обязательные поля');
         return;
       }
 
       // Validate images
       if (!data.images || data.images.length === 0) {
-        alert("Пожалуйста, добавьте хотя бы одно фото");
+        alert('Пожалуйста, добавьте хотя бы одно фото');
         return;
       }
       const formData = new FormData();
 
       // Add main fields with validation
-      formData.append("description", (data.description || "").trim());
-      formData.append("price", data.price.toString());
-      formData.append("currency", data.currency);
-      formData.append("region", data.region);
+      formData.append('description', (data.description || '').trim());
+      formData.append('price', data.price.toString());
+      formData.append('currency', data.currency);
+      formData.append('region', data.region);
 
       // Add car details
-      formData.append("brand", selectedBrand.id.toString());
-      formData.append("model", selectedModel.id.toString());
-      formData.append("generationId", selectedGeneration?.id.toString());
-      formData.append("modificationId", selectedGeneration?.modification?.id.toString());
-      formData.append("releaseYear", data.releaseYear.toString());
+      formData.append('brand', selectedBrand.id.toString());
+      formData.append('model', selectedModel.id.toString());
+      formData.append('generationId', selectedGeneration?.id.toString());
+      formData.append('modificationId', selectedGeneration?.modification?.id.toString());
+      formData.append('releaseYear', data.releaseYear.toString());
 
       if (data.mileage && !isNaN(Number(data.mileage))) {
-        formData.append("mileage", data.mileage);
+        formData.append('mileage', data.mileage);
       }
 
       if (data.transmission_type) {
-        formData.append("transmission_type", data.transmission_type);
+        formData.append('transmission_type', data.transmission_type);
       }
 
       if (data.fuel_type) {
-        formData.append("fuel_type", data.fuel_type);
+        formData.append('fuel_type', data.fuel_type);
       }
 
       if (data.frame_type) {
-        formData.append("frame_type", data.frame_type);
+        formData.append('frame_type', data.frame_type);
       }
 
       if (data.drive_train) {
-        formData.append("drive_train", data.drive_train);
+        formData.append('drive_train', data.drive_train);
       }
 
       if (data.color) {
-        formData.append("color", data.color);
+        formData.append('color', data.color);
       }
 
       if (data.power && !isNaN(Number(data.power))) {
-        formData.append("power", data.power.toString());
+        formData.append('power', data.power.toString());
       }
 
       if (data.engine_capacity && !isNaN(Number(data.engine_capacity))) {
-        formData.append("engine_capacity", data.engine_capacity.toString());
+        formData.append('engine_capacity', data.engine_capacity.toString());
       }
 
       // Add additional info with validation
-      formData.append("trade_allow", data.trade_allow ? "1" : "0");
+      formData.append('trade_allow', data.trade_allow ? '1' : '0');
 
       if (data.condition) {
-        formData.append("condition", data.condition);
+        formData.append('condition', data.condition);
       }
 
       if (data.number_of_owner) {
-        formData.append("number_of_owner", data.number_of_owner.toString());
+        formData.append('number_of_owner', data.number_of_owner.toString());
       }
 
-      formData.append("document_ok", data.document_ok);
+      formData.append('document_ok', data.document_ok);
 
       if (data.seller) {
-        formData.append("seller", data.seller);
+        formData.append('seller', data.seller);
       }
 
       // Add images with validation
       data.images.forEach((image, index) => {
         if (!image.uri) return;
 
-        const fileExtension = image.uri.split(".").pop()?.toLowerCase();
+        const fileExtension = image.uri.split('.').pop()?.toLowerCase();
         if (!fileExtension) return;
 
-        if (!["jpg", "jpeg", "png"].includes(fileExtension)) {
+        if (!['jpg', 'jpeg', 'png'].includes(fileExtension)) {
           throw new Error(`Неподдерживаемый формат изображения: ${fileExtension}`);
         }
 
-        formData.append("images", {
+        formData.append('images', {
           uri: image.uri,
           type: `image/${fileExtension}`,
           name: `image_${index}.${fileExtension}`,
@@ -336,8 +337,10 @@ export default function AddCarPage() {
       //   ]);
       // }
     } catch (error) {
-      console.error("Error submitting form:", error);
-      Alert.alert("Ошибка", "Произошла ошибка при создании объявления. Попробуйте еще раз.", [{ text: "OK" }]);
+      console.error('Error submitting form:', error);
+      Alert.alert('Ошибка', 'Произошла ошибка при создании объявления. Попробуйте еще раз.', [
+        { text: 'OK' },
+      ]);
     } finally {
       // setIsSubmitting(false);
     }
@@ -345,13 +348,13 @@ export default function AddCarPage() {
 
   useEffect(() => {
     if (selectedBrand && selectedBrand.id) {
-      setValue("brand", selectedBrand.id);
+      setValue('brand', selectedBrand.id);
     }
   }, [selectedBrand, setValue]);
 
   useEffect(() => {
     if (selectedModel && selectedModel.id) {
-      setValue("model", selectedModel.id);
+      setValue('model', selectedModel.id);
     }
   }, [selectedModel, setValue]);
 
@@ -423,9 +426,11 @@ export default function AddCarPage() {
         <Header />
 
         {/* Основная информация */}
-        <View className="p-5 rounded-2xl mb-5 bg-surface dark:bg-surface-dark gap-y-3">
-          <View className="flex-row items-center mb-5">
-            <Text className="text-xl font-bold text-font dark:text-font-dark">Основная информация</Text>
+        <View className="mb-5 gap-y-3 rounded-2xl bg-surface p-5 dark:bg-surface-dark">
+          <View className="mb-5 flex-row items-center">
+            <Text className="text-xl font-bold text-font dark:text-font-dark">
+              Основная информация
+            </Text>
           </View>
           {/* <Controller
             control={control}
@@ -457,32 +462,32 @@ export default function AddCarPage() {
           {/** Brand Selection */}
           <TouchableHighlightRow
             variant="bordered"
-            label={"Марка"}
+            label={'Марка'}
             selectedValue={selectedBrand?.name ?? undefined}
-            onPress={() => router.push("/(app)/advertisement/simple-auto/brand-auto-modal")}
+            onPress={() => router.push('/(app)/advertisement/simple-auto/brand-auto-modal')}
             rightIcon="chevron-right"
           />
 
           <TouchableHighlightRow
             variant="bordered"
-            label={"Модель"}
+            label={'Модель'}
             selectedValue={selectedModel?.name ?? undefined}
-            onPress={() => router.push("/(app)/advertisement/simple-auto/brand-auto-type-modal")}
+            onPress={() => router.push('/(app)/advertisement/simple-auto/brand-auto-type-modal')}
             rightIcon="chevron-right"
             disabled={!selectedBrand}
           />
 
           <TouchableHighlightRow
             variant="bordered"
-            label={"Поколение"}
+            label={'Поколение'}
             selectedValue={
               selectedGeneration?.generation
                 ? `${selectedGeneration.generation} поколение ${selectedGeneration?.modification?.yearStart} - ${
-                    selectedGeneration?.modification?.yearEnd ?? "н.в."
+                    selectedGeneration?.modification?.yearEnd ?? 'н.в.'
                   }, рестайлинг ${selectedGeneration?.modification?.restyling}`
                 : undefined
             }
-            onPress={() => router.push("/(app)/advertisement/simple-auto/generation-modal")}
+            onPress={() => router.push('/(app)/advertisement/simple-auto/generation-modal')}
             rightIcon="chevron-right"
             disabled={!selectedModel}
           />
@@ -490,15 +495,15 @@ export default function AddCarPage() {
           {/** Year Selection */}
           <TouchableHighlightRow
             variant="bordered"
-            label={"Год"}
+            label={'Год'}
             selectedValue={selectedReleaseYear ?? undefined}
             onPress={handlePresentYearModalPress}
             rightIcon="chevron-down"
           />
           <YearModal
             ref={yearModalRef}
-            onChange={(releaseYear) => {
-              setValue("releaseYear", releaseYear);
+            onChange={releaseYear => {
+              setValue('releaseYear', releaseYear);
               setSelectedReleaseYear(releaseYear);
               yearModalRef.current?.close({ duration: 150 });
             }}
@@ -506,8 +511,8 @@ export default function AddCarPage() {
         </View>
 
         {/* Характеристики автомобиля */}
-        <View className="p-5 rounded-2xl mb-5 bg-surface dark:bg-surface-dark">
-          <View className="flex-row items-center mb-5">
+        <View className="mb-5 rounded-2xl bg-surface p-5 dark:bg-surface-dark">
+          <View className="mb-5 flex-row items-center">
             <Text className="text-xl font-bold text-font dark:text-font-dark">Характеристики</Text>
           </View>
           <View className="gap-y-3">
@@ -515,15 +520,15 @@ export default function AddCarPage() {
 
             <TouchableHighlightRow
               variant="bordered"
-              label={"Коробка передач"}
+              label={'Коробка передач'}
               onPress={handlePresentTransmissionModalPress}
               selectedValue={selectedTransmissionType ?? undefined}
               rightIcon="chevron-down"
             />
             <TransmissionModal
               ref={transmissionModalRef}
-              onSelect={(transmisison) => {
-                setValue("transmission_type", transmisison.value);
+              onSelect={transmisison => {
+                setValue('transmission_type', transmisison.value);
                 setSelectedTransmissionType(transmisison.label);
                 transmissionModalRef.current?.close({ duration: 150 });
               }}
@@ -531,15 +536,15 @@ export default function AddCarPage() {
 
             <TouchableHighlightRow
               variant="bordered"
-              label={"Тип топлива"}
+              label={'Тип топлива'}
               onPress={handlePresentFuelTypeModalPress}
               selectedValue={selectedFuelType ?? undefined}
               rightIcon="chevron-down"
             />
             <FuelTypeModal
               ref={fuelTypeModalRef}
-              onSelect={(fuelType) => {
-                setValue("fuel_type", fuelType.value);
+              onSelect={fuelType => {
+                setValue('fuel_type', fuelType.value);
                 setSelectedFuelType(fuelType.label);
                 fuelTypeModalRef.current?.close({ duration: 150 });
               }}
@@ -547,15 +552,15 @@ export default function AddCarPage() {
 
             <TouchableHighlightRow
               variant="bordered"
-              label={"Тип кузова"}
+              label={'Тип кузова'}
               onPress={handlePresentBodyTypeModalPress}
               selectedValue={selectedBodyType ?? undefined}
               rightIcon="chevron-down"
             />
             <BodyTypeModal
               ref={bodyTypeModalRef}
-              onSelect={(frameType) => {
-                setValue("frame_type", frameType.value);
+              onSelect={frameType => {
+                setValue('frame_type', frameType.value);
                 setSelectedBodyType(frameType.label);
                 bodyTypeModalRef.current?.close({ duration: 150 });
               }}
@@ -563,15 +568,15 @@ export default function AddCarPage() {
 
             <TouchableHighlightRow
               variant="bordered"
-              label={"Привод"}
+              label={'Привод'}
               onPress={handlePresentDrivetrainModalPress}
               selectedValue={selectedDriveTrain ?? undefined}
               rightIcon="chevron-down"
             />
             <DrivetrainModal
               ref={drivetrainModalRef}
-              onSelect={(driveTrain) => {
-                setValue("drive_train", driveTrain.value);
+              onSelect={driveTrain => {
+                setValue('drive_train', driveTrain.value);
                 setSelectedDriveTrain(driveTrain.label);
                 drivetrainModalRef.current?.close({ duration: 150 });
               }}
@@ -579,15 +584,15 @@ export default function AddCarPage() {
 
             <TouchableHighlightRow
               variant="bordered"
-              label={"Цвет"}
+              label={'Цвет'}
               onPress={handlePresentColorModalPress}
               selectedValue={selectedColor ?? undefined}
               rightIcon="chevron-down"
             />
             <ColorModal
               ref={colorModalRef}
-              onSelect={(color) => {
-                setValue("color", color.value);
+              onSelect={color => {
+                setValue('color', color.value);
                 setSelectedColor(color.label);
                 colorModalRef.current?.close({ duration: 150 });
               }}
@@ -595,30 +600,30 @@ export default function AddCarPage() {
 
             <TouchableHighlightRow
               variant="bordered"
-              label={"Объем двигателя"}
+              label={'Объем двигателя'}
               onPress={handlePresentEngineCapacityModalPress}
               selectedValue={selectedEngineCapacity ? `${selectedEngineCapacity} л` : undefined}
               rightIcon="chevron-down"
             />
             <EngineCapacityModal
               ref={engineCapacityModalRef}
-              onSelect={(engineCapacity) => {
-                setValue("engine_capacity", engineCapacity);
+              onSelect={engineCapacity => {
+                setValue('engine_capacity', engineCapacity);
                 setSelectedEngineCapacity(engineCapacity);
               }}
             />
 
             <TouchableHighlightRow
               variant="bordered"
-              label={"Мощность"}
+              label={'Мощность'}
               onPress={handlePresentPowerModalPress}
               selectedValue={selectedPower ? `${selectedPower} л.с.` : undefined}
               rightIcon="chevron-down"
             />
             <PowerModal
               ref={powerModalRef}
-              onSelect={(power) => {
-                setValue("power", power);
+              onSelect={power => {
+                setValue('power', power);
                 setSelectedPower(power);
               }}
             />
@@ -628,7 +633,7 @@ export default function AddCarPage() {
               rules={{
                 pattern: {
                   value: /^\d+$/,
-                  message: "Введите только цифры",
+                  message: 'Введите только цифры',
                 },
               }}
               render={({ field, fieldState: { error } }) => {
@@ -637,7 +642,7 @@ export default function AddCarPage() {
                     ref={field.ref}
                     value={field.value.toString()}
                     onChange={field.onChange}
-                    label={"Пробег (км)"}
+                    label={'Пробег (км)'}
                     keyboardType="numeric"
                     placeholder="50000"
                     error={error?.message}
@@ -648,18 +653,18 @@ export default function AddCarPage() {
           </View>
         </View>
 
-        <View className="p-5 rounded-2xl mb-5 bg-surface dark:bg-surface-dark gap-y-3">
+        <View className="mb-5 gap-y-3 rounded-2xl bg-surface p-5 dark:bg-surface-dark">
           <TouchableHighlightRow
             variant="bordered"
-            label={"Состояние"}
+            label={'Состояние'}
             onPress={handlePresentConditionModalPress}
             selectedValue={selectedCondition ?? undefined}
             rightIcon="chevron-down"
           />
           <ConditionModal
             ref={conditionModalRef}
-            onSelect={(condition) => {
-              setValue("condition", condition.value);
+            onSelect={condition => {
+              setValue('condition', condition.value);
               setSelectedCondition(condition.label);
               conditionModalRef.current?.close({ duration: 150 });
             }}
@@ -682,15 +687,17 @@ export default function AddCarPage() {
 
           <TouchableHighlightRow
             variant="bordered"
-            label={"Документы в порядке"}
-            selectedValue={selectedDocumentOk !== undefined ? (selectedDocumentOk ? "Да" : "Нет") : undefined}
+            label={'Документы в порядке'}
+            selectedValue={
+              selectedDocumentOk !== undefined ? (selectedDocumentOk ? 'Да' : 'Нет') : undefined
+            }
             onPress={handlePresentDocumentsOkModalPress}
             rightIcon="chevron-down"
           />
           <DocumentsOkModal
             ref={documentsOkModalRef}
-            onSelect={(document) => {
-              setValue("document_ok", document.value);
+            onSelect={document => {
+              setValue('document_ok', document.value);
               setSelectedDocumentOk(document.value);
               documentsOkModalRef.current?.close({ duration: 150 });
             }}
@@ -698,15 +705,15 @@ export default function AddCarPage() {
 
           <TouchableHighlightRow
             variant="bordered"
-            label={"Количество владельцев"}
+            label={'Количество владельцев'}
             onPress={handlePresentNumberOfOwnersModalPress}
             selectedValue={selectedNumberOfOwner ?? undefined}
             rightIcon="chevron-down"
           />
           <NumberOfOwnersModal
             ref={numberOfOwnersModalRef}
-            onSelect={(numberOfOwner) => {
-              setValue("number_of_owner", numberOfOwner.value);
+            onSelect={numberOfOwner => {
+              setValue('number_of_owner', numberOfOwner.value);
               setSelectedNumberOfOwner(numberOfOwner.label);
               numberOfOwnersModalRef.current?.close({ duration: 150 });
             }}
@@ -714,33 +721,33 @@ export default function AddCarPage() {
 
           <TouchableHighlightRow
             variant="bordered"
-            label={"Продавец"}
+            label={'Продавец'}
             onPress={handlePresentSellerModalPress}
             rightIcon="chevron-down"
             selectedValue={selectedSeller ?? undefined}
           />
           <SellerModal
             ref={sellerModalRef}
-            onSelect={(seller) => {
-              setValue("seller", seller.value);
+            onSelect={seller => {
+              setValue('seller', seller.value);
               setSelectedSeller(seller.label);
               sellerModalRef.current?.close({ duration: 150 });
             }}
           />
         </View>
 
-        <View className="p-5 rounded-2xl mb-5 bg-surface dark:bg-surface-dark gap-y-3">
+        <View className="mb-5 gap-y-3 rounded-2xl bg-surface p-5 dark:bg-surface-dark">
           <Controller
             control={control}
             name="description"
             rules={{
-              required: "Описание обязательно",
+              required: 'Описание обязательно',
             }}
             render={({ field }) => {
               return (
                 <InputField
                   {...field}
-                  label={"Описание"}
+                  label={'Описание'}
                   required
                   error={errors.description?.message}
                   multiline
@@ -751,12 +758,16 @@ export default function AddCarPage() {
             }}
           />
 
-          <TouchableHighlightRow variant="bordered" label="Добавить фотографии" onPress={handlePresentImagePickerModalPress} />
+          <TouchableHighlightRow
+            variant="bordered"
+            label="Добавить фотографии"
+            onPress={handlePresentImagePickerModalPress}
+          />
           <ImagePickerModal
             control={control}
             ref={imagePickerModalRef}
-            onSelect={(images) => {
-              setValue("images", images);
+            onSelect={images => {
+              setValue('images', images);
               imagePickerModalRef.current?.close();
             }}
           />
@@ -772,21 +783,25 @@ export default function AddCarPage() {
 
               return (
                 <View className="mt-3">
-                  <Text className="text-sm text-font-subtle dark:text-font-subtle-dark mb-2">
+                  <Text className="mb-2 text-sm text-font-subtle dark:text-font-subtle-dark">
                     Выбранные фотографии ({field.value.length})
                   </Text>
                   <View className="flex-row flex-wrap gap-2">
                     {field.value.map((image, index) => (
                       <View key={index} className="relative">
-                        <Image source={{ uri: image.uri }} className="w-20 h-20 rounded-lg" contentFit="cover" />
+                        <Image
+                          source={{ uri: image.uri }}
+                          className="h-20 w-20 rounded-lg"
+                          contentFit="cover"
+                        />
                         <Pressable
                           onPress={() => {
                             const newImages = field.value.filter((_, i) => i !== index);
-                            setValue("images", newImages);
+                            setValue('images', newImages);
                           }}
-                          className="absolute -top-2 -right-2 bg-red-500 rounded-full w-6 h-6 items-center justify-center"
+                          className="absolute -right-2 -top-2 h-6 w-6 items-center justify-center rounded-full bg-red-500"
                         >
-                          <Text className="text-white text-xs font-bold">×</Text>
+                          <Text className="text-xs font-bold text-white">×</Text>
                         </Pressable>
                       </View>
                     ))}
@@ -800,14 +815,14 @@ export default function AddCarPage() {
               control={control}
               name="price"
               rules={{
-                required: "Цена обязательна",
+                required: 'Цена обязательна',
                 min: {
                   value: 1,
-                  message: "Цена должна быть больше 0",
+                  message: 'Цена должна быть больше 0',
                 },
                 pattern: {
                   value: /^\d+$/,
-                  message: "Введите только цифры",
+                  message: 'Введите только цифры',
                 },
               }}
               render={({ field }) => {
@@ -815,8 +830,8 @@ export default function AddCarPage() {
                   <InputField
                     ref={field.ref}
                     value={field.value.toString()}
-                    onChange={(e) => field.onChange(e)}
-                    label={"Цена"}
+                    onChange={e => field.onChange(e)}
+                    label={'Цена'}
                     keyboardType="numeric"
                     placeholder="1500"
                     required
@@ -827,15 +842,15 @@ export default function AddCarPage() {
 
             <TouchableHighlightRow
               variant="bordered"
-              label={"Валюта"}
+              label={'Валюта'}
               selectedValue={selectedCurrency ?? undefined}
               onPress={() => handlePresentCurrencyModalPress()}
               rightIcon="chevron-down"
             />
             <CurrencyModal
               ref={currencyModalRef}
-              onSelect={(currency) => {
-                setValue("currency", currency.value);
+              onSelect={currency => {
+                setValue('currency', currency.value);
                 setSelectedCurrency(currency.label);
                 currencyModalRef.current?.close({ duration: 150 });
               }}
@@ -845,16 +860,16 @@ export default function AddCarPage() {
           {/** Region Selection */}
           <TouchableHighlightRow
             variant="bordered"
-            label={"Регион"}
+            label={'Регион'}
             selectedValue={selectedRegion ?? undefined}
             onPress={handlePresentRegionModalPress}
             rightIcon="chevron-down"
           />
           <RegionModal
             ref={regionModalRef}
-            onChange={(region) => {
-              setValue("region", region.slug || "");
-              setSelectedRegion(region.name || "");
+            onChange={region => {
+              setValue('region', region.slug || '');
+              setSelectedRegion(region.name || '');
               regionModalRef.current?.close({ duration: 150 });
             }}
           />
@@ -866,7 +881,7 @@ export default function AddCarPage() {
           style={{ marginVertical: 20 }}
           // disabled={isSubmitting}
         >
-          <Text>{"Создать объявление"}</Text>
+          <Text>{'Создать объявление'}</Text>
         </Button>
       </KeyboardAwareScrollView>
     </SafeAreaView>
@@ -877,14 +892,16 @@ const Header = () => {
   const router = useRouter();
 
   return (
-    <View className="flex-row items-center mb-4">
+    <View className="mb-4 flex-row items-center">
       {/* Back button */}
       <CloseIcon onPress={() => router.dismiss()} />
 
       {/* Title */}
       <View className="px-3">
         <Text className="text-3xl font-bold text-font dark:text-font-dark">Продать авто</Text>
-        <Text className="text-base text-font-subtle dark:text-font-subtle-dark">Заполните информацию о вашем автомобиле</Text>
+        <Text className="text-base text-font-subtle dark:text-font-subtle-dark">
+          Заполните информацию о вашем автомобиле
+        </Text>
       </View>
     </View>
   );

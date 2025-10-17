@@ -1,186 +1,149 @@
-import { Button } from "@/components/ui/button";
-import { Pressable, ScrollView, StatusBar, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { CustomRectButton } from '@/components/ui/button';
+import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
+import FilterBadge from '@/components/global/FilterBadge';
+import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
+import { RegionBottomSheet } from '@/components/filters/RegionBottomSheet';
+import { useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
+import { Pressable, ScrollView, StatusBar, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
-import CloseIcon from "@/components/global/CloseIcon";
-import { useRouter } from "expo-router";
-import { useState } from "react";
+import CloseIcon from '@/components/global/CloseIcon';
+import { useRouter } from 'expo-router';
+import { useRef } from 'react';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 
-enum Tab {
-  All = "all",
-  OLD = "old",
-  NEW = "new",
-}
-
 const SettingScreenFilter = () => {
-  const [tab, setTab] = useState(Tab.All);
+  const router = useRouter();
+  const regionBottomSheetRef = useRef<BottomSheetModal>(null);
+
+  const {
+    tab,
+    selectedRegions,
+    onlyUnsold,
+    onlyWithPhotos,
+    setTab,
+    setSelectedRegions,
+    toggleOnlyUnsold,
+    toggleOnlyWithPhotos,
+    resetFilters,
+  } = useAutoSelectStore();
 
   return (
     <>
       <View style={{ height: STATUSBAR_HEIGHT }}>
         <SafeAreaView>
-          <StatusBar
-            translucent
-            backgroundColor={"red"}
-            barStyle={"light-content"}
-          />
+          <StatusBar translucent backgroundColor={'red'} barStyle={'light-content'} />
         </SafeAreaView>
       </View>
 
-      <Header />
+      <Header router={router} resetFilters={resetFilters} />
       <ScrollView>
-        <View className="mt-2 p-2 gap-y-4">
-          <View className="flex-row justify-between bg-surface dark:bg-surface-dark rounded-lg">
-            <Button
-              useNativePressable
+        <View className="mt-2 gap-y-4 p-2">
+          <View className="flex-row justify-between rounded-lg bg-surface dark:bg-surface-dark">
+            <CustomRectButton
               appearance="subtle"
               title="Все"
-              isSelected={tab === Tab.All}
-              onPress={() => setTab(Tab.All)}
+              isSelected={tab === 'all'}
+              onPress={() => setTab('all')}
             />
-            <Button
-              useNativePressable
+            <CustomRectButton
               appearance="subtle"
               title="С пробегом"
-              isSelected={tab === Tab.OLD}
-              onPress={() => setTab(Tab.OLD)}
+              isSelected={tab === 'old'}
+              onPress={() => setTab('old')}
             />
-            <Button
-              useNativePressable
+            <CustomRectButton
               appearance="subtle"
               title="Новые"
-              isSelected={tab === Tab.NEW}
-              onPress={() => setTab(Tab.NEW)}
+              isSelected={tab === 'new'}
+              onPress={() => setTab('new')}
             />
           </View>
 
           <View className="gap-y-2">
-            <View className="bg-surface dark:bg-surface-dark rounded-lg p-2">
-              <Text className="text-font dark:text-font-dark text-lg">
-                Все регионы
-              </Text>
-            </View>
-            <View className="flex-row">
-              <View className="bg-surface dark:bg-surface-dark rounded-full py-1 px-2">
-                <Text className="text-font dark:text-font-dark">Кишинев</Text>
+            <TouchableHighlightRow
+              label="Все регионы"
+              onPress={() => regionBottomSheetRef.current?.present()}
+              showRightArrow
+            />
+            {selectedRegions.length > 0 && (
+              <View className="flex-row flex-wrap gap-2">
+                {selectedRegions.map(region => (
+                  <FilterBadge
+                    key={region.id}
+                    label={region.name || ''}
+                    onRemove={() => {
+                      const updatedRegions = selectedRegions.filter(r => r.id !== region.id);
+                      setSelectedRegions(updatedRegions);
+                    }}
+                  />
+                ))}
               </View>
-              <View className="bg-surface dark:bg-surface-dark rounded-full py-1 px-2">
-                <Text className="text-font dark:text-font-dark">Бельцы</Text>
-              </View>
-            </View>
+            )}
           </View>
 
-          <View className="bg-surface dark:bg-surface-dark rounded-lg p-2">
-            <Text className="text-font dark:text-font-dark text-lg">
-              Марка, модель, поколение
-            </Text>
+          <View className="rounded-lg bg-surface p-2 dark:bg-surface-dark">
+            <Text className="text-lg text-font dark:text-font-dark">Марка, модель, поколение</Text>
           </View>
 
-          <View className="flex-col bg-surface dark:bg-surface-dark rounded-lg p-2">
-            <View className="p-2 border-b-1 border-border dark:border-border-dark">
-              <Text className="text-font dark:text-font-dark text-lg">Год</Text>
+          <View className="flex-col rounded-lg bg-surface p-2 dark:bg-surface-dark">
+            <View className="border-b-1 border-border p-2 dark:border-border-dark">
+              <Text className="text-lg text-font dark:text-font-dark">Год</Text>
             </View>
             <View className="p-2">
-              <Text className="text-font dark:text-font-dark text-lg">
-                Цена
-              </Text>
+              <Text className="text-lg text-font dark:text-font-dark">Цена</Text>
             </View>
           </View>
 
-          <View className="flex-col bg-surface dark:bg-surface-dark rounded-lg p-2">
-            <View className="p-2 border-b-1 border-border dark:border-border-dark">
-              <Text className="text-font dark:text-font-dark text-lg">
-                Непроданные
-              </Text>
-            </View>
-            <View className="p-2 border-b-1 border-border dark:border-border-dark">
-              <Text className="text-font dark:text-font-dark text-lg">
-                Только с фото
-              </Text>
-            </View>
-            <View className="p-2 border-b-1 border-border dark:border-border-dark">
-              <Text className="text-font dark:text-font-dark text-lg">
-                Документы
-              </Text>
-            </View>
-            <View className="p-2">
-              <Text className="text-font dark:text-font-dark text-lg">
-                Повреждения
-              </Text>
-            </View>
+          <View className="flex-col rounded-lg bg-surface p-2 dark:bg-surface-dark">
+            <CheckboxRectButton label="Непроданные" value={onlyUnsold} onPress={toggleOnlyUnsold} />
+            <CheckboxRectButton
+              label="Только с фото"
+              value={onlyWithPhotos}
+              onPress={toggleOnlyWithPhotos}
+            />
+            <CheckboxRectButton label="Документы" value={false} onPress={() => {}} />
+            <CheckboxRectButton label="Повреждения" value={false} onPress={() => {}} />
           </View>
 
-          <View className="flex-col bg-surface dark:bg-surface-dark rounded-lg p-2">
-            <View className="p-2 border-b-1 border-border dark:border-border-dark">
-              <Text className="text-font dark:text-font-dark text-lg">
-                Коробка передач
-              </Text>
-            </View>
-            <View className="p-2 border-b-1 border-border dark:border-border-dark">
-              <Text className="text-font dark:text-font-dark text-lg">
-                Объем двигателя
-              </Text>
-            </View>
-            <View className="p-2 border-b-1 border-border dark:border-border-dark">
-              <Text className="text-font dark:text-font-dark text-lg">
-                Топливо
-              </Text>
-            </View>
-            <View className="p-2 border-b-1 border-border dark:border-border-dark">
-              <Text className="text-font dark:text-font-dark text-lg">
-                Привод
-              </Text>
-            </View>
-            <View className="p-2 border-b-1 border-border dark:border-border-dark">
-              <Text className="text-font dark:text-font-dark text-lg">
-                Расположения руля
-              </Text>
-            </View>
-            <View className="p-2 border-b-1 border-border dark:border-border-dark">
-              <Text className="text-font dark:text-font-dark text-lg">
-                Мощность
-              </Text>
-            </View>
-            <View className="p-2 border-b-1 border-border dark:border-border-dark">
-              <Text className="text-font dark:text-font-dark text-lg">
-                Пробег
-              </Text>
-            </View>
-            <View className="p-2 border-b-1 border-border dark:border-border-dark">
-              <Text className="text-font dark:text-font-dark text-lg">
-                Кузов
-              </Text>
-            </View>
-
-            <View className="p-2">
-              <Text className="text-font dark:text-font-dark text-lg">
-                Цвет
-              </Text>
-            </View>
+          <View className="flex-col rounded-lg bg-surface dark:bg-surface-dark">
+            <TouchableHighlightRow label="Коробка передач" onPress={() => {}} showRightArrow />
+            <TouchableHighlightRow label="Объем двигателя" onPress={() => {}} showRightArrow />
+            <TouchableHighlightRow label="Топливо" onPress={() => {}} showRightArrow />
+            <TouchableHighlightRow label="Привод" onPress={() => {}} showRightArrow />
           </View>
+          <TouchableHighlightRow label="Расположения руля" onPress={() => {}} showRightArrow />
+          <TouchableHighlightRow label="Мощность" onPress={() => {}} showRightArrow />
+          <TouchableHighlightRow label="Пробег" onPress={() => {}} showRightArrow />
+          <TouchableHighlightRow label="Кузов" onPress={() => {}} showRightArrow />
+          <TouchableHighlightRow label="Цвет" onPress={() => {}} showRightArrow />
         </View>
       </ScrollView>
       <View className="px-4 py-3">
         <Pressable
-          onPress={() => console.log("Показать результаты Pressed")}
+          onPress={() => console.log('Показать результаты Pressed')}
           className={
-            "px-4 py-3 flex flex-row bg-button-primary dark:bg-button-primary-dark rounded-md justify-center"
+            'bg-button-primary dark:bg-button-primary-dark flex flex-row justify-center rounded-md px-4 py-3'
           }
         >
-          <Text className="text-white font-bold">Показать результаты</Text>
+          <Text className="font-bold text-white">Показать результаты</Text>
         </Pressable>
       </View>
+
+      <RegionBottomSheet
+        ref={regionBottomSheetRef}
+        multiple
+        onChange={regions => setSelectedRegions(Array.isArray(regions) ? regions : [regions])}
+      />
     </>
   );
 };
 
 export default SettingScreenFilter;
 
-const Header = () => {
-  const router = useRouter();
-
+const Header = ({ router, resetFilters }: { router: any; resetFilters: () => void }) => {
   return (
     <View className="flex-row justify-between">
       <View className="flex-row items-center">
@@ -189,19 +152,11 @@ const Header = () => {
 
         {/* Title */}
         <View className="px-3">
-          <Text className="font-bold text-font dark:text-font-dark">
-            Параметры
-          </Text>
+          <Text className="font-bold text-font dark:text-font-dark">Параметры</Text>
         </View>
       </View>
       <View>
-        <Button
-          appearance="subtle"
-          onPress={() => {
-            console.log("Reset");
-          }}
-          title="Сбросить"
-        />
+        <CustomRectButton appearance="subtle" title="Сбросить" onPress={resetFilters} />
       </View>
     </View>
   );

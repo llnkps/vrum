@@ -1,1 +1,1 @@
-export { HeaderBrand } from "./HeaderBrand";
+export { HeaderBrand } from './HeaderBrand';

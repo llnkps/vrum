@@ -1,0 +1,48 @@
+import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
+import { CustomRectButton } from '@/components/ui/button';
+import { BottomSheetView } from '@gorhom/bottom-sheet';
+import React, { forwardRef } from 'react';
+
+type FuelTypeOption = (typeof options)[number];
+
+type FuelTypeFilterBottomSheetProps = {
+  onSelect: (value: FuelTypeOption) => void;
+};
+
+const options = [
+  { label: 'Бензин', value: 'petrol' },
+  { label: 'Дизель', value: 'diesel' },
+  { label: 'Электро', value: 'electric' },
+  { label: 'Гибрид', value: 'hybrid' },
+  { label: 'Газ', value: 'gas' },
+];
+
+export const FuelTypeFilterBottomSheet = forwardRef<BottomSheetRef, FuelTypeFilterBottomSheetProps>(
+  ({ onSelect }, ref) => {
+    const [selectedFuelType, setSelectedFuelType] = React.useState<string | undefined>(undefined);
+
+    return (
+      <CustomBottomSheetModal
+        ref={ref}
+        snapPoints={['35%']}
+        enableContentPanningGesture={true}
+        title={'Тип топлива'}
+      >
+        <BottomSheetView className="flex-col">
+          {options.map(opt => (
+            <CustomRectButton
+              key={opt.value}
+              onPress={() => {
+                onSelect(opt);
+                setSelectedFuelType(opt.value);
+              }}
+              title={opt.label}
+              isSelected={selectedFuelType === opt.value}
+            />
+          ))}
+        </BottomSheetView>
+      </CustomBottomSheetModal>
+    );
+  }
+);
+FuelTypeFilterBottomSheet.displayName = 'FuelTypeFilterBottomSheet';

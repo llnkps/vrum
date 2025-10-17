@@ -1,11 +1,9 @@
-import { useAuthStore } from "@/state/auth/useAuthStore";
+import { useAuthStore } from '@/state/auth/useAuthStore';
 
 // Helper function to create authenticated API calls with automatic token refresh
-export async function createAuthenticatedApiCall<T>(
-  apiCall: () => Promise<T>
-): Promise<T> {
+export async function createAuthenticatedApiCall<T>(apiCall: () => Promise<T>): Promise<T> {
   const { token, refreshAccessToken, logout } = useAuthStore.getState();
-  console.log("STATE", token)
+  console.log('STATE', token);
   if (!token) {
     throw new AuthenticationException('No access token available');
   }
@@ -50,19 +48,19 @@ export class CustomException extends Error {
 }
 
 export class AuthenticationException extends CustomException {
-  constructor(message: string = "Authentication failed", code?: string) {
+  constructor(message: string = 'Authentication failed', code?: string) {
     super(message, 401, code);
   }
 }
 
 export class NetworkException extends CustomException {
-  constructor(message: string = "Network error", code?: string) {
+  constructor(message: string = 'Network error', code?: string) {
     super(message, 503, code);
   }
 }
 
 export class ValidationException extends CustomException {
-  constructor(message: string = "Validation failed", code?: string) {
+  constructor(message: string = 'Validation failed', code?: string) {
     super(message, 400, code);
   }
 }

@@ -1,9 +1,9 @@
-import CustomBottomSheetModal from "@/components/global/CustomBottomSheetModal";
-import { BottomSheetField } from "@/components/ui/input/BottomSheetField";
-import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
-import React, { forwardRef, useState } from "react";
-import { View } from "react-native";
-import { Text } from "react-native-gesture-handler";
+import CustomBottomSheetModal from '@/components/global/CustomBottomSheetModal';
+import { BottomSheetField } from '@/components/ui/input/BottomSheetField';
+import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
+import React, { forwardRef, useState } from 'react';
+import { View } from 'react-native';
+import { Text } from 'react-native-gesture-handler';
 
 export type BottomSheetRef = BottomSheetModal;
 
@@ -12,8 +12,8 @@ type props = {
 };
 
 export const PriceBottomSheet = forwardRef<BottomSheetRef, props>((props, ref) => {
-  const [minPrice, setMinPrice] = useState<string>("");
-  const [maxPrice, setMaxPrice] = useState<string>("");
+  const [minPrice, setMinPrice] = useState<string>('');
+  const [maxPrice, setMaxPrice] = useState<string>('');
 
   const handleConfirm = () => {
     const min = minPrice ? parseInt(minPrice) : undefined;
@@ -24,22 +24,33 @@ export const PriceBottomSheet = forwardRef<BottomSheetRef, props>((props, ref) =
   return (
     <CustomBottomSheetModal
       ref={ref}
-      snapPoints={["30%"]}
+      snapPoints={['30%']}
       footerProps={{
         onConfirm: handleConfirm,
       }}
       title="Цена"
     >
       <BottomSheetView>
-        <View className="pt-5 flex-row items-center justify-center gap-x-10 px-4">
+        <View className="flex-row items-center justify-center gap-x-10 px-4 pt-5">
           <View className="flex-1">
-            <Text className="font-bold text-lg text-font dark:text-font-dark">От</Text>
-            <BottomSheetField keyboardType="numeric" value={minPrice} onChangeText={setMinPrice} autoFocus placeholder="100000" />
+            <Text className="text-lg font-bold text-font dark:text-font-dark">От</Text>
+            <BottomSheetField
+              keyboardType="numeric"
+              value={minPrice}
+              onChangeText={setMinPrice}
+              autoFocus
+              placeholder="100000"
+            />
           </View>
 
           <View className="flex-1">
-            <Text className="font-bold text-lg text-font dark:text-font-dark">До</Text>
-            <BottomSheetField keyboardType="numeric" value={maxPrice} onChangeText={setMaxPrice} placeholder="500000" />
+            <Text className="text-lg font-bold text-font dark:text-font-dark">До</Text>
+            <BottomSheetField
+              keyboardType="numeric"
+              value={maxPrice}
+              onChangeText={setMaxPrice}
+              placeholder="500000"
+            />
           </View>
         </View>
       </BottomSheetView>
@@ -47,4 +58,4 @@ export const PriceBottomSheet = forwardRef<BottomSheetRef, props>((props, ref) =
   );
 });
 
-PriceBottomSheet.displayName = "PriceBottomSheet";
+PriceBottomSheet.displayName = 'PriceBottomSheet';
