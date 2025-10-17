@@ -19,6 +19,6 @@ export const languagesResources = {
     translation: ru,
   },
   uk: {
-    translation: uk
+    translation: uk,
   },
 };

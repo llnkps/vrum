@@ -1,7 +1,7 @@
-import { LoginApi, UserApi } from "@/openapi/client";
-import * as SecureStore from "expo-secure-store";
-import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
+import { LoginApi, UserApi } from '@/openapi/client';
+import * as SecureStore from 'expo-secure-store';
+import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 interface User {
   id: string;
@@ -13,10 +13,12 @@ interface AuthState {
   isAuthenticated: boolean;
   user: User | null;
   token: string | null;
+  refreshToken: string | null;
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, tel: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
+  refreshAccessToken: () => Promise<boolean>;
 }
 
 const storage = {
@@ -38,6 +40,7 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       user: null,
       token: null,
+      refreshToken: null,
       login: async (email: string, password: string) => {
         try {
           const loginApi = new LoginApi();
@@ -49,17 +52,12 @@ export const useAuthStore = create<AuthState>()(
             },
           });
 
-          console.log("======================")
-          console.log("======================")
-          console.log(response)
-
-          const data = await response.json();
-          // Assuming the response includes token and user
-          const token = data.token || response.headers.get("Authorization")?.replace("Bearer ", "");
-          const user = data.user || { id: data.id, email, tel: data.tel };
-          set({ isAuthenticated: true, user, token });
+          const token = response.token;
+          const refreshToken = response.refreshToken;
+          const user = { id: 'temp', email, tel: '' };
+          set({ isAuthenticated: true, user, token, refreshToken });
         } catch (error) {
-          console.error("Login error:", error);
+          console.error('Login error:', error);
           throw error;
         }
       },
@@ -76,21 +74,68 @@ export const useAuthStore = create<AuthState>()(
           throw error;
         }
       },
-      logout: () => {
-        set({ isAuthenticated: false, user: null, token: null });
+      refreshAccessToken: async () => {
+        const { refreshToken } = get();
+        if (!refreshToken) return false;
+        try {
+          const response = await fetch('http://192.168.2.55:8000/api/token/refresh', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${refreshToken}`,
+            },
+          });
+          if (!response.ok) throw new Error('Refresh failed');
+          const data = await response.json();
+          const newToken = data.token;
+          const newRefreshToken = data.refreshToken;
+          set({ token: newToken, refreshToken: newRefreshToken });
+          return true;
+        } catch (error) {
+          console.error('Refresh token error:', error);
+          set({ isAuthenticated: false, user: null, token: null, refreshToken: null });
+          return false;
+        }
+      },
+      logout: async () => {
+        const { refreshToken } = get();
+        if (refreshToken) {
+          try {
+            await fetch('http://192.168.2.55:8000/api/token/invalidate', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${refreshToken}`,
+              },
+            });
+          } catch (error) {
+            console.error('Invalidate error:', error);
+          }
+        }
+        set({ isAuthenticated: false, user: null, token: null, refreshToken: null });
       },
       checkAuth: async () => {
-        const { token } = get();
+        const { token, refreshAccessToken } = get();
         if (token) {
           try {
             const userApi = new UserApi();
             const response = await userApi.getAppUserdomainPresentationGetmeGetmeRaw();
             const userData = await response.value();
-            const user = { id: "current", email: userData.email || "", tel: "" };
+            const user = { id: 'current', email: userData.email || '', tel: '' };
             set({ isAuthenticated: true, user });
-          } catch {
-            // Token invalid, logout
-            set({ isAuthenticated: false, user: null, token: null });
+          } catch (error: any) {
+            if (error.response?.status === 401) {
+              // Try refresh
+              const refreshed = await refreshAccessToken();
+              if (refreshed) {
+                // Retry checkAuth
+                await get().checkAuth();
+              } else {
+                set({ isAuthenticated: false, user: null, token: null, refreshToken: null });
+              }
+            } else {
+              set({ isAuthenticated: false, user: null, token: null, refreshToken: null });
+            }
           }
         } else {
           set({ isAuthenticated: false, user: null });
@@ -98,7 +143,7 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: "auth-storage",
+      name: 'auth-storage',
       storage: createJSONStorage(() => storage),
     }
   )

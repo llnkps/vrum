@@ -1,12 +1,14 @@
-import React, { memo, useCallback } from "react";
-import { View } from "react-native";
+import React, { memo, useCallback } from 'react';
+import { View } from 'react-native';
 import {
   BottomSheetFooter,
   BottomSheetFooterProps,
   useBottomSheetModal,
-} from "@gorhom/bottom-sheet";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { CustomRectButton } from "@/components/ui/button";
+} from '@gorhom/bottom-sheet';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTheme } from '@react-navigation/native';
+import { CustomTheme } from '@/theme';
+import { CustomRectButton } from '@/components/ui/button';
 
 interface DefaultFooterProps extends BottomSheetFooterProps {
   selectedValue?: any;
@@ -22,6 +24,7 @@ const DefaultFooterComponent = ({
 }: DefaultFooterProps) => {
   const { bottom: bottomSafeArea } = useSafeAreaInsets();
   const { dismiss } = useBottomSheetModal();
+  const theme = useTheme() as CustomTheme;
 
   const handleCancel = useCallback(() => {
     if (onCancel) {
@@ -39,20 +42,28 @@ const DefaultFooterComponent = ({
 
   return (
     <BottomSheetFooter
-      bottomInset={bottomSafeArea}
       animatedFooterPosition={animatedFooterPosition}
+      style={{
+        backgroundColor: theme.colors.surface,
+        borderTopWidth: 1,
+        borderTopColor: theme.colors.border,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: -2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 10,
+      }}
     >
-      <View className="bg-surface dark:bg-surface-dark p-2">
-        <View className="flex-row gap-x-3 justify-end">
-          <CustomRectButton
-            onPress={handleCancel}
-            title="Отмена"
-            appearance="subtle"
-          />
-          <CustomRectButton
-            onPress={handleConfirm}
-            title="Подтвердить"
-          />
+      <View
+        style={{
+          paddingBottom: Math.max(bottomSafeArea, 16), // to close gap with safe area
+        }}
+      >
+        <View className="w-full p-2">
+          <View className="flex-row justify-end gap-x-3">
+            <CustomRectButton onPress={handleCancel} title="Отмена" appearance="subtle" />
+            <CustomRectButton onPress={handleConfirm} title="Подтвердить" />
+          </View>
         </View>
       </View>
     </BottomSheetFooter>
@@ -60,3 +71,8 @@ const DefaultFooterComponent = ({
 };
 
 export const DefaultFooter = memo(DefaultFooterComponent);
+
+// Export a function that creates the footer content for custom positioning
+export const createCustomFooter = (props: DefaultFooterProps) => (
+  <DefaultFooterComponent {...props} />
+);

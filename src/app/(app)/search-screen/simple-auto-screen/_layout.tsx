@@ -1,4 +1,4 @@
-import { Stack } from "expo-router";
+import { Stack } from 'expo-router';
 
 export default function SearchFilterLayout() {
   // const router = useRouter();
@@ -19,19 +19,17 @@ export default function SearchFilterLayout() {
   //   }
   // };
 
-  return (
-    <Stack />
-  );
+  return <Stack screenOptions={{ headerShown: false }} />;
 
   return (
     <Stack>
       <Stack.Screen
         name="brand-auto-filter"
-        options={{ title: "", presentation: "modal", headerShown: false }}
+        options={{ title: '', presentation: 'modal', headerShown: false }}
       />
       <Stack.Screen
         name="brand-auto-type-filter"
-        options={{ title: "", presentation: "modal", headerShown: false }}
+        options={{ title: '', presentation: 'modal', headerShown: false }}
       />
 
       {/* <Stack.Screen
@@ -54,7 +52,7 @@ export default function SearchFilterLayout() {
       {/* <Stack.Screen name="regions" options={{ title: "", presentation: "formSheet", ...commonOptions }} /> */}
       <Stack.Screen
         name="settings"
-        options={{ presentation: "modal", headerShown: false, animation: "default" }}
+        options={{ presentation: 'modal', headerShown: false, animation: 'default' }}
       />
     </Stack>
   );

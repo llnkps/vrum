@@ -3,9 +3,9 @@ import {
   RenderItemContainerProps,
   usePickerItemHeight,
   useScrollContentOffset,
-} from "@quidone/react-native-wheel-picker";
-import React, { memo, useMemo } from "react";
-import { Animated, TouchableWithoutFeedback } from "react-native";
+} from '@quidone/react-native-wheel-picker';
+import React, { memo, useMemo } from 'react';
+import { Animated, TouchableWithoutFeedback } from 'react-native';
 
 const PickerItemContainer = ({
   index,
@@ -21,12 +21,12 @@ const PickerItemContainer = ({
   const height = usePickerItemHeight();
 
   const { opacity } = useMemo(() => {
-    const inputRange = faces.map((f) => height * (index + f.index));
+    const inputRange = faces.map(f => height * (index + f.index));
     return {
       opacity: offset.interpolate({
         inputRange,
-        outputRange: faces.map((x) => x.opacity),
-        extrapolate: "clamp",
+        outputRange: faces.map(x => x.opacity),
+        extrapolate: 'clamp',
       }),
     };
   }, [faces, height, index, offset]);

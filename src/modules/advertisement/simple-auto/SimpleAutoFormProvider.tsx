@@ -5,8 +5,8 @@ import {
   GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner,
   GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInnerModificationsInner,
   GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner,
-} from "@/openapi/client";
-import { createContext, useContext, useState } from "react";
+} from '@/openapi/client';
+import { createContext, useContext, useState } from 'react';
 
 type GenerationType = {
   id: number;
@@ -60,15 +60,9 @@ type SimpleAutoFormContextType = {
   setSelectedSeller: React.Dispatch<string>;
 };
 
-const SimpleAutoFormContext = createContext<SimpleAutoFormContextType | null>(
-  null
-);
+const SimpleAutoFormContext = createContext<SimpleAutoFormContextType | null>(null);
 
-export const SimpleAutoFormProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const SimpleAutoFormProvider = ({ children }: { children: React.ReactNode }) => {
   const [selectedBrand, setSelectedBrand] =
     useState<GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner | null>(
       null
@@ -77,38 +71,21 @@ export const SimpleAutoFormProvider = ({
     useState<GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner | null>(
       null
     );
-  const [selectedReleaseYear, setSelectedReleaseYear] = useState<string | null>(
-    null
-  );
+  const [selectedReleaseYear, setSelectedReleaseYear] = useState<string | null>(null);
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const [selectedCurrency, setSelectedCurrency] = useState<string | null>(null);
-  const [selectedTransmissionType, setSelectedTransmissionType] = useState<
-    string | null
-  >(null);
+  const [selectedTransmissionType, setSelectedTransmissionType] = useState<string | null>(null);
   const [selectedFuelType, setSelectedFuelType] = useState<string | null>(null);
   const [selectedBodyType, setSelectedBodyType] = useState<string | null>(null);
-  const [selectedDriveTrain, setSelectedDriveTrain] = useState<string | null>(
-    null
-  );
+  const [selectedDriveTrain, setSelectedDriveTrain] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedPower, setSelectedPower] = useState<number | null>(null);
-  const [selectedEngineCapacity, setSelectedEngineCapacity] = useState<
-    number | null
-  >(null);
-  const [selectedTradeAllow, setSelectedTradeAllow] = useState<boolean | null>(
-    null
-  );
-  const [selectedCondition, setSelectedCondition] = useState<string | null>(
-    null
-  );
-  const [selectedNumberOfOwner, setSelectedNumberOfOwner] = useState<
-    string | null
-  >(null);
-  const [selectedDocumentOk, setSelectedDocumentOk] = useState<boolean | null>(
-    null
-  );
-  const [selectedGeneration, setSelectedGeneration] =
-    useState<GenerationType | null>(null);
+  const [selectedEngineCapacity, setSelectedEngineCapacity] = useState<number | null>(null);
+  const [selectedTradeAllow, setSelectedTradeAllow] = useState<boolean | null>(null);
+  const [selectedCondition, setSelectedCondition] = useState<string | null>(null);
+  const [selectedNumberOfOwner, setSelectedNumberOfOwner] = useState<string | null>(null);
+  const [selectedDocumentOk, setSelectedDocumentOk] = useState<boolean | null>(null);
+  const [selectedGeneration, setSelectedGeneration] = useState<GenerationType | null>(null);
 
   const [selectedSeller, setSelectedSeller] = useState<string | null>(null);
 
@@ -161,9 +138,7 @@ export const SimpleAutoFormProvider = ({
 export const useSimpleAutoFormContext = () => {
   const ctx = useContext(SimpleAutoFormContext);
   if (!ctx) {
-    throw new Error(
-      "useModalContext must be used within SimpleAutoFormProvider"
-    );
+    throw new Error('useModalContext must be used within SimpleAutoFormProvider');
   }
   return ctx;
 };

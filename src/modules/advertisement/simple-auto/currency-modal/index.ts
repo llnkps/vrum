@@ -1,1 +1,1 @@
-export { CurrencyModal } from "./CurrencyModal";
+export { CurrencyModal } from './CurrencyModal';

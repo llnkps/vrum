@@ -68,14 +68,15 @@ export const SearchBar = ({
           <TouchableOpacity
             onPress={_handleClear}
             hitSlop={{ top: 15, left: 10, right: 15, bottom: 15 }}
-            style={{ padding: 5 }}>
+            style={{ padding: 5 }}
+          >
             <Ionicons name="md-close" size={25} color={tintColor} />
           </TouchableOpacity>
         ) : null}
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

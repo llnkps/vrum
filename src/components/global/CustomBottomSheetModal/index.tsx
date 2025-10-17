@@ -1,15 +1,16 @@
-import React, { FC, forwardRef, ReactNode, useCallback, useMemo } from "react";
+import React, { FC, forwardRef, ReactNode, useCallback, useMemo } from 'react';
+import { KeyboardAvoidingView, Platform } from 'react-native';
 
-import { CustomTheme } from "@/theme";
+import { CustomTheme } from '@/theme';
 import {
   BottomSheetBackdrop,
   BottomSheetFooterProps,
   BottomSheetModal,
-} from "@gorhom/bottom-sheet";
-import { BottomSheetVariables } from "@gorhom/bottom-sheet/lib/typescript/types";
-import { useTheme } from "@react-navigation/native";
-import { HeaderHandle } from "./header";
-import { DefaultFooter } from "./footer";
+} from '@gorhom/bottom-sheet';
+import { BottomSheetVariables } from '@gorhom/bottom-sheet/lib/typescript/types';
+import { useTheme } from '@react-navigation/native';
+import { DefaultFooter } from './footer';
+import { HeaderHandle } from './header';
 
 export type BottomSheetRef = BottomSheetModal;
 
@@ -31,12 +32,9 @@ type CustomBottomSheetProps = {
   };
 };
 
-const CustomBottomSheetModal = forwardRef<
-  BottomSheetRef,
-  CustomBottomSheetProps
->((props, ref) => {
+const CustomBottomSheetModal = forwardRef<BottomSheetRef, CustomBottomSheetProps>((props, ref) => {
   const {
-    snapPoints = ["50%"],
+    snapPoints = ['25%', '50%', '90%'],
     title,
     children,
     handleComponent,
@@ -50,13 +48,7 @@ const CustomBottomSheetModal = forwardRef<
   const theme = useTheme() as CustomTheme;
 
   const renderBackdrop = useCallback(
-    (props: any) => (
-      <BottomSheetBackdrop
-        {...props}
-        disappearsOnIndex={-1}
-        appearsOnIndex={0}
-      />
-    ),
+    (props: any) => <BottomSheetBackdrop {...props} disappearsOnIndex={-1} appearsOnIndex={0} />,
     []
   );
 
@@ -66,15 +58,15 @@ const CustomBottomSheetModal = forwardRef<
   );
 
   const renderDefaultFooter = useCallback(
-    (footerComponentProps: BottomSheetFooterProps) => (
+    (props: BottomSheetFooterProps) => (
       <DefaultFooter
-        {...footerComponentProps}
+        {...props}
         selectedValue={footerProps?.selectedValue}
         onConfirm={footerProps?.onConfirm}
         onCancel={footerProps?.onCancel}
       />
     ),
-    [footerProps?.selectedValue, footerProps?.onConfirm, footerProps?.onCancel]
+    [footerProps]
   );
 
   const finalFooterComponent = footerComponent || (footerProps ? renderDefaultFooter : undefined);
@@ -90,15 +82,20 @@ const CustomBottomSheetModal = forwardRef<
       footerComponent={finalFooterComponent}
       enableContentPanningGesture={enableContentPanningGesture}
       enablePanDownToClose={true}
+      keyboardBehavior="interactive"
+      // keyboardBlurBehavior="restore"
+      // android_keyboardInputMode="adjustResize"
       backgroundStyle={{
         backgroundColor: theme.colors.surface,
       }}
     >
+      {/* <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}> */}
       {children}
+      {/* </KeyboardAvoidingView> */}
     </BottomSheetModal>
   );
 });
 
-CustomBottomSheetModal.displayName = "CustomBottomSheetModal";
+CustomBottomSheetModal.displayName = 'CustomBottomSheetModal';
 
 export default CustomBottomSheetModal;
