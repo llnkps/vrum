@@ -1,6 +1,6 @@
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FC, useEffect, useState } from 'react';
-import { ScrollView, StatusBar, Text, TouchableHighlight, View } from 'react-native';
+import { ScrollView, StatusBar, Text, TouchableHighlight, View, ActivityIndicator } from 'react-native';
 import Animated, { useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -50,7 +50,7 @@ export default function ModelFilter() {
   if (isLoading) {
     return (
       <View className="flex-1 items-center justify-center">
-        <Text className="text-font dark:text-font-dark">Loading...</Text>
+        <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
   }
@@ -114,9 +114,9 @@ export default function ModelFilter() {
           <CustomRectButton
             onPress={() => {
               if (searchParams.from === 'settings') {
-                router.replace('/(app)/search-screen/simple-auto-screen/modals/settings');
+                router.replace('/(app)/search-screen/simple-auto-screen/(modals)/settings');
               } else {
-                router.replace('/(app)/search-screen/simple-auto-screen/modals/simple-auto-modal');
+                router.replace('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal');
               }
             }}
             appearance="primary"

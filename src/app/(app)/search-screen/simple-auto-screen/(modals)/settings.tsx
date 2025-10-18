@@ -1,6 +1,6 @@
+import { SelectedRegionsBadges } from '@/components/global/SelectedItemsBadges';
 import { RegionBottomSheet } from '@/components/filters/RegionBottomSheet';
 import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
-import FilterBadge from '@/components/global/FilterBadge';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
 import { CustomRectButton, SelectableButton } from '@/components/ui/button';
 import {
@@ -165,19 +165,13 @@ const SettingScreenFilter = () => {
               rightIcon="chevron-down"
             />
             {selectedRegions.length > 0 && (
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {selectedRegions.map(region => (
-                  <View key={region.id} className="mr-2">
-                    <FilterBadge
-                      label={region.name || ''}
-                      onRemove={() => {
-                        const updatedRegions = selectedRegions.filter(r => r.id !== region.id);
-                        setSelectedRegions(updatedRegions);
-                      }}
-                    />
-                  </View>
-                ))}
-              </ScrollView>
+              <SelectedRegionsBadges
+                selectedRegions={selectedRegions}
+                onRemove={(region) => {
+                  const updatedRegions = selectedRegions.filter(r => r.id !== region.id);
+                  setSelectedRegions(updatedRegions);
+                }}
+              />
             )}
           </View>
 
@@ -185,7 +179,7 @@ const SettingScreenFilter = () => {
             <TouchableHighlightRow
               variant="button"
               label="Марка, модель, поколение"
-              onPress={() => router.push('/(app)/search-screen/simple-auto-screen/modals/brand-auto-filter?from=settings')}
+              onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/brand-auto-filter?from=settings')}
               showRightArrow
             />
             {selectedBrands.length !== 0 && (
@@ -210,7 +204,7 @@ const SettingScreenFilter = () => {
                             label="Модель"
                             selectedValue={selectedModels.map(m => m.name).join(', ')}
                             selectedValueMode="replace"
-                            onPress={() => router.push('/(app)/search-screen/simple-auto-screen/modals/model-filter?from=settings')}
+                            onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/model-filter?from=settings')}
                             showRightArrow
                           />
 
@@ -220,7 +214,7 @@ const SettingScreenFilter = () => {
                               label="Поколение"
                               selectedValue={selectedGenerations.map(m => `${m.generation} поколение`).join(', ')}
                               selectedValueMode="replace"
-                              onPress={() => router.push('/(app)/search-screen/simple-auto-screen/modals/generation-filter?from=settings')}
+                              onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/generation-filter?from=settings')}
                               showRightArrow
                             />
                           )}
@@ -354,12 +348,12 @@ const SettingScreenFilter = () => {
       </ScrollView>
 
       <View className="px-4 py-8">
-        <CustomRectButton onPress={() => router.replace('/(app)/search-screen/simple-auto-screen/modals/simple-auto-modal')} appearance="primary">
+        <CustomRectButton onPress={() => router.replace('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal')} appearance="primary">
           <Text className="text-center font-semibold text-white">Показать объявления</Text>
         </CustomRectButton>
       </View>
 
-      <RegionBottomSheet ref={regionBottomSheetRef} multiple onChange={regions => setSelectedRegions(Array.isArray(regions) ? regions : [regions])} />
+      <RegionBottomSheet ref={regionBottomSheetRef} multiple selectedRegions={selectedRegions} onChange={regions => setSelectedRegions(Array.isArray(regions) ? regions : [regions])} />
 
       <TransmissionFilterBottomSheet
         ref={transmissionModalRef}

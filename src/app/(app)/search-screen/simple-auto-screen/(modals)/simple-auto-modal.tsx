@@ -6,6 +6,7 @@ import { ActivityIndicator, RefreshControl, Text, View } from 'react-native';
 import { PriceBottomSheet } from '@/components/filters/PriceFilterBottomSheet';
 import { RegionBottomSheet } from '@/components/filters/RegionBottomSheet';
 import { YearBottomSheet } from '@/components/filters/YearFilterBottomSheet';
+import { SelectedRegionsBadges } from '@/components/global/SelectedItemsBadges';
 import { AdvertisementCard } from '@/components/global/AdvertisementCard/AdvertisementCard';
 import { HeaderBackSaveFilter } from '@/components/global/header';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
@@ -18,12 +19,14 @@ import {
   selectSelectedGenerations,
   selectSelectedModels,
   useAutoSelectStore,
+  getActiveFiltersCount,
 } from '@/state/search-screen/useAutoSelectStore';
 import { Ionicons } from '@expo/vector-icons';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { FlashList } from '@shopify/flash-list';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigationState } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import React from 'react';
 import Collapsible from 'react-native-collapsible';
 
@@ -110,6 +113,16 @@ export default function SimpleAutoModal() {
   const [isBrandSectionCollapsed, setIsBrandSectionCollapsed] = useState(true);
   const selectedGenerations = selectSelectedGenerations(store);
 
+  // Reset store when navigating away from this screen
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        // This cleanup function runs when the screen loses focus (user navigates back)
+        store.clearSelections();
+      };
+    }, [store])
+  );
+
   return (
     <SafeAreaView className="flex-1">
       <FlashList
@@ -119,10 +132,6 @@ export default function SimpleAutoModal() {
         maxItemsInRecyclePool={10}
         ListHeaderComponent={
           <>
-            {/* <HeaderBrand /> */}
-            {/* <HeaderCategory activeScreen={activeSreen} setActiveScreen={setActiveSreen} /> */}
-            {/* {HeaderScreen && <HeaderScreen />} */}
-
             <HeaderBackSaveFilter />
 
             <View className={'gap-y-1 py-3'}>
@@ -130,7 +139,7 @@ export default function SimpleAutoModal() {
                 <TouchableHighlightRow
                   variant="button"
                   label="Марка, модель, поколение"
-                  onPress={() => router.push('/(app)/search-screen/simple-auto-screen/modals/brand-auto-filter')}
+                  onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/brand-auto-filter')}
                   showRightArrow
                 />
                 {selectedBrands.length !== 0 && (
@@ -155,7 +164,7 @@ export default function SimpleAutoModal() {
                                 label="Модель"
                                 selectedValue={selectedModels.map(m => m.name).join(', ')}
                                 selectedValueMode="replace"
-                                onPress={() => router.push('/(app)/search-screen/simple-auto-screen/modals/model-filter?from=settings')}
+                                onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/model-filter?from=settings')}
                                 showRightArrow
                               />
 
@@ -165,7 +174,7 @@ export default function SimpleAutoModal() {
                                   label="Поколение"
                                   selectedValue={selectedGenerations.map(m => `${m.generation} поколение`).join(', ')}
                                   selectedValueMode="replace"
-                                  onPress={() => router.push('/(app)/search-screen/simple-auto-screen/modals/generation-filter?from=settings')}
+                                  onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/generation-filter?from=settings')}
                                   showRightArrow
                                 />
                               )}
@@ -201,9 +210,9 @@ export default function SimpleAutoModal() {
 
                 <TouchableHighlightRow
                   variant="button"
-                  label={'Параметры'}
-                  selectedValue={undefined}
-                  onPress={() => router.push('/(app)/search-screen/simple-auto-screen/modals/settings')}
+                  label={'Параметры' + (getActiveFiltersCount(store) > 0 ? ` (${getActiveFiltersCount(store)})` : '')}
+                  
+                  onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/settings')}
                   showRightArrow={false}
                   icon={<Ionicons name="options-sharp" size={20} color="white" />}
                   fullWidth
@@ -218,9 +227,17 @@ export default function SimpleAutoModal() {
                 rightIcon="chevron-down"
               />
 
+              {store.selectedRegions?.length > 0 && (
+                <SelectedRegionsBadges
+                  selectedRegions={store.selectedRegions}
+                  onRemove={(region) => {
+                    const updatedRegions = store.selectedRegions.filter(r => r.id !== region.id);
+                    store.setSelectedRegions(updatedRegions);
+                  }}
+                />
+              )}
+
               {/** component for opening year modal */}
-              {/** TODO: move them to shared between creating advertisement */}
-              <RegionBottomSheet ref={regionModalRef} />
 
               {/* Quick Filters */}
               {/* <View className="mt-4">
@@ -265,6 +282,7 @@ export default function SimpleAutoModal() {
 
       <YearBottomSheet ref={yearModalRef} onChange={yearRange => setYearRange(yearRange)} />
       <PriceBottomSheet ref={priceModalRef} onChange={priceRange => setPriceRange(priceRange)} />
+      <RegionBottomSheet ref={regionModalRef} multiple selectedRegions={store.selectedRegions} onChange={regions => store.setSelectedRegions(Array.isArray(regions) ? regions : [regions])} />
     </SafeAreaView>
   );
 }

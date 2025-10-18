@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FC, useEffect, useState } from 'react';
-import { StatusBar, Text, TouchableHighlight, View, ScrollView, Dimensions } from 'react-native';
+import { StatusBar, Text, TouchableHighlight, View, ScrollView, Dimensions, ActivityIndicator } from 'react-native';
 import Animated, { useAnimatedScrollHandler, useSharedValue, SlideInRight } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -43,7 +43,7 @@ export default function BrandAutoFilter() {
     // TODO: change to loading skeleton
     return (
       <View className="flex-1 items-center justify-center">
-        <Text className="text-font dark:text-font-dark">Loading...</Text>
+        <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
   }

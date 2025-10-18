@@ -4,24 +4,34 @@ import { CustomRectButton } from '@/components/ui/button';
 import { useRegionApi } from '@/hooks/api/useRegionApi';
 import { GetRegionIndex200ResponseInner } from '@/openapi/client';
 import { BottomSheetModal, BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useEffect } from 'react';
 import { ActivityIndicator, Text } from 'react-native';
 
 export type BottomSheetRef = BottomSheetModal;
 
 type props = {
   multiple?: boolean;
+  selectedRegions?: GetRegionIndex200ResponseInner[];
   onChange?: (region: GetRegionIndex200ResponseInner | GetRegionIndex200ResponseInner[]) => void;
 };
 
 export const RegionBottomSheet = forwardRef<BottomSheetRef, props>((props, ref) => {
   const { data: regions, isLoading, error } = useRegionApi();
   const [selectedRegions, setSelectedRegions] = React.useState<GetRegionIndex200ResponseInner[]>(
-    props.multiple ? [] : []
+    props.selectedRegions || []
   );
   const [selectedRegion, setSelectedRegion] = React.useState<
     GetRegionIndex200ResponseInner | undefined
-  >(undefined);
+  >(props.multiple ? undefined : (props.selectedRegions?.[0] || undefined));
+
+  // Sync internal state with props when they change
+  useEffect(() => {
+    if (props.multiple) {
+      setSelectedRegions(props.selectedRegions || []);
+    } else {
+      setSelectedRegion(props.selectedRegions?.[0] || undefined);
+    }
+  }, [props.selectedRegions, props.multiple]);
 
   const handleRegionToggle = (region: GetRegionIndex200ResponseInner) => {
     if (props.multiple) {

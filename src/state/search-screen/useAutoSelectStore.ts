@@ -350,3 +350,30 @@ export const getMileageDisplayValue = (state: SelectionStore) => {
   if (max) return `до ${max}`;
   return undefined;
 };
+
+export const getActiveFiltersCount = (state: SelectionStore) => {
+  let count = 0;
+
+  // Count array filters
+  if (state.transmission && state.transmission.length > 0) count++;
+  if (state.fuelType && state.fuelType.length > 0) count++;
+  if (state.drivetrain && state.drivetrain.length > 0) count++;
+  if (state.bodyType && state.bodyType.length > 0) count++;
+  if (state.color && state.color.length > 0) count++;
+  if (state.numberOfOwners && state.numberOfOwners.length > 0) count++;
+  if (state.seller && state.seller.length > 0) count++;
+  if (state.selectedRegions && state.selectedRegions.length > 0) count++;
+
+  // Count range filters
+  if (state.priceRange && (state.priceRange.min !== undefined || state.priceRange.max !== undefined)) count++;
+  if (state.yearRange && (state.yearRange.min !== undefined || state.yearRange.max !== undefined)) count++;
+  if (state.engineCapacityRange && (state.engineCapacityRange.min !== undefined || state.engineCapacityRange.max !== undefined)) count++;
+  if (state.powerRange && (state.powerRange.min !== undefined || state.powerRange.max !== undefined)) count++;
+  if (state.mileageRange && (state.mileageRange.min !== undefined || state.mileageRange.max !== undefined)) count++;
+
+  // Count boolean filters
+  if (state.onlyUnsold) count++;
+  if (state.onlyWithPhotos) count++;
+
+  return count;
+};

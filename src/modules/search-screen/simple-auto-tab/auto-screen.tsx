@@ -6,6 +6,7 @@ import { Image, Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import { PriceBottomSheet } from '@/components/filters/PriceFilterBottomSheet';
 import { RegionBottomSheet } from '@/components/filters/RegionBottomSheet';
 import { YearBottomSheet } from '@/components/filters/YearFilterBottomSheet';
+import { SelectedRegionsBadges } from '@/components/global/SelectedItemsBadges';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
 import { getPriceDisplayValue, getYearDisplayValue, useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
 import { Ionicons } from '@expo/vector-icons';
@@ -104,31 +105,40 @@ export const AutoHeaderScreen = () => {
         </View>
         <TouchableHighlightRow
           label="Все регионы"
-          selectedValue={getRegionDisplayValue()}
           onPress={handlePresentRegionModalPress}
           variant="button"
           showRightArrow={false}
         />
 
+        {store.selectedRegions?.length > 0 && (
+          <SelectedRegionsBadges
+            selectedRegions={store.selectedRegions}
+            onRemove={(region) => {
+              const updatedRegions = store.selectedRegions.filter(r => r.id !== region.id);
+              store.setSelectedRegions(updatedRegions);
+            }}
+          />
+        )}
+
         <YearBottomSheet
           ref={yearModalRef}
-          onChange={yearRange => store.setYearRange(yearRange)}
+          onChange={yearRange => {
+            store.setYearRange(yearRange)
+            router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal')
+          }}
         />
         <PriceBottomSheet
           ref={priceModalRef}
-          onChange={priceRange => store.setPriceRange(priceRange)}
+          onChange={priceRange => {
+            store.setPriceRange(priceRange)
+            router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal')
+          }}
         />
         <RegionBottomSheet
           ref={regionModalRef}
-          onChange={region => {
-            // Handle both single region and array of regions
-            if (Array.isArray(region)) {
-              // For now, take the first region if multiple are selected
-              store.setSelectedRegions(region);
-            } else {
-              store.addRegion(region);
-            }
-          }}
+          multiple
+          selectedRegions={store.selectedRegions}
+          onChange={regions => store.setSelectedRegions(Array.isArray(regions) ? regions : [regions])}
         />
       </View>
 

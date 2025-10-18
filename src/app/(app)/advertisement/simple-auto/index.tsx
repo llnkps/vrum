@@ -2,7 +2,7 @@ import { InputField } from '@/components/ui/input/InputField/InputField';
 import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, Pressable, Text, View } from 'react-native';
+import { Alert, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
@@ -18,7 +18,8 @@ import { DocumentsOkCreateBottomSheet } from '@/components/create/DocumentsOkCre
 import { DrivetrainCreateBottomSheet } from '@/components/create/DrivetrainCreateBottomSheet';
 import { EngineCapacityCreateBottomSheet } from '@/components/create/EngineCapacityCreateBottomSheet';
 import { FuelTypeCreateBottomSheet } from '@/components/create/FuelTypeCreateBottomSheet';
-import ImagePickerModal from '@/modules/advertisement/simple-auto/image-picker-modal/image-picker-modal';
+import { ImagePickerModal } from '@/components/global/ImagePickerModal';
+import { DraggableImageList } from '@/components/global/DraggableImageList';
 import { NumberOfOwnersCreateBottomSheet } from '@/components/create/NumberOfOwnersCreateBottomSheet';
 import { PowerCreateBottomSheet } from '@/components/create/PowerCreateBottomSheet';
 import { RegionCreateBottomSheet } from '@/components/create/RegionCreateBottomSheet';
@@ -29,7 +30,6 @@ import { useSimpleAutoFormContext } from '@/modules/advertisement/simple-auto/Si
 import { createAuthenticatedApiCall } from '@/openapi/auth-utils';
 import { createAuthenticatedConfiguration } from '@/openapi/configurations';
 import { useMutation } from '@tanstack/react-query';
-import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useAuthStore } from '@/state/auth/useAuthStore';
@@ -775,7 +775,7 @@ export default function AddCarPage() {
             }}
           />
 
-          {/** Display selected images */}
+          {/** Display selected images with drag and drop */}
           <Controller
             control={control}
             name="images"
@@ -785,31 +785,21 @@ export default function AddCarPage() {
               }
 
               return (
-                <View className="mt-3">
-                  <Text className="mb-2 text-sm text-font-subtle dark:text-font-subtle-dark">
-                    Выбранные фотографии ({field.value.length})
-                  </Text>
-                  <View className="flex-row flex-wrap gap-2">
-                    {field.value.map((image, index) => (
-                      <View key={index} className="relative">
-                        <Image
-                          source={{ uri: image.uri }}
-                          className="h-20 w-20 rounded-lg"
-                          contentFit="cover"
-                        />
-                        <Pressable
-                          onPress={() => {
-                            const newImages = field.value.filter((_, i) => i !== index);
-                            setValue('images', newImages);
-                          }}
-                          className="absolute -right-2 -top-2 h-6 w-6 items-center justify-center rounded-full bg-red-500"
-                        >
-                          <Text className="text-xs font-bold text-white">×</Text>
-                        </Pressable>
-                      </View>
-                    ))}
-                  </View>
-                </View>
+                <DraggableImageList
+                  images={field.value.map(img => ({ uri: img.uri }))}
+                  onReorder={(reorderedImages) => {
+                    // Convert back to ImagePickerAsset format, keeping original properties
+                    const reorderedAssets = reorderedImages.map(simpleImg => {
+                      const originalAsset = field.value.find(asset => asset.uri === simpleImg.uri);
+                      return originalAsset || { uri: simpleImg.uri, width: 0, height: 0 };
+                    });
+                    setValue('images', reorderedAssets);
+                  }}
+                  onDelete={(index) => {
+                    const newImages = field.value.filter((_, i) => i !== index);
+                    setValue('images', newImages);
+                  }}
+                />
               );
             }}
           />
