@@ -6,7 +6,6 @@ import {
 } from '@/openapi/client';
 import { create } from 'zustand';
 
-
 type BottomSheetOptionType = {
   value: string;
   label: string;
@@ -20,7 +19,7 @@ type SelectionStore = {
   getSelectedModelsByBrand: (brandId: number) => GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner[];
   getSelectedGenerationsByModel: (modelId: number) => GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner[];
 
-  // Filter states
+  // Filter states with type safety
   tab: 'all' | 'old' | 'new';
   selectedRegions: GetRegionIndex200ResponseInner[];
   onlyUnsold: boolean;

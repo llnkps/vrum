@@ -30,7 +30,7 @@ export default function ModelFilter() {
   const [filteredModels, setFilteredModels] = useState<
     GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner[]
   >([]);
-  console.log(data, isLoading);
+
   const scrollY = useSharedValue(0);
   const isScrolling = useSharedValue(false);
 
@@ -159,7 +159,7 @@ const ModelList: FC<props> = ({ models, scrollY, isScrolling, selectedModelsByBr
     item: GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner
   ) => {
     console.log('================');
-    console.log(item);
+    // console.log(item);
     const isSelected =
       selectedModelsByBrand[currentBrand?.id!]?.some(m => m.id === item.id) || false;
     console.log(isSelected);

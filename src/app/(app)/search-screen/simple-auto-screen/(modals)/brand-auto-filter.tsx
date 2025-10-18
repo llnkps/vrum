@@ -149,7 +149,7 @@ const BrandAutoList: FC<props> = ({ brands, scrollY, isScrolling, setCurrentBran
     addSelectedBrand(brand);
     setCurrentBrand(brand);
     const fromParam = searchParams.from === 'settings' ? '?from=settings' : '';
-    router.push(`/search-screen/simple-auto-screen/(modals)/model-filter${fromParam}`);
+    router.push(`/(app)/search-screen/simple-auto-screen/(modals)/model-filter${fromParam}`);
   };
 
   return (

@@ -43,7 +43,7 @@ export default function SimpleAutoModal() {
   const store = useAutoSelectStore();
   const selectedBrands = selectSelectedBrands(store);
   const selectedModels = selectSelectedModels(store);
-
+  console.log(selectedBrands)
   const {
     tab,
     selectedRegions,
@@ -66,8 +66,8 @@ export default function SimpleAutoModal() {
   } = store;
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch, isRefetching } = useSimpleGetCollectionPagination({
-    brand: selectedBrands?.map(brand => brand.id).join(',') || undefined,
-    model: selectedModels?.map(model => model.id).join(',') || undefined,
+    brands: selectedBrands || undefined,
+    models: selectedModels || undefined,
     releaseYear: undefined,
     price: undefined,
     pageSize: '10',
