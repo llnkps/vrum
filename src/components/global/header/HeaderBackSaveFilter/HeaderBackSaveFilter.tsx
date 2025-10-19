@@ -1,12 +1,12 @@
 // It's not so generic to be here.
 
-import { Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import CloseIcon from '../../CloseIcon';
 
-export const HeaderBackSaveFilter = () => {
+export const HeaderBackSaveFilter = ({ onSubscribe }: { onSubscribe?: () => void }) => {
   const router = useRouter();
 
   return (
@@ -18,9 +18,9 @@ export const HeaderBackSaveFilter = () => {
           <Text className="text-lg font-bold text-font dark:text-font-dark">VRUM</Text>
         </View>
       </View>
-      <View className="">
+      <TouchableOpacity onPress={onSubscribe}>
         <Text className="text-lg font-bold text-font-brand dark:text-font-brand-dark">Подписаться</Text>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 };

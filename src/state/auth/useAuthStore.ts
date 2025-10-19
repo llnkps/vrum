@@ -51,7 +51,6 @@ export const useAuthStore = create<AuthState>()(
               password,
             },
           });
-
           const token = response.token;
           const refreshToken = response.refreshToken;
           const user = { id: 'temp', email, tel: '' };
@@ -76,6 +75,8 @@ export const useAuthStore = create<AuthState>()(
       },
       refreshAccessToken: async () => {
         const { refreshToken } = get();
+        console.log('Refresh token:');
+        console.log(refreshToken);
         if (!refreshToken) return false;
         try {
           const response = await fetch('http://192.168.2.55:8000/api/token/refresh', {

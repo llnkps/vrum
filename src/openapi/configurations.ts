@@ -1,6 +1,6 @@
 import { Configuration } from './client';
 import { useAuthStore } from '@/state/auth/useAuthStore';
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 // Configuration for React Native with token management
 export function createAuthenticatedConfiguration(): Configuration {

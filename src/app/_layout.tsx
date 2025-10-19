@@ -1,20 +1,21 @@
+import '@/i18n'; // Import your i18n configuration
 import 'react-native-reanimated';
 import './globals.css';
-import '@/i18n'; // Import your i18n configuration
 
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import { LogBox, useColorScheme } from 'react-native';
+import { LogBox } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import { MyDarkTheme, MyLightTheme } from '@/theme';
-import { ThemeProvider } from '@react-navigation/native';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { useThemeStore } from '@/state/theme/useThemeStore';
+import { AuthenticationException } from '@/openapi/auth-utils';
 import { useAuthStore } from '@/state/auth/useAuthStore';
+import { useThemeStore } from '@/state/theme/useThemeStore';
+import { MyDarkTheme, MyLightTheme } from '@/theme';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { ThemeProvider } from '@react-navigation/native';
+import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 // if (!publishableKey) {
@@ -28,6 +29,19 @@ LogBox.ignoreLogs(['Clerk: Clerk has been loaded with development keys']);
 SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: (error: any) => {
+      console.log('-----------');
+      console.log('-----------');
+      console.log(error);
+      console.log('-----------');
+      console.log(error instanceof AuthenticationException)
+      if (error instanceof AuthenticationException) {
+        router.push('/sign-in');
+        console.log("PUSHING TO SIGN IN");
+      }
+    },
+  }),
   defaultOptions: {
     queries: {
       staleTime: 60 * 60 * 1000,

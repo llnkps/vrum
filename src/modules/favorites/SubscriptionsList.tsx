@@ -3,9 +3,10 @@ import { FlatList, Image, Text, TouchableOpacity, View, Pressable, useColorSchem
 import { Ionicons } from '@expo/vector-icons';
 import { SubscriptionItem } from './types';
 import EmptyState from './EmptyState';
+import { useUserSubscriptionFiltersApi } from '@/hooks/api/useUserSubscriptionFiltersApi';
+import { LoaderIndicator } from '@/components/global/LoaderIndicator';
 
 type SubscriptionsListProps = {
-  data: SubscriptionItem[];
   onItemPress?: (item: SubscriptionItem) => void;
   onDeleteSubscription?: (id: string) => void;
   onEditSubscription?: (id: string) => void;
@@ -85,7 +86,9 @@ const SubscriptionCard = ({
   );
 };
 
-const SubscriptionsList = ({ data, onItemPress, onDeleteSubscription, onEditSubscription }: SubscriptionsListProps) => {
+const SubscriptionsList = ({ onItemPress, onDeleteSubscription, onEditSubscription }: SubscriptionsListProps) => {
+  const {data, isLoading, error} = useUserSubscriptionFiltersApi();
+  console.log(data)
   const renderItem = useCallback(
     ({ item }: { item: SubscriptionItem }) => (
       <SubscriptionCard
@@ -100,15 +103,29 @@ const SubscriptionsList = ({ data, onItemPress, onDeleteSubscription, onEditSubs
 
   const keyExtractor = useCallback((item: SubscriptionItem) => item.id, []);
 
-  if (data.length === 0) {
+  if (isLoading) {
+    return <LoaderIndicator />;
+  }
+
+  // if (error) {
+  //   return <ErrorState message={error.message} />;
+  // }
+
+  if (!data || data.length === 0) {
     return <EmptyState type="subscriptions" />;
   }
 
   return (
     <FlatList
       data={data}
-      renderItem={renderItem}
-      keyExtractor={keyExtractor}
+      renderItem={({ item }) => {
+        return (
+          <>
+          <Text className="text-font dark:text-font-dark">{item.name}</Text>
+          </>
+        )
+      }}
+      keyExtractor={(item) => item.id.toString()}
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ padding: 16 }}
       removeClippedSubviews={true}

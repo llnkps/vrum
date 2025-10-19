@@ -73,7 +73,6 @@ const Page = () => {
     } else {
       return (
         <SubscriptionsList
-          data={subscriptionsData || []}
           onItemPress={handleSubscriptionItemPress}
           onDeleteSubscription={handleDeleteSubscription}
           onEditSubscription={handleEditSubscription}

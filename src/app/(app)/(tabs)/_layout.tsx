@@ -10,7 +10,7 @@ export default function TabLayout() {
   const theme = useTheme() as CustomTheme;
   return (
     <Tabs
-      initialRouteName='search-tab'  // Добавлено: устанавливает начальный экран
+      initialRouteName="search-tab"
       sceneContainerStyle={{ paddingBottom: 0 }}
       screenOptions={{
         headerShown: false,
@@ -25,10 +25,10 @@ export default function TabLayout() {
         tabBarStyle: {
           position: 'absolute',
           left: 8,
-          right: 8,
-          bottom: 0,
+          right: 0,
+          // bottom: Platform.OS === 'ios' ? 12 : 8,
           height: Platform.OS === 'ios' ? 88 : 68,
-          paddingBottom: Platform.OS === 'ios' ? 24 : 10,
+          paddingBottom: Platform.OS === 'ios' ? 24 : 30, // TODO: DOES IT WORK?
           paddingTop: 4,
           paddingHorizontal: 8,
           borderTopWidth: 1,
