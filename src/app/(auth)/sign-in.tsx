@@ -26,13 +26,13 @@ export default function Index() {
 	const router = useRouter();
 	const { login, isAuthenticated } = useAuthStore();
 
-	const {
-		control,
-		handleSubmit,
-		formState: { errors },
-	} = useForm<LoginForm>({
-		mode: 'onChange',
-	});
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginForm>({
+    mode: 'onChange',
+  });
 
 	useEffect(() => {
 		if (isAuthenticated) {
@@ -40,19 +40,18 @@ export default function Index() {
 		}
 	}, [isAuthenticated, router]);
 
-	const onSubmit = async (data: LoginForm) => {
-		console.log(data);
-		setLoading(true);
-		try {
-			await login(data.email, data.password);
-			router.replace('/(app)/(tabs)');
-		} catch (error) {
-			console.error('Login error:', error);
-			Alert.alert('Error', 'Login failed. Please check your credentials.');
-		} finally {
-			setLoading(false);
-		}
-	};
+  const onSubmit = async (data: LoginForm) => {
+    setLoading(true);
+    try {
+      await login(data.email, data.password);
+      router.replace('/(app)/(tabs)/search-tab');
+    } catch (error) {
+      console.error('Login error:', error);
+      Alert.alert('Error', 'Login failed. Please check your credentials.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
 	const handleGoogleSignIn = async () => {
 		try {

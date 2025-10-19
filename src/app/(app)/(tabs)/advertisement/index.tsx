@@ -110,9 +110,9 @@ export default function MyAdvertisement() {
 
           <TouchableHighlight
             className={clsx(
-              'bg-background-neutral dark:bg-background-neutral-dark rounded-md p-2'
+              "bg-background-neutral dark:bg-background-neutral-dark rounded-md p-2"
             )}
-            onPress={() => console.log('SPEC')}
+            onPress={() => router.push('/(app)/advertisement/spec-auto')}
           >
             <View className='flex-col items-center justify-center'>
               <HeaderSpecAuto/>
@@ -122,13 +122,23 @@ export default function MyAdvertisement() {
 
           <TouchableHighlight
             className={clsx(
-              'bg-background-neutral dark:bg-background-neutral-dark rounded-md p-2'
+              "bg-background-neutral dark:bg-background-neutral-dark rounded-md p-2"
             )}
-            onPress={() => console.log('MOTO')}
+            onPress={() => router.push('/(app)/advertisement/motorbike')}
           >
             <View className='flex-col items-center justify-center'>
               <HeaderMoto/>
               <Text className='text-font dark:text-font-dark'>Мототехника</Text>
+            </View>
+          </TouchableHighlight>
+
+          <TouchableHighlight
+            className={clsx('rounded-md bg-background-neutral p-2 dark:bg-background-neutral-dark')}
+            onPress={() => router.push('/(app)/advertisement/details')}
+          >
+            <View className="flex-col items-center justify-center">
+              <HeaderMoto />
+              <Text className="text-font dark:text-font-dark">Запчасти</Text>
             </View>
           </TouchableHighlight>
         </View>

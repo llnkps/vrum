@@ -1,11 +1,6 @@
-import {
-  PickerItem,
-  RenderItemContainerProps,
-  usePickerItemHeight,
-  useScrollContentOffset,
-} from "@quidone/react-native-wheel-picker";
-import React, { memo, useMemo } from "react";
-import { Animated, TouchableWithoutFeedback } from "react-native";
+import { PickerItem, RenderItemContainerProps, usePickerItemHeight, useScrollContentOffset } from '@quidone/react-native-wheel-picker';
+import React, { memo, useMemo } from 'react';
+import { Animated, TouchableWithoutFeedback } from 'react-native';
 
 const PickerItemContainer = ({
   index,
@@ -21,12 +16,12 @@ const PickerItemContainer = ({
   const height = usePickerItemHeight();
 
   const { opacity } = useMemo(() => {
-    const inputRange = faces.map((f) => height * (index + f.index));
+    const inputRange = faces.map(f => height * (index + f.index));
     return {
       opacity: offset.interpolate({
         inputRange,
-        outputRange: faces.map((x) => x.opacity),
-        extrapolate: "clamp",
+        outputRange: faces.map(x => x.opacity),
+        extrapolate: 'clamp',
       }),
     };
   }, [faces, height, index, offset]);
@@ -51,11 +46,7 @@ const PickerItemContainer = ({
       animated: true,
     });
 
-  return (
-    <TouchableWithoutFeedback onPress={scrollToItem}>
-      {renderAnimatedView()}
-    </TouchableWithoutFeedback>
-  );
+  return <TouchableWithoutFeedback onPress={scrollToItem}>{renderAnimatedView()}</TouchableWithoutFeedback>;
 };
 
 export default memo(PickerItemContainer);
