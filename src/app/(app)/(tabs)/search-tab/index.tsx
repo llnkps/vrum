@@ -10,10 +10,10 @@ import { SpecAutoHeaderScreen, SpecAutoItemScreen } from '@/modules/search-scree
 import { HeaderCategory } from '@/modules/search-screen/HeaderCategory';
 import { AutoHeaderScreen, AutoItemScreen } from '@/modules/search-screen/simple-auto-tab/auto-screen';
 import { ActiveScreen } from '@/modules/search-screen/types';
-import { DefaultConfig } from '@/openapi/client';
 import { selectSelectedBrands, selectSelectedModels, useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
 import { FlashList } from '@shopify/flash-list';
 import { Image } from 'expo-image';
+import { DefaultConfig } from '@/openapi/client';
 
 const SCREEN_CONFIGS: Record<ActiveScreen, { header: React.ComponentType; item: React.ComponentType<{ item: any }> } | null> = {
   auto: {
@@ -45,8 +45,8 @@ export default function SearchScreen() {
   const selectedModels = selectSelectedModels(store);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch, isRefetching } = useSimpleGetCollectionPagination({
-    brands: selectedBrands.length > 0 ? selectedBrands : undefined,
-    models: selectedModels.length > 0 ? selectedModels : undefined,
+    // brands: selectedBrands.length > 0 ? selectedBrands : undefined,
+    // models: selectedModels.length > 0 ? selectedModels : undefined,
     releaseYear: store.yearRange?.min,
     price: store.priceRange ? `${store.priceRange.min || ''}-${store.priceRange.max || ''}` : undefined,
     pageSize: '10',
