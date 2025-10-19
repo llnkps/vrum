@@ -15,38 +15,32 @@ const options = [
   { label: 'Компания', value: 'company' },
 ];
 
-export const SellerCreateBottomSheet = forwardRef<BottomSheetRef, SellerCreateBottomSheetProps>(
-  ({ onChange }, ref) => {
-    const [selectedSeller, setSelectedSeller] = React.useState<SellerOption | undefined>(undefined);
+export const SellerCreateBottomSheet = forwardRef<BottomSheetRef, SellerCreateBottomSheetProps>(({ onChange }, ref) => {
+  const [selectedSeller, setSelectedSeller] = React.useState<SellerOption | undefined>(undefined);
 
   const handleToggle = (option: SellerOption) => {
     setSelectedSeller(option);
-  };    const handleConfirm = () => {
-      onChange(selectedSeller);
-    };
+  };
+  const handleConfirm = () => {
+    onChange(selectedSeller);
+  };
 
-    return (
-      <CustomBottomSheetModal
-        ref={ref}
-        snapPoints={['35%']}
-        enableContentPanningGesture={true}
-        title={'Продавец'}
-        footerProps={{
-          onConfirm: handleConfirm,
-        }}
-      >
-        <BottomSheetView className="flex-col">
-          {options.map(opt => (
-            <CustomRectButton
-              key={opt.value}
-              title={opt.label}
-              isSelected={selectedSeller?.value === opt.value}
-              onPress={() => handleToggle(opt)}
-            />
-          ))}
-        </BottomSheetView>
-      </CustomBottomSheetModal>
-    );
-  }
-);
+  return (
+    <CustomBottomSheetModal
+      ref={ref}
+      snapPoints={['35%']}
+      enableContentPanningGesture={true}
+      title={'Продавец'}
+      footerProps={{
+        onConfirm: handleConfirm,
+      }}
+    >
+      <BottomSheetView className="flex-col">
+        {options.map(opt => (
+          <CustomRectButton key={opt.value} title={opt.label} isSelected={selectedSeller?.value === opt.value} onPress={() => handleToggle(opt)} />
+        ))}
+      </BottomSheetView>
+    </CustomBottomSheetModal>
+  );
+});
 SellerCreateBottomSheet.displayName = 'SellerCreateBottomSheet';

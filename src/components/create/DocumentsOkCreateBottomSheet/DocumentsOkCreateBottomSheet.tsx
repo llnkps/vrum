@@ -14,10 +14,7 @@ const options = [
   { label: 'Проблемы с документами', value: 'missing_or_problematic' },
 ];
 
-export const DocumentsOkCreateBottomSheet = forwardRef<
-  BottomSheetRef,
-  DocumentsOkCreateBottomSheetProps
->(({ onChange }, ref) => {
+export const DocumentsOkCreateBottomSheet = forwardRef<BottomSheetRef, DocumentsOkCreateBottomSheetProps>(({ onChange }, ref) => {
   const [selected, setSelected] = React.useState<DocumentsOkOption | undefined>(undefined);
 
   const handleToggle = (option: DocumentsOkOption) => {
@@ -40,12 +37,7 @@ export const DocumentsOkCreateBottomSheet = forwardRef<
     >
       <BottomSheetView className="flex-col">
         {options.map(opt => (
-          <CustomRectButton
-            key={opt.value}
-            title={opt.label}
-            isSelected={selected?.value === opt.value}
-            onPress={() => handleToggle(opt)}
-          />
+          <CustomRectButton key={opt.value} title={opt.label} isSelected={selected?.value === opt.value} onPress={() => handleToggle(opt)} />
         ))}
       </BottomSheetView>
     </CustomBottomSheetModal>

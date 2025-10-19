@@ -114,10 +114,7 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
           {icon && <View style={{ marginRight: 2 }}>{icon}</View>}
           <View>
             {selectedValue && selectedValueMode === 'replace' ? (
-              <Text
-                className="text-lg font-bold  text-font-subtle dark:text-font-subtle-dark"
-                style={selectedValueStyle}
-              >
+              <Text className="text-lg font-bold  text-font-subtle dark:text-font-subtle-dark" style={selectedValueStyle}>
                 {selectedValue}
               </Text>
             ) : (
@@ -132,18 +129,12 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
                   {label}
                 </Text>
                 {subtitle && (
-                  <Text
-                    className={clsx('text-sm text-font-subtle dark:text-font-subtle-dark')}
-                    style={{ marginTop: 2 }}
-                  >
+                  <Text className={clsx('text-sm text-font-subtle dark:text-font-subtle-dark')} style={{ marginTop: 2 }}>
                     {subtitle}
                   </Text>
                 )}
                 {selectedValue && selectedValueMode === 'under' && (
-                  <Text
-                    className="text-font-subtle dark:text-font-subtle-dark"
-                    style={selectedValueStyle}
-                  >
+                  <Text className="text-font-subtle dark:text-font-subtle-dark" style={selectedValueStyle}>
                     {selectedValue}
                   </Text>
                 )}
@@ -158,19 +149,9 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
               <ActivityIndicator size="small" color={theme.colors.icon} />
             ) : (
               <>
-                {rightIcon && (
-                  <Entypo
-                    name={rightIcon}
-                    size={20}
-                    color={disabled ? theme.colors.icon + '80' : theme.colors.icon}
-                  />
-                )}
+                {rightIcon && <Entypo name={rightIcon} size={20} color={disabled ? theme.colors.icon + '80' : theme.colors.icon} />}
                 {showRightArrow && !rightIcon && (
-                  <Entypo
-                    name="chevron-right"
-                    size={20}
-                    color={disabled ? theme.colors.icon + '80' : theme.colors.icon}
-                  />
+                  <Entypo name="chevron-right" size={20} color={disabled ? theme.colors.icon + '80' : theme.colors.icon} />
                 )}
               </>
             )}

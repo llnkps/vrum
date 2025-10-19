@@ -2,11 +2,7 @@ import React, { FC, forwardRef, ReactNode, useCallback, useMemo } from 'react';
 import { KeyboardAvoidingView, Platform } from 'react-native';
 
 import { CustomTheme } from '@/theme';
-import {
-  BottomSheetBackdrop,
-  BottomSheetFooterProps,
-  BottomSheetModal,
-} from '@gorhom/bottom-sheet';
+import { BottomSheetBackdrop, BottomSheetFooterProps, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { BottomSheetVariables } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { useTheme } from '@react-navigation/native';
 import { DefaultFooter } from './footer';
@@ -47,24 +43,13 @@ const CustomBottomSheetModal = forwardRef<BottomSheetRef, CustomBottomSheetProps
 
   const theme = useTheme() as CustomTheme;
 
-  const renderBackdrop = useCallback(
-    (props: any) => <BottomSheetBackdrop {...props} disappearsOnIndex={-1} appearsOnIndex={0} />,
-    []
-  );
+  const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} disappearsOnIndex={-1} appearsOnIndex={0} />, []);
 
-  const renderDefaultHeader = useCallback(
-    (props: any) => <HeaderHandle {...props} title={title} />,
-    [title]
-  );
+  const renderDefaultHeader = useCallback((props: any) => <HeaderHandle {...props} title={title} />, [title]);
 
   const renderDefaultFooter = useCallback(
     (props: BottomSheetFooterProps) => (
-      <DefaultFooter
-        {...props}
-        selectedValue={footerProps?.selectedValue}
-        onConfirm={footerProps?.onConfirm}
-        onCancel={footerProps?.onCancel}
-      />
+      <DefaultFooter {...props} selectedValue={footerProps?.selectedValue} onConfirm={footerProps?.onConfirm} onCancel={footerProps?.onCancel} />
     ),
     [footerProps]
   );

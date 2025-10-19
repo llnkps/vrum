@@ -93,14 +93,9 @@ export default function SettingsPage() {
       <ScrollView className="px-5 py-2" showsVerticalScrollIndicator={false}>
         {/* Account Section */}
         <View className="py-4">
-          <Text className="mb-3 pl-3 text-sm font-semibold uppercase tracking-wide text-font-subtlest dark:text-font-subtlest-dark">
-            Аккаунт
-          </Text>
+          <Text className="mb-3 pl-3 text-sm font-semibold uppercase tracking-wide text-font-subtlest dark:text-font-subtlest-dark">Аккаунт</Text>
 
-          <TouchableOpacity
-            className="flex-row items-center rounded-2xl bg-surface p-4 active:opacity-80 dark:bg-surface-dark"
-            activeOpacity={0.7}
-          >
+          <TouchableOpacity className="flex-row items-center rounded-2xl bg-surface p-4 active:opacity-80 dark:bg-surface-dark" activeOpacity={0.7}>
             <Image
               source={{
                 uri: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&auto=format&fit=facearea&w=256&h=256&q=80',
@@ -108,12 +103,8 @@ export default function SettingsPage() {
               className="h-14 w-14 rounded-xl"
             />
             <View className="ml-4 flex-1">
-              <Text className="text-base font-semibold text-font dark:text-font-dark">
-                {userData?.name || 'User'}
-              </Text>
-              <Text className="text-sm text-font-subtle dark:text-font-subtle-dark">
-                {userData?.email || 'user@example.com'}
-              </Text>
+              <Text className="text-base font-semibold text-font dark:text-font-dark">{userData?.name || 'User'}</Text>
+              <Text className="text-sm text-font-subtle dark:text-font-subtle-dark">{userData?.email || 'user@example.com'}</Text>
             </View>
             <FeatherIcon name="chevron-right" size={20} color="#A9ABAF" />
           </TouchableOpacity>
@@ -155,9 +146,7 @@ export default function SettingsPage() {
             >
               <Text className="text-base text-font dark:text-font-dark">Язык</Text>
               <View className="flex-1" />
-              <Text className="mr-2 text-sm font-medium text-font-subtle dark:text-font-subtle-dark">
-                {getLanguageDisplayName(language)}
-              </Text>
+              <Text className="mr-2 text-sm font-medium text-font-subtle dark:text-font-subtle-dark">{getLanguageDisplayName(language)}</Text>
               <FeatherIcon name="chevron-right" size={18} color="#A9ABAF" />
             </TouchableOpacity>
 
@@ -187,9 +176,7 @@ export default function SettingsPage() {
             >
               <Text className="text-base text-font dark:text-font-dark">Местоположение</Text>
               <View className="flex-1" />
-              <Text className="mr-2 text-sm font-medium text-font-subtle dark:text-font-subtle-dark">
-                {location}
-              </Text>
+              <Text className="mr-2 text-sm font-medium text-font-subtle dark:text-font-subtle-dark">{location}</Text>
               <FeatherIcon name="chevron-right" size={18} color="#A9ABAF" />
             </TouchableOpacity>
 
@@ -229,17 +216,10 @@ export default function SettingsPage() {
 
         {/* Resources */}
         <View className="py-4">
-          <Text className="mb-3 pl-3 text-sm font-semibold uppercase tracking-wide text-font-subtlest dark:text-font-subtlest-dark">
-            Ресурсы
-          </Text>
+          <Text className="mb-3 pl-3 text-sm font-semibold uppercase tracking-wide text-font-subtlest dark:text-font-subtlest-dark">Ресурсы</Text>
 
           <View className="overflow-hidden rounded-2xl bg-surface dark:bg-surface-dark">
-            {[
-              'Связаться с нами',
-              'Сообщить об ошибке',
-              'Оценить в App Store',
-              'Условия и конфиденциальность',
-            ].map((item, index) => (
+            {['Связаться с нами', 'Сообщить об ошибке', 'Оценить в App Store', 'Условия и конфиденциальность'].map((item, index) => (
               <TouchableOpacity
                 key={index}
                 className={`flex-row items-center px-4 py-4 active:opacity-80 ${
@@ -262,20 +242,14 @@ export default function SettingsPage() {
             activeOpacity={0.7}
             onPress={handleLogout}
           >
-            <Text className="text-base font-semibold text-font-danger dark:text-font-danger-dark">
-              Выйти из аккаунта
-            </Text>
+            <Text className="text-base font-semibold text-font-danger dark:text-font-danger-dark">Выйти из аккаунта</Text>
           </TouchableOpacity>
         </View>
 
         {/* Footer */}
         <View className="items-center py-8">
-          <Text className="text-center text-xs text-font-subtlest dark:text-font-subtlest-dark">
-            App Version 2.24 #50491
-          </Text>
-          <Text className="mt-1 text-center text-xs text-font-subtlest dark:text-font-subtlest-dark">
-            Сделано с ❤️ в Молдове
-          </Text>
+          <Text className="text-center text-xs text-font-subtlest dark:text-font-subtlest-dark">App Version 2.24 #50491</Text>
+          <Text className="mt-1 text-center text-xs text-font-subtlest dark:text-font-subtlest-dark">Сделано с ❤️ в Молдове</Text>
         </View>
       </ScrollView>
     </SafeAreaView>

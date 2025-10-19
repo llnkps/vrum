@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { HeaderSearchBar } from '@/components/global/header/HeaderSearchBar/HeaderSearchBar';
 import { useSimpleAutoModelByBrandApi } from '@/hooks/api/useSimpleAutoModelByBrandApi';
 import { useSimpleAutoFormContext } from '@/modules/advertisement/simple-auto/SimpleAutoFormProvider';
-import { GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner } from '@/openapi/client';
+import { SimpleAutoModel } from '@/openapi/client';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight ?? 24;
 
@@ -16,12 +16,8 @@ export default function ModalModelItem() {
 
   const { selectedBrand } = useSimpleAutoFormContext();
 
-  const { data, isLoading } = useSimpleAutoModelByBrandApi(
-    selectedBrand?.id ? selectedBrand.id.toString() : ''
-  );
-  const [filteredModels, setFilteredModels] = useState<
-    GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner[]
-  >([]);
+  const { data, isLoading } = useSimpleAutoModelByBrandApi(selectedBrand?.id ? selectedBrand.id.toString() : '');
+  const [filteredModels, setFilteredModels] = useState<SimpleAutoModel[]>([]);
 
   const scrollY = useSharedValue(0);
   const isScrolling = useSharedValue(false);
@@ -71,7 +67,7 @@ export default function ModalModelItem() {
 }
 
 type props = {
-  models: GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner[];
+  models: SimpleAutoModel[];
   scrollY: any;
   isScrolling: any;
 };
@@ -80,9 +76,7 @@ const ModalModelItemBlock: FC<props> = ({ models, scrollY, isScrolling }) => {
   const router = useRouter();
   const { setSelectedModel, setSelectedGeneration } = useSimpleAutoFormContext();
 
-  const handleSelectModel = (
-    item: GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner
-  ) => {
+  const handleSelectModel = (item: SimpleAutoModel) => {
     setSelectedModel(item);
     setSelectedGeneration(null);
     router.dismiss();

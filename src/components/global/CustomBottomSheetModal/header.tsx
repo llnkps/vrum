@@ -1,9 +1,5 @@
 import CloseIcon from '@/components/global/CloseIcon';
-import {
-  BottomSheetHandle,
-  useBottomSheetModal,
-  type BottomSheetHandleProps,
-} from '@gorhom/bottom-sheet';
+import { BottomSheetHandle, useBottomSheetModal, type BottomSheetHandleProps } from '@gorhom/bottom-sheet';
 import React, { memo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -17,9 +13,7 @@ const HeaderHandleComponent = ({ title, ...rest }: HeaderHandleProps) => {
   return (
     <BottomSheetHandle {...rest}>
       <View style={styles.header}>
-        <Text className="text-lg font-bold text-font dark:text-font-dark">
-          {title ?? 'Title modal'}
-        </Text>
+        <Text className="text-lg font-bold text-font dark:text-font-dark">{title ?? 'Title modal'}</Text>
         <CloseIcon onPress={() => dismiss()} className={'p-2'} />
       </View>
     </BottomSheetHandle>

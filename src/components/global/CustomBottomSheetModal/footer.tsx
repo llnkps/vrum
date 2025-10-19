@@ -1,10 +1,6 @@
 import React, { memo, useCallback } from 'react';
 import { View } from 'react-native';
-import {
-  BottomSheetFooter,
-  BottomSheetFooterProps,
-  useBottomSheetModal,
-} from '@gorhom/bottom-sheet';
+import { BottomSheetFooter, BottomSheetFooterProps, useBottomSheetModal } from '@gorhom/bottom-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@react-navigation/native';
 import { CustomTheme } from '@/theme';
@@ -16,12 +12,7 @@ interface DefaultFooterProps extends BottomSheetFooterProps {
   onCancel?: () => void;
 }
 
-const DefaultFooterComponent = ({
-  animatedFooterPosition,
-  selectedValue,
-  onConfirm,
-  onCancel,
-}: DefaultFooterProps) => {
+const DefaultFooterComponent = ({ animatedFooterPosition, selectedValue, onConfirm, onCancel }: DefaultFooterProps) => {
   const { bottom: bottomSafeArea } = useSafeAreaInsets();
   const { dismiss } = useBottomSheetModal();
   const theme = useTheme() as CustomTheme;
@@ -73,6 +64,4 @@ const DefaultFooterComponent = ({
 export const DefaultFooter = memo(DefaultFooterComponent);
 
 // Export a function that creates the footer content for custom positioning
-export const createCustomFooter = (props: DefaultFooterProps) => (
-  <DefaultFooterComponent {...props} />
-);
+export const createCustomFooter = (props: DefaultFooterProps) => <DefaultFooterComponent {...props} />;

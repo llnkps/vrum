@@ -53,22 +53,11 @@ type FavoritesListProps = {
   onSearchPress?: () => void;
 };
 
-const FavoritesList = ({
-  data,
-  onItemPress,
-  onToggleFavorite,
-  onSearchPress,
-}: FavoritesListProps) => {
+const FavoritesList = ({ data, onItemPress, onToggleFavorite, onSearchPress }: FavoritesListProps) => {
   const renderItem = useCallback(
     ({ item }: { item: FavoriteItem }) => {
       const productData = convertFavoriteToProduct(item);
-      return (
-        <CarCard
-          item={productData}
-          onPress={() => onItemPress?.(item)}
-          onToggleFavorite={() => onToggleFavorite?.(item.id)}
-        />
-      );
+      return <CarCard item={productData} onPress={() => onItemPress?.(item)} onToggleFavorite={() => onToggleFavorite?.(item.id)} />;
     },
     [onItemPress, onToggleFavorite]
   );

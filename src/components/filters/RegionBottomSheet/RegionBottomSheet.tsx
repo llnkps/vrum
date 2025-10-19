@@ -2,7 +2,7 @@ import CustomBottomSheetModal from '@/components/global/CustomBottomSheetModal';
 import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
 import { CustomRectButton } from '@/components/ui/button';
 import { useRegionApi } from '@/hooks/api/useRegionApi';
-import { GetRegionIndex200ResponseInner } from '@/openapi/client';
+import { Region } from '@/openapi/client';
 import { BottomSheetModal, BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef, useEffect } from 'react';
 import { ActivityIndicator, Text } from 'react-native';
@@ -11,18 +11,16 @@ export type BottomSheetRef = BottomSheetModal;
 
 type props = {
   multiple?: boolean;
-  selectedRegions?: GetRegionIndex200ResponseInner[];
-  onChange?: (region: GetRegionIndex200ResponseInner | GetRegionIndex200ResponseInner[]) => void;
+  selectedRegions?: Region[];
+  onChange?: (region: Region | Region[]) => void;
 };
 
 export const RegionBottomSheet = forwardRef<BottomSheetRef, props>((props, ref) => {
   const { data: regions, isLoading, error } = useRegionApi();
-  const [selectedRegions, setSelectedRegions] = React.useState<GetRegionIndex200ResponseInner[]>(
-    props.selectedRegions || []
+  const [selectedRegions, setSelectedRegions] = React.useState<Region[]>(props.selectedRegions || []);
+  const [selectedRegion, setSelectedRegion] = React.useState<Region | undefined>(
+    props.multiple ? undefined : props.selectedRegions?.[0] || undefined
   );
-  const [selectedRegion, setSelectedRegion] = React.useState<
-    GetRegionIndex200ResponseInner | undefined
-  >(props.multiple ? undefined : (props.selectedRegions?.[0] || undefined));
 
   // Sync internal state with props when they change
   useEffect(() => {
@@ -33,7 +31,7 @@ export const RegionBottomSheet = forwardRef<BottomSheetRef, props>((props, ref) 
     }
   }, [props.selectedRegions, props.multiple]);
 
-  const handleRegionToggle = (region: GetRegionIndex200ResponseInner) => {
+  const handleRegionToggle = (region: Region) => {
     if (props.multiple) {
       const isSelected = selectedRegions.some(r => r.id === region.id);
       if (isSelected) {
@@ -54,7 +52,7 @@ export const RegionBottomSheet = forwardRef<BottomSheetRef, props>((props, ref) 
     }
   };
 
-  const isRegionSelected = (region: GetRegionIndex200ResponseInner) => {
+  const isRegionSelected = (region: Region) => {
     if (props.multiple) {
       return selectedRegions.some(r => r.id === region.id);
     } else {
@@ -75,9 +73,7 @@ export const RegionBottomSheet = forwardRef<BottomSheetRef, props>((props, ref) 
       {isLoading && <ActivityIndicator size="large" />}
       {error ? (
         <BottomSheetView className="flex-1 items-center justify-center">
-          <Text className="text-font dark:text-font-dark">
-            Произошла ошибка. Приносим извинения!
-          </Text>
+          <Text className="text-font dark:text-font-dark">Произошла ошибка. Приносим извинения!</Text>
         </BottomSheetView>
       ) : (
         <BottomSheetScrollView className="flex-col" enableFooterMarginAdjustment={true}>

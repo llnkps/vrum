@@ -9,10 +9,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { HeaderSearchBar } from '@/components/global/header/HeaderSearchBar';
 import { useGenerationsByModelApi } from '@/hooks/api/useGenerationsByModelApi';
 import { useSimpleAutoFormContext } from '@/modules/advertisement/simple-auto/SimpleAutoFormProvider';
-import {
-  DefaultConfig,
-  GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner,
-} from '@/openapi/client';
+import { DefaultConfig, SimpleAutoGeneration } from '@/openapi/client';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight ?? 24;
 
@@ -21,10 +18,7 @@ export default function GenerationModal() {
   const { selectedBrand, selectedModel } = useSimpleAutoFormContext();
   const [searchValue, setSearchValue] = useState('');
 
-  const { data: generations, isLoading } = useGenerationsByModelApi(
-    selectedBrand?.id?.toString() || null,
-    selectedModel?.id?.toString() || null
-  );
+  const { data: generations, isLoading } = useGenerationsByModelApi(selectedBrand?.id?.toString() || null, selectedModel?.id?.toString() || null);
 
   const [filteredGenerations, setFilteredGenerations] = useState(generations || []);
 
@@ -41,10 +35,7 @@ export default function GenerationModal() {
   useEffect(() => {
     if (!generations) return;
 
-    const filtered = generations.filter(
-      generation =>
-        String(generation.generation)?.toLowerCase().includes(searchValue.toLowerCase()) || false
-    );
+    const filtered = generations.filter(generation => String(generation.generation)?.toLowerCase().includes(searchValue.toLowerCase()) || false);
     setFilteredGenerations(filtered);
   }, [searchValue, generations]);
 
@@ -59,25 +50,16 @@ export default function GenerationModal() {
   return (
     <>
       <SafeAreaView className="flex-1 gap-y-4 px-3">
-        <HeaderSearchBar
-          title={selectedModel?.name || ''}
-          scrollY={scrollY}
-          showSearch={false}
-          onClose={() => router.dismiss()}
-        />
+        <HeaderSearchBar title={selectedModel?.name || ''} scrollY={scrollY} showSearch={false} onClose={() => router.dismiss()} />
 
-        <GenerationList
-          generations={filteredGenerations}
-          scrollY={scrollY}
-          isScrolling={isScrolling}
-        />
+        <GenerationList generations={filteredGenerations} scrollY={scrollY} isScrolling={isScrolling} />
       </SafeAreaView>
     </>
   );
 }
 
 type GenerationListProps = {
-  generations: GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner[];
+  generations: SimpleAutoGeneration[];
   scrollY: SharedValue<number>;
   isScrolling: SharedValue<boolean>;
 };
@@ -133,15 +115,11 @@ const GenerationList: FC<GenerationListProps> = ({ generations, scrollY, isScrol
                     <View className="flex-col gap-y-1">
                       <Text className="text-base text-font dark:text-font-dark">
                         {`${modification.yearStart} - ${modification.yearEnd || 'н.в.'}`}
-                        {modification.restyling > 0
-                          ? ` (рестайлинг ${modification.restyling})`
-                          : ''}
+                        {modification.restyling > 0 ? ` (рестайлинг ${modification.restyling})` : ''}
                       </Text>
                     </View>
                     <View className="mb-2 flex-col gap-y-1 border-l-2 border-border pl-4 dark:border-border-dark">
-                      <Text className="text-2xl font-bold text-font dark:text-font-dark">
-                        {`${item.generation} поколение`}
-                      </Text>
+                      <Text className="text-2xl font-bold text-font dark:text-font-dark">{`${item.generation} поколение`}</Text>
                       <View className="flex-row flex-wrap gap-2">
                         {modification.frames?.map((frame, frameIndex) => (
                           <Text

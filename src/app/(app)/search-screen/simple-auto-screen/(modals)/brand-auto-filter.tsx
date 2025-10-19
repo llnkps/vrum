@@ -1,20 +1,17 @@
 import { Image } from 'expo-image';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { FC, useEffect, useState } from 'react';
-import { StatusBar, Text, TouchableHighlight, View, ScrollView, Dimensions, ActivityIndicator } from 'react-native';
-import Animated, { useAnimatedScrollHandler, useSharedValue, SlideInRight } from 'react-native-reanimated';
+import { ScrollView, StatusBar, Text, TouchableHighlight, View } from 'react-native';
+import Animated, { useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { CustomRectButton } from '@/components/ui/button';
 import FilterBadge from '@/components/global/FilterBadge';
 import { HeaderSearchBar } from '@/components/global/header/HeaderSearchBar/HeaderSearchBar';
+import { LoaderIndicator } from '@/components/global/LoaderIndicator';
+import { CustomRectButton } from '@/components/ui/button';
 import { useSimpleAutoBrandApi } from '@/hooks/api/useSimpleAutoBrandApi';
-import {
-  DefaultConfig,
-  GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner,
-  GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner,
-} from '@/openapi/client';
-import { useAutoSelectStore, selectSelectedBrands } from '@/state/search-screen/useAutoSelectStore';
+import { DefaultConfig, SimpleAutoBrand, SimpleAutoModel } from '@/openapi/client';
+import { selectSelectedBrands, useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight ?? 24;
 
@@ -28,7 +25,7 @@ export default function BrandAutoFilter() {
 
   const [searchValue, setSearchValue] = useState('');
   const { data, isLoading } = useSimpleAutoBrandApi();
-  const [filteredBrands, setFilteredBrands] = useState<GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner[]>([]);
+  const [filteredBrands, setFilteredBrands] = useState<SimpleAutoBrand[]>([]);
 
   const scrollY = useSharedValue(0);
   const isScrolling = useSharedValue(false);
@@ -40,12 +37,7 @@ export default function BrandAutoFilter() {
   }, [data]);
 
   if (isLoading) {
-    // TODO: change to loading skeleton
-    return (
-      <View className="flex-1 items-center justify-center">
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
+    return <LoaderIndicator />;
   }
 
   return (
@@ -121,12 +113,12 @@ export default function BrandAutoFilter() {
 }
 
 type props = {
-  brands: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner[];
+  brands: SimpleAutoBrand[];
   scrollY: any;
   isScrolling: any;
-  setCurrentBrand: (brand: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner | null) => void;
-  addSelectedBrand: (brand: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner) => void;
-  selectedModelsByBrand: Record<number, GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner[]>;
+  setCurrentBrand: (brand: SimpleAutoBrand | null) => void;
+  addSelectedBrand: (brand: SimpleAutoBrand) => void;
+  selectedModelsByBrand: Record<number, SimpleAutoModel[]>;
   searchParams: any;
 };
 
@@ -145,7 +137,7 @@ const BrandAutoList: FC<props> = ({ brands, scrollY, isScrolling, setCurrentBran
     },
   });
 
-  const handleSelectBrand = (brand: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner) => {
+  const handleSelectBrand = (brand: SimpleAutoBrand) => {
     addSelectedBrand(brand);
     setCurrentBrand(brand);
     const fromParam = searchParams.from === 'settings' ? '?from=settings' : '';

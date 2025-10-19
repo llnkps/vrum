@@ -1,13 +1,5 @@
 import React, { useCallback } from 'react';
-import {
-  FlatList,
-  Image,
-  Text,
-  TouchableOpacity,
-  View,
-  Pressable,
-  useColorScheme,
-} from 'react-native';
+import { FlatList, Image, Text, TouchableOpacity, View, Pressable, useColorScheme } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SubscriptionItem } from './types';
 import EmptyState from './EmptyState';
@@ -51,33 +43,21 @@ const SubscriptionCard = ({
 
         {/* Content */}
         <View className="flex-1">
-          <Text
-            className="text-base font-semibold leading-tight text-font dark:text-font-dark"
-            numberOfLines={1}
-          >
+          <Text className="text-base font-semibold leading-tight text-font dark:text-font-dark" numberOfLines={1}>
             {item.brand}
           </Text>
-          <Text
-            className="mt-1 text-sm text-font-subtle dark:text-font-subtle-dark"
-            numberOfLines={2}
-          >
+          <Text className="mt-1 text-sm text-font-subtle dark:text-font-subtle-dark" numberOfLines={2}>
             {item.model}
           </Text>
-          <Text className="mt-1 text-xs text-font-subtlest dark:text-font-subtlest-dark">
-            {item.info}
-          </Text>
+          <Text className="mt-1 text-xs text-font-subtlest dark:text-font-subtlest-dark">{item.info}</Text>
 
           {/* Статистика */}
           <View className="mt-2 flex-row items-center">
             <View className="rounded-full bg-background-success px-3 py-1 dark:bg-background-success-dark">
-              <Text className="text-xs font-medium text-font dark:text-font-dark">
-                {item.count}
-              </Text>
+              <Text className="text-xs font-medium text-font dark:text-font-dark">{item.count}</Text>
             </View>
             <View className="ml-2 rounded-full bg-background-brand-subtlest px-3 py-1 dark:bg-background-brand-subtlest-dark">
-              <Text className="text-xs font-medium text-font-brand dark:text-font-brand-dark">
-                Активна
-              </Text>
+              <Text className="text-xs font-medium text-font-brand dark:text-font-brand-dark">Активна</Text>
             </View>
           </View>
         </View>
@@ -105,12 +85,7 @@ const SubscriptionCard = ({
   );
 };
 
-const SubscriptionsList = ({
-  data,
-  onItemPress,
-  onDeleteSubscription,
-  onEditSubscription,
-}: SubscriptionsListProps) => {
+const SubscriptionsList = ({ data, onItemPress, onDeleteSubscription, onEditSubscription }: SubscriptionsListProps) => {
   const renderItem = useCallback(
     ({ item }: { item: SubscriptionItem }) => (
       <SubscriptionCard

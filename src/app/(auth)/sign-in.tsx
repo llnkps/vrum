@@ -1,14 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  Image,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Alert, Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useForm, Controller } from 'react-hook-form';
 import { Ionicons } from '@expo/vector-icons';
@@ -100,9 +92,7 @@ export default function Index() {
               tintColor="#FF6F61"
               resizeMode="contain"
             />
-            <Text className="mb-2 text-3xl font-bold text-font dark:text-font-dark">
-              Your journey starts here
-            </Text>
+            <Text className="mb-2 text-3xl font-bold text-font dark:text-font-dark">Your journey starts here</Text>
 
             <View className="w-full gap-4">
               <Controller
@@ -152,11 +142,7 @@ export default function Index() {
               />
               {errors.password && <Text className="text-red-500">{errors.password.message}</Text>}
 
-              <TouchableOpacity
-                className="w-full rounded-lg bg-blue-500 py-3"
-                onPress={handleSubmit(onSubmit)}
-                disabled={loading}
-              >
+              <TouchableOpacity className="w-full rounded-lg bg-blue-500 py-3" onPress={handleSubmit(onSubmit)} disabled={loading}>
                 <Text className="text-center font-semibold text-white">Sign In</Text>
               </TouchableOpacity>
 
@@ -165,15 +151,11 @@ export default function Index() {
                 onPress={handleGoogleSignIn}
               >
                 <Ionicons name="logo-google" size={24} color="black" className="mr-2" />
-                <Text className="ml-2 text-center font-semibold text-black">
-                  Continue with Google
-                </Text>
+                <Text className="ml-2 text-center font-semibold text-black">Continue with Google</Text>
               </TouchableOpacity>
 
               <TouchableOpacity onPress={() => router.push('/sign-up')}>
-                <Text className="text-center text-blue-500">
-                  Don&apos;t have an account? Sign Up
-                </Text>
+                <Text className="text-center text-blue-500">Don&apos;t have an account? Sign Up</Text>
               </TouchableOpacity>
             </View>
           </View>

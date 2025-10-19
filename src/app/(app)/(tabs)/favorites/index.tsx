@@ -94,13 +94,7 @@ const Page = () => {
           {/* Tabs */}
           <View className="mx-4 mb-2 flex-row justify-center rounded-lg bg-background-neutral p-1 dark:bg-background-neutral-dark">
             {tabs.map(({ key, title, icon }) => (
-              <SegmentedButton
-                key={key}
-                title={title}
-                isActive={tab === key}
-                onPress={() => setTab(key)}
-                icon={icon}
-              />
+              <SegmentedButton key={key} title={title} isActive={tab === key} onPress={() => setTab(key)} icon={icon} />
             ))}
           </View>
           {/* Main content с анимацией */}

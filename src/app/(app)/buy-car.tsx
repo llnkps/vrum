@@ -23,20 +23,12 @@ const Page = () => {
             renderItem={({ item, index }) => (
               <Animated.ScrollView entering={FadeIn.delay(index * 400).duration(800)}>
                 <View className="mx-2 rounded-2xl shadow-md">
-                  <Image
-                    source={item.image}
-                    className="h-48 w-full rounded-t-2xl"
-                    resizeMode="cover"
-                  />
+                  <Image source={item.image} className="h-48 w-full rounded-t-2xl" resizeMode="cover" />
                   <View className="p-4">
-                    <Text className="text-lg font-bold text-font-brand dark:text-font-brand-dark">
-                      {item.title}
-                    </Text>
+                    <Text className="text-lg font-bold text-font-brand dark:text-font-brand-dark">{item.title}</Text>
                     <Text className="text-base text-font dark:text-font-dark">{item.price}</Text>
                     <View className="mt-2 flex-row">
-                      <Text className="mr-2 text-xs text-font dark:text-font-dark">
-                        ⭐ 5-star GNCAP
-                      </Text>
+                      <Text className="mr-2 text-xs text-font dark:text-font-dark">⭐ 5-star GNCAP</Text>
                       <Text className="text-xs text-font dark:text-font-dark">🚗 More Mileage</Text>
                     </View>
                   </View>
@@ -60,18 +52,13 @@ const Header = () => {
       {/* Left side: Location */}
       <View className="flex-row items-center">
         <Ionicons name="location-sharp" size={20} color="red" />
-        <Text className="ml-1 text-base font-semibold text-font dark:text-font-dark">
-          Your Location
-        </Text>
+        <Text className="ml-1 text-base font-semibold text-font dark:text-font-dark">Your Location</Text>
       </View>
 
       {/* Right side: Heart + Profile */}
       <View className="flex-row items-center">
         <Ionicons name="heart-outline" size={22} color="red" />
-        <Image
-          source={{ uri: 'https://i.pravatar.cc/100' }}
-          className="ml-3 h-8 w-8 rounded-full"
-        />
+        <Image source={{ uri: 'https://i.pravatar.cc/100' }} className="ml-3 h-8 w-8 rounded-full" />
       </View>
     </View>
   );
@@ -87,9 +74,7 @@ function ButtonCarousel() {
     return (
       <TouchableOpacity
         onPress={() => setSelected(item)}
-        className={`mr-2 rounded-md border px-4 py-2 ${
-          isSelected ? 'border-red-400 bg-red-400' : 'border-gray-300 bg-gray-200'
-        }`}
+        className={`mr-2 rounded-md border px-4 py-2 ${isSelected ? 'border-red-400 bg-red-400' : 'border-gray-300 bg-gray-200'}`}
       >
         <Text className={`font-medium ${isSelected ? 'text-white' : 'text-gray-800'}`}>{item}</Text>
       </TouchableOpacity>
@@ -98,13 +83,7 @@ function ButtonCarousel() {
 
   return (
     <SafeAreaView className="flex-1 items-start justify-center p-4">
-      <FlatList
-        data={options}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        renderItem={renderItem}
-        keyExtractor={item => item}
-      />
+      <FlatList data={options} horizontal showsHorizontalScrollIndicator={false} renderItem={renderItem} keyExtractor={item => item} />
     </SafeAreaView>
   );
 }

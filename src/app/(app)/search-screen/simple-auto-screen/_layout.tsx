@@ -23,14 +23,8 @@ export default function SearchFilterLayout() {
 
   return (
     <Stack>
-      <Stack.Screen
-        name="brand-auto-filter"
-        options={{ title: '', presentation: 'modal', headerShown: false }}
-      />
-      <Stack.Screen
-        name="brand-auto-type-filter"
-        options={{ title: '', presentation: 'modal', headerShown: false }}
-      />
+      <Stack.Screen name="brand-auto-filter" options={{ title: '', presentation: 'modal', headerShown: false }} />
+      <Stack.Screen name="brand-auto-type-filter" options={{ title: '', presentation: 'modal', headerShown: false }} />
 
       {/* <Stack.Screen
         name="regions"
@@ -50,10 +44,7 @@ export default function SearchFilterLayout() {
       /> */}
 
       {/* <Stack.Screen name="regions" options={{ title: "", presentation: "formSheet", ...commonOptions }} /> */}
-      <Stack.Screen
-        name="settings"
-        options={{ presentation: 'modal', headerShown: false, animation: 'default' }}
-      />
+      <Stack.Screen name="settings" options={{ presentation: 'modal', headerShown: false, animation: 'default' }} />
     </Stack>
   );
 }

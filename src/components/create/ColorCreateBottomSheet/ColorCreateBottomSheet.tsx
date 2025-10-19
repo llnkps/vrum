@@ -20,38 +20,32 @@ const options = [
   { label: 'Другой', value: 'other', color: '#CCCCCC' },
 ];
 
-export const ColorCreateBottomSheet = forwardRef<BottomSheetRef, ColorCreateBottomSheetProps>(
-  ({ onChange }, ref) => {
-    const [selectedColor, setSelectedColor] = React.useState<ColorOption | undefined>(undefined);
+export const ColorCreateBottomSheet = forwardRef<BottomSheetRef, ColorCreateBottomSheetProps>(({ onChange }, ref) => {
+  const [selectedColor, setSelectedColor] = React.useState<ColorOption | undefined>(undefined);
 
   const handleToggle = (option: ColorOption) => {
     setSelectedColor(option);
-  };    const handleConfirm = () => {
-      onChange(selectedColor);
-    };
+  };
+  const handleConfirm = () => {
+    onChange(selectedColor);
+  };
 
-    return (
-      <CustomBottomSheetModal
-        ref={ref}
-        snapPoints={['35%']}
-        enableContentPanningGesture={true}
-        title={'Цвет'}
-        footerProps={{
-          onConfirm: handleConfirm,
-        }}
-      >
-              <BottomSheetView className="flex-col">
+  return (
+    <CustomBottomSheetModal
+      ref={ref}
+      snapPoints={['35%']}
+      enableContentPanningGesture={true}
+      title={'Цвет'}
+      footerProps={{
+        onConfirm: handleConfirm,
+      }}
+    >
+      <BottomSheetView className="flex-col">
         {options.map(opt => (
-          <CustomRectButton
-            key={opt.value}
-            title={opt.label}
-            isSelected={selectedColor?.value === opt.value}
-            onPress={() => handleToggle(opt)}
-          />
+          <CustomRectButton key={opt.value} title={opt.label} isSelected={selectedColor?.value === opt.value} onPress={() => handleToggle(opt)} />
         ))}
       </BottomSheetView>
-      </CustomBottomSheetModal>
-    );
-  }
-);
+    </CustomBottomSheetModal>
+  );
+});
 ColorCreateBottomSheet.displayName = 'ColorCreateBottomSheet';

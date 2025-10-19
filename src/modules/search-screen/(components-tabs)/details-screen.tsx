@@ -25,9 +25,7 @@ export const AutoDetailItemScreen = ({ item }) => {
     <View className="mx-2 rounded-2xl shadow-md">
       <Image source={item.image} className="h-48 w-full rounded-t-2xl" resizeMode="cover" />
       <View className="p-4">
-        <Text className="text-lg font-bold text-font-brand dark:text-font-brand-dark">
-          {item.title}
-        </Text>
+        <Text className="text-lg font-bold text-font-brand dark:text-font-brand-dark">{item.title}</Text>
         <Text className="text-base text-font dark:text-font-dark">{item.price}</Text>
         <View className="mt-2 flex-row">
           <Text className="mr-2 text-xs text-font dark:text-font-dark">⭐ 5-star GNCAP</Text>
@@ -64,18 +62,14 @@ const SearchSection = () => {
       <View className={'flex flex-row gap-1'}>
         <Pressable
           onPress={() => handlePress('Год')}
-          className={
-            'flex flex-row border border-border bg-background-neutral px-4 py-3 dark:border-border-dark dark:bg-background-neutral-dark'
-          }
+          className={'flex flex-row border border-border bg-background-neutral px-4 py-3 dark:border-border-dark dark:bg-background-neutral-dark'}
         >
           <Text className="font-bold text-font dark:text-font-dark">Год</Text>
         </Pressable>
 
         <Pressable
           onPress={() => handlePress('Цена')}
-          className={
-            'flex flex-row border border-border bg-background-neutral px-4 py-3 dark:border-border-dark dark:bg-background-neutral-dark'
-          }
+          className={'flex flex-row border border-border bg-background-neutral px-4 py-3 dark:border-border-dark dark:bg-background-neutral-dark'}
         >
           <Text className="font-bold text-font dark:text-font-dark">Цена</Text>
         </Pressable>

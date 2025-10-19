@@ -15,10 +15,7 @@ const options = [
   { label: 'На запчасти', value: 'for_parts' },
 ];
 
-export const ConditionCreateBottomSheet = forwardRef<
-  BottomSheetRef,
-  ConditionCreateBottomSheetProps
->(({ onChange }, ref) => {
+export const ConditionCreateBottomSheet = forwardRef<BottomSheetRef, ConditionCreateBottomSheetProps>(({ onChange }, ref) => {
   const [selectedCondition, setSelectedCondition] = React.useState<ConditionOption | undefined>(undefined);
 
   const handleToggle = (option: ConditionOption) => {
@@ -41,12 +38,7 @@ export const ConditionCreateBottomSheet = forwardRef<
     >
       <BottomSheetView className="flex-col">
         {options.map(opt => (
-          <CustomRectButton
-            key={opt.value}
-            title={opt.label}
-            isSelected={selectedCondition?.value === opt.value}
-            onPress={() => handleToggle(opt)}
-          />
+          <CustomRectButton key={opt.value} title={opt.label} isSelected={selectedCondition?.value === opt.value} onPress={() => handleToggle(opt)} />
         ))}
       </BottomSheetView>
     </CustomBottomSheetModal>

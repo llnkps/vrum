@@ -3,15 +3,7 @@ import { useAuthStore } from '@/state/auth/useAuthStore';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import {
-  ActivityIndicator,
-  Alert,
-  Image,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Alert, Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -81,9 +73,7 @@ export default function Index() {
             tintColor="#FF6F61"
             resizeMode="contain"
           />
-          <Text className="mb-2 text-3xl font-bold text-font dark:text-font-dark">
-            Create Account
-          </Text>
+          <Text className="mb-2 text-3xl font-bold text-font dark:text-font-dark">Create Account</Text>
 
           <View className="w-full gap-4">
             <Controller
@@ -170,15 +160,9 @@ export default function Index() {
               )}
               name="repeatPassword"
             />
-            {errors.repeatPassword && (
-              <Text className="text-red-500">{errors.repeatPassword.message}</Text>
-            )}
+            {errors.repeatPassword && <Text className="text-red-500">{errors.repeatPassword.message}</Text>}
 
-            <TouchableOpacity
-              className="w-full rounded-lg bg-blue-500 py-3"
-              onPress={handleSubmit(onSubmit)}
-              disabled={loading}
-            >
+            <TouchableOpacity className="w-full rounded-lg bg-blue-500 py-3" onPress={handleSubmit(onSubmit)} disabled={loading}>
               <Text className="text-center font-semibold text-white">Sign Up</Text>
             </TouchableOpacity>
 

@@ -22,20 +22,10 @@ export const PickerModal = ({
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <View className="flex-1 justify-end bg-black/50">
         <Pressable className="flex-1" onPress={onClose} />
-        <View
-          className={`rounded-t-3xl p-0 ${
-            colorScheme === 'dark' ? 'bg-surface-dark' : 'bg-surface'
-          }`}
-        >
+        <View className={`rounded-t-3xl p-0 ${colorScheme === 'dark' ? 'bg-surface-dark' : 'bg-surface'}`}>
           <View className="border-border-DEFAULT/10 border-b p-4">
             <View className="flex-row items-center justify-between">
-              <Text
-                className={`text-lg font-semibold ${
-                  colorScheme === 'dark' ? 'text-font-dark' : 'text-font'
-                }`}
-              >
-                {title}
-              </Text>
+              <Text className={`text-lg font-semibold ${colorScheme === 'dark' ? 'text-font-dark' : 'text-font'}`}>{title}</Text>
               <TouchableOpacity onPress={onClose}>
                 <Text className="text-base font-medium text-background-brand-bold">Готово</Text>
               </TouchableOpacity>

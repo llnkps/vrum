@@ -4,13 +4,7 @@
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StatusBar, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native';
-import Animated, {
-  Extrapolation,
-  interpolate,
-  useAnimatedScrollHandler,
-  useAnimatedStyle,
-  useSharedValue,
-} from 'react-native-reanimated';
+import Animated, { Extrapolation, interpolate, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { InputField } from '@/components/ui/input/InputField/InputField';
@@ -183,10 +177,7 @@ const Header = ({ scrollY, setFilteredData, initialData }) => {
 
           {/* Title */}
           <Animated.View style={animatedSpacer} className="px-3">
-            <Animated.Text
-              style={[animatedTitle]}
-              className="font-bold text-font dark:text-font-dark"
-            >
+            <Animated.Text style={[animatedTitle]} className="font-bold text-font dark:text-font-dark">
               Марки
             </Animated.Text>
           </Animated.View>

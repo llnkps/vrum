@@ -8,10 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { HeaderSearchBar } from '@/components/global/header/HeaderSearchBar/HeaderSearchBar';
 import { useSimpleAutoBrandApi } from '@/hooks/api/useSimpleAutoBrandApi';
 import { useSimpleAutoFormContext } from '@/modules/advertisement/simple-auto/SimpleAutoFormProvider';
-import {
-  DefaultConfig,
-  GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner,
-} from '@/openapi/client';
+import { DefaultConfig, SimpleAutoBrand } from '@/openapi/client';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight ?? 24;
 
@@ -19,9 +16,7 @@ export default function ModelItemScreenFilterModal() {
   const [searchValue, setSearchValue] = useState('');
 
   const { data, isLoading } = useSimpleAutoBrandApi();
-  const [filteredBrands, setFilteredBrands] = useState<
-    GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner[]
-  >([]);
+  const [filteredBrands, setFilteredBrands] = useState<SimpleAutoBrand[]>([]);
   const scrollY = useSharedValue(0);
   const isScrolling = useSharedValue(false);
 
@@ -62,18 +57,14 @@ export default function ModelItemScreenFilterModal() {
           searchPlaceholder="Поиск марки"
         />
 
-        <ModelItemScreenFilterModalBlock
-          brands={filteredBrands}
-          scrollY={scrollY}
-          isScrolling={isScrolling}
-        />
+        <ModelItemScreenFilterModalBlock brands={filteredBrands} scrollY={scrollY} isScrolling={isScrolling} />
       </SafeAreaView>
     </>
   );
 }
 
 type props = {
-  brands: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner[];
+  brands: SimpleAutoBrand[];
   scrollY: any;
   isScrolling: any;
 };
@@ -94,9 +85,7 @@ const ModelItemScreenFilterModalBlock: FC<props> = ({ brands, scrollY, isScrolli
     },
   });
 
-  const handleAddBrand = (
-    brand: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner
-  ) => {
+  const handleAddBrand = (brand: SimpleAutoBrand) => {
     setSelectedBrand(brand);
     setSelectedModel(null);
     setSelectedGeneration(null);
@@ -116,10 +105,7 @@ const ModelItemScreenFilterModalBlock: FC<props> = ({ brands, scrollY, isScrolli
             paddingBottom: 120 + STATUSBAR_HEIGHT + 100,
           }}
           renderItem={({ item }) => (
-            <TouchableHighlight
-              onPress={() => handleAddBrand(item)}
-              className={'border-b border-border p-4 last:border-0 dark:border-border-dark'}
-            >
+            <TouchableHighlight onPress={() => handleAddBrand(item)} className={'border-b border-border p-4 last:border-0 dark:border-border-dark'}>
               <View className="flex-row gap-x-4">
                 <Image
                   source={{

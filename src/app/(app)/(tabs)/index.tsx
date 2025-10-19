@@ -1,15 +1,6 @@
 import { Link, Stack, useRouter } from 'expo-router';
 import React, { useState, useEffect } from 'react';
-import {
-  ActivityIndicator,
-  Dimensions,
-  Image,
-  Platform,
-  Pressable,
-  ScrollView,
-  Text,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Dimensions, Image, Platform, Pressable, ScrollView, Text, View } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
@@ -59,23 +50,13 @@ export default function HomeScreen({ navigation }) {
               renderItem={({ item }) => {
                 return (
                   <View className="mx-2 rounded-2xl shadow-md">
-                    <Image
-                      source={item.image}
-                      className="h-48 w-full rounded-t-2xl"
-                      resizeMode="cover"
-                    />
+                    <Image source={item.image} className="h-48 w-full rounded-t-2xl" resizeMode="cover" />
                     <View className="p-4">
-                      <Text className="text-lg font-bold text-font-brand dark:text-font-brand-dark">
-                        {item.title}
-                      </Text>
+                      <Text className="text-lg font-bold text-font-brand dark:text-font-brand-dark">{item.title}</Text>
                       <Text className="text-base text-font dark:text-font-dark">{item.price}</Text>
                       <View className="mt-2 flex-row">
-                        <Text className="mr-2 text-xs text-font dark:text-font-dark">
-                          ⭐ 5-star GNCAP
-                        </Text>
-                        <Text className="text-xs text-font dark:text-font-dark">
-                          🚗 More Mileage
-                        </Text>
+                        <Text className="mr-2 text-xs text-font dark:text-font-dark">⭐ 5-star GNCAP</Text>
+                        <Text className="text-xs text-font dark:text-font-dark">🚗 More Mileage</Text>
                       </View>
                     </View>
                   </View>
@@ -112,10 +93,7 @@ const Header = () => {
       {/* Right side: Heart + Profile */}
       <View className="flex-row items-center">
         <Ionicons name="heart-outline" size={22} color="black" />
-        <Image
-          source={{ uri: 'https://i.pravatar.cc/100' }}
-          className="ml-3 h-8 w-8 rounded-full"
-        />
+        <Image source={{ uri: 'https://i.pravatar.cc/100' }} className="ml-3 h-8 w-8 rounded-full" />
       </View>
     </View>
   );

@@ -14,15 +14,7 @@ type Props = PropsWithChildren<
   }
 >;
 
-export const CustomRectButton = ({
-  loading,
-  title,
-  style,
-  children,
-  onPress,
-  appearance = 'default',
-  isSelected = false,
-}: Props) => {
+export const CustomRectButton = ({ loading, title, style, children, onPress, appearance = 'default', isSelected = false }: Props) => {
   const theme = useTheme() as CustomTheme;
 
   const styles = StyleSheet.create({

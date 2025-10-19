@@ -15,32 +15,25 @@ const options = [
   { label: 'EUR', value: 'eur' },
 ];
 
-export const CurrencyFilterBottomSheet = forwardRef<BottomSheetRef, CurrencyFilterBottomSheetProps>(
-  ({ onSelect }, ref) => {
-    const [selectedCurrency, setSelectedCurrency] = React.useState<string | undefined>(undefined);
+export const CurrencyFilterBottomSheet = forwardRef<BottomSheetRef, CurrencyFilterBottomSheetProps>(({ onSelect }, ref) => {
+  const [selectedCurrency, setSelectedCurrency] = React.useState<string | undefined>(undefined);
 
-    return (
-      <CustomBottomSheetModal
-        ref={ref}
-        snapPoints={['30%']}
-        enableContentPanningGesture={true}
-        title="Валюта"
-      >
-        <BottomSheetView className="flex-col">
-          {options.map(opt => (
-            <CustomRectButton
-              key={opt.value}
-              onPress={() => {
-                onSelect(opt);
-                setSelectedCurrency(opt.value);
-              }}
-              title={opt.label}
-              isSelected={selectedCurrency === opt.value}
-            />
-          ))}
-        </BottomSheetView>
-      </CustomBottomSheetModal>
-    );
-  }
-);
+  return (
+    <CustomBottomSheetModal ref={ref} snapPoints={['30%']} enableContentPanningGesture={true} title="Валюта">
+      <BottomSheetView className="flex-col">
+        {options.map(opt => (
+          <CustomRectButton
+            key={opt.value}
+            onPress={() => {
+              onSelect(opt);
+              setSelectedCurrency(opt.value);
+            }}
+            title={opt.label}
+            isSelected={selectedCurrency === opt.value}
+          />
+        ))}
+      </BottomSheetView>
+    </CustomBottomSheetModal>
+  );
+});
 CurrencyFilterBottomSheet.displayName = 'CurrencyFilterBottomSheet';

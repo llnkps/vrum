@@ -26,8 +26,7 @@ export const HeaderCategory = ({
       {/* Left side: Location */}
       <TouchableHighlight
         className={clsx('rounded-md bg-background-neutral p-2 dark:bg-background-neutral-dark', {
-          'bg-background-neutral-pressed dark:bg-background-neutral-dark-pressed':
-            activeScreen === 'auto',
+          'bg-background-neutral-pressed dark:bg-background-neutral-dark-pressed': activeScreen === 'auto',
         })}
         onPress={() => handleChangeScreen('auto')}
         activeOpacity={0.6}
@@ -41,8 +40,7 @@ export const HeaderCategory = ({
 
       <TouchableHighlight
         className={clsx('rounded-md bg-background-neutral p-2 dark:bg-background-neutral-dark', {
-          'bg-background-neutral-pressed dark:bg-background-neutral-dark-pressed':
-            activeScreen === 'spec_auto',
+          'bg-background-neutral-pressed dark:bg-background-neutral-dark-pressed': activeScreen === 'spec_auto',
         })}
         onPress={() => handleChangeScreen('spec_auto')}
       >
@@ -54,8 +52,7 @@ export const HeaderCategory = ({
 
       <TouchableHighlight
         className={clsx('rounded-md bg-background-neutral p-2 dark:bg-background-neutral-dark', {
-          'bg-background-neutral-pressed dark:bg-background-neutral-dark-pressed':
-            activeScreen === 'auto_detail',
+          'bg-background-neutral-pressed dark:bg-background-neutral-dark-pressed': activeScreen === 'auto_detail',
         })}
         onPress={() => handleChangeScreen('auto_detail')}
       >
@@ -67,8 +64,7 @@ export const HeaderCategory = ({
 
       <TouchableHighlight
         className={clsx('rounded-md bg-background-neutral p-2 dark:bg-background-neutral-dark', {
-          'bg-background-neutral-pressed dark:bg-background-neutral-dark-pressed':
-            activeScreen === 'moto',
+          'bg-background-neutral-pressed dark:bg-background-neutral-dark-pressed': activeScreen === 'moto',
         })}
         onPress={() => handleChangeScreen('moto')}
       >

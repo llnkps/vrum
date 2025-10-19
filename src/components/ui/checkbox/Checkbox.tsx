@@ -4,7 +4,7 @@ import { Checkbox as CheckboxExpo } from 'expo-checkbox';
 
 type props = {
   value: boolean;
-  onValueChange: (newValue: boolean) => void;
+  onValueChange?: (newValue: boolean) => void;
   disabled?: boolean;
 };
 

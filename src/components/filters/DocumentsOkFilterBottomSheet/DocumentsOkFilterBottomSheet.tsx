@@ -14,19 +14,11 @@ const options = [
   { label: 'Проблемы с документами', value: 'missing_or_problematic' },
 ];
 
-export const DocumentsOkFilterBottomSheet = forwardRef<
-  BottomSheetRef,
-  DocumentsOkFilterBottomSheetProps
->(({ onSelect }, ref) => {
+export const DocumentsOkFilterBottomSheet = forwardRef<BottomSheetRef, DocumentsOkFilterBottomSheetProps>(({ onSelect }, ref) => {
   const [selected, setSelected] = React.useState<string | undefined>(undefined);
 
   return (
-    <CustomBottomSheetModal
-      ref={ref}
-      snapPoints={['25%']}
-      enableContentPanningGesture={true}
-      title="Документы"
-    >
+    <CustomBottomSheetModal ref={ref} snapPoints={['25%']} enableContentPanningGesture={true} title="Документы">
       <BottomSheetView className="flex-col">
         {options.map(opt => (
           <CustomRectButton

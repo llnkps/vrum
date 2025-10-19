@@ -1,28 +1,20 @@
 // It needs to pass data from models: brand, model.
 // And to display label of field.
 
-import {
-  GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner,
-  GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInnerModificationsInner,
-  GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner,
-} from '@/openapi/client';
+import { SimpleAutoBrand, SimpleAutoGenerationModificationsInner, SimpleAutoModel } from '@/openapi/client';
 import { createContext, useContext, useState } from 'react';
 
 type GenerationType = {
   id: number;
   generation: number | null;
-  modification: GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInnerModificationsInner | null;
+  modification: SimpleAutoGenerationModificationsInner | null;
 };
 
 type SimpleAutoFormContextType = {
-  selectedBrand: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner | null;
-  setSelectedBrand: (
-    brand: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner | null
-  ) => void;
-  selectedModel: GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner | null;
-  setSelectedModel: (
-    model: GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner | null
-  ) => void;
+  selectedBrand: SimpleAutoBrand | null;
+  setSelectedBrand: (brand: SimpleAutoBrand | null) => void;
+  selectedModel: SimpleAutoModel | null;
+  setSelectedModel: (model: SimpleAutoModel | null) => void;
   selectedGeneration: GenerationType | null;
   setSelectedGeneration: (generation: GenerationType | null) => void;
   selectedReleaseYear: string | null;
@@ -63,14 +55,8 @@ type SimpleAutoFormContextType = {
 const SimpleAutoFormContext = createContext<SimpleAutoFormContextType | null>(null);
 
 export const SimpleAutoFormProvider = ({ children }: { children: React.ReactNode }) => {
-  const [selectedBrand, setSelectedBrand] =
-    useState<GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner | null>(
-      null
-    );
-  const [selectedModel, setSelectedModel] =
-    useState<GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner | null>(
-      null
-    );
+  const [selectedBrand, setSelectedBrand] = useState<SimpleAutoBrand | null>(null);
+  const [selectedModel, setSelectedModel] = useState<SimpleAutoModel | null>(null);
   const [selectedReleaseYear, setSelectedReleaseYear] = useState<string | null>(null);
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const [selectedCurrency, setSelectedCurrency] = useState<string | null>(null);

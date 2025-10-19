@@ -13,15 +13,7 @@ type Props = PropsWithChildren<
   }
 >;
 
-export const SelectableButton = ({
-  loading,
-  title,
-  style,
-  children,
-  onPress,
-  appearance = 'default',
-  isSelected = false,
-}: Props) => {
+export const SelectableButton = ({ loading, title, style, children, onPress, appearance = 'default', isSelected = false }: Props) => {
   const theme = useTheme() as CustomTheme;
 
   const styles = StyleSheet.create({
@@ -51,22 +43,13 @@ export const SelectableButton = ({
 
   return (
     <RectButton
-      style={[
-        styles.button, 
-        appearance === 'primary' && styles.primary,
-        appearance === 'subtle' && styles.subtle,
-        style
-      ]}
+      style={[styles.button, appearance === 'primary' && styles.primary, appearance === 'subtle' && styles.subtle, style]}
       borderless={false}
       onPress={onPress}
       rippleColor={theme.colors.button.subtlePressed}
     >
       {children ||
-        (loading ? (
-          <ActivityIndicator size="small" color={isSelected ? "white" : theme.colors.primary} />
-        ) : (
-          <Text style={styles.text}>{title}</Text>
-        ))}
+        (loading ? <ActivityIndicator size="small" color={isSelected ? 'white' : theme.colors.primary} /> : <Text style={styles.text}>{title}</Text>)}
     </RectButton>
   );
 };

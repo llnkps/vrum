@@ -1,9 +1,4 @@
-import {
-  PickerItem,
-  RenderItemContainerProps,
-  usePickerItemHeight,
-  useScrollContentOffset,
-} from '@quidone/react-native-wheel-picker';
+import { PickerItem, RenderItemContainerProps, usePickerItemHeight, useScrollContentOffset } from '@quidone/react-native-wheel-picker';
 import React, { memo, useMemo } from 'react';
 import { Animated, TouchableWithoutFeedback } from 'react-native';
 
@@ -51,11 +46,7 @@ const PickerItemContainer = ({
       animated: true,
     });
 
-  return (
-    <TouchableWithoutFeedback onPress={scrollToItem}>
-      {renderAnimatedView()}
-    </TouchableWithoutFeedback>
-  );
+  return <TouchableWithoutFeedback onPress={scrollToItem}>{renderAnimatedView()}</TouchableWithoutFeedback>;
 };
 
 export default memo(PickerItemContainer);

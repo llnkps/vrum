@@ -16,10 +16,7 @@ const options = [
   { label: 'Вариатор (CVT)', value: 'cvt' },
 ];
 
-export const TransmissionFilterBottomSheet = forwardRef<
-  BottomSheetRef,
-  TransmissionFilterBottomSheetProps
->(({ onChange }, ref) => {
+export const TransmissionFilterBottomSheet = forwardRef<BottomSheetRef, TransmissionFilterBottomSheetProps>(({ onChange }, ref) => {
   const [selectedTransmissions, setSelectedTransmissions] = React.useState<TransmissionOption[]>([]);
 
   const handleToggle = (option: TransmissionOption) => {

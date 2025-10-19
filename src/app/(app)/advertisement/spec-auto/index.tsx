@@ -68,14 +68,10 @@ export default function AddCarPage() {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      Alert.alert(
-        'Authentication Required',
-        'You need to be logged in to create an advertisement.',
-        [
-          { text: 'Login', onPress: () => router.push('/sign-in') },
-          { text: 'Cancel', onPress: () => router.back() },
-        ]
-      );
+      Alert.alert('Authentication Required', 'You need to be logged in to create an advertisement.', [
+        { text: 'Login', onPress: () => router.push('/sign-in') },
+        { text: 'Cancel', onPress: () => router.back() },
+      ]);
     }
   }, [isAuthenticated]);
 
@@ -338,9 +334,7 @@ export default function AddCarPage() {
       // }
     } catch (error) {
       console.error('Error submitting form:', error);
-      Alert.alert('Ошибка', 'Произошла ошибка при создании объявления. Попробуйте еще раз.', [
-        { text: 'OK' },
-      ]);
+      Alert.alert('Ошибка', 'Произошла ошибка при создании объявления. Попробуйте еще раз.', [{ text: 'OK' }]);
     } finally {
       // setIsSubmitting(false);
     }
@@ -428,9 +422,7 @@ export default function AddCarPage() {
         {/* Основная информация */}
         <View className="mb-5 gap-y-3 rounded-2xl bg-surface p-5 dark:bg-surface-dark">
           <View className="mb-5 flex-row items-center">
-            <Text className="text-xl font-bold text-font dark:text-font-dark">
-              Основная информация
-            </Text>
+            <Text className="text-xl font-bold text-font dark:text-font-dark">Основная информация</Text>
           </View>
           {/* <Controller
             control={control}
@@ -690,9 +682,7 @@ export default function AddCarPage() {
           <TouchableHighlightRow
             variant="bordered"
             label={'Документы в порядке'}
-            selectedValue={
-              selectedDocumentOk !== undefined ? (selectedDocumentOk ? 'Да' : 'Нет') : undefined
-            }
+            selectedValue={selectedDocumentOk !== undefined ? (selectedDocumentOk ? 'Да' : 'Нет') : undefined}
             onPress={handlePresentDocumentsOkModalPress}
             rightIcon="chevron-down"
           />
@@ -761,11 +751,7 @@ export default function AddCarPage() {
             }}
           />
 
-          <TouchableHighlightRow
-            variant="bordered"
-            label="Добавить фотографии"
-            onPress={handlePresentImagePickerModalPress}
-          />
+          <TouchableHighlightRow variant="bordered" label="Добавить фотографии" onPress={handlePresentImagePickerModalPress} />
           <ImagePickerModal
             control={control}
             ref={imagePickerModalRef}
@@ -786,17 +772,11 @@ export default function AddCarPage() {
 
               return (
                 <View className="mt-3">
-                  <Text className="mb-2 text-sm text-font-subtle dark:text-font-subtle-dark">
-                    Выбранные фотографии ({field.value.length})
-                  </Text>
+                  <Text className="mb-2 text-sm text-font-subtle dark:text-font-subtle-dark">Выбранные фотографии ({field.value.length})</Text>
                   <View className="flex-row flex-wrap gap-2">
                     {field.value.map((image, index) => (
                       <View key={index} className="relative">
-                        <Image
-                          source={{ uri: image.uri }}
-                          className="h-20 w-20 rounded-lg"
-                          contentFit="cover"
-                        />
+                        <Image source={{ uri: image.uri }} className="h-20 w-20 rounded-lg" contentFit="cover" />
                         <Pressable
                           onPress={() => {
                             const newImages = field.value.filter((_, i) => i !== index);
@@ -902,9 +882,7 @@ const Header = () => {
       {/* Title */}
       <View className="px-3">
         <Text className="text-3xl font-bold text-font dark:text-font-dark">Продать авто</Text>
-        <Text className="text-base text-font-subtle dark:text-font-subtle-dark">
-          Заполните информацию о вашем автомобиле
-        </Text>
+        <Text className="text-base text-font-subtle dark:text-font-subtle-dark">Заполните информацию о вашем автомобиле</Text>
       </View>
     </View>
   );

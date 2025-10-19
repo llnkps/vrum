@@ -16,9 +16,7 @@ export const useImagePrefetch = (data: any[]) => {
       for (let i = prefetchStart; i < prefetchEnd && i < data.length; i++) {
         const item = data[i];
         if (item.images && item.images.length > 0) {
-          const imagesToPreload = item.images
-            .slice(0, 3)
-            .map((imageUri: string) => DefaultConfig.basePath + imageUri);
+          const imagesToPreload = item.images.slice(0, 3).map((imageUri: string) => DefaultConfig.basePath + imageUri);
           const newImages = imagesToPreload.filter((uri: string) => !prefetchedImages.has(uri));
           if (newImages.length > 0) {
             Image.prefetch(newImages);

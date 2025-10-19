@@ -16,12 +16,7 @@ const EmptyState = ({ type }: EmptyStateProps) => {
 
   return (
     <View className="flex-1 items-center justify-center px-6">
-      <Ionicons
-        name={isFavorites ? 'star-outline' : 'notifications-outline'}
-        size={64}
-        color={iconColor}
-        style={{ marginBottom: 20 }}
-      />
+      <Ionicons name={isFavorites ? 'star-outline' : 'notifications-outline'} size={64} color={iconColor} style={{ marginBottom: 20 }} />
       <Text className="mb-3 text-center text-lg font-semibold text-font dark:text-font-dark">
         {isFavorites ? 'Избранное пусто' : 'Нет активных подписок'}
       </Text>

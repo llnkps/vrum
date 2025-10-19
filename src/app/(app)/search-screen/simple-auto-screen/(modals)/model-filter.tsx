@@ -1,16 +1,16 @@
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { FC, useEffect, useState } from 'react';
-import { ScrollView, StatusBar, Text, TouchableHighlight, View, ActivityIndicator } from 'react-native';
+import { ActivityIndicator, ScrollView, StatusBar, Text, View } from 'react-native';
 import Animated, { useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { CheckboxRectButton } from '@/components/global/CheckboxRectButton/CheckboxRectButton';
-import FilterBadge from '@/components/global/FilterBadge';
 import { HeaderSearchBar } from '@/components/global/header/HeaderSearchBar/HeaderSearchBar';
 import { CustomRectButton } from '@/components/ui/button';
 import { useSimpleAutoModelByBrandApi } from '@/hooks/api/useSimpleAutoModelByBrandApi';
-import { GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner } from '@/openapi/client';
+import { SimpleAutoModel } from '@/openapi/client';
 import { useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
+import FilterBadge from '@/components/global/FilterBadge';
 
 // const STATUSBAR_HEIGHT = StatusBar.currentHeight ?? 24;
 
@@ -21,15 +21,11 @@ export default function ModelFilter() {
   const searchParams = useLocalSearchParams();
 
   const [searchValue, setSearchValue] = useState('');
-  const { removeSelectedModel, currentBrand, selectedModelsByBrand } = useAutoSelectStore();
-  const selectedBrand = currentBrand;
 
-  const { data, isLoading } = useSimpleAutoModelByBrandApi(
-    selectedBrand?.id ? selectedBrand.id.toString() : ''
-  );
-  const [filteredModels, setFilteredModels] = useState<
-    GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner[]
-  >([]);
+  const { currentBrand, selectedModelsByBrand, removeSelectedModel } = useAutoSelectStore();
+
+  const { data, isLoading } = useSimpleAutoModelByBrandApi(currentBrand ? currentBrand.id.toString() : undefined);
+  const [filteredModels, setFilteredModels] = useState<SimpleAutoModel[]>([]);
 
   const scrollY = useSharedValue(0);
   const isScrolling = useSharedValue(false);
@@ -55,11 +51,15 @@ export default function ModelFilter() {
     );
   }
 
+  if (!currentBrand) {
+    return null;
+  }
+
   return (
     <>
       <SafeAreaView className="flex-1 gap-y-4 px-3">
         <HeaderSearchBar
-          title={selectedBrand?.name || 'Выберите модель'}
+          title={currentBrand.name}
           scrollY={scrollY}
           showSearch={true}
           searchValue={searchValue}
@@ -78,7 +78,7 @@ export default function ModelFilter() {
           searchPlaceholder="Марка или модель"
         />
 
-        {(selectedModelsByBrand[currentBrand?.id!]?.length || 0) > 0 && (
+        {(selectedModelsByBrand[currentBrand.id]?.length || 0) > 0 && (
           <View>
             <ScrollView
               horizontal
@@ -87,27 +87,16 @@ export default function ModelFilter() {
               style={{ height: 50 }}
               contentContainerStyle={{ alignItems: 'center', paddingVertical: 8 }}
             >
-              {selectedModelsByBrand[currentBrand?.id!]?.map(model => (
+              {selectedModelsByBrand[currentBrand.id]?.map(model => (
                 <View key={model.id} className="mr-2 self-start">
-                  <FilterBadge
-                    label={model.name || ''}
-                    onRemove={() => removeSelectedModel(model.id!)}
-                  />
+                  <FilterBadge label={model.name || ''} onRemove={() => removeSelectedModel(model.id!)} />
                 </View>
               ))}
             </ScrollView>
           </View>
         )}
-        {(selectedModelsByBrand[currentBrand?.id!]?.length || 0) === 0 && (
-          <View style={{ height: 50 }}></View>
-        )}
 
-        <ModelList
-          models={filteredModels}
-          scrollY={scrollY}
-          isScrolling={isScrolling}
-          selectedModelsByBrand={selectedModelsByBrand}
-        />
+        <ModelList models={filteredModels} scrollY={scrollY} isScrolling={isScrolling} />
 
         {/* Fixed Button */}
         <View className="absolute bottom-2 left-0 right-0 px-3 pb-6">
@@ -130,18 +119,13 @@ export default function ModelFilter() {
 }
 
 type props = {
-  models: GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner[];
+  models: SimpleAutoModel[];
   scrollY: any;
   isScrolling: any;
-  selectedModelsByBrand: Record<
-    number,
-    GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner[]
-  >;
 };
 
-const ModelList: FC<props> = ({ models, scrollY, isScrolling, selectedModelsByBrand }) => {
-  const router = useRouter();
-  const { addSelectedModel, removeSelectedModel, currentBrand } = useAutoSelectStore();
+const ModelList: FC<props> = ({ models, scrollY, isScrolling }) => {
+  const { addSelectedModel, removeSelectedModel, selectedModelsByBrand, currentBrand } = useAutoSelectStore();
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: event => {
@@ -155,23 +139,18 @@ const ModelList: FC<props> = ({ models, scrollY, isScrolling, selectedModelsByBr
     },
   });
 
-  const handleSelectModel = (
-    item: GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner
-  ) => {
-    console.log('================');
-    // console.log(item);
-    const isSelected =
-      selectedModelsByBrand[currentBrand?.id!]?.some(m => m.id === item.id) || false;
-    console.log(isSelected);
+  if (!currentBrand) {
+    return null;
+  }
+
+  const handleSelectModel = (item: SimpleAutoModel) => {
+    const isSelected = (selectedModelsByBrand[currentBrand.id] || []).some(m => m.id === item.id) || false;
+
     if (isSelected) {
       removeSelectedModel(item.id!);
     } else {
       addSelectedModel(item);
     }
-  };
-
-  const handleContinue = () => {
-    router.dismiss(); // Go back to index.tsx
   };
 
   return (
@@ -187,15 +166,8 @@ const ModelList: FC<props> = ({ models, scrollY, isScrolling, selectedModelsByBr
             paddingBottom: 120 + STATUSBAR_HEIGHT + 100,
           }}
           renderItem={({ item }) => {
-            const isSelected =
-              selectedModelsByBrand[currentBrand?.id!]?.some(m => m.id === item.id) || false;
-            return (
-              <CheckboxRectButton
-                value={isSelected}
-                label={item.name || ''}
-                onPress={() => handleSelectModel(item)}
-              />
-            );
+            const isSelected = (selectedModelsByBrand[currentBrand.id] || []).some(m => m.id === item.id) || false;
+            return <CheckboxRectButton value={isSelected} label={item.name || ''} onPress={() => handleSelectModel(item)} />;
           }}
           initialNumToRender={18}
           windowSize={10}

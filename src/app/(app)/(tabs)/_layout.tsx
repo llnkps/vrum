@@ -35,9 +35,7 @@ export default function TabLayout() {
         name="search-tab"
         options={{
           tabBarLabel: 'поиск',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="search-sharp" size={size} color={color} />
-          ),
+          tabBarIcon: ({ color, size }) => <Ionicons name="search-sharp" size={size} color={color} />,
         }}
       />
 
@@ -59,18 +57,14 @@ export default function TabLayout() {
         name="messages"
         options={{
           title: 'сообщения',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="chatbubbles" size={size} color={color} />
-          ),
+          tabBarIcon: ({ color, size }) => <Ionicons name="chatbubbles" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: 'Profile',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person-circle" size={size} color={color} />
-          ),
+          tabBarIcon: ({ color, size }) => <Ionicons name="person-circle" size={size} color={color} />,
         }}
       />
     </Tabs>

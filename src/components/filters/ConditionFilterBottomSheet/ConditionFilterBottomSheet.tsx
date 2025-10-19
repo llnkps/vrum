@@ -15,19 +15,11 @@ const options = [
   { label: 'На запчасти', value: 'for_parts' },
 ];
 
-export const ConditionFilterBottomSheet = forwardRef<
-  BottomSheetRef,
-  ConditionFilterBottomSheetProps
->(({ onSelect }, ref) => {
+export const ConditionFilterBottomSheet = forwardRef<BottomSheetRef, ConditionFilterBottomSheetProps>(({ onSelect }, ref) => {
   const [selectedCondition, setSelectedCondition] = React.useState<string | undefined>(undefined);
 
   return (
-    <CustomBottomSheetModal
-      ref={ref}
-      snapPoints={['30%']}
-      enableContentPanningGesture={true}
-      title="Состояние"
-    >
+    <CustomBottomSheetModal ref={ref} snapPoints={['30%']} enableContentPanningGesture={true} title="Состояние">
       <BottomSheetView className="flex-col">
         {options.map(opt => (
           <CustomRectButton

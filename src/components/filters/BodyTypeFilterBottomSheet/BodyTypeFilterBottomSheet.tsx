@@ -19,45 +19,43 @@ const options = [
   { label: 'Фургон', value: 'van' },
 ];
 
-export const BodyTypeFilterBottomSheet = forwardRef<BottomSheetRef, BodyTypeModalProps>(
-  ({ onChange }, ref) => {
-    const [selectedBodyTypes, setSelectedBodyTypes] = React.useState<BodyTypeOption[]>([]);
+export const BodyTypeFilterBottomSheet = forwardRef<BottomSheetRef, BodyTypeModalProps>(({ onChange }, ref) => {
+  const [selectedBodyTypes, setSelectedBodyTypes] = React.useState<BodyTypeOption[]>([]);
 
-    const handleToggle = (option: BodyTypeOption) => {
-      const isSelected = selectedBodyTypes.some(t => t.value === option.value);
-      if (isSelected) {
-        setSelectedBodyTypes(selectedBodyTypes.filter(t => t.value !== option.value));
-      } else {
-        setSelectedBodyTypes([...selectedBodyTypes, option]);
-      }
-    };
+  const handleToggle = (option: BodyTypeOption) => {
+    const isSelected = selectedBodyTypes.some(t => t.value === option.value);
+    if (isSelected) {
+      setSelectedBodyTypes(selectedBodyTypes.filter(t => t.value !== option.value));
+    } else {
+      setSelectedBodyTypes([...selectedBodyTypes, option]);
+    }
+  };
 
-    const handleConfirm = () => {
-      onChange(selectedBodyTypes);
-    };
+  const handleConfirm = () => {
+    onChange(selectedBodyTypes);
+  };
 
-    return (
-      <CustomBottomSheetModal
-        ref={ref}
-        snapPoints={['45%']}
-        enableContentPanningGesture={true}
-        title="Кузова"
-        footerProps={{
-          onConfirm: handleConfirm,
-        }}
-      >
-        <BottomSheetView className="flex-col">
-          {options.map(opt => (
-            <CheckboxRectButton
-              key={opt.value}
-              label={opt.label}
-              value={selectedBodyTypes.some(t => t.value === opt.value)}
-              onPress={() => handleToggle(opt)}
-            />
-          ))}
-        </BottomSheetView>
-      </CustomBottomSheetModal>
-    );
-  }
-);
+  return (
+    <CustomBottomSheetModal
+      ref={ref}
+      snapPoints={['45%']}
+      enableContentPanningGesture={true}
+      title="Кузова"
+      footerProps={{
+        onConfirm: handleConfirm,
+      }}
+    >
+      <BottomSheetView className="flex-col">
+        {options.map(opt => (
+          <CheckboxRectButton
+            key={opt.value}
+            label={opt.label}
+            value={selectedBodyTypes.some(t => t.value === opt.value)}
+            onPress={() => handleToggle(opt)}
+          />
+        ))}
+      </BottomSheetView>
+    </CustomBottomSheetModal>
+  );
+});
 BodyTypeFilterBottomSheet.displayName = 'BodyTypeFilterBottomSheet';

@@ -1,8 +1,6 @@
 import React, { useMemo } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import CarDetailsScreen, {
-  mockProductData,
-} from '../../../src/modules/car-screen/CarDetailsScreen';
+import CarDetailsScreen, { mockProductData } from '../../../src/modules/car-screen/CarDetailsScreen';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';

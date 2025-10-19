@@ -15,38 +15,32 @@ const options = [
   { label: 'EUR', value: 'eur' },
 ];
 
-export const CurrencyCreateBottomSheet = forwardRef<BottomSheetRef, CurrencyCreateBottomSheetProps>(
-  ({ onChange }, ref) => {
-    const [selectedCurrency, setSelectedCurrency] = React.useState<CurrencyOption | undefined>(undefined);
+export const CurrencyCreateBottomSheet = forwardRef<BottomSheetRef, CurrencyCreateBottomSheetProps>(({ onChange }, ref) => {
+  const [selectedCurrency, setSelectedCurrency] = React.useState<CurrencyOption | undefined>(undefined);
 
   const handleToggle = (option: CurrencyOption) => {
     setSelectedCurrency(option);
-  };    const handleConfirm = () => {
-      onChange(selectedCurrency);
-    };
+  };
+  const handleConfirm = () => {
+    onChange(selectedCurrency);
+  };
 
-    return (
-      <CustomBottomSheetModal
-        ref={ref}
-        snapPoints={['30%']}
-        enableContentPanningGesture={true}
-        title="Валюта"
-        footerProps={{
-          onConfirm: handleConfirm,
-        }}
-      >
-        <BottomSheetView className="flex-col">
-          {options.map(opt => (
-            <CustomRectButton
-              key={opt.value}
-              title={opt.label}
-              isSelected={selectedCurrency?.value === opt.value}
-              onPress={() => handleToggle(opt)}
-            />
-          ))}
-        </BottomSheetView>
-      </CustomBottomSheetModal>
-    );
-  }
-);
+  return (
+    <CustomBottomSheetModal
+      ref={ref}
+      snapPoints={['30%']}
+      enableContentPanningGesture={true}
+      title="Валюта"
+      footerProps={{
+        onConfirm: handleConfirm,
+      }}
+    >
+      <BottomSheetView className="flex-col">
+        {options.map(opt => (
+          <CustomRectButton key={opt.value} title={opt.label} isSelected={selectedCurrency?.value === opt.value} onPress={() => handleToggle(opt)} />
+        ))}
+      </BottomSheetView>
+    </CustomBottomSheetModal>
+  );
+});
 CurrencyCreateBottomSheet.displayName = 'CurrencyCreateBottomSheet';

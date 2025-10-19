@@ -30,13 +30,7 @@ export const PriceCreateBottomSheet = forwardRef<BottomSheetRef, PriceCreateModa
       <BottomSheetView>
         <View className="flex-row items-center justify-center px-4 pt-5">
           <View className="flex-1">
-            <BottomSheetField
-              keyboardType="numeric"
-              value={price}
-              onChangeText={setPrice}
-              autoFocus
-              placeholder="100000"
-            />
+            <BottomSheetField keyboardType="numeric" value={price} onChangeText={setPrice} autoFocus placeholder="100000" />
           </View>
         </View>
       </BottomSheetView>

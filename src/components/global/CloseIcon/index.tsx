@@ -17,15 +17,7 @@ type CloseIconProps = {
   iconName?: 'close' | 'arrow-back';
 };
 
-const CloseIcon: FC<CloseIconProps> = ({
-  onPress,
-  size = 22,
-  color,
-  containerStyle,
-  iconStyle,
-  disabled = false,
-  iconName = 'close',
-}) => {
+const CloseIcon: FC<CloseIconProps> = ({ onPress, size = 22, color, containerStyle, iconStyle, disabled = false, iconName = 'close' }) => {
   const theme = useTheme() as CustomTheme;
 
   const iconColor = color || theme.colors.icon;
@@ -36,12 +28,7 @@ const CloseIcon: FC<CloseIconProps> = ({
   };
 
   return (
-    <RectButton
-      onPress={onPress}
-      style={[defaultContainerStyle, containerStyle]}
-      enabled={!disabled}
-      rippleColor={theme.colors.button.subtlePressed}
-    >
+    <RectButton onPress={onPress} style={[defaultContainerStyle, containerStyle]} enabled={!disabled} rippleColor={theme.colors.button.subtlePressed}>
       <Ionicons name={iconName} size={size} color={iconColor} style={iconStyle} />
     </RectButton>
   );

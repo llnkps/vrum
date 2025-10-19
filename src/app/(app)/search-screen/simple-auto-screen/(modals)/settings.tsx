@@ -167,7 +167,7 @@ const SettingScreenFilter = () => {
             {selectedRegions.length > 0 && (
               <SelectedRegionsBadges
                 selectedRegions={selectedRegions}
-                onRemove={(region) => {
+                onRemove={region => {
                   const updatedRegions = selectedRegions.filter(r => r.id !== region.id);
                   setSelectedRegions(updatedRegions);
                 }}
@@ -299,7 +299,7 @@ const SettingScreenFilter = () => {
               rightIcon="chevron-down"
             />
             <TouchableHighlightRow label="Расположения руля" onPress={() => {}} showRightArrow variant="bordered" rightIcon="chevron-down" />
-            
+
             <TouchableHighlightRow
               label="Пробег"
               onPress={handlePresentMileageModalPress}
@@ -353,7 +353,12 @@ const SettingScreenFilter = () => {
         </CustomRectButton>
       </View>
 
-      <RegionBottomSheet ref={regionBottomSheetRef} multiple selectedRegions={selectedRegions} onChange={regions => setSelectedRegions(Array.isArray(regions) ? regions : [regions])} />
+      <RegionBottomSheet
+        ref={regionBottomSheetRef}
+        multiple
+        selectedRegions={selectedRegions}
+        onChange={regions => setSelectedRegions(Array.isArray(regions) ? regions : [regions])}
+      />
 
       <TransmissionFilterBottomSheet
         ref={transmissionModalRef}
@@ -376,10 +381,7 @@ const SettingScreenFilter = () => {
         }}
       />
 
-      <MileageFilterBottomSheet
-        ref={mileageModalRef}
-        onChange={range => setMileageRange(range)}
-      />
+      <MileageFilterBottomSheet ref={mileageModalRef} onChange={range => setMileageRange(range)} />
 
       <BodyTypeFilterBottomSheet
         ref={bodyTypeModalRef}

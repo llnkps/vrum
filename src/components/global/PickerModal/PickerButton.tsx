@@ -17,31 +17,19 @@ export const PickerButton = ({
     <TouchableOpacity
       onPress={onPress}
       className={`
-        ${
-          colorScheme
-            ? 'border-border-input-dark bg-background-input-dark'
-            : 'border-border-input bg-background-input'
-        } 
+        ${colorScheme ? 'border-border-input-dark bg-background-input-dark' : 'border-border-input bg-background-input'} 
         flex-row items-center justify-between rounded-xl border px-4 py-3
         active:opacity-70
       `}
     >
       <Text
         className={`text-base ${
-          value
-            ? colorScheme
-              ? 'text-font-dark'
-              : 'text-font'
-            : colorScheme
-              ? 'text-font-subtlest-dark'
-              : 'text-font-subtlest'
+          value ? (colorScheme ? 'text-font-dark' : 'text-font') : colorScheme ? 'text-font-subtlest-dark' : 'text-font-subtlest'
         }`}
       >
         {value || placeholder}
       </Text>
-      <Text className={`text-lg ${colorScheme ? 'text-font-subtle-dark' : 'text-font-subtle'}`}>
-        ▼
-      </Text>
+      <Text className={`text-lg ${colorScheme ? 'text-font-subtle-dark' : 'text-font-subtle'}`}>▼</Text>
     </TouchableOpacity>
   );
 };

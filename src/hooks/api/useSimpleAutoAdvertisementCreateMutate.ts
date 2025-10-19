@@ -48,14 +48,12 @@ export function useSimpleAutoAdvertisementCreateMutate({ onSuccess, onError }: p
       });
 
       const res = createAuthenticatedApiCall(async () => {
-        return await simpleAutoClient.postAppSimpleautocontextPresentationSimpleautocreateCreateRaw(
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-            body: formParams,
-          }
-        );
+        return await simpleAutoClient.postAppSimpleautocontextPresentationSimpleautocreateCreateRaw({
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          body: formParams,
+        });
       });
 
       // const res = await simpleAutoClient.postAppSimpleautocontextPresentationSimpleautocreateCreateRaw({

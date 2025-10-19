@@ -1,27 +1,22 @@
-import {
-  GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner,
-  GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner,
-  GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner,
-  GetRegionIndex200ResponseInner,
-} from '@/openapi/client';
+import { SimpleAutoBrand, SimpleAutoGeneration, SimpleAutoModel, Region } from '@/openapi/client';
 import { create } from 'zustand';
 
 type BottomSheetOptionType = {
   value: string;
   label: string;
-}
+};
 
 type SelectionStore = {
-  selectedBrandsMap: Record<number, GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner>;
-  selectedModelsByBrand: Record<number, GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner[]>;
-  selectedGenerationsByModel: Record<number, GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner[]>;
+  selectedBrandsMap: Record<number, SimpleAutoBrand>;
+  selectedModelsByBrand: Record<number, SimpleAutoModel[]>;
+  selectedGenerationsByModel: Record<number, SimpleAutoGeneration[]>;
 
-  getSelectedModelsByBrand: (brandId: number) => GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner[];
-  getSelectedGenerationsByModel: (modelId: number) => GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner[];
+  getSelectedModelsByBrand: (brandId: number) => SimpleAutoModel[];
+  getSelectedGenerationsByModel: (modelId: number) => SimpleAutoGeneration[];
 
   // Filter states with type safety
   tab: 'all' | 'old' | 'new';
-  selectedRegions: GetRegionIndex200ResponseInner[];
+  selectedRegions: Region[];
   onlyUnsold: boolean;
   onlyWithPhotos: boolean;
   transmission?: BottomSheetOptionType[];
@@ -41,17 +36,17 @@ type SelectionStore = {
   powerRange?: { min?: number; max?: number };
   mileageRange?: { min?: number; max?: number };
 
-  addSelectedBrand: (item: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner) => void;
-  addSelectedModel: (item: GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner) => void;
-  addSelectedGeneration: (item: GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner) => void;
+  addSelectedBrand: (item: SimpleAutoBrand) => void;
+  addSelectedModel: (item: SimpleAutoModel) => void;
+  addSelectedGeneration: (item: SimpleAutoGeneration) => void;
   removeSelectedBrand: (id: number) => void;
   removeSelectedModel: (id: number) => void;
   removeSelectedGeneration: (id: number) => void;
 
   // Filter actions
   setTab: (tab: 'all' | 'old' | 'new') => void;
-  setSelectedRegions: (regions: GetRegionIndex200ResponseInner[]) => void;
-  addRegion: (region: GetRegionIndex200ResponseInner) => void;
+  setSelectedRegions: (regions: Region[]) => void;
+  addRegion: (region: Region) => void;
   removeRegion: (regionId: number) => void;
   toggleOnlyUnsold: () => void;
   toggleOnlyWithPhotos: () => void;
@@ -73,8 +68,8 @@ type SelectionStore = {
   setMileageRange: (range: { min?: number; max?: number } | undefined) => void;
   resetFilters: () => void;
 
-  currentBrand: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner | null;
-  setCurrentBrand: (brand: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner | null) => void;
+  currentBrand: SimpleAutoBrand | null;
+  setCurrentBrand: (brand: SimpleAutoBrand | null) => void;
 
   clearSelections: () => void;
 };

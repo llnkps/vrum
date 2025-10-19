@@ -65,11 +65,7 @@ export const SearchBar = ({
       />
       <View style={{ width: 50, alignItems: 'center', justifyContent: 'center' }}>
         {text ? (
-          <TouchableOpacity
-            onPress={_handleClear}
-            hitSlop={{ top: 15, left: 10, right: 15, bottom: 15 }}
-            style={{ padding: 5 }}
-          >
+          <TouchableOpacity onPress={_handleClear} hitSlop={{ top: 15, left: 10, right: 15, bottom: 15 }} style={{ padding: 5 }}>
             <Ionicons name="md-close" size={25} color={tintColor} />
           </TouchableOpacity>
         ) : null}

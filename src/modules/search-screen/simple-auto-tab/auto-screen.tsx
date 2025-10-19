@@ -69,9 +69,7 @@ export const AutoHeaderScreen = () => {
       <View className={'gap-y-1 px-4 py-3'}>
         <TouchableHighlightRow
           label="Марка, модель, поколение"
-          onPress={() =>
-            router.push('/(app)/search-screen/simple-auto-screen/(modals)/brand-auto-filter')
-          }
+          onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/brand-auto-filter')}
           variant="button"
           showRightArrow={false}
         />
@@ -103,17 +101,12 @@ export const AutoHeaderScreen = () => {
             fullWidth
           />
         </View>
-        <TouchableHighlightRow
-          label="Все регионы"
-          onPress={handlePresentRegionModalPress}
-          variant="button"
-          showRightArrow={false}
-        />
+        <TouchableHighlightRow label="Все регионы" onPress={handlePresentRegionModalPress} variant="button" showRightArrow={false} />
 
         {store.selectedRegions?.length > 0 && (
           <SelectedRegionsBadges
             selectedRegions={store.selectedRegions}
-            onRemove={(region) => {
+            onRemove={region => {
               const updatedRegions = store.selectedRegions.filter(r => r.id !== region.id);
               store.setSelectedRegions(updatedRegions);
             }}
@@ -123,15 +116,15 @@ export const AutoHeaderScreen = () => {
         <YearBottomSheet
           ref={yearModalRef}
           onChange={yearRange => {
-            store.setYearRange(yearRange)
-            router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal')
+            store.setYearRange(yearRange);
+            router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal');
           }}
         />
         <PriceBottomSheet
           ref={priceModalRef}
           onChange={priceRange => {
-            store.setPriceRange(priceRange)
-            router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal')
+            store.setPriceRange(priceRange);
+            router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal');
           }}
         />
         <RegionBottomSheet
@@ -145,9 +138,7 @@ export const AutoHeaderScreen = () => {
       <View className={'px-4 py-3'}>
         <TouchableHighlightRow
           label={t('searchScreen.auto.searchPlaceholder')}
-          onPress={() =>
-            router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal')
-          }
+          onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal')}
           variant="button"
           showRightArrow={false}
           centerText={true}
@@ -162,9 +153,7 @@ export const AutoHeaderScreen = () => {
                 onPress={() => handleQuickFilterPress(filter)}
                 className="mr-2 rounded-full border border-border bg-surface px-4 py-2 dark:border-border-dark dark:bg-surface-dark"
               >
-                <Text className="text-sm font-medium text-font dark:text-font-dark">
-                  {filter.label}
-                </Text>
+                <Text className="text-sm font-medium text-font dark:text-font-dark">{filter.label}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
@@ -179,9 +168,7 @@ export const AutoItemScreen = ({ item }: { item: any }) => {
     <View className="mx-2 rounded-2xl shadow-md">
       <Image source={item.image} className="h-48 w-full rounded-t-2xl" resizeMode="cover" />
       <View className="p-4">
-        <Text className="text-lg font-bold text-font-brand dark:text-font-brand-dark">
-          {item.title}
-        </Text>
+        <Text className="text-lg font-bold text-font-brand dark:text-font-brand-dark">{item.title}</Text>
         <Text className="text-base text-font dark:text-font-dark">{item.price}</Text>
         <View className="mt-2 flex-row">
           <Text className="mr-2 text-xs text-font dark:text-font-dark">⭐ 5-star GNCAP</Text>

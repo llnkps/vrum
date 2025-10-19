@@ -45,20 +45,10 @@ const EngineCapacityBottomSheet = forwardRef<BottomSheetRef, EngineCapacityModal
       <BottomSheetView>
         <View className="flex-row items-center justify-center gap-x-10 px-4 pt-5">
           <View className="flex-1">
-            <CustomWheelPicker 
-              data={engineCapacity} 
-              value={minValue} 
-              onValueChanged={handleMinChange} 
-              label="От" 
-            />
+            <CustomWheelPicker data={engineCapacity} value={minValue} onValueChanged={handleMinChange} label="От" />
           </View>
           <View className="flex-1">
-            <CustomWheelPicker
-              data={engineCapacity}
-              value={maxValue}
-              onValueChanged={handleMaxChange}
-              label="До"
-            />
+            <CustomWheelPicker data={engineCapacity} value={maxValue} onValueChanged={handleMaxChange} label="До" />
           </View>
         </View>
       </BottomSheetView>

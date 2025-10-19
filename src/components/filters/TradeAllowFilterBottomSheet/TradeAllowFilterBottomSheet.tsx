@@ -14,19 +14,11 @@ const options = [
   { label: 'Без торга', value: 'trade_disallow' },
 ];
 
-export const TradeAllowFilterBottomSheet = forwardRef<
-  BottomSheetRef,
-  TradeAllowFilterBottomSheetProps
->(({ onSelect }, ref) => {
+export const TradeAllowFilterBottomSheet = forwardRef<BottomSheetRef, TradeAllowFilterBottomSheetProps>(({ onSelect }, ref) => {
   const [selectedValue, setSelectedValue] = React.useState<string | undefined>(undefined);
 
   return (
-    <CustomBottomSheetModal
-      ref={ref}
-      snapPoints={['35%']}
-      enableContentPanningGesture={true}
-      title="Торг"
-    >
+    <CustomBottomSheetModal ref={ref} snapPoints={['35%']} enableContentPanningGesture={true} title="Торг">
       <BottomSheetView className="flex-col">
         {options.map(opt => (
           <CustomRectButton

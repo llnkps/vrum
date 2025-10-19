@@ -13,17 +13,7 @@ type InputFieldProps = TextInputProps & {
   required?: boolean;
   error?: string;
 };
-export const InputField = ({
-  label,
-  onChange,
-  isTextArea,
-  value,
-  Icon,
-  ref,
-  required = false,
-  error,
-  ...props
-}: InputFieldProps) => {
+export const InputField = ({ label, onChange, isTextArea, value, Icon, ref, required = false, error, ...props }: InputFieldProps) => {
   const theme = useTheme() as CustomTheme;
 
   return (

@@ -12,10 +12,7 @@ export default function ActivationMessage() {
         <Text className="mb-6 text-lg text-font dark:text-font-dark">
           Now you need to activate your account. Check out your email for the activation link.
         </Text>
-        <TouchableOpacity
-          className="rounded-lg bg-blue-500 px-6 py-3"
-          onPress={() => router.replace('/sign-in')}
-        >
+        <TouchableOpacity className="rounded-lg bg-blue-500 px-6 py-3" onPress={() => router.replace('/sign-in')}>
           <Text className="text-center font-semibold text-white">Go to Sign In</Text>
         </TouchableOpacity>
       </View>

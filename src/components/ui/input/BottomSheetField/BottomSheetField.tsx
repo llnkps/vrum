@@ -14,19 +14,7 @@ export interface BottomSheetFieldProps extends Omit<TextInputProps, 'onChangeTex
 }
 
 export const BottomSheetField = forwardRef<TextInput, BottomSheetFieldProps>(
-  (
-    {
-      value,
-      onChangeText,
-      keyboardType = 'default',
-      placeholder,
-      autoFocus = false,
-      disabled = false,
-      className,
-      ...rest
-    },
-    ref
-  ) => {
+  ({ value, onChangeText, keyboardType = 'default', placeholder, autoFocus = false, disabled = false, className, ...rest }, ref) => {
     return (
       <BottomSheetTextInput
         ref={ref}

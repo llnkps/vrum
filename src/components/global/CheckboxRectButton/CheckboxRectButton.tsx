@@ -2,15 +2,7 @@ import { CustomRectButton } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Text, View } from 'react-native';
 
-export const CheckboxRectButton = ({
-  value,
-  label,
-  onPress,
-}: {
-  value: boolean;
-  label: string;
-  onPress: () => void;
-}) => {
+export const CheckboxRectButton = ({ value, label, onPress }: { value: boolean; label: string; onPress: () => void }) => {
   const onClick = () => {
     onPress();
   };
@@ -19,7 +11,7 @@ export const CheckboxRectButton = ({
     <CustomRectButton onPress={onClick}>
       <View className="flex-row items-center justify-between space-x-2">
         <Text className="font-bold text-font dark:text-font-dark">{label}</Text>
-        <Checkbox value={value} onValueChange={onClick} />
+        <Checkbox value={value} />
       </View>
     </CustomRectButton>
   );

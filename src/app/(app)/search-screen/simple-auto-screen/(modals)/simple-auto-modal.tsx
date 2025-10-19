@@ -9,6 +9,7 @@ import { YearBottomSheet } from '@/components/filters/YearFilterBottomSheet';
 import { SelectedRegionsBadges } from '@/components/global/SelectedItemsBadges';
 import { AdvertisementCard } from '@/components/global/AdvertisementCard/AdvertisementCard';
 import { HeaderBackSaveFilter } from '@/components/global/header';
+import { SelectedBrandsSection } from '@/components/global/SelectedBrandsSection';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
 import { useSimpleGetCollectionPagination } from '@/hooks/api/useSimpleGetCollectionPagination';
 import { useImagePrefetch } from '@/hooks/useImagePrefetch';
@@ -28,7 +29,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigationState } from '@react-navigation/native';
 import { useFocusEffect } from '@react-navigation/native';
 import React from 'react';
-import Collapsible from 'react-native-collapsible';
 
 export default function SimpleAutoModal() {
   const { t } = useTranslation();
@@ -43,8 +43,9 @@ export default function SimpleAutoModal() {
   const store = useAutoSelectStore();
   const selectedBrands = selectSelectedBrands(store);
   const selectedModels = selectSelectedModels(store);
-  console.log(selectedBrands)
+  // console.log("selected Brands: ", selectedBrands)
   const {
+    selectedModelsByBrand,
     tab,
     selectedRegions,
     onlyUnsold,
@@ -66,8 +67,8 @@ export default function SimpleAutoModal() {
   } = store;
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch, isRefetching } = useSimpleGetCollectionPagination({
-    brands: selectedBrands || undefined,
-    models: selectedModels || undefined,
+    brands: selectedBrands,
+    models: selectedModelsByBrand,
     releaseYear: undefined,
     price: undefined,
     pageSize: '10',
@@ -98,6 +99,7 @@ export default function SimpleAutoModal() {
   const yearModalRef = useRef<BottomSheetModal>(null);
   const priceModalRef = useRef<BottomSheetModal>(null);
   const regionModalRef = useRef<BottomSheetModal>(null);
+  const routeIndexRef = useRef<number | null>(null);
 
   const handlePresentYearModalPress = useCallback(() => {
     yearModalRef.current?.present();
@@ -113,14 +115,42 @@ export default function SimpleAutoModal() {
   const [isBrandSectionCollapsed, setIsBrandSectionCollapsed] = useState(true);
   const selectedGenerations = selectSelectedGenerations(store);
 
-  // Reset store when navigating away from this screen
+  // Handle back navigation (button and gesture)
   useFocusEffect(
     useCallback(() => {
-      return () => {
-        // This cleanup function runs when the screen loses focus (user navigates back)
+      const unsubscribe = navigation.addListener('beforeRemove', e => {
+        // Prevent default back behavior
+        e.preventDefault();
+        // Clear store and navigate to search tab
         store.clearSelections();
+        router.push('/search-tab');
+      });
+
+      return unsubscribe;
+    }, [navigation, store, router])
+  );
+
+  // Reset store when navigating away from this screen (for forward navigation)
+  useFocusEffect(
+    useCallback(() => {
+      // Store the current route index when screen gains focus
+      const currentState = navigation.getState();
+      if (currentState) {
+        routeIndexRef.current = currentState.index;
+      }
+
+      return () => {
+        // This cleanup function runs when the screen loses focus
+        const currentState = navigation.getState();
+        const previousIndex = routeIndexRef.current;
+
+        // Only clear store if navigating back (index decreased)
+        if (currentState && previousIndex !== null && currentState.index < previousIndex) {
+          console.log('CLEAR STATE SIMPLE AUTO MODAL - Going back');
+          store.clearSelections();
+        }
       };
-    }, [store])
+    }, [navigation, store])
   );
 
   return (
@@ -142,49 +172,15 @@ export default function SimpleAutoModal() {
                   onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/brand-auto-filter')}
                   showRightArrow
                 />
-                {selectedBrands.length !== 0 && (
-                  <>
-                    {selectedBrands.map(brand => {
-                      const selectedModels = store.getSelectedModelsByBrand(brand.id);
-                      return (
-                        <React.Fragment key={brand.id}>
-                          <TouchableHighlightRow
-                            variant="button"
-                            label="Марка, модель, поколение"
-                            selectedValue={brand.name}
-                            selectedValueMode="replace"
-                            onPress={() => setIsBrandSectionCollapsed(!isBrandSectionCollapsed)}
-                            showRightArrow
-                            rightIcon={isBrandSectionCollapsed ? 'chevron-down' : 'chevron-up'}
-                          />
-                          <Collapsible collapsed={isBrandSectionCollapsed}>
-                            <View className="ml-4 gap-y-1">
-                              <TouchableHighlightRow
-                                variant="button"
-                                label="Модель"
-                                selectedValue={selectedModels.map(m => m.name).join(', ')}
-                                selectedValueMode="replace"
-                                onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/model-filter?from=settings')}
-                                showRightArrow
-                              />
-
-                              {selectedModels.length > 0 && (
-                                <TouchableHighlightRow
-                                  variant="button"
-                                  label="Поколение"
-                                  selectedValue={selectedGenerations.map(m => `${m.generation} поколение`).join(', ')}
-                                  selectedValueMode="replace"
-                                  onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/generation-filter?from=settings')}
-                                  showRightArrow
-                                />
-                              )}
-                            </View>
-                          </Collapsible>
-                        </React.Fragment>
-                      );
-                    })}
-                  </>
-                )}
+                <SelectedBrandsSection
+                  selectedBrands={selectedBrands}
+                  getSelectedModelsByBrand={store.getSelectedModelsByBrand}
+                  selectedGenerations={selectedGenerations}
+                  isCollapsed={isBrandSectionCollapsed}
+                  onToggleCollapse={() => setIsBrandSectionCollapsed(!isBrandSectionCollapsed)}
+                  onPressModel={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/model-filter?from=settings')}
+                  onPressGeneration={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/generation-filter?from=settings')}
+                />
               </View>
 
               <View className={'flex flex-row gap-1'}>
@@ -211,7 +207,6 @@ export default function SimpleAutoModal() {
                 <TouchableHighlightRow
                   variant="button"
                   label={'Параметры' + (getActiveFiltersCount(store) > 0 ? ` (${getActiveFiltersCount(store)})` : '')}
-                  
                   onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/settings')}
                   showRightArrow={false}
                   icon={<Ionicons name="options-sharp" size={20} color="white" />}
@@ -230,7 +225,7 @@ export default function SimpleAutoModal() {
               {store.selectedRegions?.length > 0 && (
                 <SelectedRegionsBadges
                   selectedRegions={store.selectedRegions}
-                  onRemove={(region) => {
+                  onRemove={region => {
                     const updatedRegions = store.selectedRegions.filter(r => r.id !== region.id);
                     store.setSelectedRegions(updatedRegions);
                   }}
@@ -259,7 +254,7 @@ export default function SimpleAutoModal() {
         keyExtractor={item => item.id?.toString() || `item-${Math.random()}`}
         refreshControl={<RefreshControl tintColor={'blue'} refreshing={isRefetching} onRefresh={refetch} />}
         ListEmptyComponent={<Text className="p-4 text-center">No data available</Text>}
-        renderItem={({ item, index }) => {
+        renderItem={({ item }) => {
           return (
             <AdvertisementCard
               item={item}
@@ -282,7 +277,12 @@ export default function SimpleAutoModal() {
 
       <YearBottomSheet ref={yearModalRef} onChange={yearRange => setYearRange(yearRange)} />
       <PriceBottomSheet ref={priceModalRef} onChange={priceRange => setPriceRange(priceRange)} />
-      <RegionBottomSheet ref={regionModalRef} multiple selectedRegions={store.selectedRegions} onChange={regions => store.setSelectedRegions(Array.isArray(regions) ? regions : [regions])} />
+      <RegionBottomSheet
+        ref={regionModalRef}
+        multiple
+        selectedRegions={store.selectedRegions}
+        onChange={regions => store.setSelectedRegions(Array.isArray(regions) ? regions : [regions])}
+      />
     </SafeAreaView>
   );
 }

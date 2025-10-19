@@ -8,13 +8,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { CheckboxRectButton } from '@/components/global/CheckboxRectButton/CheckboxRectButton';
 import { HeaderSearchBar } from '@/components/global/header/HeaderSearchBar';
 import { useGenerationsByModelApi } from '@/hooks/api/useGenerationsByModelApi';
-import { GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner } from '@/openapi/client';
-import {
-  useAutoSelectStore,
-  selectSelectedBrands,
-  selectSelectedModels,
-  selectSelectedGenerations,
-} from '@/state/search-screen/useAutoSelectStore';
+import { SimpleAutoGeneration } from '@/openapi/client';
+import { useAutoSelectStore, selectSelectedBrands, selectSelectedModels, selectSelectedGenerations } from '@/state/search-screen/useAutoSelectStore';
 import { CustomRectButton } from '@/components/ui/button/CustomRectButton';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight ?? 24;
@@ -58,22 +53,13 @@ export default function GenerationFilter() {
   return (
     <>
       <SafeAreaView className="flex-1 gap-y-4 px-3">
-        <HeaderSearchBar
-          title="Выберите поколение"
-          scrollY={scrollY}
-          showSearch={false}
-          onClose={() => router.dismiss()}
-        />
+        <HeaderSearchBar title="Выберите поколение" scrollY={scrollY} showSearch={false} onClose={() => router.dismiss()} />
 
         {/* Selected Models Display */}
         {selectedModels.length > 0 && (
           <View className="rounded-2xl bg-surface p-4 dark:bg-surface-dark">
-            <Text className="mb-2 text-sm font-semibold text-font-subtlest dark:text-font-subtlest-dark">
-              Выбранные модели:
-            </Text>
-            <Text className="text-font dark:text-font-dark">
-              {selectedModels.map(m => m.name).join(', ')}
-            </Text>
+            <Text className="mb-2 text-sm font-semibold text-font-subtlest dark:text-font-subtlest-dark">Выбранные модели:</Text>
+            <Text className="text-font dark:text-font-dark">{selectedModels.map(m => m.name).join(', ')}</Text>
           </View>
         )}
         {/* {(selectedModelsByBrand[currentBrand?.id!]?.length || 0) > 0 && (
@@ -94,11 +80,7 @@ export default function GenerationFilter() {
           </View>
         )} */}
 
-        <GenerationList
-          generations={filteredGenerations}
-          scrollY={scrollY}
-          isScrolling={isScrolling}
-        />
+        <GenerationList generations={filteredGenerations} scrollY={scrollY} isScrolling={isScrolling} />
 
         {/* Fixed Button */}
         <View className="absolute bottom-2 left-0 right-0 px-3 pb-6">
@@ -121,7 +103,7 @@ export default function GenerationFilter() {
 }
 
 type GenerationListProps = {
-  generations: GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner[];
+  generations: SimpleAutoGeneration[];
   scrollY: SharedValue<number>;
   isScrolling: SharedValue<boolean>;
 };
@@ -131,9 +113,7 @@ const GenerationList: FC<GenerationListProps> = ({ generations, scrollY, isScrol
   const selectedGenerations = selectSelectedGenerations(store);
   const { addSelectedGeneration } = store;
 
-  const handleSelectGeneration = (
-    generation: GetAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations200ResponseInner
-  ) => {
+  const handleSelectGeneration = (generation: SimpleAutoGeneration) => {
     addSelectedGeneration(generation);
   };
 
@@ -162,13 +142,7 @@ const GenerationList: FC<GenerationListProps> = ({ generations, scrollY, isScrol
         }}
         renderItem={({ item }) => {
           const isSelected = selectedGenerations.some(g => g.id === item.id);
-          return (
-            <CheckboxRectButton
-              value={isSelected}
-              label={`${item.generation} поколение`}
-              onPress={() => handleSelectGeneration(item)}
-            />
-          );
+          return <CheckboxRectButton value={isSelected} label={`${item.generation} поколение`} onPress={() => handleSelectGeneration(item)} />;
         }}
         initialNumToRender={18}
         windowSize={10}

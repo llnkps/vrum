@@ -40,12 +40,7 @@ const EngineCapacityCreateBottomSheet = forwardRef<BottomSheetRef, EngineCapacit
       <BottomSheetView>
         <View className="flex-row items-center justify-center px-4 pt-5">
           <View className="flex-1">
-            <CustomWheelPicker
-              data={engineCapacity}
-              value={selectedValue}
-              onValueChanged={handleChange}
-              label="Объем"
-            />
+            <CustomWheelPicker data={engineCapacity} value={selectedValue} onValueChanged={handleChange} label="Объем" />
           </View>
         </View>
       </BottomSheetView>

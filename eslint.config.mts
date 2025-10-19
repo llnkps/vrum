@@ -47,15 +47,6 @@ export default defineConfig([
     },
   },
   {
-    ignores: [
-      'dist/*',
-      'build/*',
-      'node_modules/*',
-      'src/openapi/*',
-      '.expo/*',
-      '.expo-shared/*',
-      '**/*.config.js',
-      '**/*.config.ts',
-    ],
+    ignores: ['dist/*', 'build/*', 'node_modules/*', 'src/openapi/*', '.expo/*', '.expo-shared/*', '**/*.config.js', '**/*.config.ts'],
   },
 ]);

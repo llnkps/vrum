@@ -34,23 +34,12 @@ export const PriceBottomSheet = forwardRef<BottomSheetRef, props>((props, ref) =
         <View className="flex-row items-center justify-center gap-x-10 px-4 pt-5">
           <View className="flex-1">
             <Text className="text-lg font-bold text-font dark:text-font-dark">От</Text>
-            <BottomSheetField
-              keyboardType="numeric"
-              value={minPrice}
-              onChangeText={setMinPrice}
-              autoFocus
-              placeholder="100000"
-            />
+            <BottomSheetField keyboardType="numeric" value={minPrice} onChangeText={setMinPrice} autoFocus placeholder="100000" />
           </View>
 
           <View className="flex-1">
             <Text className="text-lg font-bold text-font dark:text-font-dark">До</Text>
-            <BottomSheetField
-              keyboardType="numeric"
-              value={maxPrice}
-              onChangeText={setMaxPrice}
-              placeholder="500000"
-            />
+            <BottomSheetField keyboardType="numeric" value={maxPrice} onChangeText={setMaxPrice} placeholder="500000" />
           </View>
         </View>
       </BottomSheetView>

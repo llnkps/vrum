@@ -7,7 +7,7 @@ export const useRegionApi = () => {
   return useQuery({
     queryKey: ['regions'],
     queryFn: async () => {
-      return regionApi.getRegionIndex();
+      return regionApi.getRegions();
     },
   });
 };

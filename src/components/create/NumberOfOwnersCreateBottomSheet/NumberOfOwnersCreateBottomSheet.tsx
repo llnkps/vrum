@@ -16,10 +16,7 @@ const options = [
   { label: 'Больше трех', value: 'more_than_three' },
 ];
 
-export const NumberOfOwnersCreateBottomSheet = forwardRef<
-  BottomSheetRef,
-  NumberOfOwnersCreateBottomSheetProps
->(({ onChange }, ref) => {
+export const NumberOfOwnersCreateBottomSheet = forwardRef<BottomSheetRef, NumberOfOwnersCreateBottomSheetProps>(({ onChange }, ref) => {
   const [selectedNumberOfOwners, setSelectedNumberOfOwners] = React.useState<NumberOfOwnersOption | undefined>(undefined);
 
   const handleToggle = (option: NumberOfOwnersOption) => {

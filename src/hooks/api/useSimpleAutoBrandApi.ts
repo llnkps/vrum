@@ -7,7 +7,7 @@ export const useSimpleAutoBrandApi = () => {
   return useQuery({
     queryKey: ['auto-brands'],
     queryFn: async () => {
-      return simpleAutoApi.getAppSimpleautocontextPresentationBrandgetcollectionGetbrands();
+      return simpleAutoApi.getSimpleAutoBrands();
     },
   });
 };

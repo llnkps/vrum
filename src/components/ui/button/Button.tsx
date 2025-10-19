@@ -1,15 +1,7 @@
 import { CustomTheme } from '@/theme';
 import { useTheme } from '@react-navigation/native';
 import React, { PropsWithChildren } from 'react';
-import {
-  ActivityIndicator,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  TouchableHighlightProps,
-  View,
-  ViewStyle,
-} from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, TouchableHighlight, TouchableHighlightProps, View, ViewStyle } from 'react-native';
 
 type Props = PropsWithChildren<
   TouchableHighlightProps & {
@@ -95,12 +87,7 @@ export const Button = ({
         onPress={onPress}
         underlayColor={'#5944ed'}
       >
-        {children ||
-          (loading ? (
-            <ActivityIndicator size="small" color="white" />
-          ) : (
-            <Text style={styles.label}>{title}</Text>
-          ))}
+        {children || (loading ? <ActivityIndicator size="small" color="white" /> : <Text style={styles.label}>{title}</Text>)}
       </TouchableHighlight>
     </View>
   );

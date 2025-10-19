@@ -16,10 +16,7 @@ export const SelectedItemsBadges = <T,>({ items, getId, getLabel, onRemove }: Se
     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
       {items.map(item => (
         <View key={getId(item)} className="mr-2">
-          <FilterBadge
-            label={getLabel(item)}
-            onRemove={() => onRemove(item)}
-          />
+          <FilterBadge label={getLabel(item)} onRemove={() => onRemove(item)} />
         </View>
       ))}
     </ScrollView>
@@ -33,12 +30,5 @@ interface SelectedRegionsBadgesProps {
 }
 
 export const SelectedRegionsBadges = ({ selectedRegions, onRemove }: SelectedRegionsBadgesProps) => {
-  return (
-    <SelectedItemsBadges
-      items={selectedRegions}
-      getId={(region) => region.id}
-      getLabel={(region) => region.name || ''}
-      onRemove={onRemove}
-    />
-  );
+  return <SelectedItemsBadges items={selectedRegions} getId={region => region.id} getLabel={region => region.name || ''} onRemove={onRemove} />;
 };

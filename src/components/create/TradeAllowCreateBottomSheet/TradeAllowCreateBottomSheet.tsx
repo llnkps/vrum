@@ -14,10 +14,7 @@ const options = [
   { label: 'Без торга', value: 'trade_disallow' },
 ];
 
-export const TradeAllowCreateBottomSheet = forwardRef<
-  BottomSheetRef,
-  TradeAllowCreateBottomSheetProps
->(({ onChange }, ref) => {
+export const TradeAllowCreateBottomSheet = forwardRef<BottomSheetRef, TradeAllowCreateBottomSheetProps>(({ onChange }, ref) => {
   const [selectedValue, setSelectedValue] = React.useState<TradeAllowOption | undefined>(undefined);
 
   const handleToggle = (option: TradeAllowOption) => {
@@ -40,12 +37,7 @@ export const TradeAllowCreateBottomSheet = forwardRef<
     >
       <BottomSheetView className="flex-col">
         {options.map(opt => (
-          <CustomRectButton
-            key={opt.value}
-            title={opt.label}
-            isSelected={selectedValue?.value === opt.value}
-            onPress={() => handleToggle(opt)}
-          />
+          <CustomRectButton key={opt.value} title={opt.label} isSelected={selectedValue?.value === opt.value} onPress={() => handleToggle(opt)} />
         ))}
       </BottomSheetView>
     </CustomBottomSheetModal>

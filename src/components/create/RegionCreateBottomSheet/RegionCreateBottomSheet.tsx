@@ -1,7 +1,7 @@
 import CustomBottomSheetModal from '@/components/global/CustomBottomSheetModal';
 import { CustomRectButton } from '@/components/ui/button';
 import { useRegionApi } from '@/hooks/api/useRegionApi';
-import { GetRegionIndex200ResponseInner } from '@/openapi/client';
+import { Region } from '@/openapi/client';
 import { BottomSheetModal, BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
 import { ActivityIndicator, Text } from 'react-native';
@@ -9,14 +9,14 @@ import { ActivityIndicator, Text } from 'react-native';
 export type BottomSheetRef = BottomSheetModal;
 
 type RegionCreateModalProps = {
-  onChange?: (region: GetRegionIndex200ResponseInner | undefined) => void;
+  onChange?: (region: Region | undefined) => void;
 };
 
 export const RegionCreateBottomSheet = forwardRef<BottomSheetRef, RegionCreateModalProps>((props, ref) => {
   const { data: regions, isLoading, error } = useRegionApi();
-  const [selectedRegion, setSelectedRegion] = React.useState<GetRegionIndex200ResponseInner | undefined>(undefined);
+  const [selectedRegion, setSelectedRegion] = React.useState<Region | undefined>(undefined);
 
-  const handleRegionToggle = (region: GetRegionIndex200ResponseInner) => {
+  const handleRegionToggle = (region: Region) => {
     setSelectedRegion(region);
   };
 
@@ -24,7 +24,7 @@ export const RegionCreateBottomSheet = forwardRef<BottomSheetRef, RegionCreateMo
     props.onChange?.(selectedRegion);
   };
 
-  const isRegionSelected = (region: GetRegionIndex200ResponseInner) => {
+  const isRegionSelected = (region: Region) => {
     return selectedRegion?.id === region.id;
   };
 
@@ -40,7 +40,7 @@ export const RegionCreateBottomSheet = forwardRef<BottomSheetRef, RegionCreateMo
     >
       <BottomSheetView className="flex-1">
         {isLoading && <ActivityIndicator size="large" className="mt-4" />}
-        {error && <Text className="text-red-500 mt-4">Ошибка загрузки регионов</Text>}
+        {error && <Text className="mt-4 text-red-500">Ошибка загрузки регионов</Text>}
         {regions && (
           <BottomSheetScrollView>
             {regions.map(region => (

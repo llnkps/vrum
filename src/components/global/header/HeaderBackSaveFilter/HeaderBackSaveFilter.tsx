@@ -19,9 +19,7 @@ export const HeaderBackSaveFilter = () => {
         </View>
       </View>
       <View className="">
-        <Text className="text-lg font-bold text-font-brand dark:text-font-brand-dark">
-          Подписаться
-        </Text>
+        <Text className="text-lg font-bold text-font-brand dark:text-font-brand-dark">Подписаться</Text>
       </View>
     </View>
   );

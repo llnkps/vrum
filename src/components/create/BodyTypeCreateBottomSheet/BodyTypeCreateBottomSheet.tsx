@@ -19,38 +19,32 @@ const options = [
   { label: 'Фургон', value: 'van' },
 ];
 
-export const BodyTypeCreateBottomSheet = forwardRef<BottomSheetRef, BodyTypeCreateModalProps>(
-  ({ onChange }, ref) => {
-    const [selectedBodyType, setSelectedBodyType] = React.useState<BodyTypeOption | undefined>(undefined);
+export const BodyTypeCreateBottomSheet = forwardRef<BottomSheetRef, BodyTypeCreateModalProps>(({ onChange }, ref) => {
+  const [selectedBodyType, setSelectedBodyType] = React.useState<BodyTypeOption | undefined>(undefined);
 
   const handleToggle = (option: BodyTypeOption) => {
     setSelectedBodyType(option);
-  };    const handleConfirm = () => {
-      onChange(selectedBodyType);
-    };
+  };
+  const handleConfirm = () => {
+    onChange(selectedBodyType);
+  };
 
-    return (
-      <CustomBottomSheetModal
-        ref={ref}
-        snapPoints={['35%']}
-        enableContentPanningGesture={true}
-        title={'Тип кузова'}
-        footerProps={{
-          onConfirm: handleConfirm,
-        }}
-      >
-              <BottomSheetView className="flex-col">
+  return (
+    <CustomBottomSheetModal
+      ref={ref}
+      snapPoints={['35%']}
+      enableContentPanningGesture={true}
+      title={'Тип кузова'}
+      footerProps={{
+        onConfirm: handleConfirm,
+      }}
+    >
+      <BottomSheetView className="flex-col">
         {options.map(opt => (
-          <CustomRectButton
-            key={opt.value}
-            title={opt.label}
-            isSelected={selectedBodyType?.value === opt.value}
-            onPress={() => handleToggle(opt)}
-          />
+          <CustomRectButton key={opt.value} title={opt.label} isSelected={selectedBodyType?.value === opt.value} onPress={() => handleToggle(opt)} />
         ))}
       </BottomSheetView>
-      </CustomBottomSheetModal>
-    );
-  }
-);
+    </CustomBottomSheetModal>
+  );
+});
 BodyTypeCreateBottomSheet.displayName = 'BodyTypeCreateBottomSheet';

@@ -1,21 +1,23 @@
-import { SimpleAutoApi, GetRegionIndex200ResponseInner, GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner, GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner } from '@/openapi/client';
+import { Region, SimpleAutoApi, SimpleAutoBrand, SimpleAutoModel } from '@/openapi/client';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { ARRAY_FILTERS, RANGE_FILTERS, BOOLEAN_FILTERS } from '../../../utils/filters';
+import { ARRAY_FILTERS, BOOLEAN_FILTERS, RANGE_FILTERS } from '../../../utils/filters';
 
 type BottomSheetOptionType = {
   value: string;
   label: string;
 };
 
+// SimpleAutoBrand
+
 type props = {
-  brands?: GetAppSimpleautocontextPresentationBrandgetcollectionGetbrands200ResponseInner[];
-  models?: GetAppSimpleautocontextPresentationModelgetcollectionGetcollectionbyfilters200ResponseInner[];
+  brands?: SimpleAutoBrand[];
+  models?: Record<number, SimpleAutoModel[]>;
   releaseYear?: number;
   price?: string;
   page?: string;
   pageSize?: string;
   tab?: 'all' | 'old' | 'new';
-  selectedRegions?: GetRegionIndex200ResponseInner[];
+  selectedRegions?: Region[];
   onlyUnsold?: boolean;
   onlyWithPhotos?: boolean;
   transmission?: BottomSheetOptionType[];
@@ -58,7 +60,29 @@ export const useSimpleGetCollectionPagination = ({
   const simpleAutoApi = new SimpleAutoApi();
 
   return useInfiniteQuery({
-    queryKey: ['advertisement-simple-auto-pagination', brands, models, releaseYear, price, tab, selectedRegions, onlyUnsold, onlyWithPhotos, transmission, fuelType, drivetrain, bodyType, color, numberOfOwners, seller, priceRange, yearRange, engineCapacityRange, powerRange, mileageRange],
+    queryKey: [
+      'advertisement-simple-auto-pagination',
+      brands,
+      models,
+      releaseYear,
+      price,
+      tab,
+      selectedRegions,
+      onlyUnsold,
+      onlyWithPhotos,
+      transmission,
+      fuelType,
+      drivetrain,
+      bodyType,
+      color,
+      numberOfOwners,
+      seller,
+      priceRange,
+      yearRange,
+      engineCapacityRange,
+      powerRange,
+      mileageRange,
+    ],
     initialPageParam: 1,
     queryFn: async ({ pageParam }) => {
       const filterParameters: { [key: string]: any } = {};
@@ -115,10 +139,12 @@ export const useSimpleGetCollectionPagination = ({
       }
       if (selectedRegions && selectedRegions.length > 0) {
         const regionObj: { [key: string]: string } = {};
-        selectedRegions.filter(r => r.id !== undefined).forEach((r, index) => {
-          regionObj[index.toString()] = r.id!.toString();
-        });
-        filterParameters['region'] = regionObj;
+        selectedRegions
+          .filter(r => r.id !== undefined)
+          .forEach((r, index) => {
+            regionObj[index.toString()] = r.id!.toString();
+          });
+        filterParameters['regions'] = regionObj;
       }
       if (onlyUnsold) {
         filterParameters[BOOLEAN_FILTERS.UNSOLD] = 'true';
@@ -158,14 +184,36 @@ export const useSimpleGetCollectionPagination = ({
         if (priceRange.max !== undefined) filterParameters[RANGE_FILTERS.PRICE]['to'] = priceRange.max.toString();
       }
 
+      const brandsWithModels = brands?.reduce(
+        (acc, b, brandIndex) => {
+          if (b.id) {
+            let brandModels: Record<string, number> = {};
+            if (models) {
+              brandModels = (models[b.id] || []).reduce(
+                (acc, model, modelIndex) => {
+                  acc[modelIndex.toString()] = model.id;
+                  return acc;
+                },
+                {} as Record<string, number>
+              );
+            }
 
-      console.log("BRANDS", brands)
+            // acc[brandIndex.toString()]['id'] = b.id;
+            acc[brandIndex.toString()] = {
+              id: b.id,
+              models: brandModels,
+            };
+          }
+
+          return acc;
+        },
+        {} as Record<string, any>
+      );
 
       const response = await simpleAutoApi.getSimpleAutoCollectionPagination({
         page: pageParam.toString(),
         limit: pageSize || '10',
-        brands: brands?.flatMap(b => (b.id ? [b.id.toString()] : [])) || [],
-        models: models?.flatMap(m => (m.id ? [m.id.toString()] : [])) || [],
+        b: brandsWithModels,
         f: Object.keys(filterParameters).length > 0 ? filterParameters : undefined,
       });
 
@@ -174,9 +222,7 @@ export const useSimpleGetCollectionPagination = ({
         currentPage: response.currentPage || pageParam,
         total: response.total || 0,
         perPage: response.perPage || parseInt(pageSize || '10'),
-        hasNextPage:
-          (response.currentPage || pageParam) * (response.perPage || parseInt(pageSize || '10')) <
-          (response.total || 0),
+        hasNextPage: (response.currentPage || pageParam) * (response.perPage || parseInt(pageSize || '10')) < (response.total || 0),
       };
     },
     getNextPageParam: lastPage => {

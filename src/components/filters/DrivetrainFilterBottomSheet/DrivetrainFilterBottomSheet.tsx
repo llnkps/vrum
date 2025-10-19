@@ -15,10 +15,7 @@ const options = [
   { label: '4x4', value: '4wd' },
 ];
 
-export const DrivetrainFilterBottomSheet = forwardRef<
-  BottomSheetRef,
-  DrivetrainFilterBottomSheetProps
->(({ onChange }, ref) => {
+export const DrivetrainFilterBottomSheet = forwardRef<BottomSheetRef, DrivetrainFilterBottomSheetProps>(({ onChange }, ref) => {
   const [selectedDrivetrains, setSelectedDrivetrains] = React.useState<DrivetrainOption[]>([]);
 
   const handleToggle = (option: DrivetrainOption) => {
