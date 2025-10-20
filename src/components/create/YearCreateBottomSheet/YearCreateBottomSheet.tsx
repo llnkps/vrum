@@ -13,7 +13,7 @@ type YearCreateModalProps = {
 
 const years = [
   { value: undefined as number | undefined, label: '--' },
-  ...[...Array(100).keys()].map(index => ({
+  ...[...Array(50).keys()].map(index => ({
     value: 2025 - index,
     label: (2025 - index).toString(),
   })),

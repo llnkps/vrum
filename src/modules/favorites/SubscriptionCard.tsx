@@ -1,29 +1,16 @@
-import React, { useCallback } from 'react';
-import { FlatList, Image, Text, TouchableOpacity, View, Pressable, useColorScheme } from 'react-native';
+import React from 'react';
+import { Image, Text, TouchableOpacity, View, Pressable, useColorScheme } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SubscriptionItem } from './types';
-import EmptyState from './EmptyState';
-import { useUserSubscriptionFiltersApi } from '@/hooks/api/useUserSubscriptionFiltersApi';
-import { LoaderIndicator } from '@/components/global/LoaderIndicator';
 
-type SubscriptionsListProps = {
-  onItemPress?: (item: SubscriptionItem) => void;
-  onDeleteSubscription?: (id: string) => void;
-  onEditSubscription?: (id: string) => void;
-};
-
-// Карточка подписки
-const SubscriptionCard = ({
-  item,
-  onPress,
-  onDelete,
-  onEdit,
-}: {
+interface SubscriptionCardProps {
   item: SubscriptionItem;
   onPress?: () => void;
   onDelete?: () => void;
   onEdit?: () => void;
-}) => {
+}
+
+const SubscriptionCard = ({ item, onPress, onDelete, onEdit }: SubscriptionCardProps) => {
   const scheme = useColorScheme();
 
   const editColor = scheme === 'dark' ? '#96999E' : '#6B6E76'; // font.subtlest
@@ -86,59 +73,4 @@ const SubscriptionCard = ({
   );
 };
 
-const SubscriptionsList = ({ onItemPress, onDeleteSubscription, onEditSubscription }: SubscriptionsListProps) => {
-  const {data, isLoading, error} = useUserSubscriptionFiltersApi();
-  console.log(data)
-  const renderItem = useCallback(
-    ({ item }: { item: SubscriptionItem }) => (
-      <SubscriptionCard
-        item={item}
-        onPress={() => onItemPress?.(item)}
-        onDelete={() => onDeleteSubscription?.(item.id)}
-        onEdit={() => onEditSubscription?.(item.id)}
-      />
-    ),
-    [onItemPress, onDeleteSubscription, onEditSubscription]
-  );
-
-  const keyExtractor = useCallback((item: SubscriptionItem) => item.id, []);
-
-  if (isLoading) {
-    return <LoaderIndicator />;
-  }
-
-  // if (error) {
-  //   return <ErrorState message={error.message} />;
-  // }
-
-  if (!data || data.length === 0) {
-    return <EmptyState type="subscriptions" />;
-  }
-
-  return (
-    <FlatList
-      data={data}
-      renderItem={({ item }) => {
-        return (
-          <>
-          <Text className="text-font dark:text-font-dark">{item.name}</Text>
-          </>
-        )
-      }}
-      keyExtractor={(item) => item.id.toString()}
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ padding: 16 }}
-      removeClippedSubviews={true}
-      maxToRenderPerBatch={8}
-      windowSize={8}
-      initialNumToRender={4}
-      getItemLayout={(_, index) => ({
-        length: 120, // Обновленная высота карточки
-        offset: 120 * index,
-        index,
-      })}
-    />
-  );
-};
-
-export default SubscriptionsList;
+export default SubscriptionCard;

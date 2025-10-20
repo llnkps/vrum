@@ -1,4 +1,4 @@
-import React, { FC, memo, useState } from 'react';
+import React, { FC, memo, useState, useEffect } from 'react';
 import { Text, View } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 import { Image } from 'expo-image';
@@ -8,6 +8,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
 import { CustomTheme } from '@/theme';
 import { useTheme } from '@react-navigation/native';
+import { useFavoritesStore } from '@/state/favorites/useFavoritesStore';
+import { FavoriteItem } from '@/modules/favorites/types';
 // Optimized Image Item Component
 const ImageItem: FC<{ imageUri: string }> = memo(({ imageUri }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -69,6 +71,13 @@ type props = {
 
 export const AdvertisementCard: FC<props> = memo(({ item, onPress, onToggleFavorite, isFavorite = false }) => {
   const theme = useTheme() as CustomTheme;
+  const { toggleFavorite: storeToggleFavorite, favorites } = useFavoritesStore();
+  const [favorite, setFavorite] = useState(isFavorite !== undefined ? isFavorite : favorites.some(f => f.id === item.id?.toString() || ''));
+
+  useEffect(() => {
+    const isFav = isFavorite !== undefined ? isFavorite : favorites.some(f => f.id === item.id?.toString() || '');
+    setFavorite(isFav);
+  }, [favorites, isFavorite, item.id]);
 
   // Форматирование цены
   const getFormattedPrice = () => {
@@ -85,6 +94,23 @@ export const AdvertisementCard: FC<props> = memo(({ item, onPress, onToggleFavor
     return date.toLocaleDateString('ru-RU');
   };
 
+  const handleToggleFavorite = () => {
+    if (onToggleFavorite) {
+      onToggleFavorite();
+    } else {
+      const favItem: FavoriteItem = {
+        id: item.id?.toString() || '',
+        title: `${item.brand} ${item.model}`,
+        subtitle: item.releaseYear ? `${item.releaseYear} г.` : '',
+        price: item.price ? `${item.price} ${item.currency?.toUpperCase()}` : '',
+        location: item.region || '',
+        images: item.images || [],
+      };
+      storeToggleFavorite(favItem);
+    }
+  };
+
+  console.log(item.brand, item.model, item, favorite);
   return (
     <RectButton
       style={{
@@ -112,16 +138,14 @@ export const AdvertisementCard: FC<props> = memo(({ item, onPress, onToggleFavor
           {/* Title: Brand, Model, Year with Favorite Asterisk */}
           <View className="flex-row items-center justify-between">
             <Text className="flex-1 text-lg font-semibold leading-tight text-font dark:text-font-dark" numberOfLines={1}>
-              {item.brand} {item.model}, {item.releaseYear}
+              {item.brand} {item.model}, {item.releaseYear} {favorite ? 'YES' : 'NOT'}
             </Text>
             <RectButton
-              onPress={() => {
-                onToggleFavorite?.();
-              }}
+              onPress={handleToggleFavorite}
               style={{ marginLeft: 8, padding: 4 }}
               rippleColor="transparent"
             >
-              <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={20} color={isFavorite ? '#ef4444' : '#9CA3AF'} />
+              <Ionicons name={favorite ? 'heart' : 'heart-outline'} size={20} color={favorite ? '#ef4444' : '#9CA3AF'} />
             </RectButton>
           </View>
 
@@ -146,7 +170,7 @@ export const AdvertisementCard: FC<props> = memo(({ item, onPress, onToggleFavor
               data={item.images.slice(0, 5)}
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{ paddingRight: 16 }}
-              renderItem={({ item: image, index }) => <ImageItem imageUri={DefaultConfig.basePath + image} />}
+              renderItem={({ item: image, index: _index }) => <ImageItem imageUri={DefaultConfig.basePath + image} />}
             />
           </View>
         )}

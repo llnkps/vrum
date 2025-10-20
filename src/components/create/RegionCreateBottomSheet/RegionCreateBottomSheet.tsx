@@ -3,7 +3,7 @@ import { CustomRectButton } from '@/components/ui/button';
 import { useRegionApi } from '@/hooks/api/useRegionApi';
 import { Region } from '@/openapi/client';
 import { BottomSheetModal, BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
-import React, { forwardRef } from 'react';
+import React, { FC, forwardRef } from 'react';
 import { ActivityIndicator, Text } from 'react-native';
 
 export type BottomSheetRef = BottomSheetModal;
@@ -13,10 +13,9 @@ type RegionCreateModalProps = {
 };
 
 export const RegionCreateBottomSheet = forwardRef<BottomSheetRef, RegionCreateModalProps>((props, ref) => {
-  const { data: regions, isLoading, error } = useRegionApi();
   const [selectedRegion, setSelectedRegion] = React.useState<Region | undefined>(undefined);
 
-  const handleRegionToggle = (region: Region) => {
+  const handleRegionSelect = (region: Region) => {
     setSelectedRegion(region);
   };
 
@@ -38,24 +37,50 @@ export const RegionCreateBottomSheet = forwardRef<BottomSheetRef, RegionCreateMo
         onConfirm: handleConfirm,
       }}
     >
-      <BottomSheetView className="flex-1">
-        {isLoading && <ActivityIndicator size="large" className="mt-4" />}
-        {error && <Text className="mt-4 text-red-500">Ошибка загрузки регионов</Text>}
-        {regions && (
-          <BottomSheetScrollView>
-            {regions.map(region => (
-              <CustomRectButton
-                key={region.id}
-                title={region.name || ''}
-                isSelected={isRegionSelected(region)}
-                onPress={() => handleRegionToggle(region)}
-              />
-            ))}
-          </BottomSheetScrollView>
-        )}
-      </BottomSheetView>
+      <RegionList
+        onRegionSelect={handleRegionSelect}
+        isRegionSelected={isRegionSelected}
+      />
     </CustomBottomSheetModal>
   );
 });
 
 RegionCreateBottomSheet.displayName = 'RegionCreateBottomSheet';
+
+type RegionListProps = {
+  onRegionSelect: (region: Region) => void;
+  isRegionSelected: (region: Region) => boolean;
+};
+
+const RegionList: FC<RegionListProps> = ({ onRegionSelect, isRegionSelected }) => {
+  const { data: regions, isLoading, error } = useRegionApi();
+
+  if (isLoading) {
+    return (
+      <BottomSheetView className="flex-1 items-center justify-center">
+        <ActivityIndicator size="large" />
+      </BottomSheetView>
+    );
+  }
+
+  if (error) {
+    return (
+      <BottomSheetView className="flex-1 items-center justify-center">
+        <Text className="text-red-500">Ошибка загрузки регионов</Text>
+      </BottomSheetView>
+    );
+  }
+
+  return (
+    <BottomSheetScrollView enableFooterMarginAdjustment={true}>
+      {regions?.map(region => (
+        <CustomRectButton
+          key={region.id}
+          title={region.name || ''}
+          isSelected={isRegionSelected(region)}
+          onPress={() => onRegionSelect(region)}
+        />
+      ))}
+    </BottomSheetScrollView>
+  );
+};
