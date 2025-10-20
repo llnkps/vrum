@@ -4,12 +4,11 @@ import { createAuthenticatedConfiguration } from '@/openapi/configurations';
 import { useQuery } from '@tanstack/react-query';
 
 export const useUserSubscriptionFiltersApi = () => {
-  const userSubscriptionFilterApi = new UserSubscriptionFilterApi(createAuthenticatedConfiguration());
-
   return useQuery({
     queryKey: ['user-subscription-filters'],
     queryFn: async () => {
       return createAuthenticatedApiCall(async () => {
+        const userSubscriptionFilterApi = new UserSubscriptionFilterApi(createAuthenticatedConfiguration());
         return userSubscriptionFilterApi.getUserSubscriptionFilters();
       });
     },

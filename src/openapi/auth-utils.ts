@@ -5,10 +5,11 @@ export async function createAuthenticatedApiCall<T>(apiCall: () => Promise<T>): 
   const { token, refreshAccessToken, logout } = useAuthStore.getState();
   console.log('Creating authenticated API call');
   console.log('Creating authenticated API call');
-  console.log(token);
+  console.log("token exist", !!token);
   try {
     return await apiCall();
   } catch (error: any) {
+    console.log("API CALL ERROR", error);
     if (error.response?.status === 401) {
       // Try to refresh token
       const refreshed = await refreshAccessToken();

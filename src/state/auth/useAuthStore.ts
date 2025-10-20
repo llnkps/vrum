@@ -1,4 +1,4 @@
-import { LoginApi, UserApi } from '@/openapi/client';
+import { DefaultConfig, LoginApi, UserApi } from '@/openapi/client';
 import * as SecureStore from 'expo-secure-store';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
@@ -23,13 +23,16 @@ interface AuthState {
 
 const storage = {
   getItem: async (name: string) => {
+    console.log('CALL TO GET ITEM', name);
     const value = await SecureStore.getItemAsync(name);
     return value ? JSON.parse(value) : null;
   },
   setItem: async (name: string, value: any) => {
+    console.log('CALL TO SET ITEM', name, value);
     await SecureStore.setItemAsync(name, JSON.stringify(value));
   },
   removeItem: async (name: string) => {
+    console.log('CALL TO REMOVE ITEM', name);
     await SecureStore.deleteItemAsync(name);
   },
 };
@@ -51,6 +54,7 @@ export const useAuthStore = create<AuthState>()(
               password,
             },
           });
+
           const token = response.token;
           const refreshToken = response.refreshToken;
           const user = { id: 'temp', email, tel: '' };
@@ -61,17 +65,11 @@ export const useAuthStore = create<AuthState>()(
         }
       },
       signup: async (email: string, tel: string, password: string) => {
-        try {
-          const userApi = new UserApi();
+        const userApi = new UserApi();
 
-          await userApi.userSignUp({
-            userSignUpDTO: { email, phoneNumber: tel, password },
-          });
-
-          // Do not set authenticated here, user needs to activate account
-        } catch (error: any) {
-          throw error;
-        }
+        await userApi.userSignUp({
+          userSignUpDTO: { email, phoneNumber: tel, password },
+        });
       },
       refreshAccessToken: async () => {
         const { refreshToken } = get();
@@ -79,17 +77,17 @@ export const useAuthStore = create<AuthState>()(
         console.log(refreshToken);
         if (!refreshToken) return false;
         try {
-          const response = await fetch('http://192.168.2.55:8000/api/token/refresh', {
+          const response = await fetch(DefaultConfig.basePath + '/api/token/refresh', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${refreshToken}`,
             },
+            body: JSON.stringify({ refresh_token: refreshToken }),
           });
           if (!response.ok) throw new Error('Refresh failed');
           const data = await response.json();
           const newToken = data.token;
-          const newRefreshToken = data.refreshToken;
+          const newRefreshToken = data.refresh_token;
           set({ token: newToken, refreshToken: newRefreshToken });
           return true;
         } catch (error) {
@@ -99,6 +97,7 @@ export const useAuthStore = create<AuthState>()(
         }
       },
       logout: async () => {
+        console.log('CALL TO LOGOUT');
         const { refreshToken } = get();
         if (refreshToken) {
           try {
@@ -116,6 +115,7 @@ export const useAuthStore = create<AuthState>()(
         set({ isAuthenticated: false, user: null, token: null, refreshToken: null });
       },
       checkAuth: async () => {
+        console.log("CHECK AUTH CALLED");
         const { token, refreshAccessToken } = get();
         if (token) {
           try {

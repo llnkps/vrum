@@ -1,14 +1,29 @@
 import { Configuration } from './client';
 import { useAuthStore } from '@/state/auth/useAuthStore';
 import { jwtDecode } from 'jwt-decode';
+import { router } from 'expo-router';
 
 // Configuration for React Native with token management
 export function createAuthenticatedConfiguration(): Configuration {
-  const { token } = useAuthStore.getState();
+  const { token, refreshToken } = useAuthStore.getState();
+
+  // Validate JWT token
+  if (!token || !isValidJWT(token)) {
+    console.log('Invalid or missing JWT token, redirecting to sign-in');
+    router.push('/sign-in');
+    throw new Error('Invalid JWT token');
+  }
+
+  // Check if refresh token exists
+  if (!refreshToken) {
+    console.log('Missing refresh token, redirecting to sign-in');
+    router.push('/sign-in');
+    throw new Error('Missing refresh token');
+  }
 
   return new Configuration({
     credentials: 'include',
-    accessToken: token || undefined,
+    accessToken: token,
   });
 }
 
@@ -21,6 +36,18 @@ export function isTokenExpired(token: string): boolean {
   } catch (error) {
     console.error('Error decoding token:', error);
     return true; // Assume expired if can't decode
+  }
+}
+
+// Function to validate JWT token (not expired and properly formatted)
+export function isValidJWT(token: string): boolean {
+  if (!token) return false;
+  try {
+    jwtDecode(token);
+    return !isTokenExpired(token);
+  } catch (error) {
+    console.error('Error validating JWT:', error);
+    return false;
   }
 }
 
