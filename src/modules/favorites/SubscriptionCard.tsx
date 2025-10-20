@@ -1,10 +1,10 @@
-import React from 'react';
-import { Image, Text, TouchableOpacity, View, Pressable, useColorScheme } from 'react-native';
+import { UserSubscriptionFilter } from '@/openapi/client';
 import { Ionicons } from '@expo/vector-icons';
-import { SubscriptionItem } from './types';
+import React from 'react';
+import { Pressable, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
 
 interface SubscriptionCardProps {
-  item: SubscriptionItem;
+  item: UserSubscriptionFilter;
   onPress?: () => void;
   onDelete?: () => void;
   onEdit?: () => void;
@@ -24,29 +24,33 @@ const SubscriptionCard = ({ item, onPress, onDelete, onEdit }: SubscriptionCardP
       android_ripple={{ color: '#f3f4f6' }}
     >
       <View className="flex-row items-center p-4">
-        {/* Logo */}
-        <View className="mr-4 h-12 w-12 items-center justify-center rounded-lg bg-background-neutral dark:bg-background-neutral-dark">
-          <Image source={{ uri: item.logo }} className="h-8 w-8" resizeMode="contain" />
-        </View>
-
         {/* Content */}
         <View className="flex-1">
           <Text className="text-base font-semibold leading-tight text-font dark:text-font-dark" numberOfLines={1}>
-            {item.brand}
+            {item.name}
           </Text>
-          <Text className="mt-1 text-sm text-font-subtle dark:text-font-subtle-dark" numberOfLines={2}>
-            {item.model}
+          <Text className="mt-1 text-sm text-font-subtle dark:text-font-subtle-dark">
+            {item.filters.length} active filters
           </Text>
-          <Text className="mt-1 text-xs text-font-subtlest dark:text-font-subtlest-dark">{item.info}</Text>
 
-          {/* Статистика */}
-          <View className="mt-2 flex-row items-center">
-            <View className="rounded-full bg-background-success px-3 py-1 dark:bg-background-success-dark">
-              <Text className="text-xs font-medium text-font dark:text-font-dark">{item.count}</Text>
-            </View>
-            <View className="ml-2 rounded-full bg-background-brand-subtlest px-3 py-1 dark:bg-background-brand-subtlest-dark">
-              <Text className="text-xs font-medium text-font-brand dark:text-font-brand-dark">Активна</Text>
-            </View>
+          {/* Filter Summary - item.filters is an object: { [slug]: string[] } */}
+          <View className="mt-2 flex-row flex-wrap">
+            {Object.entries(item.filters || {})
+              .map(([slug, values]) => ({ slug, values }))
+              .slice(0, 3)
+              .map((filter) => (
+                <View key={filter.slug} className="mr-2 mb-1 rounded-full bg-background-neutral px-2 py-1 dark:bg-background-neutral-dark">
+                  <Text className="text-xs text-font dark:text-font-dark">
+                    {filter.slug}
+                  </Text>
+                </View>
+              ))}
+
+            {Object.keys(item.filters || {}).length > 3 && (
+              <View className="rounded-full bg-background-neutral px-2 py-1 dark:bg-background-neutral-dark">
+                <Text className="text-xs text-font dark:text-font-dark">+{Object.keys(item.filters || {}).length - 3} more</Text>
+              </View>
+            )}
           </View>
         </View>
 

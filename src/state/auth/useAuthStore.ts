@@ -1,4 +1,6 @@
+import { createAuthenticatedApiCall } from '@/openapi/auth-utils';
 import { DefaultConfig, LoginApi, UserApi } from '@/openapi/client';
+import { createAuthenticatedConfiguration } from '@/openapi/configurations';
 import * as SecureStore from 'expo-secure-store';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
@@ -115,27 +117,36 @@ export const useAuthStore = create<AuthState>()(
         set({ isAuthenticated: false, user: null, token: null, refreshToken: null });
       },
       checkAuth: async () => {
-        console.log("CHECK AUTH CALLED");
-        const { token, refreshAccessToken } = get();
+        const { token, refreshAccessToken, refreshToken } = get();
+        console.log('CHECK AUTH CALLED', !!token, refreshToken);
+
+        const clearAuth = () => set({ isAuthenticated: false, user: null, token: null, refreshToken: null });
+
+        const fetchUser = async () => {
+          const userApi = new UserApi(createAuthenticatedConfiguration());
+          const response = await createAuthenticatedApiCall(async () => await userApi.getAppUserdomainPresentationGetmeGetmeRaw());
+          const userData = await response.value();
+          const user = { id: 'current', email: userData.email || '', tel: '' };
+          set({ isAuthenticated: true, user });
+        };
+
         if (token) {
           try {
-            const userApi = new UserApi();
-            const response = await userApi.getAppUserdomainPresentationGetmeGetmeRaw();
-            const userData = await response.value();
-            const user = { id: 'current', email: userData.email || '', tel: '' };
-            set({ isAuthenticated: true, user });
+            await fetchUser();
           } catch (error: any) {
             if (error.response?.status === 401) {
-              // Try refresh
               const refreshed = await refreshAccessToken();
               if (refreshed) {
-                // Retry checkAuth
-                await get().checkAuth();
+                try {
+                  await fetchUser();
+                } catch {
+                  clearAuth();
+                }
               } else {
-                set({ isAuthenticated: false, user: null, token: null, refreshToken: null });
+                clearAuth();
               }
             } else {
-              set({ isAuthenticated: false, user: null, token: null, refreshToken: null });
+              clearAuth();
             }
           }
         } else {

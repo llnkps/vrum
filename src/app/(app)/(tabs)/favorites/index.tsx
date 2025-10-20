@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import { Text, View } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { SegmentedButton } from '@/components/ui/button';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { FavoritesTab } from '@/constants/navigation';
 import FavoritesPage from '@/modules/favorites/FavoritesPage';
 import SubscriptionsPage from '@/modules/favorites/SubscriptionsPage';
+import { useAuthStore } from '@/state/auth/useAuthStore';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { Text, View } from 'react-native';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 const tabs = [
   { key: FavoritesTab.FAVORITES, title: 'Избранное', icon: 'star-outline' },
@@ -18,6 +20,16 @@ const tabs = [
 
 const Page = () => {
   const [tab, setTab] = useState<FavoritesTab>(FavoritesTab.FAVORITES);
+  const { isAuthenticated } = useAuthStore();
+  console.log("=================");
+  console.log("isAuthenticated", isAuthenticated);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (tab === FavoritesTab.SUBSCRIPTIONS && !isAuthenticated) {
+      router.replace('/sign-in');
+    }
+  }, [tab, isAuthenticated, router]);
 
   const renderContent = () => {
     if (tab === FavoritesTab.FAVORITES) {
@@ -39,7 +51,19 @@ const Page = () => {
           {/* Tabs */}
           <View className="mx-4 mb-2 flex-row justify-center rounded-lg bg-background-neutral p-1 dark:bg-background-neutral-dark">
             {tabs.map(({ key, title, icon }) => (
-              <SegmentedButton key={key} title={title} isActive={tab === key} onPress={() => setTab(key)} icon={icon} />
+              <SegmentedButton
+                key={key}
+                title={title}
+                isActive={tab === key}
+                onPress={() => {
+                  if (key === FavoritesTab.SUBSCRIPTIONS && !isAuthenticated) {
+                    router.replace('/sign-in');
+                  } else {
+                    setTab(key);
+                  }
+                }}
+                icon={icon}
+              />
             ))}
           </View>
 

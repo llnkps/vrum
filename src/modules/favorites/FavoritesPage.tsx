@@ -1,13 +1,13 @@
+import { LoaderIndicator } from '@/components/global/LoaderIndicator';
+import { FlashList } from '@shopify/flash-list';
 import React, { useCallback } from 'react';
 import { Text, View } from 'react-native';
-import { FlashList } from '@shopify/flash-list';
-import { LoaderIndicator } from '@/components/global/LoaderIndicator';
-import { FavoriteItem } from '@/modules/favorites/types';
 // import { useUserFavoritesApi, useDeleteUserFavoriteApi } from '@/hooks/api/useUserFavoritesApi';
 // import { GetUserFavorites200ResponseItemsInner } from '@/openapi/client';
-import { CarCard } from '@/components/global/AdvertisementCard/AdvertisementCard';
-import EmptyState from './EmptyState';
+import { AdvertisementCard } from '@/components/global/AdvertisementCard/AdvertisementCard';
 import { useFavoritesStore } from '@/state/favorites/useFavoritesStore';
+import EmptyState from './EmptyState';
+import { SimpleAutoAdvertisement } from '@/openapi/client/models/SimpleAutoAdvertisement';
 
 const FavoritesPage = () => {
   // const { data: favoritesResponse, isLoading: apiLoading, error: apiError } = useUserFavoritesApi();
@@ -17,7 +17,7 @@ const FavoritesPage = () => {
     favorites: localFavorites,
     isLoading: storeLoading,
     error: storeError,
-    toggleFavorite,
+    // toggleFavorite,
     // syncWithApi,
     // setLoading,
     // setError,
@@ -49,51 +49,22 @@ const FavoritesPage = () => {
   //   }
   // }, [apiError, setError, setLoading]);
 
-  const handleFavoriteItemPress = (item: FavoriteItem) => {
-    console.log('Открыть объявление:', item.title);
-  };
-
-  const handleToggleFavorite = (item: FavoriteItem) => {
-    // Update local store immediately for instant UI feedback
-    toggleFavorite(item);
-
-    // If online, also update API
-    // if (!apiError) {
-    //   deleteFavoriteMutation.mutate(parseInt(item.id));
-    // }
-  };
 
   const handleSearchPress = () => {
     console.log('Перейти к поиску объявлений');
   };
 
-  const renderItem = useCallback(
-    ({ item }: { item: FavoriteItem }) => {
-      // Convert FavoriteItem to the format expected by CarCard
-      const productData = {
-        imageUri: item.images?.[0],
-        name: item.title,
-        brand: item.title.split(' ')[0] || '',
-        model: item.title.split(' ').slice(1).join(' ') || '',
-        price: item.price.replace(/\s/g, ''), // Remove spaces from price
-        currency: item.price.includes('₽') ? 'rub' : 'usd',
-        region: item.location || '',
-        releaseYear: item.subtitle ? parseInt(item.subtitle.match(/(\d{4})/)?.[1] || '0') : 0,
-      };
+  const renderItem = useCallback(({ item }: { item: SimpleAutoAdvertisement }) => {
+    return (
+      <AdvertisementCard
+        item={item}
+        onPress={() => console.log("PRESS")}
+        isFavorite={true} // Since we're in favorites page, all items are favorites
+      />
+    );
+  }, []);
 
-      return (
-        <CarCard
-          item={productData}
-          onPress={() => handleFavoriteItemPress(item)}
-          onToggleFavorite={() => handleToggleFavorite(item)}
-          isFavorite={true} // Since we're in favorites page, all items are favorites
-        />
-      );
-    },
-    []
-  );
-
-  const keyExtractor = useCallback((item: FavoriteItem) => item.id, []);
+  const keyExtractor = useCallback((item: SimpleAutoAdvertisement) => item.id.toString(), []);
 
   const isLoading = storeLoading;
   const error = storeError;
@@ -105,9 +76,7 @@ const FavoritesPage = () => {
   if (error && localFavorites.length === 0) {
     return (
       <View className="flex-1 items-center justify-center px-4">
-        <Text className="mb-4 text-center text-font dark:text-font-dark">
-          {typeof error === 'string' ? error : 'Unknown error'}
-        </Text>
+        <Text className="mb-4 text-center text-font dark:text-font-dark">{typeof error === 'string' ? error : 'Unknown error'}</Text>
         <Text
           className="text-font-brand dark:text-font-brand-dark"
           onPress={() => {

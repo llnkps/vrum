@@ -12,7 +12,7 @@ export const useUserSubscriptionFiltersApi = () => {
         return userSubscriptionFilterApi.getUserSubscriptionFilters();
       });
     },
-    retry: 2,
+    retry: 0,
     gcTime: 5,
     staleTime: 5,
   });

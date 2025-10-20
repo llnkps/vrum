@@ -60,6 +60,9 @@ export const useSimpleGetCollectionPagination = ({
   const simpleAutoApi = new SimpleAutoApi();
 
   return useInfiniteQuery({
+    gcTime: 0,
+    staleTime: 0,
+
     queryKey: [
       'advertisement-simple-auto-pagination',
       brands,

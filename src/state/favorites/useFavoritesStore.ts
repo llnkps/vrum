@@ -1,24 +1,24 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { FavoriteItem } from '@/modules/favorites/types';
+import { SimpleAutoAdvertisement } from '@/openapi/client';
 
 interface FavoritesState {
-  favorites: FavoriteItem[];
+  favorites: SimpleAutoAdvertisement[];
   isLoading: boolean;
   error: string | null;
 
   // Actions
-  addFavorite: (item: FavoriteItem) => void;
-  removeFavorite: (id: string) => void;
-  toggleFavorite: (item: FavoriteItem) => void;
-  isFavorite: (id: string) => boolean;
+  addFavorite: (item: SimpleAutoAdvertisement) => void;
+  removeFavorite: (id: number) => void;
+  toggleFavorite: (item: SimpleAutoAdvertisement) => void;
+  isFavorite: (id: number) => boolean;
   clearFavorites: () => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
 
   // Sync with API
-  syncWithApi: (apiFavorites: FavoriteItem[]) => void;
+  syncWithApi: (apiFavorites: SimpleAutoAdvertisement[]) => void;
   getFavoritesForApi: () => { advertisementId: number }[];
 }
 
@@ -31,17 +31,17 @@ export const useFavoritesStore = create<FavoritesState>()(
       isLoading: false,
       error: null,
 
-      addFavorite: (item: FavoriteItem) =>
+      addFavorite: (item: SimpleAutoAdvertisement) =>
         set(state => ({
           favorites: [...state.favorites.filter(f => f.id !== item.id), item],
         })),
 
-      removeFavorite: (id: string) =>
+      removeFavorite: (id: number) =>
         set(state => ({
           favorites: state.favorites.filter(f => f.id !== id),
         })),
 
-      toggleFavorite: (item: FavoriteItem) =>
+      toggleFavorite: (item: SimpleAutoAdvertisement) =>
         set(state => {
           const exists = state.favorites.some(f => f.id === item.id);
           if (exists) {
@@ -55,7 +55,7 @@ export const useFavoritesStore = create<FavoritesState>()(
           }
         }),
 
-      isFavorite: (id: string) => get().favorites.some(f => f.id === id),
+      isFavorite: (id: number) => get().favorites.some(f => f.id === id),
 
       clearFavorites: () => set({ favorites: [] }),
 
@@ -63,7 +63,7 @@ export const useFavoritesStore = create<FavoritesState>()(
 
       setError: (error: string | null) => set({ error }),
 
-      syncWithApi: (apiFavorites: FavoriteItem[]) =>
+      syncWithApi: (apiFavorites: SimpleAutoAdvertisement[]) =>
         set(() => ({
           favorites: apiFavorites,
         })),
@@ -71,7 +71,7 @@ export const useFavoritesStore = create<FavoritesState>()(
       getFavoritesForApi: () =>
         get().favorites
           .map(fav => ({
-            advertisementId: parseInt(fav.id),
+            advertisementId: fav.id,
           }))
           .filter(item => !isNaN(item.advertisementId)),
     }),

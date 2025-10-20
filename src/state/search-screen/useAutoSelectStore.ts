@@ -72,6 +72,8 @@ type SelectionStore = {
   setCurrentBrand: (brand: SimpleAutoBrand | null) => void;
 
   clearSelections: () => void;
+  populateFromFilterValues: (filterValues: Array<{slug: string, values: string[]}>) => void;
+  populateFromSubscriptionFilters: (filters: { [key: string]: any }) => void;
 };
 
 export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
@@ -293,6 +295,214 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
       mileageRange: undefined,
       currentBrand: null,
     }),
+
+  populateFromFilterValues: (filterValues) => {
+    // Reset filters first
+    get().resetFilters();
+    filterValues.forEach(({slug, values}) => {
+      const mappedValues = values.map(v => ({value: v, label: v}));
+      switch(slug) {
+        case 'transmission':
+          set({transmission: mappedValues});
+          break;
+        case 'fuelType':
+          set({fuelType: mappedValues});
+          break;
+        case 'drivetrain':
+          set({drivetrain: mappedValues});
+          break;
+        case 'bodyType':
+          set({bodyType: mappedValues});
+          break;
+        case 'color':
+          set({color: mappedValues});
+          break;
+        case 'condition':
+          set({condition: mappedValues});
+          break;
+        case 'documentsOk':
+          set({documentsOk: mappedValues});
+          break;
+        case 'numberOfOwners':
+          set({numberOfOwners: mappedValues});
+          break;
+        case 'seller':
+          set({seller: mappedValues});
+          break;
+        case 'tradeAllow':
+          set({tradeAllow: mappedValues});
+          break;
+        case 'currency':
+          set({currency: mappedValues});
+          break;
+        case 'price':
+          if (values.length >= 1) {
+            const min = values[0] ? parseInt(values[0]) : undefined;
+            const max = values[1] ? parseInt(values[1]) : undefined;
+            set({priceRange: {min, max}});
+          }
+          break;
+        case 'year':
+          if (values.length >= 1) {
+            const min = values[0] ? parseInt(values[0]) : undefined;
+            const max = values[1] ? parseInt(values[1]) : undefined;
+            set({yearRange: {min, max}});
+          }
+          break;
+        case 'engineCapacityRange':
+          if (values.length >= 1) {
+            const min = values[0] ? parseFloat(values[0]) : undefined;
+            const max = values[1] ? parseFloat(values[1]) : undefined;
+            set({engineCapacityRange: {min, max}});
+          }
+          break;
+        case 'powerRange':
+          if (values.length >= 1) {
+            const min = values[0] ? parseInt(values[0]) : undefined;
+            const max = values[1] ? parseInt(values[1]) : undefined;
+            set({powerRange: {min, max}});
+          }
+          break;
+        case 'mileageRange':
+          if (values.length >= 1) {
+            const min = values[0] ? parseInt(values[0]) : undefined;
+            const max = values[1] ? parseInt(values[1]) : undefined;
+            set({mileageRange: {min, max}});
+          }
+          break;
+        default:
+          break;
+      }
+    });
+  },
+
+  populateFromSubscriptionFilters: (filters) => {
+    console.log(filters)
+    // Reset filters first
+    get().resetFilters();
+    Object.entries(filters).forEach(([key, value]) => {
+
+      switch (key) {
+        case 'transmission':
+          if (value && typeof value === 'object') {
+            const values = Object.values(value as Record<string, string>);
+            set({ transmission: values.map(v => ({ value: v, label: v })) });
+          }
+          break;
+        case 'fuelType':
+          if (value && typeof value === 'object') {
+            const values = Object.values(value as Record<string, string>);
+            set({ fuelType: values.map(v => ({ value: v, label: v })) });
+          }
+          break;
+        case 'drivetrain':
+          if (value && typeof value === 'object') {
+            const values = Object.values(value as Record<string, string>);
+            set({ drivetrain: values.map(v => ({ value: v, label: v })) });
+          }
+          break;
+        case 'bodyType':
+          if (value && typeof value === 'object') {
+            const values = Object.values(value as Record<string, string>);
+            set({ bodyType: values.map(v => ({ value: v, label: v })) });
+          }
+          break;
+        case 'color':
+          if (value && typeof value === 'object') {
+            const values = Object.values(value as Record<string, string>);
+            set({ color: values.map(v => ({ value: v, label: v })) });
+          }
+          break;
+        case 'numberOfOwners':
+          if (value && typeof value === 'object') {
+            const values = Object.values(value as Record<string, string>);
+            set({ numberOfOwners: values.map(v => ({ value: v, label: v })) });
+          }
+          break;
+        case 'seller':
+          if (value && typeof value === 'object') {
+            const values = Object.values(value as Record<string, string>);
+            set({ seller: values.map(v => ({ value: v, label: v })) });
+          }
+          break;
+        case 'condition':
+          if (value && typeof value === 'object') {
+            const values = Object.values(value as Record<string, string>);
+            const conditionValues = Object.values(value as Record<string, string>);
+            if (conditionValues.includes('used')) set({ tab: 'old' });
+            else if (conditionValues.includes('new')) set({ tab: 'new' });
+            else set({ tab: 'all' });
+          }
+          break;
+        case 'onlyUnsold':
+          set({ onlyUnsold: value === 'true' });
+          break;
+        case 'onlyWithPhotos':
+          set({ onlyWithPhotos: value === 'true' });
+          break;
+        case 'engineCapacity':
+          if (value && typeof value === 'object' && 'from' in value && 'to' in value) {
+            const min = value.from ? parseFloat(value.from) : undefined;
+            const max = value.to ? parseFloat(value.to) : undefined;
+            set({ engineCapacityRange: { min, max } });
+          }
+          break;
+        case 'power':
+          if (value && typeof value === 'object' && 'from' in value && 'to' in value) {
+            const min = value.from ? parseInt(value.from) : undefined;
+            const max = value.to ? parseInt(value.to) : undefined;
+            set({ powerRange: { min, max } });
+          }
+          break;
+        case 'mileage':
+          if (value && typeof value === 'object' && 'from' in value && 'to' in value) {
+            const min = value.from ? parseInt(value.from) : undefined;
+            const max = value.to ? parseInt(value.to) : undefined;
+            set({ mileageRange: { min, max } });
+          }
+          break;
+        case 'year':
+          if (value && typeof value === 'object' && 'from' in value && 'to' in value) {
+            const min = value.from ? parseInt(value.from) : undefined;
+            const max = value.to ? parseInt(value.to) : undefined;
+            set({ yearRange: { min, max } });
+          }
+          break;
+        case 'price':
+          set({ priceRange: { min: value.from, max: value.to } });
+
+        // if (value && typeof value === 'object' && 'from' in value && 'to' in value) {
+        //     const min = value.from ? parseInt(value.from) : undefined;
+        //     const max = value.to ? parseInt(value.to) : undefined;
+        //   }
+          break;
+        case 'b':
+          // Handle brands with models
+          if (value && typeof value === 'object') {
+            const brandsMap: Record<number, SimpleAutoBrand> = {};
+            const modelsByBrand: Record<number, SimpleAutoModel[]> = {};
+            Object.values(value as Record<string, any>).forEach((brandData: any) => {
+              if (brandData.id && brandData.models) {
+                brandsMap[brandData.id] = { id: brandData.id, name: '', orderNumber: 0, image: '', imageFilePath: '' };
+                const models: SimpleAutoModel[] = Object.values(brandData.models as Record<string, number>).map((modelId: number) => ({ id: modelId, name: '', orderNumber: 0 }));
+                modelsByBrand[brandData.id] = models;
+              }
+            });
+            set({ selectedBrandsMap: brandsMap, selectedModelsByBrand: modelsByBrand });
+          }
+          break;
+        case 'r':
+          // Handle regions
+          if (value && typeof value === 'object') {
+            const regions: Region[] = Object.values(value as Record<string, string>).map((regionId: string) => ({ id: parseInt(regionId), name: '' }));
+            set({ selectedRegions: regions });
+          }
+          break;
+        default:
+          break;
+      }
+    });
+  },
 }));
 
 // Selector functions to get computed values

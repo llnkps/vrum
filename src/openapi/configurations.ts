@@ -5,25 +5,12 @@ import { router } from 'expo-router';
 
 // Configuration for React Native with token management
 export function createAuthenticatedConfiguration(): Configuration {
-  const { token, refreshToken } = useAuthStore.getState();
-
-  // Validate JWT token
-  if (!token || !isValidJWT(token)) {
-    console.log('Invalid or missing JWT token, redirecting to sign-in');
-    router.push('/sign-in');
-    throw new Error('Invalid JWT token');
-  }
-
-  // Check if refresh token exists
-  if (!refreshToken) {
-    console.log('Missing refresh token, redirecting to sign-in');
-    router.push('/sign-in');
-    throw new Error('Missing refresh token');
-  }
-
   return new Configuration({
     credentials: 'include',
-    accessToken: token,
+    accessToken: async (name?: string, scopes?: string[]) => {
+      const { token } = useAuthStore.getState();
+      return token || '';
+    },
   });
 }
 

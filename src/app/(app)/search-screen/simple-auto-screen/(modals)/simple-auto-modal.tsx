@@ -294,8 +294,8 @@ export default function SimpleAutoModal() {
 
     const userSubscriptionApi = new UserSubscriptionFilterApi(createAuthenticatedConfiguration());
     try {
-      await createAuthenticatedApiCall(() =>
-        userSubscriptionApi.createUserSubscriptionFilter({
+      await createAuthenticatedApiCall(async () =>
+        await userSubscriptionApi.createUserSubscriptionFilter({
           createUserSubscriptionFilterRequest: {
             name,
             sourceType: 'simple-auto',
@@ -314,6 +314,8 @@ export default function SimpleAutoModal() {
         })
       );
     } catch (error) {
+      console.log("ERRRRRRRRRRRRR HERE")
+      console.log(error)
       if (error instanceof AuthenticationException) {
         router.push('/sign-in');
       }
@@ -466,6 +468,7 @@ export default function SimpleAutoModal() {
             <AdvertisementCard
               item={item}
               onPress={() => {
+                console.log("PRESS")
                 const params = new URLSearchParams();
                 params.set('data', JSON.stringify(item));
                 router.push(`/car-details?${params.toString()}`);

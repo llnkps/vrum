@@ -1,51 +1,43 @@
+import { LoaderIndicator } from '@/components/global/LoaderIndicator';
+import { useUserSubscriptionFiltersApi } from '@/hooks/api/useUserSubscriptionFiltersApi';
+import { UserSubscriptionFilter } from '@/openapi/client/models/UserSubscriptionFilter';
+import { useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
+import { FlashList } from '@shopify/flash-list';
+import { router } from 'expo-router';
 import React, { useCallback } from 'react';
 import { Text, View } from 'react-native';
-import { FlashList } from '@shopify/flash-list';
-import { LoaderIndicator } from '@/components/global/LoaderIndicator';
-import { SubscriptionItem } from '@/modules/favorites/types';
-import { useUserSubscriptionFiltersApi } from '@/hooks/api/useUserSubscriptionFiltersApi';
 import EmptyState from './EmptyState';
 import SubscriptionCard from './SubscriptionCard';
 
 const SubscriptionsPage = () => {
   const { data, isLoading, error } = useUserSubscriptionFiltersApi();
+  console.log('SubscriptionsPage render', { data });
+  const populateFromSubscriptionFilters = useAutoSelectStore(state => state.populateFromSubscriptionFilters);
 
-  const subscriptionsData: SubscriptionItem[] =
-    data?.map(item => ({
-      id: item.id.toString(),
-      brand: item.name,
-      model: '',
-      info: 'Активная подписка',
-      count: '0', // TODO: Add count from API if available
-      logo: 'https://via.placeholder.com/40x40?text=' + item.name.charAt(0),
-    })) || [];
-
-  const handleSubscriptionItemPress = (item: SubscriptionItem) => {
-    console.log('Открыть подписку:', item.brand);
+  const handleSubscriptionItemPress = (item: UserSubscriptionFilter) => {
+    populateFromSubscriptionFilters(item.filters);
+    router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal');
   };
 
-  const handleDeleteSubscription = (id: string) => {
+  const handleDeleteSubscription = (id: number) => {
     console.log('Удалить подписку:', id);
     // TODO: Implement delete subscription API call
   };
 
-  const handleEditSubscription = (id: string) => {
+  const handleEditSubscription = (id: number) => {
     console.log('Редактировать подписку:', id);
   };
 
-  const renderItem = useCallback(
-    ({ item }: { item: SubscriptionItem }) => (
-      <SubscriptionCard
-        item={item}
-        onPress={() => handleSubscriptionItemPress(item)}
-        onDelete={() => handleDeleteSubscription(item.id)}
-        onEdit={() => handleEditSubscription(item.id)}
-      />
-    ),
-    []
-  );
+  const renderItem = useCallback(({ item }: { item: UserSubscriptionFilter }) => (
+    <SubscriptionCard
+      item={item}
+      onPress={() => handleSubscriptionItemPress(item)}
+      onDelete={() => handleDeleteSubscription(item.id)}
+      onEdit={() => handleEditSubscription(item.id)}
+    />
+  ), []);
 
-  const keyExtractor = useCallback((item: SubscriptionItem) => item.id, []);
+  const keyExtractor = useCallback((item: UserSubscriptionFilter) => item.id.toString(), []);
 
   if (isLoading) {
     return <LoaderIndicator />;
@@ -67,13 +59,13 @@ const SubscriptionsPage = () => {
     );
   }
 
-  if (!subscriptionsData || subscriptionsData.length === 0) {
+  if (!data || data.length === 0) {
     return <EmptyState type="subscriptions" />;
   }
 
   return (
     <FlashList
-      data={subscriptionsData}
+      data={data}
       renderItem={renderItem}
       keyExtractor={keyExtractor}
       showsVerticalScrollIndicator={false}

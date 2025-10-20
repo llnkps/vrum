@@ -1,13 +1,4 @@
-export type FavoriteItem = {
-  id: string;
-  title: string;
-  subtitle?: string;
-  price: string;
-  tag?: string;
-  description?: string;
-  location?: string;
-  images?: string[];
-};
+import { SimpleAutoAdvertisement } from "@/openapi/client";
 
 export type SubscriptionItem = {
   id: string;
