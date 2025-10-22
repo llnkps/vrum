@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
-const Page = () => {
+export default function Messages() {
   const [tab, setTab] = useState<'messages' | 'events'>('messages');
   const scheme = useColorScheme();
 
@@ -70,5 +70,3 @@ const Page = () => {
     </SafeAreaProvider>
   );
 };
-
-export default Page;

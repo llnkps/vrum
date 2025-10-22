@@ -49,7 +49,6 @@ const FavoritesPage = () => {
   //   }
   // }, [apiError, setError, setLoading]);
 
-
   const handleSearchPress = () => {
     console.log('Перейти к поиску объявлений');
   };
@@ -58,7 +57,7 @@ const FavoritesPage = () => {
     return (
       <AdvertisementCard
         item={item}
-        onPress={() => console.log("PRESS")}
+        onPress={() => console.log('PRESS')}
         isFavorite={true} // Since we're in favorites page, all items are favorites
       />
     );
@@ -91,7 +90,7 @@ const FavoritesPage = () => {
 
   if (localFavorites.length === 0) {
     return (
-      <View className="flex-1 bg-background-page px-4 py-6 dark:bg-background-page-dark">
+      <View className="flex-1 px-4 py-6">
         <EmptyState type="favorites" onActionPress={handleSearchPress} />
       </View>
     );
@@ -104,7 +103,6 @@ const FavoritesPage = () => {
       keyExtractor={keyExtractor}
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ padding: 16 }}
-      className="bg-background-page dark:bg-background-page-dark"
     />
   );
 };

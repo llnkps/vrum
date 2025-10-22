@@ -1,5 +1,4 @@
-import { Stack, useRouter } from 'expo-router';
-import { useColorScheme } from 'react-native';
+import { Stack } from 'expo-router';
 
 export const unstable_settings = {
   initialRouteName: '(tabs)',
@@ -10,8 +9,6 @@ export default function AppLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="search-tab" options={{ headerShown: false }} />
-
       {/* <Stack.Screen
         name="buy-car"
         options={{
