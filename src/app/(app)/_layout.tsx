@@ -6,10 +6,11 @@ export const unstable_settings = {
 };
 
 export default function AppLayout() {
+  console.log('AppLayout rendered');
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="search-screen" options={{ headerShown: false }} />
+      <Stack.Screen name="search-tab" options={{ headerShown: false }} />
 
       {/* <Stack.Screen
         name="buy-car"
