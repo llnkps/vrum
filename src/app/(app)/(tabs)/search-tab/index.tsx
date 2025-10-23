@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { ActivityIndicator, RefreshControl, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { TouchableOpacity } from 'react-native';
 
 import { HeaderBrand } from '@/components/global/header';
 import { useSimpleGetCollectionPagination } from '@/hooks/api/useSimpleGetCollectionPagination';
@@ -10,10 +11,11 @@ import { SpecAutoHeaderScreen, SpecAutoItemScreen } from '@/modules/search-scree
 import { HeaderCategory } from '@/modules/search-screen/HeaderCategory';
 import { AutoHeaderScreen, AutoItemScreen } from '@/modules/search-screen/simple-auto-tab/auto-screen';
 import { ActiveScreen } from '@/modules/search-screen/types';
-import { selectSelectedBrands, selectSelectedModels, useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
+import { useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
 import { FlashList } from '@shopify/flash-list';
 import { Image } from 'expo-image';
 import { DefaultConfig } from '@/openapi/client';
+import { useToast } from '@/hooks/useToast';
 
 const SCREEN_CONFIGS: Record<ActiveScreen, { header: React.ComponentType; item: React.ComponentType<{ item: any }> } | null> = {
   auto: {
@@ -41,8 +43,9 @@ export default function SearchScreen() {
   const { header: HeaderScreen } = renderContent(activeSreen) || {};
 
   const store = useAutoSelectStore();
-  const selectedBrands = selectSelectedBrands(store);
-  const selectedModels = selectSelectedModels(store);
+  const { showToast } = useToast();
+  // const selectedBrands = selectSelectedBrands(store);
+  // const selectedModels = selectSelectedModels(store);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch, isRefetching } = useSimpleGetCollectionPagination({
     // brands: selectedBrands.length > 0 ? selectedBrands : undefined,
@@ -67,6 +70,14 @@ export default function SearchScreen() {
             <HeaderBrand />
             <HeaderCategory activeScreen={activeSreen} setActiveScreen={setActiveSreen} />
             {HeaderScreen && <HeaderScreen />}
+            <TouchableOpacity
+              onPress={() => {
+                showToast('This is a test toast notification!', 'success');
+              }}
+              className="mx-4 mb-4 rounded-lg bg-blue-500 p-3"
+            >
+              <Text className="text-center text-white">Show Test Toast</Text>
+            </TouchableOpacity>
           </>
         }
         keyExtractor={item => item.id?.toString() || `item-${Math.random()}`}

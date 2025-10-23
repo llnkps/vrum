@@ -19,7 +19,8 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.anonymous.vrum"
+      "package": "com.anonymous.vrum",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",
@@ -40,7 +41,9 @@
       "expo-secure-store",
       "expo-localization",
       "expo-font",
-      "expo-web-browser"
+      "expo-web-browser",
+      "expo-notifications",
+      "expo-dev-client"
     ],
     "experiments": {
       "typedRoutes": true
@@ -50,6 +53,7 @@
       "eas": {
         "projectId": "6c0f5f0c-1001-4cea-b1bc-fb810167454b"
       }
-    }
+    },
+    "owner": "olga_bol"
   }
 }

@@ -9,6 +9,9 @@ export default function AppLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="search-screen" options={{ headerShown: false }} />
+      <Stack.Screen name="advertisement" options={{ headerShown: false }} />
+
       {/* <Stack.Screen
         name="buy-car"
         options={{

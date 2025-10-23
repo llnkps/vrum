@@ -46,3 +46,7 @@ app-example
 src/openapi/client/
 src/openapi/openapi.json
 
+google-services.json
+vrum-notificaiton-firebase-adminsdk-fbsvc-84f93d0eac.json
+ios/
+android/

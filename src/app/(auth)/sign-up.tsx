@@ -40,6 +40,7 @@ export default function Index() {
       await signup(data.email, data.tel, data.password);
       router.replace('/activation-message');
     } catch (error: any) {
+      console.log(error)
       const jsonError = await error.response.json();
 
       if (jsonError.errors) {
