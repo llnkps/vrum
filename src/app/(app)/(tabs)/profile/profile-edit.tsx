@@ -13,7 +13,6 @@ export default function ProfileEditPage() {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
 
-  
   const { data: userData } = useQuery({
     queryKey: ['user-profile'],
     queryFn: async () => {
@@ -21,7 +20,6 @@ export default function ProfileEditPage() {
       return await userApi.getAppUserdomainPresentationGetmeGetme();
     },
   });
-
 
   const updateUserMutation = useMutation({
     mutationFn: async (updatedData: { name: string; email: string }) => {
@@ -58,8 +56,6 @@ export default function ProfileEditPage() {
   return (
     <SafeAreaProvider>
       <SafeAreaView className="flex-1 p-5">
-        <Text className="mb-5 text-2xl font-bold text-font dark:text-font-dark">Настройки аккаунта</Text>
-
         <TextInput className={textInputStyle} placeholder="Имя" value={name} onChangeText={setName} />
 
         <TextInput className={textInputStyle} placeholder="Email" value={email} onChangeText={setEmail} keyboardType="email-address" />
