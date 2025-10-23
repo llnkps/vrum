@@ -56,11 +56,7 @@ const Page = () => {
                 title={title}
                 isActive={tab === key}
                 onPress={() => {
-                  if (key === FavoritesTab.SUBSCRIPTIONS && !isAuthenticated) {
-                    router.replace('/sign-in');
-                  } else {
-                    setTab(key);
-                  }
+                  setTab(key);
                 }}
                 icon={icon}
               />

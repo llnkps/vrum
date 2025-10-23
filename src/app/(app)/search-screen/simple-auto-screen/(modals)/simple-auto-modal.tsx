@@ -14,7 +14,7 @@ import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow
 import { useSimpleGetCollectionPagination } from '@/hooks/api/useSimpleGetCollectionPagination';
 import { useImagePrefetch } from '@/hooks/useImagePrefetch';
 import { AuthenticationException, createAuthenticatedApiCall } from '@/openapi/auth-utils';
-import { UserSubscriptionFilterApi } from '@/openapi/client';
+import { showImmediateNotification } from '@/utils/notifications';
 import { createAuthenticatedConfiguration } from '@/openapi/configurations';
 import {
   getActiveFiltersCount,
@@ -31,6 +31,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { UserSubscriptionFilterApi } from '@/openapi/client';
 
 const ARRAY_FILTERS = {
   TRANSMISSION: 'transmission',
@@ -313,6 +314,8 @@ export default function SimpleAutoModal() {
           },
         })
       );
+      // Show success notification
+      await showImmediateNotification('Subscription Created', 'Your subscription has been saved successfully!');
     } catch (error) {
       console.log("ERRRRRRRRRRRRR HERE")
       console.log(error)
