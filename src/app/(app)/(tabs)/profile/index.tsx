@@ -27,17 +27,17 @@ export default function SettingsPage() {
     {
       label: 'Помощь и поддержка',
       type: 'navigate' as const,
-      route: '/(app)/help-pages/support' as const, // Создайте экран для FAQ и поддержки
+      route: '/(app)/help-pages/support' as const, 
     },
     {
       label: 'О приложении',
       type: 'navigate' as const,
-      route: '/(app)/help-pages/about' as const, // Создайте экран с версией, условиями, политикой
+      route: '/(app)/help-pages/about' as const, 
     },
     {
       label: 'Обратная связь',
       type: 'navigate' as const,
-      route: '/(app)/help-pages/feedback' as const, // Создайте экран для отзыва
+      route: '/(app)/help-pages/feedback' as const, 
     },
     {
       label: 'Оценить в App Store',
@@ -90,22 +90,6 @@ export default function SettingsPage() {
       },
     ]);
   };
-
-  // const handleDeleteAccount = () => {
-  //   Alert.alert('Удаление аккаунта', 'Вы уверены, что хотите удалить аккаунт? Это действие необратимо.', [
-  //     { text: 'Отмена', style: 'cancel' },
-  //     {
-  //       text: 'Удалить',
-  //       style: 'destructive',
-  //       onPress: async () => {
-  //         // TODO: добавить API вызов для удаления аккаунта
-  //         // await deleteAccount();
-  //         Alert.alert('Аккаунт удален', 'Ваш аккаунт был успешно удален.');
-  //         logout(); // Или router.replace('/sign-in');
-  //       },
-  //     },
-  //   ]);
-  // };
 
   const getLanguageDisplayName = (lang: Language) => {
     const names = {
