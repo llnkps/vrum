@@ -25,27 +25,28 @@ export default function SettingsPage() {
 
   const menuItems = [
     {
-      label: 'Связаться с нами',
-      route: '/(app)/help-pages/contact' as const,
+      label: 'Помощь и поддержка',
       type: 'navigate' as const,
+      route: '/(app)/help-pages/support' as const, 
     },
     {
-      label: 'Сообщить об ошибке',
-      route: '/(app)/(tabs)/profile/bug-report' as const,
+      label: 'О приложении',
       type: 'navigate' as const,
+      route: '/(app)/help-pages/about' as const, 
+    },
+    {
+      label: 'Обратная связь',
+      type: 'navigate' as const,
+      route: '/(app)/help-pages/feedback' as const, 
     },
     {
       label: 'Оценить в App Store',
-      type: 'navigate' as const,
-      // action: () => {
-      //   // Логика открытия App Store
-      //   Linking.openURL('https://apps.apple.com/app/your-app-id');
-      // },
-    },
-    {
-      label: 'Условия и конфиденциальность',
-      route: '/(app)/help-pages/privacy' as const,
-      type: 'navigate' as const,
+      type: 'external' as const,
+      action: () => {
+        // Логика открытия App Store
+        // Linking.openURL('https://apps.apple.com/app/your-app-id');
+        console.log('Open App Store');
+      },
     },
   ];
 
@@ -108,7 +109,7 @@ export default function SettingsPage() {
     <SafeAreaProvider>
       <SafeAreaView className="flex-1">
         {/* Content */}
-        <ScrollView className="px-5 py-4" contentContainerStyle={{ paddingBottom: tabBarHeight }} showsVerticalScrollIndicator={false}>
+        <ScrollView className="px-5 py-4" contentContainerStyle={{ paddingBottom: tabBarHeight - 40 }} showsVerticalScrollIndicator={false}>
           {/* Account Section */}
           <View className="flex-1 ">
             <Text className="mb-3 pl-3 text-base font-semibold uppercase tracking-wide text-font-subtlest dark:text-font-subtlest-dark">Аккаунт</Text>
@@ -268,18 +269,20 @@ export default function SettingsPage() {
           {/* Logout */}
           <View className="py-4">
             <TouchableOpacity
-              className="flex-row items-center justify-center rounded-2xl bg-background-neutral px-4 py-4 active:opacity-80 dark:bg-background-neutral-dark"
+              className="mb-4 flex-row items-center justify-center rounded-2xl bg-background-neutral px-4 py-4 active:opacity-80 dark:bg-background-neutral-dark"
               activeOpacity={0.7}
               onPress={handleLogout}
             >
               <Text className="text-base font-semibold text-font-danger dark:text-font-danger-dark">Выйти из аккаунта</Text>
             </TouchableOpacity>
-          </View>
 
-          {/* Footer */}
-          <View className="items-center">
-            <Text className="text-center text-xs text-font-subtlest dark:text-font-subtlest-dark">App Version 2.24 #50491</Text>
-            <Text className="mt-1 text-center text-xs text-font-subtlest dark:text-font-subtlest-dark">Сделано с ❤️ в Молдове</Text>
+            {/* <TouchableOpacity
+              className="flex-row items-center justify-center rounded-2xl bg-background-neutral px-4 py-4 active:opacity-80 dark:bg-background-neutral-dark"
+              activeOpacity={0.7}
+              onPress={handleDeleteAccount}
+            >
+              <Text className="text-base font-semibold text-red-600 dark:text-red-400">Удалить аккаунт</Text>
+            </TouchableOpacity> */}
           </View>
         </ScrollView>
       </SafeAreaView>

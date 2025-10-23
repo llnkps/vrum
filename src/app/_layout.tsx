@@ -35,10 +35,10 @@ const queryClient = new QueryClient({
       console.log('-----------');
       console.log(error);
       console.log('-----------');
-      console.log(error instanceof AuthenticationException)
+      console.log(error instanceof AuthenticationException);
       if (error instanceof AuthenticationException) {
         router.push('/sign-in');
-        console.log("PUSHING TO SIGN IN");
+        console.log('PUSHING TO SIGN IN');
       }
     },
   }),

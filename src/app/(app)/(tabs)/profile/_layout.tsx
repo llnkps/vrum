@@ -18,15 +18,14 @@ export default function ProfileLayout() {
       <Stack.Screen
         name="index"
         options={{
-          // headerShown: false,
-          title: 'Настройки',
+          headerShown: false,
+          title: 'Профиль',
         }}
       />
       <Stack.Screen
         name="profile-edit"
         options={{
           title: 'Аккаунт',
-          headerBackTitle: 'Назад',
         }}
       />
       <Stack.Screen
@@ -35,13 +34,6 @@ export default function ProfileLayout() {
           title: 'Выбор языка',
           headerBackTitle: 'Назад',
           presentation: 'modal',
-        }}
-      />
-      <Stack.Screen
-        name="bug-report"
-        options={{
-          title: 'Сообщить об ошибке',
-          headerBackTitle: 'Назад',
         }}
       />
     </Stack>
