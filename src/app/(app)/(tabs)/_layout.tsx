@@ -1,113 +1,86 @@
-import React from 'react';
-import {Tabs} from 'expo-router';
-import BlurTabBarBackground from '@/components/TabBarBackground.ios';
-import {CustomTheme} from '@/theme';
-import {Ionicons} from '@expo/vector-icons';
-import {useTheme} from '@react-navigation/native';
-import {Platform} from "react-native";
+import { Tabs } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { useThemeStore } from '@/state/theme/useThemeStore';
+import { Platform } from 'react-native';
 
 export default function TabLayout() {
-  const theme = useTheme() as CustomTheme;
+  const { isDark } = useThemeStore();
+  const backgroundColor = isDark ? '#000' : '#fff';
+  const tabBarActiveTintColor = isDark ? '#BFC1C4' : '#292A2E';
+  const tabBarInactiveTintColor = isDark ? '#666' : '#999';
+
   return (
     <Tabs
-      initialRouteName="search-tab"
-      sceneContainerStyle={{ paddingBottom: 0 }}
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: theme.colors.tabBarActiveTintColor,
-        tabBarInactiveTintColor: theme.colors.tabBarInactiveTintColor,
+        tabBarActiveTintColor,
+        tabBarInactiveTintColor,
         tabBarLabelStyle: {
-          fontSize: 11,
+          fontSize: 10,
           fontWeight: '600',
           marginTop: 2,
-          letterSpacing: 0.2,
         },
         tabBarStyle: {
           position: 'absolute',
           left: 8,
           right: 0,
-          bottom: Platform.OS === 'ios' ? 12 : 16,
           height: Platform.OS === 'ios' ? 88 : 68,
-          paddingBottom: Platform.OS === 'ios' ? 24 : 20,
           paddingTop: 4,
           paddingHorizontal: 8,
           borderTopWidth: 1,
-          borderTopColor: theme.colors.border,
+          backgroundColor,
+          borderTopColor: isDark ? '#333' : '#e0e0e0',
           elevation: 9999,
           zIndex: 9999,
           shadowColor: '#000',
-          shadowOffset: {width: 0, height: -4},
+          shadowOffset: { width: 0, height: -4 },
           shadowRadius: 12,
           overflow: 'visible',
-          backgroundColor: Platform.OS === 'ios' ? 'transparent' : theme.colors.background,
-          tabBarIconStyle: { marginTop: 2 },
         },
-        ...(Platform.OS === 'ios' && { tabBarBackground: () => <BlurTabBarBackground /> }),
+        tabBarIconStyle: { marginTop: 2 },
       }}
     >
       <Tabs.Screen
-        name='search-tab'
+        name="index"
         options={{
-          tabBarLabel: 'Поиск',
-          tabBarIcon: ({color, size}) => (
-            <Ionicons
-              name='search'
-              size={size + 2}
-              color={color}/>
-          ),
+          href: null,
         }}
       />
 
       <Tabs.Screen
-        name='favorites'
+        name="search-tab"
+        options={{
+          tabBarLabel: 'Поиск',
+          tabBarIcon: ({ color, size }) => <Ionicons name="search" size={size + 2} color={color} />,
+        }}
+      />
+
+      <Tabs.Screen
+        name="favorites"
         options={{
           title: 'Избранное',
-          tabBarIcon: ({color, size}) => (
-            <Ionicons
-              name='star'
-              size={size + 2}
-              color={color}
-            />
-          ),
+          tabBarIcon: ({ color, size }) => <Ionicons name="star" size={size + 2} color={color} />,
         }}
       />
       <Tabs.Screen
-        name='advertisement'
+        name="advertisement"
         options={{
-          title: 'Разместить',
-          tabBarIcon: ({color, size}) => (
-            <Ionicons
-              name='duplicate'
-              size={size + 2}
-              color={color}
-            />
-          ),
+          title: 'Добавить',
+          tabBarIcon: ({ color, size }) => <Ionicons name="duplicate" size={size + 2} color={color} />,
         }}
       />
       <Tabs.Screen
-        name='messages'
+        name="messages"
         options={{
           title: 'Сообщения',
-          tabBarIcon: ({color, size}) => (
-            <Ionicons
-              name='chatbubbles'
-              size={size + 2}
-              color={color}
-            />
-          ),
+          tabBarIcon: ({ color, size }) => <Ionicons name="chatbubbles" size={size + 2} color={color} />,
         }}
       />
       <Tabs.Screen
-        name='profile'
+        name="profile"
         options={{
           title: 'Профиль',
-          tabBarIcon: ({color, size}) => (
-            <Ionicons
-              name='person-circle'
-              size={size + 2}
-              color={color}
-            />
-          ),
+          tabBarIcon: ({ color, size }) => <Ionicons name="person-circle" size={size + 2} color={color} />,
         }}
       />
     </Tabs>

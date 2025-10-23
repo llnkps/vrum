@@ -21,8 +21,8 @@ const tabs = [
 const Page = () => {
   const [tab, setTab] = useState<FavoritesTab>(FavoritesTab.FAVORITES);
   const { isAuthenticated } = useAuthStore();
-  console.log("=================");
-  console.log("isAuthenticated", isAuthenticated);
+  console.log('=================');
+  console.log('isAuthenticated', isAuthenticated);
   const router = useRouter();
 
   useEffect(() => {
@@ -41,7 +41,7 @@ const Page = () => {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView className="flex-1 bg-background-page dark:bg-background-page-dark">
+      <SafeAreaView className="flex-1">
         <View className="flex-1">
           {/* Title */}
           <View className="px-4 pb-6 pt-5">
