@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, Switch, Image, Alert } from 'react-native';
-import FeatherIcon from '@expo/vector-icons/Feather';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useQuery, useMutation } from '@tanstack/react-query';
@@ -10,6 +9,7 @@ import { usePreferencesStore, Language } from '@/state/preferences/usePreference
 import { createAuthenticatedConfiguration } from '@/openapi/configurations';
 import { UserApi } from '@/openapi/client';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -22,22 +22,27 @@ export default function SettingsPage() {
     emailNotifications: true,
     pushNotifications: false,
   });
+  const backgroundNeutral = isDark ? '#CECED912' : '#0515240F';
+  const textPrimary = isDark ? '#BFC1C4' : '#292A2E';
+  const textSubtle = isDark ? '#A9ABAF' : '#505258';
+  const textDanger = isDark ? '#FD9891' : '#AE2E24';
+  const border = isDark ? '#333' : '#e0e0e0';
 
   const menuItems = [
     {
       label: 'Помощь и поддержка',
       type: 'navigate' as const,
-      route: '/(app)/help-pages/support' as const, 
+      route: '/(app)/help-pages/support' as const,
     },
     {
       label: 'О приложении',
       type: 'navigate' as const,
-      route: '/(app)/help-pages/about' as const, 
+      route: '/(app)/help-pages/about' as const,
     },
     {
       label: 'Обратная связь',
       type: 'navigate' as const,
-      route: '/(app)/help-pages/feedback' as const, 
+      route: '/(app)/help-pages/feedback' as const,
     },
     {
       label: 'Оценить в App Store',
@@ -104,6 +109,9 @@ export default function SettingsPage() {
   // if (!isAuthenticated) {
   //   return null; // Will redirect
   // }
+  useEffect(() => {
+    console.log('isDark changed in index.tsx:', isDark);
+  }, [isDark]);
 
   return (
     <SafeAreaProvider>
@@ -111,38 +119,47 @@ export default function SettingsPage() {
         {/* Content */}
         <ScrollView className="px-5 py-4" contentContainerStyle={{ paddingBottom: tabBarHeight - 40 }} showsVerticalScrollIndicator={false}>
           {/* Account Section */}
-          <View className="flex-1 ">
-            <Text className="mb-3 pl-3 text-base font-semibold uppercase tracking-wide text-font-subtlest dark:text-font-subtlest-dark">Аккаунт</Text>
+          <View className="mb-6 flex-1">
+            <Text className="mb-1 pl-3 text-lg font-semibold uppercase" style={{ color: textPrimary }}>
+              Аккаунт
+            </Text>
 
             <TouchableOpacity
-              className="flex-row items-center rounded-2xl bg-background-neutral p-4 active:opacity-80 dark:bg-background-neutral-dark"
+              className="flex-row items-center rounded-2xl p-3 active:opacity-80 "
               activeOpacity={0.7}
               onPress={() => router.push('/(app)/(tabs)/profile/profile-edit')}
+              style={{ backgroundColor: backgroundNeutral }}
             >
               <Image
                 source={{
                   uri: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&auto=format&fit=facearea&w=256&h=256&q=80',
                 }}
-                className="h-14 w-14 rounded-xl"
+                className="h-16 w-16 rounded-full"
               />
               <View className="ml-4 flex-1">
-                <Text className="text-base font-semibold text-font dark:text-font-dark">{userData?.name || 'User'}</Text>
-                <Text className="text-sm text-font-subtle dark:text-font-subtle-dark">{userData?.email || 'user@example.com'}</Text>
+                <Text className="text-base font-semibold" style={{ color: textPrimary }}>
+                  {userData?.name || 'User'}
+                </Text>
+                <Text className="text-sm" style={{ color: textSubtle }}>
+                  {userData?.email || 'user@example.com'}
+                </Text>
               </View>
-              <FeatherIcon name="chevron-right" size={20} color="#A9ABAF" />
+              <Ionicons name="chevron-forward-outline" size={20} color={textSubtle} />
             </TouchableOpacity>
           </View>
 
           {/* Preferences */}
-          <View className="py-4">
-            <Text className="mb-3 pl-3 text-base font-semibold uppercase tracking-wide text-font-subtlest dark:text-font-subtlest-dark">
+          <View className="mb-6">
+            <Text className="mb-1 pl-3 text-lg font-semibold uppercase" style={{ color: textSubtle }}>
               Предпочтения
             </Text>
 
-            <View className="overflow-hidden rounded-2xl bg-background-neutral dark:bg-background-neutral-dark">
+            <View className="rounded-2xl" style={{ backgroundColor: backgroundNeutral }}>
               {/* Dark Mode Toggle */}
-              <View className="flex-row items-center border-b border-border/10 px-4 py-4 dark:border-border-dark/10">
-                <Text className="text-base text-font dark:text-font-dark">Темная тема</Text>
+              <View className="flex-row items-center border-b p-3" style={{ borderBottomColor: border }}>
+                <Text className="text-base" style={{ color: textPrimary }}>
+                  Темная тема
+                </Text>
                 <View className="flex-1" />
                 <Switch
                   onValueChange={toggleTheme}
@@ -158,25 +175,25 @@ export default function SettingsPage() {
 
               {/* Language */}
               <TouchableOpacity
-                className="flex-row items-center border-b border-border/10 px-4 py-4 active:opacity-80 dark:border-border-dark/10"
+                className="flex-row items-center border-b p-3"
+                style={{ borderBottomColor: border }}
                 activeOpacity={0.7}
-                // onPress={() => {
-                //   const languages: Language[] = ['en', 'ro', 'ru', 'uk'];
-                //   const currentIndex = languages.indexOf(language);
-                //   const nextIndex = (currentIndex + 1) % languages.length;
-                //   handleLanguageChange(languages[nextIndex]);
-                // }}
                 onPress={() => router.push('/(app)/(tabs)/profile/language-select')}
               >
-                <Text className="text-base text-font dark:text-font-dark">Язык</Text>
+                <Text className="text-base" style={{ color: textPrimary }}>
+                  Язык
+                </Text>
                 <View className="flex-1" />
-                <Text className="mr-2 text-sm font-medium text-font-subtle dark:text-font-subtle-dark">{getLanguageDisplayName(language)}</Text>
-                <FeatherIcon name="chevron-right" size={18} color="#A9ABAF" />
+                <Text className="mr-2 text-sm font-medium" style={{ color: textSubtle }}>
+                  {getLanguageDisplayName(language)}
+                </Text>
+                <Ionicons name="chevron-forward" size={20} color={textSubtle} />
               </TouchableOpacity>
 
               {/* Location */}
               <TouchableOpacity
-                className="flex-row items-center border-b border-border/10 px-4 py-4 active:opacity-80 dark:border-border-dark/10"
+                className="flex-row items-center border-b p-3"
+                style={{ borderBottomColor: border }}
                 activeOpacity={0.7}
                 onPress={() => {
                   Alert.prompt(
@@ -198,15 +215,21 @@ export default function SettingsPage() {
                   );
                 }}
               >
-                <Text className="text-base text-font dark:text-font-dark">Местоположение</Text>
+                <Text className="text-base" style={{ color: textPrimary }}>
+                  Местоположение
+                </Text>
                 <View className="flex-1" />
-                <Text className="mr-2 text-sm font-medium text-font-subtle dark:text-font-subtle-dark">{location}</Text>
-                <FeatherIcon name="chevron-right" size={18} color="#A9ABAF" />
+                <Text className="mr-2 text-sm font-medium" style={{ color: textSubtle }}>
+                  {location}
+                </Text>
+                <Ionicons name="chevron-forward" size={20} color={textSubtle} />
               </TouchableOpacity>
 
               {/* Email Notifications */}
-              <View className="flex-row items-center border-b border-border/10 px-4 py-4 dark:border-border-dark/10">
-                <Text className="text-base text-font dark:text-font-dark">Email уведомления</Text>
+              <View className="flex-row items-center border-b p-3" style={{ borderBottomColor: border }}>
+                <Text className="text-base" style={{ color: textPrimary }}>
+                  Email уведомления
+                </Text>
                 <View className="flex-1" />
                 <Switch
                   onValueChange={val => setForm({ ...form, emailNotifications: val })}
@@ -221,8 +244,10 @@ export default function SettingsPage() {
               </View>
 
               {/* Push Notifications */}
-              <View className="flex-row items-center px-4 py-4">
-                <Text className="text-base text-font dark:text-font-dark">Push уведомления</Text>
+              <View className="flex-row items-center p-3">
+                <Text className="text-base" style={{ color: textPrimary }}>
+                  Push уведомления
+                </Text>
                 <View className="flex-1" />
                 <Switch
                   onValueChange={val => setForm({ ...form, pushNotifications: val })}
@@ -239,16 +264,17 @@ export default function SettingsPage() {
           </View>
 
           {/* Resources */}
-          <View className="py-4">
-            <Text className="mb-3 pl-3 text-base font-semibold uppercase tracking-wide text-font-subtlest dark:text-font-subtlest-dark">Ресурсы</Text>
+          <View className="mb-6">
+            <Text className="mb-1 pl-3 text-lg font-semibold uppercase" style={{ color: textSubtle }}>
+              Ресурсы
+            </Text>
 
-            <View className="overflow-hidden rounded-2xl bg-background-neutral dark:bg-background-neutral-dark">
+            <View className="rounded-2xl" style={{ backgroundColor: backgroundNeutral }}>
               {menuItems.map((item, index) => (
                 <TouchableOpacity
                   key={index}
-                  className={`flex-row items-center px-4 py-4 active:opacity-80 ${
-                    index !== menuItems.length - 1 ? 'border-b border-border/10 dark:border-border-dark/10' : ''
-                  }`}
+                  className={`flex-row items-center p-3 ${index !== menuItems.length - 1 ? 'border-b' : ''}`}
+                  style={index !== menuItems.length - 1 ? { borderBottomColor: border } : undefined}
                   activeOpacity={0.7}
                   onPress={() => {
                     if (item.type === 'navigate' && item.route) {
@@ -258,22 +284,27 @@ export default function SettingsPage() {
                     }
                   }}
                 >
-                  <Text className="text-base text-font dark:text-font-dark">{item.label}</Text>
+                  <Text className="text-base" style={{ color: textPrimary }}>
+                    {item.label}
+                  </Text>
                   <View className="flex-1" />
-                  <FeatherIcon name="chevron-right" size={18} color="#A9ABAF" />
+                  <Ionicons name="chevron-forward-outline" size={20} color={textSubtle} />
                 </TouchableOpacity>
               ))}
             </View>
           </View>
 
           {/* Logout */}
-          <View className="py-4">
+          <View className="mb-6">
             <TouchableOpacity
-              className="mb-4 flex-row items-center justify-center rounded-2xl bg-background-neutral px-4 py-4 active:opacity-80 dark:bg-background-neutral-dark"
+              className="items-center justify-center rounded-2xl p-3"
+              style={{ backgroundColor: backgroundNeutral }}
               activeOpacity={0.7}
               onPress={handleLogout}
             >
-              <Text className="text-base font-semibold text-font-danger dark:text-font-danger-dark">Выйти из аккаунта</Text>
+              <Text className="text-base font-semibold" style={{ color: textDanger }}>
+                Выйти из аккаунта
+              </Text>
             </TouchableOpacity>
 
             {/* <TouchableOpacity

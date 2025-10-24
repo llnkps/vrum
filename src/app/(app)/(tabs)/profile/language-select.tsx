@@ -11,7 +11,9 @@ export default function LanguageSelectPage() {
   const { language, setLanguage } = usePreferencesStore();
   const { isDark } = useThemeStore();
 
-  const checkIconColor = isDark ? '#BFC1C4' : '#292A2E';
+  const backgroundNeutral = isDark ? '#CECED912' : '#0515240F';
+  const textPrimary = isDark ? '#BFC1C4' : '#292A2E';
+  const border = isDark ? '#333' : '#e0e0e0';
 
   const handleLanguageChange = (newLanguage: Language) => {
     setLanguage(newLanguage);
@@ -33,16 +35,19 @@ export default function LanguageSelectPage() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView className="flex-1">
+      <SafeAreaView className="flex-1" style={{ backgroundColor: backgroundNeutral }}>
         <ScrollView className="px-5 py-4" showsVerticalScrollIndicator={false}>
           {languages.map(lang => (
             <TouchableOpacity
               key={lang}
-              className="flex-row items-center border-b border-border/10 py-4 dark:border-border-dark/10"
+              className="flex-row items-center border-b py-4"
+              style={{ borderBottomColor: border }}
               onPress={() => handleLanguageChange(lang)}
             >
-              <Text className="flex-1 text-lg text-font dark:text-font-dark">{getLanguageDisplayName(lang)}</Text>
-              {language === lang && <Ionicons name="checkmark" size={24} color={checkIconColor} />}
+              <Text className="flex-1 text-lg" style={{ color: textPrimary }}>
+                {getLanguageDisplayName(lang)}
+              </Text>
+              {language === lang && <Ionicons name="checkmark" size={24} color={textPrimary} />}
             </TouchableOpacity>
           ))}
         </ScrollView>

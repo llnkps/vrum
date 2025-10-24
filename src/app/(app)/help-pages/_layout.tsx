@@ -16,8 +16,8 @@ export default function HelpPagesLayout() {
         },
         headerTintColor,
         headerLeft: () => (
-          <TouchableOpacity onPress={() => router.back()} style={{ marginLeft: 16 }}>
-            <Text style={{ color: headerTintColor, fontSize: 16 }}>Отмена</Text>
+          <TouchableOpacity onPress={() => router.back()}>
+            <Text style={{ color: headerTintColor, fontSize: 16 }}>Назад</Text>
           </TouchableOpacity>
         ),
       }}
