@@ -15,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as AuthSession from 'expo-auth-session';
 import { useAuthStore } from '@/state/auth/useAuthStore';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { InputField } from '@/components/ui/input';
 
 interface LoginForm {
 	email: string;
@@ -41,6 +42,7 @@ export default function Index() {
 	}, [isAuthenticated, router]);
 
   const onSubmit = async (data: LoginForm) => {
+		console.log('Submitting login form with data:', data);
     setLoading(true);
     try {
       await login(data.email, data.password);
@@ -110,6 +112,7 @@ export default function Index() {
 
 						<View className='w-full gap-4'>
 							<Controller
+								name='email'
 								control={control}
 								rules={{
 									required: 'Email is required',
@@ -119,17 +122,16 @@ export default function Index() {
 									},
 								}}
 								render={({ field: { onChange, onBlur, value } }) => (
-									<TextInput
+									<InputField
 										placeholder='Email'
 										onBlur={onBlur}
-										onChangeText={onChange}
+										onChange={onChange}
 										value={value}
 										className='w-full p-3 border border-gray-300 rounded-lg bg-white'
 										keyboardType='email-address'
 										autoCapitalize='none'
 									/>
 								)}
-								name='email'
 							/>
 							{errors.email && (
 								<Text className='text-red-500'>{errors.email.message}</Text>
@@ -137,6 +139,7 @@ export default function Index() {
 
 							<Controller
 								control={control}
+								name="password"
 								rules={{
 									required: 'Password is required',
 									minLength: {
@@ -145,16 +148,15 @@ export default function Index() {
 									},
 								}}
 								render={({ field: { onChange, onBlur, value } }) => (
-									<TextInput
+									<InputField
 										placeholder='Password'
 										onBlur={onBlur}
-										onChangeText={onChange}
+										onChange={onChange}
 										value={value}
 										secureTextEntry
 										className='w-full p-3 border border-gray-300 rounded-lg bg-white'
 									/>
 								)}
-								name='password'
 							/>
 							{errors.password && (
 								<Text className='text-red-500'>{errors.password.message}</Text>
