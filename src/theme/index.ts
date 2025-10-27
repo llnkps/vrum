@@ -4,6 +4,7 @@ export interface CustomTheme extends NavigationTheme {
   colors: NavigationTheme['colors'] & {
     tabBarActiveTintColor: string;
     tabBarInactiveTintColor: string;
+    headerTintColor: string;
     icon: string;
 
     surface: string;
@@ -22,6 +23,10 @@ export interface CustomTheme extends NavigationTheme {
       borderColor: string;
     };
     border: string;
+
+    backgroundNeutral: string;
+    textSubtle: string;
+    textDanger: string;
   };
 }
 
@@ -35,6 +40,7 @@ export const MyLightTheme: CustomTheme = {
     primary: '#bd0016',
     tabBarActiveTintColor: '#0d6c9a',
     tabBarInactiveTintColor: '#8E8E93',
+    headerTintColor: '#292A2E',
     icon: '#292A2E',
     surface: '#FFFFFF',
 
@@ -55,6 +61,9 @@ export const MyLightTheme: CustomTheme = {
     },
 
     border: '#0B120E24',
+    backgroundNeutral: '#0515240F',
+    textSubtle: '#505258',
+    textDanger: '#AE2E24',
   },
 };
 
@@ -67,6 +76,7 @@ export const MyDarkTheme: CustomTheme = {
     primary: '#bd0016',
     tabBarActiveTintColor: '#BFC1C4',
     tabBarInactiveTintColor: '#6B6E76',
+    headerTintColor: '#BFC1C4',
     icon: '#CECFD2',
     surface: '#1F1F21',
 
@@ -87,5 +97,8 @@ export const MyDarkTheme: CustomTheme = {
     },
 
     border: '#E3E4F21F',
+    backgroundNeutral: '#CECED912',
+    textSubtle: '#A9ABAF',
+    textDanger: '#FD9891',
   },
 };

@@ -1,18 +1,17 @@
-import { useThemeStore } from '@/state/theme/useThemeStore';
+import { CustomTheme } from '@/theme';
+import { useTheme } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 
 export default function ProfileLayout() {
-  const { isDark } = useThemeStore();
-  const backgroundColor = isDark ? '#000' : '#fff';
-  const headerTintColor = isDark ? '#BFC1C4' : '#292A2E';
+  const theme = useTheme() as CustomTheme;
 
   return (
     <Stack
       screenOptions={{
         headerStyle: {
-          backgroundColor,
+          backgroundColor: theme.colors.background,
         },
-        headerTintColor,
+        headerTintColor: theme.colors.headerTintColor,
       }}
     >
       <Stack.Screen

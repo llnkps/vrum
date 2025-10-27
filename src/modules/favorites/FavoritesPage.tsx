@@ -8,6 +8,8 @@ import { AdvertisementCard } from '@/components/global/AdvertisementCard/Adverti
 import { useFavoritesStore } from '@/state/favorites/useFavoritesStore';
 import EmptyState from './EmptyState';
 import { SimpleAutoAdvertisement } from '@/openapi/client/models/SimpleAutoAdvertisement';
+import { useTheme } from '@react-navigation/native';
+import { CustomTheme } from '@/theme';
 
 const FavoritesPage = () => {
   // const { data: favoritesResponse, isLoading: apiLoading, error: apiError } = useUserFavoritesApi();
@@ -22,6 +24,8 @@ const FavoritesPage = () => {
     // setLoading,
     // setError,
   } = useFavoritesStore();
+
+  const theme = useTheme() as CustomTheme;
 
   // Sync with API when data is available
   // useEffect(() => {
@@ -75,7 +79,9 @@ const FavoritesPage = () => {
   if (error && localFavorites.length === 0) {
     return (
       <View className="flex-1 items-center justify-center px-4">
-        <Text className="mb-4 text-center text-font dark:text-font-dark">{typeof error === 'string' ? error : 'Unknown error'}</Text>
+        <Text className="mb-4 text-center" style={{ color: theme.colors.text }}>
+          {typeof error === 'string' ? error : 'Unknown error'}
+        </Text>
         <Text
           className="text-font-brand dark:text-font-brand-dark"
           onPress={() => {
