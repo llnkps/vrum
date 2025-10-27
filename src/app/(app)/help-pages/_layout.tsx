@@ -1,23 +1,23 @@
-import { useThemeStore } from '@/state/theme/useThemeStore';
+import { CustomTheme } from '@/theme';
+import { useTheme } from '@react-navigation/native';
 import { Stack, useRouter } from 'expo-router';
 import { Text, TouchableOpacity } from 'react-native';
 
 export default function HelpPagesLayout() {
-  const { isDark } = useThemeStore();
-  const backgroundColor = isDark ? '#000' : '#fff';
-  const headerTintColor = isDark ? '#BFC1C4' : '#292A2E';
   const router = useRouter();
+
+  const theme = useTheme() as CustomTheme;
 
   return (
     <Stack
       screenOptions={{
         headerStyle: {
-          backgroundColor,
+          backgroundColor: theme.colors.background,
         },
-        headerTintColor,
+        headerTintColor: theme.colors.headerTintColor,
         headerLeft: () => (
           <TouchableOpacity onPress={() => router.back()}>
-            <Text style={{ color: headerTintColor, fontSize: 16 }}>Назад</Text>
+            <Text style={{ color: theme.colors.headerTintColor, fontSize: 16 }}>Назад</Text>
           </TouchableOpacity>
         ),
       }}
@@ -44,12 +44,6 @@ export default function HelpPagesLayout() {
         name="privacy"
         options={{
           title: 'Условия и конфиденциальность',
-        }}
-      />
-      <Stack.Screen
-        name="bug-report"
-        options={{
-          title: 'Связаться с нами',
         }}
       />
     </Stack>

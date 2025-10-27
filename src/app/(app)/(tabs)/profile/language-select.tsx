@@ -1,19 +1,17 @@
 import i18n from '@/i18n';
 import { Language, usePreferencesStore } from '@/state/preferences/usePreferencesStore';
-import { useThemeStore } from '@/state/theme/useThemeStore';
+import { CustomTheme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import { ScrollView, Text, TouchableOpacity } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function LanguageSelectPage() {
   const router = useRouter();
   const { language, setLanguage } = usePreferencesStore();
-  const { isDark } = useThemeStore();
 
-  const backgroundNeutral = isDark ? '#CECED912' : '#0515240F';
-  const textPrimary = isDark ? '#BFC1C4' : '#292A2E';
-  const border = isDark ? '#333' : '#e0e0e0';
+  const theme = useTheme() as CustomTheme;
 
   const handleLanguageChange = (newLanguage: Language) => {
     setLanguage(newLanguage);
@@ -34,24 +32,22 @@ export default function LanguageSelectPage() {
   const languages: Language[] = ['en', 'ro', 'ru', 'uk'];
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView className="flex-1" style={{ backgroundColor: backgroundNeutral }}>
-        <ScrollView className="px-5 py-4" showsVerticalScrollIndicator={false}>
-          {languages.map(lang => (
-            <TouchableOpacity
-              key={lang}
-              className="flex-row items-center border-b py-4"
-              style={{ borderBottomColor: border }}
-              onPress={() => handleLanguageChange(lang)}
-            >
-              <Text className="flex-1 text-lg" style={{ color: textPrimary }}>
-                {getLanguageDisplayName(lang)}
-              </Text>
-              {language === lang && <Ionicons name="checkmark" size={24} color={textPrimary} />}
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </SafeAreaView>
-    </SafeAreaProvider>
+    <SafeAreaView className="flex-1" style={{ backgroundColor: theme.colors.backgroundNeutral }}>
+      <ScrollView className="px-5 py-4" showsVerticalScrollIndicator={false}>
+        {languages.map(lang => (
+          <TouchableOpacity
+            key={lang}
+            className="flex-row items-center border-b py-4"
+            style={{ borderBottomColor: theme.colors.border }}
+            onPress={() => handleLanguageChange(lang)}
+          >
+            <Text className="flex-1 text-lg" style={{ color: theme.colors.text }}>
+              {getLanguageDisplayName(lang)}
+            </Text>
+            {language === lang && <Ionicons name="checkmark" size={24} color={theme.colors.text} />}
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
