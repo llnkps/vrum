@@ -1,6 +1,6 @@
 import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import { CustomRectButton } from '@/components/ui/button';
-import { BottomSheetView } from '@gorhom/bottom-sheet';
+import { BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
 
 type BodyTypeOption = (typeof options)[number];
@@ -32,18 +32,18 @@ export const BodyTypeCreateBottomSheet = forwardRef<BottomSheetRef, BodyTypeCrea
   return (
     <CustomBottomSheetModal
       ref={ref}
-      snapPoints={['35%']}
+      snapPoints={['40%']}
       enableContentPanningGesture={true}
       title={'Тип кузова'}
       footerProps={{
         onConfirm: handleConfirm,
       }}
     >
-      <BottomSheetView className="flex-col">
+      <BottomSheetScrollView enableFooterMarginAdjustment>
         {options.map(opt => (
           <CustomRectButton key={opt.value} title={opt.label} isSelected={selectedBodyType?.value === opt.value} onPress={() => handleToggle(opt)} />
         ))}
-      </BottomSheetView>
+      </BottomSheetScrollView>
     </CustomBottomSheetModal>
   );
 });

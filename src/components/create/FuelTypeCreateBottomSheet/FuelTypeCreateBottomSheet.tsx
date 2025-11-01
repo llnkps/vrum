@@ -1,6 +1,6 @@
 import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import { CustomRectButton } from '@/components/ui/button';
-import { BottomSheetView } from '@gorhom/bottom-sheet';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
 
 type FuelTypeOption = (typeof options)[number];
@@ -30,18 +30,18 @@ export const FuelTypeCreateBottomSheet = forwardRef<BottomSheetRef, FuelTypeCrea
   return (
     <CustomBottomSheetModal
       ref={ref}
-      snapPoints={['35%']}
+      snapPoints={['40%']}
       enableContentPanningGesture={true}
       title={'Тип топлива'}
       footerProps={{
         onConfirm: handleConfirm,
       }}
     >
-      <BottomSheetView className="flex-col">
+      <BottomSheetScrollView enableFooterMarginAdjustment>
         {options.map(opt => (
           <CustomRectButton key={opt.value} title={opt.label} isSelected={selectedFuelType?.value === opt.value} onPress={() => handleToggle(opt)} />
         ))}
-      </BottomSheetView>
+      </BottomSheetScrollView>
     </CustomBottomSheetModal>
   );
 });

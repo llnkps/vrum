@@ -1,28 +1,30 @@
 import { CustomTheme } from '@/theme';
 import { useTheme } from '@react-navigation/native';
 import React from 'react';
-import { Text, TextInput, TextInputProps, View } from 'react-native';
+import { Text, TextInput, TextInputProps, View, ViewStyle } from 'react-native';
 
 type InputFieldProps = TextInputProps & {
   label?: string;
-  isTextArea?: boolean;
   onChange?: (...event: any[]) => void;
   value?: string | number;
   Icon?: React.ReactElement;
   ref?: any;
   required?: boolean;
   error?: string;
+  wrapperStyle?: ViewStyle;
 };
-export const InputField = ({ label, onChange, isTextArea, value, Icon, ref, required = false, error, ...props }: InputFieldProps) => {
+export const InputField = ({ label, onChange, value, Icon, ref, required = false, error, wrapperStyle, ...props }: InputFieldProps) => {
   const theme = useTheme() as CustomTheme;
 
   return (
-    <View className="gap-y-1">
+    <View className="gap-1" style={wrapperStyle}>
       {label && (
-        <Text className="font-bold text-font dark:text-font-dark">
-          {label}
+        <View className="flex-row gap-1">
+          <Text className="font-bold text-font dark:text-font-dark">
+            {label}
+          </Text>
           {required && <Text className="text-font-danger">*</Text>}
-        </Text>
+        </View>
       )}
 
       <View

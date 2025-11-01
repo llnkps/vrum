@@ -37,7 +37,7 @@ export const TransmissionCreateBottomSheet = forwardRef<BottomSheetRef, Transmis
         onConfirm: handleConfirm,
       }}
     >
-      <BottomSheetView className="flex-col">
+      <BottomSheetView enableFooterMarginAdjustment>
         {options.map(opt => (
           <CustomRectButton
             key={opt.value}

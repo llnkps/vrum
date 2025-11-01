@@ -3,7 +3,6 @@ import { ScrollView, View, Text, TouchableOpacity, Switch, Image, Alert } from '
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { useAuthStore } from '@/state/auth/useAuthStore';
 import { useThemeStore } from '@/state/theme/useThemeStore';
 import { usePreferencesStore, Language } from '@/state/preferences/usePreferencesStore';
 import { createAuthenticatedConfiguration } from '@/openapi/configurations';
@@ -12,10 +11,11 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
 import { CustomTheme } from '@/theme';
+import { useAuthContext } from '@/context/AuthContext';
 
 export default function SettingsPage() {
   const router = useRouter();
-  const { isAuthenticated, logout } = useAuthStore();
+  const { isAuthenticated, logout } = useAuthContext();
   const { isDark, toggleTheme } = useThemeStore();
   const { language, location, setLocation } = usePreferencesStore();
   const tabBarHeight = useBottomTabBarHeight();

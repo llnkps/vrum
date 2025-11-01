@@ -28,7 +28,7 @@ export const SellerCreateBottomSheet = forwardRef<BottomSheetRef, SellerCreateBo
   return (
     <CustomBottomSheetModal
       ref={ref}
-      snapPoints={['35%']}
+      snapPoints={['30%']}
       enableContentPanningGesture={true}
       title={'Продавец'}
       footerProps={{

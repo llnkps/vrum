@@ -28,7 +28,7 @@ export const DocumentsOkCreateBottomSheet = forwardRef<BottomSheetRef, Documents
   return (
     <CustomBottomSheetModal
       ref={ref}
-      snapPoints={['30%']}
+      snapPoints={['25%']}
       enableContentPanningGesture={true}
       title="Документы"
       footerProps={{

@@ -1,14 +1,19 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeStore } from '@/state/theme/useThemeStore';
+import { useAuthContext } from '@/context/AuthContext';
+import { useRouter } from 'expo-router';
 import { Platform } from 'react-native';
 
 export default function TabLayout() {
   const { isDark } = useThemeStore();
+  const { isAuthenticated, isLoading } = useAuthContext();
+  const router = useRouter();
   const backgroundColor = isDark ? '#000' : '#fff';
   const tabBarActiveTintColor = isDark ? '#BFC1C4' : '#292A2E';
   const tabBarInactiveTintColor = isDark ? '#666' : '#999';
 
+    console.log('TabLayout - isAuthenticated:', isAuthenticated, 'isLoading:', isLoading);
   return (
     <Tabs
       screenOptions={{
@@ -70,12 +75,29 @@ export default function TabLayout() {
           title: 'Добавить',
           tabBarIcon: ({ color, size }) => <Ionicons name="duplicate" size={size + 2} color={color} />,
         }}
+        listeners={{
+          tabPress: e => {
+            console.log('isAuthenticated', isAuthenticated, 'isLoading', isLoading);
+            if (!isAuthenticated && !isLoading) {
+              e.preventDefault();
+              router.push('/sign-in');
+            }
+          },
+        }}
       />
       <Tabs.Screen
         name="messages"
         options={{
           title: 'Сообщения',
           tabBarIcon: ({ color, size }) => <Ionicons name="chatbubbles" size={size + 2} color={color} />,
+        }}
+        listeners={{
+          tabPress: e => {
+            if (!isAuthenticated && !isLoading) {
+              e.preventDefault();
+              router.push('/sign-in');
+            }
+          },
         }}
       />
       <Tabs.Screen

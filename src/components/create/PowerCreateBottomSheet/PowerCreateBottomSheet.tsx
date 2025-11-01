@@ -31,14 +31,14 @@ const PowerCreateBottomSheet = forwardRef<BottomSheetRef, PowerCreateModalProps>
   return (
     <CustomBottomSheetModal
       ref={ref}
-      snapPoints={['45%']}
+      snapPoints={['40%']}
       title={'Мощность'}
       footerProps={{
         onConfirm: handleConfirm,
       }}
     >
       <BottomSheetView>
-        <View className="flex-row items-center justify-center px-4 pt-5">
+        <View className="flex-row items-center justify-center px-4">
           <View className="flex-1">
             <CustomWheelPicker data={powerArray} value={selectedValue} onValueChanged={handleChange} label="Мощность" />
           </View>

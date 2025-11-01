@@ -24,6 +24,8 @@ type TouchableHighlightRowProps = {
   fullWidth?: boolean;
   centerText?: boolean;
   selectedValueMode?: 'under' | 'replace';
+  required?: boolean;
+  error?: string;
 };
 
 export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
@@ -43,6 +45,8 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
   fullWidth = false,
   centerText = false,
   selectedValueMode = 'under',
+  required = false,
+  error,
 }) => {
   const theme = useTheme() as CustomTheme;
 
@@ -119,15 +123,19 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
               </Text>
             ) : (
               <>
-                <Text
-                  className={clsx('font-bold text-font dark:text-font-dark', {
-                    'text-font dark:text-font-dark': !disabled,
-                    'text-font-disabled dark:text-font-disabled-dark': disabled,
-                  })}
-                  style={labelStyle}
-                >
-                  {label}
-                </Text>
+                <View className="align-items-center flex-row gap-1">
+                  <Text
+                    className={clsx('font-bold text-font dark:text-font-dark', {
+                      'text-font dark:text-font-dark': !disabled,
+                      'text-font-disabled dark:text-font-disabled-dark': disabled,
+                    })}
+                    style={labelStyle}
+                  >
+                    {label}
+                  </Text>
+                  <View>{required && <Text className="text-red-500">*</Text>}</View>
+                </View>
+
                 {subtitle && (
                   <Text className={clsx('text-sm text-font-subtle dark:text-font-subtle-dark')} style={{ marginTop: 2 }}>
                     {subtitle}
@@ -136,6 +144,11 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
                 {selectedValue && selectedValueMode === 'under' && (
                   <Text className="text-font-subtle dark:text-font-subtle-dark" style={selectedValueStyle}>
                     {selectedValue}
+                  </Text>
+                )}
+                {error && (
+                  <Text className="text-sm text-red-500" style={{ marginTop: 2 }}>
+                    {error}
                   </Text>
                 )}
               </>

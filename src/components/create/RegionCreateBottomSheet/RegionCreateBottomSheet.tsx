@@ -9,7 +9,7 @@ import { ActivityIndicator, Text } from 'react-native';
 export type BottomSheetRef = BottomSheetModal;
 
 type RegionCreateModalProps = {
-  onChange?: (region: Region | undefined) => void;
+  onChange?: (region: Region) => void;
 };
 
 export const RegionCreateBottomSheet = forwardRef<BottomSheetRef, RegionCreateModalProps>((props, ref) => {
@@ -20,7 +20,9 @@ export const RegionCreateBottomSheet = forwardRef<BottomSheetRef, RegionCreateMo
   };
 
   const handleConfirm = () => {
-    props.onChange?.(selectedRegion);
+    if (selectedRegion) {
+      props.onChange?.(selectedRegion);
+    }
   };
 
   const isRegionSelected = (region: Region) => {
@@ -37,10 +39,7 @@ export const RegionCreateBottomSheet = forwardRef<BottomSheetRef, RegionCreateMo
         onConfirm: handleConfirm,
       }}
     >
-      <RegionList
-        onRegionSelect={handleRegionSelect}
-        isRegionSelected={isRegionSelected}
-      />
+      <RegionList onRegionSelect={handleRegionSelect} isRegionSelected={isRegionSelected} />
     </CustomBottomSheetModal>
   );
 });
@@ -74,12 +73,7 @@ const RegionList: FC<RegionListProps> = ({ onRegionSelect, isRegionSelected }) =
   return (
     <BottomSheetScrollView enableFooterMarginAdjustment={true}>
       {regions?.map(region => (
-        <CustomRectButton
-          key={region.id}
-          title={region.name || ''}
-          isSelected={isRegionSelected(region)}
-          onPress={() => onRegionSelect(region)}
-        />
+        <CustomRectButton key={region.id} title={region.name || ''} isSelected={isRegionSelected(region)} onPress={() => onRegionSelect(region)} />
       ))}
     </BottomSheetScrollView>
   );

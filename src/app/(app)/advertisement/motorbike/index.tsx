@@ -32,8 +32,8 @@ import { useMutation } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { useAuthStore } from '@/state/auth/useAuthStore';
-import { useSimpleAutoAdvertisementCreateMutate } from '@/hooks/api/useSimpleAutoAdvertisementCreateMutate';
+import { useAuthContext } from '@/context/AuthContext';
+import { useSimpleAutoAdvertisementCreateMutate } from '@/modules/advertisement/simple-auto/useSimpleAutoAdvertisementCreateMutate';
 
 type FormValues = {
   description: string;
@@ -64,7 +64,7 @@ type FormValues = {
 
 export default function AddCarPage() {
   const router = useRouter();
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuthContext();
 
   useEffect(() => {
     if (!isAuthenticated) {
