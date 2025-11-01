@@ -2,7 +2,7 @@ import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/Cust
 import { CustomRectButton } from '@/components/ui/button';
 import { CustomTheme } from '@/theme';
 import { Feather } from '@expo/vector-icons';
-import { BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { useTheme } from '@react-navigation/native';
 import React, { forwardRef } from 'react';
 import { Text, View } from 'react-native';
@@ -13,7 +13,7 @@ type ColorCreateBottomSheetProps = {
   onChange: (value: ColorOption | undefined) => void;
 };
 
-const options = [
+export const options = [
   { label: 'Черный', value: 'black', color: '#000000' },
   { label: 'Белый', value: 'white', color: '#FFFFFF' },
   { label: 'Серый', value: 'gray', color: '#808080' },

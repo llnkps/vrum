@@ -1,50 +1,46 @@
 import { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
 import React, { useCallback, useRef } from 'react';
-import { Controller, Control } from 'react-hook-form';
 import { PriceCreateBottomSheet } from './PriceCreateBottomSheet';
 
 interface PriceControllerWrapperProps {
-  control: Control<any>;
+  value?: number;
+  onChange: (value: number) => void;
+  error?: string;
 }
 
-const Wrapper = ({ control }: PriceControllerWrapperProps) => {
-  const [selectedPrice, setSelectedPrice] = React.useState<string | undefined>(undefined);
+const Wrapper = ({ value, onChange, error }: PriceControllerWrapperProps) => {
   console.log('Rendering PriceCreateBottomSheet Wrapper');
   const priceModalRef = useRef<BottomSheetRef>(null);
   const handlePresentPriceModalPress = useCallback(() => {
     priceModalRef.current?.present();
   }, []);
 
+  // Format the price value for display
+  const selectedLabel = React.useMemo(() => {
+    if (value === undefined || value === null) return undefined;
+    return `${value.toLocaleString()} ₽`;
+  }, [value]);
+
   return (
     <>
-      <Controller
-        control={control}
-        name="price"
-        rules={{
-          required: 'Введите цену'
+      <TouchableHighlightRow
+        variant="bordered"
+        label={'Цена'}
+        selectedValue={selectedLabel}
+        onPress={handlePresentPriceModalPress}
+        rightIcon="chevron-down"
+        required
+        error={error}
+      />
+      <PriceCreateBottomSheet
+        ref={priceModalRef}
+        onChange={(price) => {
+          if (price !== undefined) {
+            onChange(price);
+          }
+          priceModalRef.current?.close({ duration: 150 });
         }}
-        render={({ field: _field, fieldState: { error } }) => (
-          <>
-            <TouchableHighlightRow
-              variant="bordered"
-              label={'Цена'}
-              selectedValue={selectedPrice ?? undefined}
-              onPress={handlePresentPriceModalPress}
-              rightIcon="chevron-down"
-              required
-              error={error?.message}
-            />
-            <PriceCreateBottomSheet
-              ref={priceModalRef}
-              onChange={(price) => {
-                _field.onChange(price);
-                setSelectedPrice(price?.toString() || '');
-                priceModalRef.current?.close({ duration: 150 });
-              }}
-            />
-          </>
-        )}
       />
     </>
   );

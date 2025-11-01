@@ -9,7 +9,7 @@ type CurrencyCreateBottomSheetProps = {
   onChange: (value: CurrencyOption | undefined) => void;
 };
 
-const options = [
+export const options = [
   { label: 'MDL', value: 'mdl' },
   { label: 'USD', value: 'usd' },
   { label: 'EUR', value: 'eur' },

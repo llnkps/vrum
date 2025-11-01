@@ -1,50 +1,43 @@
 import { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
 import React, { useCallback, useRef } from 'react';
-import { Controller, Control } from 'react-hook-form';
-import { DrivetrainCreateBottomSheet } from './DrivetrainCreateBottomSheet';
+import { DrivetrainCreateBottomSheet, options } from './DrivetrainCreateBottomSheet';
 
 interface DrivetrainControllerWrapperProps {
-  control: Control<any>;
+  value?: string;
+  onChange: (value: string) => void;
+  error?: string;
 }
 
-const Wrapper = ({ control }: DrivetrainControllerWrapperProps) => {
-  const [selectedDrivetrain, setSelectedDrivetrain] = React.useState<string | undefined>(undefined);
+const Wrapper = ({ value, onChange, error }: DrivetrainControllerWrapperProps) => {
   console.log('Rendering DrivetrainCreateBottomSheet Wrapper');
   const drivetrainModalRef = useRef<BottomSheetRef>(null);
   const handlePresentDrivetrainModalPress = useCallback(() => {
     drivetrainModalRef.current?.present();
   }, []);
 
+  // Find the label for the current value
+  const selectedLabel = React.useMemo(() => {
+    return options.find(opt => opt.value === value)?.label;
+  }, [value]);
+
   return (
     <>
-      <Controller
-        control={control}
-        name="drivetrain"
-        rules={{
-          required: 'Выберите привод'
+      <TouchableHighlightRow
+        variant="bordered"
+        label={'Привод'}
+        selectedValue={selectedLabel}
+        onPress={handlePresentDrivetrainModalPress}
+        rightIcon="chevron-down"
+        required
+        error={error}
+      />
+      <DrivetrainCreateBottomSheet
+        ref={drivetrainModalRef}
+        onChange={(drivetrain) => {
+          onChange(drivetrain?.value || '');
+          drivetrainModalRef.current?.close({ duration: 150 });
         }}
-        render={({ field: _field, fieldState: { error } }) => (
-          <>
-            <TouchableHighlightRow
-              variant="bordered"
-              label={'Привод'}
-              selectedValue={selectedDrivetrain ?? undefined}
-              onPress={handlePresentDrivetrainModalPress}
-              rightIcon="chevron-down"
-              required
-              error={error?.message}
-            />
-            <DrivetrainCreateBottomSheet
-              ref={drivetrainModalRef}
-              onChange={(drivetrain) => {
-                _field.onChange(drivetrain?.value || '');
-                setSelectedDrivetrain(drivetrain?.label || '');
-                drivetrainModalRef.current?.close({ duration: 150 });
-              }}
-            />
-          </>
-        )}
       />
     </>
   );

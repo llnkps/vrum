@@ -1,51 +1,42 @@
 import { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
 import React, { useCallback, useRef } from 'react';
-import { Controller, Control } from 'react-hook-form';
-import { FuelTypeCreateBottomSheet } from './FuelTypeCreateBottomSheet';
+import { FuelTypeCreateBottomSheet, options } from './FuelTypeCreateBottomSheet';
 
 interface FuelTypeControllerWrapperProps {
-  control: Control<any>;
+  value?: string;
+  onChange: (value: string) => void;
+  error?: string;
 }
 
-const Wrapper = ({ control }: FuelTypeControllerWrapperProps) => {
-  const [selectedFuelType, setSelectedFuelType] = React.useState<string | undefined>(undefined);
+const Wrapper = ({ value, onChange, error }: FuelTypeControllerWrapperProps) => {
   console.log('Rendering FuelTypeCreateBottomSheet Wrapper');
   const fuelTypeModalRef = useRef<BottomSheetRef>(null);
   const handlePresentFuelTypeModalPress = useCallback(() => {
     fuelTypeModalRef.current?.present();
   }, []);
 
+  // Find the label for the current value
+  const selectedLabel = React.useMemo(() => {
+    return options.find(opt => opt.value === value)?.label;
+  }, [value]);
+
   return (
     <>
-      <Controller
-        control={control}
-        name="fuel_type"
-        rules={{
-          required: 'Выберите тип топлива',
+      <TouchableHighlightRow
+        variant="bordered"
+        label={'Тип топлива'}
+        selectedValue={selectedLabel}
+        onPress={handlePresentFuelTypeModalPress}
+        rightIcon="chevron-down"
+        error={error}
+      />
+      <FuelTypeCreateBottomSheet
+        ref={fuelTypeModalRef}
+        onChange={(fuelType) => {
+          onChange(fuelType?.value || '');
+          fuelTypeModalRef.current?.close({ duration: 150 });
         }}
-        render={({ field: _field, fieldState: { error } }) => (
-          <>
-            <TouchableHighlightRow
-              variant="bordered"
-              label={'Тип топлива'}
-              onPress={handlePresentFuelTypeModalPress}
-              selectedValue={selectedFuelType ?? undefined}
-              rightIcon="chevron-down"
-              error={error?.message}
-            />
-            <FuelTypeCreateBottomSheet
-              ref={fuelTypeModalRef}
-              onChange={fuelType => {
-                // setValue('fuel_type', fuelType?.value || '');
-
-                _field.onChange(fuelType?.value || '');
-                setSelectedFuelType(fuelType?.label || '');
-                fuelTypeModalRef.current?.close({ duration: 150 });
-              }}
-            />
-          </>
-        )}
       />
     </>
   );

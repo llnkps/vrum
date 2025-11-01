@@ -17,7 +17,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { Alert, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { BodyTypeCreateBottomSheetControllerWrapper } from '@/components/create/BodyTypeCreateBottomSheet';
+import { BodyTypeCreateBottomSheetControllerWrapper } from '@/components/create/FrameTypeCreateBottomSheet';
 import { ColorCreateBottomSheetControllerWrapper } from '@/components/create/ColorCreateBottomSheet';
 import { ConditionCreateBottomSheetControllerWrapper } from '@/components/create/ConditionCreateBottomSheet';
 import { CurrencyCreateBottomSheetControllerWrapper } from '@/components/create/CurrencyCreateBottomSheet';
@@ -40,7 +40,7 @@ type FormValues = {
 
   brand?: number;
   model?: number;
-  generation?: number;
+  generationId?: number;
   releaseYear?: number;
   region: string;
   currency: string;
@@ -57,7 +57,7 @@ type FormValues = {
   trade_allow: boolean;
   condition: string;
   number_of_owner: string;
-  document_ok: boolean;
+  document_type: string;
   seller: string;
 };
 
@@ -89,8 +89,9 @@ export default function AddCarPage() {
   const mutateAdvertisement = useSimpleAutoAdvertisementCreateMutate({
     onSuccess: data => {
       console.log('Advertisement created successfully:', data);
+      showToast('Объявление успешно создано', 'success');
       // reset();
-      // router.push("/(app)/(tabs)/advertisement");
+      router.push("/(app)/(tabs)/advertisement");
     },
     onError: async error => {
       console.error('Error creating advertisement:', error);
@@ -119,7 +120,7 @@ export default function AddCarPage() {
       images: [],
       brand: undefined,
       model: undefined,
-      generation: undefined,
+      generationId: undefined,
       releaseYear: undefined,
       region: '',
 
@@ -135,12 +136,13 @@ export default function AddCarPage() {
       trade_allow: false,
       condition: '',
       seller: '',
+      document_type: '',
     },
   });
 
   // Form submit handler
   const onSubmit = async (data: FormValues) => {
-    console.log(data.mileage, isNaN(Number(data.mileage)), Number(data.mileage));
+    console.log(data);
 
     try {
       // Validate required fields
@@ -202,7 +204,7 @@ export default function AddCarPage() {
       }
 
       // Add additional info with validation
-      formData.append('trade_allow', data.trade_allow ? '1' : '0');
+      formData.append('trade_allow', data.trade_allow);
 
       if (data.condition) {
         formData.append('condition', data.condition);
@@ -212,7 +214,9 @@ export default function AddCarPage() {
         formData.append('number_of_owner', data.number_of_owner.toString());
       }
 
-      formData.append('document_ok', data.document_ok);
+      if (data.document_type) {
+        formData.append('document_type', data.document_type);
+      }
 
       if (data.seller) {
         formData.append('seller', data.seller);
@@ -251,6 +255,11 @@ export default function AddCarPage() {
     }
   };
 
+  const onInvalid = (errors: any) => {
+    console.log('Form validation errors:', errors);
+    showToast('Пожалуйста, исправьте ошибки в форме', 'error');
+  };
+
   // Memoize brand/model IDs to prevent unnecessary effect runs
   const brandId = useMemo(() => selectedBrand?.id, [selectedBrand?.id]);
   const modelId = useMemo(() => selectedModel?.id, [selectedModel?.id]);
@@ -270,7 +279,7 @@ export default function AddCarPage() {
 
   useEffect(() => {
     if (generationId) {
-      setValue('generation', generationId);
+      setValue('generationId', generationId);
     }
   }, [generationId, setValue]);
 
@@ -332,7 +341,7 @@ export default function AddCarPage() {
 
           <Controller
             control={control}
-            name="generation"
+            name="generationId"
             rules={{
               required: 'Выберите поколение',
             }}
@@ -357,7 +366,20 @@ export default function AddCarPage() {
           />
 
           {/** Year Selection */}
-          <YearCreateBottomSheetControllerWrapper control={control} />
+          <Controller
+            control={control}
+            name="releaseYear"
+            rules={{
+              required: 'Выберите год выпуска'
+            }}
+            render={({ field, fieldState: { error } }) => (
+              <YearCreateBottomSheetControllerWrapper
+                value={field.value}
+                onChange={field.onChange}
+                error={error?.message}
+              />
+            )}
+          />
         </View>
 
         {/* Характеристики автомобиля */}
@@ -366,13 +388,104 @@ export default function AddCarPage() {
             <Text className="text-xl font-bold text-font dark:text-font-dark">Характеристики</Text>
           </View>
           <View className="gap-y-3">
-            <TransmissionCreateBottomSheetControllerWrapper control={control} />
-            <FuelTypeCreateBottomSheetControllerWrapper control={control} />
-            <BodyTypeCreateBottomSheetControllerWrapper control={control} />
-            <DrivetrainCreateBottomSheetControllerWrapper control={control} />
-            <ColorCreateBottomSheetControllerWrapper control={control} />
-            <EngineCapacityCreateBottomSheetControllerWrapper control={control} />
-            <PowerCreateBottomSheetControllerWrapper control={control} />
+            <Controller
+              control={control}
+              name="transmission_type"
+              rules={{
+                required: 'Выберите коробку передач'
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <TransmissionCreateBottomSheetControllerWrapper
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={error?.message}
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              name="fuel_type"
+              rules={{
+                required: 'Выберите тип топлива',
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <FuelTypeCreateBottomSheetControllerWrapper
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={error?.message}
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              name="frame_type"
+              rules={{
+                required: 'Выберите тип кузова'
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <BodyTypeCreateBottomSheetControllerWrapper
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={error?.message}
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              name="drivetrain_type"
+              rules={{
+                required: 'Выберите привод'
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <DrivetrainCreateBottomSheetControllerWrapper
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={error?.message}
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              name="color"
+              rules={{
+                required: 'Выберите цвет'
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <ColorCreateBottomSheetControllerWrapper
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={error?.message}
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              name="engine_capacity"
+              rules={{
+                required: 'Выберите объем двигателя'
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <EngineCapacityCreateBottomSheetControllerWrapper
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={error?.message}
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              name="power"
+              rules={{
+                required: 'Выберите мощность'
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <PowerCreateBottomSheetControllerWrapper
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={error?.message}
+                />
+              )}
+            />
 
             <Controller
               control={control}
@@ -416,10 +529,62 @@ export default function AddCarPage() {
               );
             }}
           />
-          <ConditionCreateBottomSheetControllerWrapper control={control} />
-          <DocumentsOkCreateBottomSheetControllerWrapper control={control} />
-          <NumberOfOwnersCreateBottomSheetControllerWrapper control={control} />
-          <SellerCreateBottomSheetControllerWrapper control={control} />
+          <Controller
+            control={control}
+            name="condition"
+            rules={{
+              required: 'Выберите состояние'
+            }}
+            render={({ field, fieldState: { error } }) => (
+              <ConditionCreateBottomSheetControllerWrapper
+                value={field.value}
+                onChange={field.onChange}
+                error={error?.message}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="document_type"
+            rules={{
+              required: 'Выберите состояние документов'
+            }}
+            render={({ field, fieldState: { error } }) => (
+              <DocumentsOkCreateBottomSheetControllerWrapper
+                value={field.value}
+                onChange={(value) => field.onChange(value)}
+                error={error?.message}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="number_of_owner"
+            rules={{
+              required: 'Выберите количество владельцев'
+            }}
+            render={({ field, fieldState: { error } }) => (
+              <NumberOfOwnersCreateBottomSheetControllerWrapper
+                value={field.value}
+                onChange={field.onChange}
+                error={error?.message}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="seller"
+            rules={{
+              required: 'Выберите продавца'
+            }}
+            render={({ field, fieldState: { error } }) => (
+              <SellerCreateBottomSheetControllerWrapper
+                value={field.value}
+                onChange={field.onChange}
+                error={error?.message}
+              />
+            )}
+          />
         </View>
 
         <View className="mb-5 gap-y-3 rounded-2xl bg-surface p-5 dark:bg-surface-dark">
@@ -473,8 +638,34 @@ export default function AddCarPage() {
               );
             }}
           />
-          <CurrencyCreateBottomSheetControllerWrapper control={control} />
-          <RegionCreateBottomSheetControllerWrapper control={control} />
+          <Controller
+            control={control}
+            name="currency"
+            rules={{
+              required: 'Выберите валюту'
+            }}
+            render={({ field, fieldState: { error } }) => (
+              <CurrencyCreateBottomSheetControllerWrapper
+                value={field.value}
+                onChange={field.onChange}
+                error={error?.message}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="region"
+            rules={{
+              required: 'Выберите регион'
+            }}
+            render={({ field, fieldState: { error } }) => (
+              <RegionCreateBottomSheetControllerWrapper
+                value={field.value}
+                onChange={field.onChange}
+                error={error?.message}
+              />
+            )}
+          />
           <TouchableHighlightRow
             variant="bordered"
             label="Добавить фотографии"
@@ -560,7 +751,7 @@ export default function AddCarPage() {
 
         <View className="px-4 py-2">
           <CustomRectButton
-            onPress={handleSubmit(onSubmit, () => showToast('Пожалуйста, исправьте ошибки в форме', 'error'))}
+            onPress={() => handleSubmit(onSubmit, onInvalid)()}
             appearance="primary"
             loading={mutateAdvertisement.isPending}
           >

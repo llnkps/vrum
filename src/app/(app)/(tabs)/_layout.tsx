@@ -4,16 +4,16 @@ import { useThemeStore } from '@/state/theme/useThemeStore';
 import { useAuthContext } from '@/context/AuthContext';
 import { useRouter } from 'expo-router';
 import { Platform } from 'react-native';
+import { useEffect } from 'react';
 
 export default function TabLayout() {
   const { isDark } = useThemeStore();
-  const { isAuthenticated, isLoading } = useAuthContext();
+  const { isAuthenticated} = useAuthContext();
   const router = useRouter();
   const backgroundColor = isDark ? '#000' : '#fff';
   const tabBarActiveTintColor = isDark ? '#BFC1C4' : '#292A2E';
   const tabBarInactiveTintColor = isDark ? '#666' : '#999';
 
-    console.log('TabLayout - isAuthenticated:', isAuthenticated, 'isLoading:', isLoading);
   return (
     <Tabs
       screenOptions={{
@@ -77,8 +77,8 @@ export default function TabLayout() {
         }}
         listeners={{
           tabPress: e => {
-            console.log('isAuthenticated', isAuthenticated, 'isLoading', isLoading);
-            if (!isAuthenticated && !isLoading) {
+            console.log('isAuthenticated', isAuthenticated, 'isLoading');
+            if (!isAuthenticated) {
               e.preventDefault();
               router.push('/sign-in');
             }
@@ -93,7 +93,7 @@ export default function TabLayout() {
         }}
         listeners={{
           tabPress: e => {
-            if (!isAuthenticated && !isLoading) {
+            if (!isAuthenticated) {
               e.preventDefault();
               router.push('/sign-in');
             }

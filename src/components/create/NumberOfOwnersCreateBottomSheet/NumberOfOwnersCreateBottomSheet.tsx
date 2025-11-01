@@ -9,7 +9,7 @@ type NumberOfOwnersCreateBottomSheetProps = {
   onChange: (value: NumberOfOwnersOption | undefined) => void;
 };
 
-const options = [
+export const options = [
   { label: 'Один', value: 'one' },
   { label: 'Два', value: 'up_to_two' },
   { label: 'Три', value: 'up_to_three' },

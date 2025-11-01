@@ -2,16 +2,17 @@ import { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
 import { Region } from '@/openapi/client';
 import React, { useCallback, useRef } from 'react';
-import { Controller, Control } from 'react-hook-form';
 import { RegionCreateBottomSheet } from './RegionCreateBottomSheet';
 
 interface RegionControllerWrapperProps {
-  control: Control<any>;
+  value: string;
+  onChange: (value: string) => void;
+  error?: string;
 }
 
-const Wrapper = ({ control }: RegionControllerWrapperProps) => {
-  const [selectedRegion, setSelectedRegion] = React.useState<string | undefined>(undefined);
+const Wrapper = ({ value, onChange, error }: RegionControllerWrapperProps) => {
   console.log('Rendering RegionCreateBottomSheet Wrapper');
+  const [selectedLabel, setSelectedLabel] = React.useState<string | undefined>(undefined);
   const regionModalRef = useRef<BottomSheetRef>(null);
   const handlePresentRegionModalPress = useCallback(() => {
     regionModalRef.current?.present();
@@ -19,33 +20,24 @@ const Wrapper = ({ control }: RegionControllerWrapperProps) => {
 
   return (
     <>
-      <Controller
-        control={control}
-        name="region"
-        rules={{
-          required: 'Выберите регион'
+      <TouchableHighlightRow
+        variant="bordered"
+        label={'Регион'}
+        selectedValue={selectedLabel}
+        onPress={handlePresentRegionModalPress}
+        rightIcon="chevron-down"
+        required
+        error={error}
+      />
+      <RegionCreateBottomSheet
+        ref={regionModalRef}
+        value={value}
+        setSelectedLabel={setSelectedLabel}
+        onChange={(region: Region) => {
+          onChange(region.slug);
+          setSelectedLabel(region.name);
+          regionModalRef.current?.close({ duration: 150 });
         }}
-        render={({ field: _field, fieldState: { error } }) => (
-          <>
-            <TouchableHighlightRow
-              variant="bordered"
-              label={'Регион'}
-              selectedValue={selectedRegion ?? undefined}
-              onPress={handlePresentRegionModalPress}
-              rightIcon="chevron-down"
-              required
-              error={error?.message}
-            />
-            <RegionCreateBottomSheet
-              ref={regionModalRef}
-              onChange={(region: Region) => {
-                _field.onChange(region.slug);
-                setSelectedRegion(region.name || '');
-                regionModalRef.current?.close({ duration: 150 });
-              }}
-            />
-          </>
-        )}
       />
     </>
   );

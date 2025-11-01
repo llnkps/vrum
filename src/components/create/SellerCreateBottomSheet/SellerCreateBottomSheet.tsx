@@ -9,7 +9,7 @@ type SellerCreateBottomSheetProps = {
   onChange: (value: SellerOption | undefined) => void;
 };
 
-const options = [
+export const options = [
   { label: 'Собственник', value: 'owner' },
   { label: 'Частник', value: 'private' },
   { label: 'Компания', value: 'company' },

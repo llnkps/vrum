@@ -8,9 +8,11 @@ export async function createAuthenticatedApiCall<T>(apiCall: () => Promise<T>): 
     if (error.response?.status === 401) {
       // Try to refresh token
       const refreshed = await tokenManager.refreshAccessToken();
+      console.log('Token refresh result:', refreshed);
       if (refreshed) {
         // Retry the API call with new token
         try {
+          console.log("MAKE ONE MORE TRY AFTER REFRESH");
           return await apiCall();
         } catch (retryError: any) {
           if (retryError.response?.status === 401) {

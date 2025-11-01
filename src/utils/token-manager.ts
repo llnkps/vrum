@@ -1,5 +1,3 @@
-import { jwtDecode } from 'jwt-decode';
-
 // Token manager to avoid circular dependencies
 class TokenManager {
   private static instance: TokenManager;

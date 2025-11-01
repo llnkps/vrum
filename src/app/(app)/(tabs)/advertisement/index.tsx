@@ -14,7 +14,7 @@ import React from 'react';
 import { Text, TouchableHighlight, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function MyAdvertisement() {
+export default function AdvertisementScreen() {
   const router = useRouter();
   const { isAuthenticated } = useAuthContext();
   const theme = useTheme() as CustomTheme;

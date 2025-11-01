@@ -9,7 +9,7 @@ type DocumentsOkCreateBottomSheetProps = {
   onChange: (value: DocumentsOkOption | undefined) => void;
 };
 
-const options = [
+export const options = [
   { label: 'Документы в порядке', value: 'ok' },
   { label: 'Проблемы с документами', value: 'missing_or_problematic' },
 ];

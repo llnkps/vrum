@@ -31,10 +31,10 @@ export function useSimpleAutoAdvertisementCreateMutate({ onSuccess, onError }: p
       formParams.append('parameters[color]', formData.get('color') as any);
       formParams.append('parameters[power]', formData.get('power') as any);
       formParams.append('parameters[engine_capacity]', formData.get('engine_capacity') as any);
-      formParams.append('parameters[trade_allow]', formData.get('trade_allow') ? '1' : '0');
+      formParams.append('parameters[trade_allow]', formData.get('trade_allow') ? 1 : 0);
       formParams.append('parameters[condition]', formData.get('condition') as any);
       formParams.append('parameters[number_of_owner]', formData.get('number_of_owner') as any);
-      formParams.append('parameters[document_type]', formData.get('document_ok') ? 'ok' : 'not_ok');
+      formParams.append('parameters[document_type]', formData.get('document_type') as any);
       formParams.append('parameters[seller]', formData.get('seller') as any);
 
       formData.getAll('images').forEach(element => {

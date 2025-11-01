@@ -3,10 +3,16 @@ import { createAuthenticatedApiCall } from '@/openapi/auth-utils';
 import { LoginApi, UserApi, DefaultConfig } from '@/openapi/client';
 import { createAuthenticatedConfiguration } from '@/openapi/configurations';
 import { tokenManager } from '@/utils/token-manager';
-import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
-import { tokenCache } from '../../utils/cache';
+import { tokenCache } from '@/utils/auth-utils';
 import * as AuthSession from 'expo-auth-session';
+import {
+  getTokenExpirationTime,
+  isTokenExpired,
+  saveAuthData,
+  loadAuthData,
+  clearAuthData
+} from '@/utils/auth-utils';
 
 interface User {
   id: string;
@@ -36,24 +42,6 @@ interface AuthContextType extends AuthState {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const STORAGE_KEY = 'auth-storage';
-const STORAGE_VERSION = 1;
-const isWeb = Platform.OS === 'web';
-
-const getTokenExpirationTime = (token: string | null): number | null => {
-  if (!token) return null;
-
-  try {
-    const parts = token.split('.');
-    if (parts.length !== 3) return null;
-
-    const payload = JSON.parse(atob(parts[1]));
-    return payload.exp || null;
-  } catch {
-    return null;
-  }
-};
-
 interface AuthProviderProps {
   children: ReactNode;
 }
@@ -68,51 +56,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     isLoading: true,
     isInitialized: false,
   });
-
-  // Storage utilities
-  const saveAuthData = useCallback(async (authData: Partial<AuthState>) => {
-    try {
-      const dataToStore = {
-        ...authData,
-        version: STORAGE_VERSION,
-        timestamp: Date.now(),
-      };
-      await SecureStore.setItemAsync(STORAGE_KEY, JSON.stringify(dataToStore));
-    } catch (error) {
-      console.error('Error saving auth data:', error);
-    }
-  }, []);
-
-  const loadAuthData = useCallback(async (): Promise<Partial<AuthState> | null> => {
-    try {
-      const stored = await SecureStore.getItemAsync(STORAGE_KEY);
-      if (!stored) return null;
-
-      const parsed = JSON.parse(stored);
-      if (parsed.version !== STORAGE_VERSION) {
-        await SecureStore.deleteItemAsync(STORAGE_KEY);
-        return null;
-      }
-
-      // Check if data is not too old (30 days)
-      const maxAge = 30 * 24 * 60 * 60 * 1000;
-      if (parsed.timestamp && Date.now() - parsed.timestamp > maxAge) {
-        await SecureStore.deleteItemAsync(STORAGE_KEY);
-        return null;
-      }
-
-      return {
-        user: parsed.user || null,
-        token: parsed.token || null,
-        refreshToken: parsed.refreshToken || null,
-        tokenExpiration: parsed.tokenExpiration || null,
-      };
-    } catch (error) {
-      console.error('Error loading auth data:', error);
-      await SecureStore.deleteItemAsync(STORAGE_KEY);
-      return null;
-    }
-  }, []);
 
   // Initialize authentication state on mount
   useEffect(() => {
@@ -136,6 +79,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           // Try to refresh the token
           tokenManager.setToken(storedAuth.token);
           tokenManager.setRefreshToken(storedAuth.refreshToken);
+          console.log('🔄 Refreshing access token...', storedAuth.token, storedAuth.refreshToken);
 
           const refreshSuccess = await refreshAccessToken();
           if (!refreshSuccess) {
@@ -149,7 +93,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           tokenManager.setToken(storedAuth.token);
           tokenManager.setRefreshToken(storedAuth.refreshToken);
 
-          if (!isWeb && tokenCache) {
+          if (tokenCache) {
             await tokenCache.saveToken('accessToken', storedAuth.token);
             await tokenCache.saveToken('refreshToken', storedAuth.refreshToken);
           }
@@ -219,30 +163,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, []);
 
-  // Clear all authentication data
-  const clearAuthData = useCallback(async () => {
-    tokenManager.setToken(null);
-    tokenManager.setRefreshToken(null);
-
-    try {
-      await SecureStore.deleteItemAsync(STORAGE_KEY);
-    } catch (error) {
-      console.error('Error clearing auth storage:', error);
-    }
-
-    if (!isWeb && tokenCache) {
-      try {
-        await tokenCache.saveToken('accessToken', '');
-        await tokenCache.saveToken('refreshToken', '');
-      } catch (error) {
-        console.error('Error clearing token cache:', error);
-      }
-    }
-  }, []);
-
   // Refresh access token
   const refreshAccessToken = useCallback(async (): Promise<boolean> => {
-    const currentRefreshToken = state.refreshToken;
+    const currentRefreshToken = tokenManager.getRefreshToken();
     if (!currentRefreshToken) {
       console.warn('No refresh token available');
       return false;
@@ -293,7 +216,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
 
       // Update token cache
-      if (!isWeb && tokenCache) {
+      if (tokenCache) {
         await tokenCache.saveToken('accessToken', newToken);
         await tokenCache.saveToken('refreshToken', newRefreshToken);
       }
@@ -303,7 +226,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.error('Token refresh error:', error);
       return false;
     }
-  }, [state.refreshToken, saveAuthData]);
+  }, []);
 
   // Login with email and password
   const login = useCallback(async (email: string, password: string): Promise<void> => {
@@ -344,7 +267,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       // Save to storage
       await saveAuthData({
-        isAuthenticated: true,
         user: newUser,
         token: newToken,
         refreshToken: newRefreshToken,
@@ -352,7 +274,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
 
       // Save to token cache
-      if (!isWeb && tokenCache) {
+      if (tokenCache) {
         await tokenCache.saveToken('accessToken', newToken);
         await tokenCache.saveToken('refreshToken', newRefreshToken);
       }
@@ -362,7 +284,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setState(prev => ({ ...prev, isLoading: false }));
       throw error;
     }
-  }, [saveAuthData]);
+  }, []);
 
   // Signup with email, phone, and password
   const signup = useCallback(async (email: string, tel: string, password: string): Promise<void> => {
@@ -393,7 +315,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       // OAuth Configuration
       const config = {
-        clientId: isWeb
+        clientId: Platform.OS === 'web'
           ? (process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || '')
           : (process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID || ''),
         scopes: ['openid', 'profile', 'email'],
@@ -485,7 +407,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       // Save to storage
       await saveAuthData({
-        isAuthenticated: true,
         user: newUser,
         token: tokenResult.accessToken,
         refreshToken: tokenResult.refreshToken || null,
@@ -495,7 +416,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
 
       // Save to token cache
-      if (!isWeb && tokenCache) {
+      if (tokenCache) {
         await tokenCache.saveToken('accessToken', tokenResult.accessToken);
         if (tokenResult.refreshToken) {
           await tokenCache.saveToken('refreshToken', tokenResult.refreshToken);
@@ -507,18 +428,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setState(prev => ({ ...prev, isLoading: false }));
       throw error;
     }
-  }, [saveAuthData]);
+  }, []);
 
   // Logout
   const logout = useCallback(async (): Promise<void> => {
     console.log('🚪 Logging out...');
 
     // Invalidate refresh token on server
-    if (state.refreshToken) {
+    if (tokenManager.getRefreshToken()) {
       try {
         await fetch(DefaultConfig.basePath + '/api/token/invalidate', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${state.refreshToken}` },
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${tokenManager.getRefreshToken()}` },
         });
       } catch (error) {
         console.error('Token invalidation error:', error);
@@ -538,9 +459,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       isLoading: false,
       isInitialized: true,
     });
-  }, [state.refreshToken, clearAuthData]);
+  }, []);
 
-  // Check authentication (for manual validation)
   const checkAuth = useCallback(async (): Promise<void> => {
     if (!state.token) {
       setState(prev => ({ ...prev, isAuthenticated: false, user: null }));
@@ -584,6 +504,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     refreshAccessToken,
     isTokenExpired: checkTokenExpired,
   };
+
+  // Set up token manager callbacks
+  useEffect(() => {
+    tokenManager.setRefreshCallback(refreshAccessToken);
+    tokenManager.setLogoutCallback(logout);
+  }, [refreshAccessToken, logout]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

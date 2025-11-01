@@ -9,7 +9,7 @@ type FuelTypeCreateBottomSheetProps = {
   onChange: (value: FuelTypeOption | undefined) => void;
 };
 
-const options = [
+export const options = [
   { label: 'Бензин', value: 'petrol' },
   { label: 'Дизель', value: 'diesel' },
   { label: 'Электро', value: 'electric' },

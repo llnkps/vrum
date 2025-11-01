@@ -1,50 +1,43 @@
 import { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
 import React, { useCallback, useRef } from 'react';
-import { Controller, Control } from 'react-hook-form';
-import { CurrencyCreateBottomSheet } from './CurrencyCreateBottomSheet';
+import { CurrencyCreateBottomSheet, options } from './CurrencyCreateBottomSheet';
 
 interface CurrencyControllerWrapperProps {
-  control: Control<any>;
+  value?: string;
+  onChange: (value: string) => void;
+  error?: string;
 }
 
-const Wrapper = ({ control }: CurrencyControllerWrapperProps) => {
-  const [selectedCurrency, setSelectedCurrency] = React.useState<string | undefined>(undefined);
+const Wrapper = ({ value, onChange, error }: CurrencyControllerWrapperProps) => {
   console.log('Rendering CurrencyCreateBottomSheet Wrapper');
   const currencyModalRef = useRef<BottomSheetRef>(null);
   const handlePresentCurrencyModalPress = useCallback(() => {
     currencyModalRef.current?.present();
   }, []);
 
+    // Find the label for the current value
+  const selectedLabel = React.useMemo(() => {
+    return options.find(opt => opt.value === value)?.label;
+  }, [value]);
+
   return (
     <>
-      <Controller
-        control={control}
-        name="currency"
-        rules={{
-          required: 'Выберите валюту'
+      <TouchableHighlightRow
+        variant="bordered"
+        label={'Валюта'}
+        selectedValue={selectedLabel}
+        onPress={handlePresentCurrencyModalPress}
+        rightIcon="chevron-down"
+        required
+        error={error}
+      />
+      <CurrencyCreateBottomSheet
+        ref={currencyModalRef}
+        onChange={(currency) => {
+          onChange(currency?.value || '');
+          currencyModalRef.current?.close({ duration: 150 });
         }}
-        render={({ field: _field, fieldState: { error } }) => (
-          <>
-            <TouchableHighlightRow
-              variant="bordered"
-              label={'Валюта'}
-              selectedValue={selectedCurrency ?? undefined}
-              onPress={handlePresentCurrencyModalPress}
-              rightIcon="chevron-down"
-              required
-              error={error?.message}
-            />
-            <CurrencyCreateBottomSheet
-              ref={currencyModalRef}
-              onChange={(currency) => {
-                _field.onChange(currency?.value || '');
-                setSelectedCurrency(currency?.label || '');
-                currencyModalRef.current?.close({ duration: 150 });
-              }}
-            />
-          </>
-        )}
       />
     </>
   );

@@ -3,13 +3,15 @@ import { CustomRectButton } from '@/components/ui/button';
 import { useRegionApi } from '@/hooks/api/useRegionApi';
 import { Region } from '@/openapi/client';
 import { BottomSheetModal, BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
-import React, { FC, forwardRef } from 'react';
+import React, { FC, forwardRef, useEffect } from 'react';
 import { ActivityIndicator, Text } from 'react-native';
 
 export type BottomSheetRef = BottomSheetModal;
 
 type RegionCreateModalProps = {
-  onChange?: (region: Region) => void;
+  value: string;
+  setSelectedLabel: (label: string) => void;
+  onChange: (region: Region) => void;
 };
 
 export const RegionCreateBottomSheet = forwardRef<BottomSheetRef, RegionCreateModalProps>((props, ref) => {
@@ -39,7 +41,12 @@ export const RegionCreateBottomSheet = forwardRef<BottomSheetRef, RegionCreateMo
         onConfirm: handleConfirm,
       }}
     >
-      <RegionList onRegionSelect={handleRegionSelect} isRegionSelected={isRegionSelected} />
+      <RegionList
+        value={props.value}
+        setSelectedLabel={props.setSelectedLabel}
+        onRegionSelect={handleRegionSelect}
+        isRegionSelected={isRegionSelected}
+      />
     </CustomBottomSheetModal>
   );
 });
@@ -47,12 +54,21 @@ export const RegionCreateBottomSheet = forwardRef<BottomSheetRef, RegionCreateMo
 RegionCreateBottomSheet.displayName = 'RegionCreateBottomSheet';
 
 type RegionListProps = {
+  value: string;
+  setSelectedLabel: (label: string) => void;
   onRegionSelect: (region: Region) => void;
   isRegionSelected: (region: Region) => boolean;
 };
 
-const RegionList: FC<RegionListProps> = ({ onRegionSelect, isRegionSelected }) => {
+const RegionList: FC<RegionListProps> = ({ value, setSelectedLabel, onRegionSelect, isRegionSelected }) => {
   const { data: regions, isLoading, error } = useRegionApi();
+
+  useEffect(() => {
+    const selectedRegion = regions?.find(region => region.slug === value);
+    if (selectedRegion) {
+      setSelectedLabel(selectedRegion.name);
+    }
+  }, [regions, value, setSelectedLabel]);
 
   if (isLoading) {
     return (

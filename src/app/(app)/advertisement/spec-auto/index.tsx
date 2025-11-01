@@ -10,7 +10,7 @@ import CloseIcon from '@/components/global/CloseIcon';
 import { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow/TouchableHighlightRow';
 import { Button } from '@/components/ui/button';
-import { BodyTypeCreateBottomSheet } from '@/components/create/BodyTypeCreateBottomSheet';
+import { BodyTypeCreateBottomSheet } from '@/components/create/FrameTypeCreateBottomSheet';
 import { ColorCreateBottomSheet } from '@/components/create/ColorCreateBottomSheet';
 import { ConditionCreateBottomSheet } from '@/components/create/ConditionCreateBottomSheet';
 import { CurrencyCreateBottomSheet } from '@/components/create/CurrencyCreateBottomSheet';

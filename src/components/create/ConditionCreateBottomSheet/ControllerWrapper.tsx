@@ -1,50 +1,43 @@
 import { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
 import React, { useCallback, useRef } from 'react';
-import { Controller, Control } from 'react-hook-form';
-import { ConditionCreateBottomSheet } from './ConditionCreateBottomSheet';
+import { ConditionCreateBottomSheet, options } from './ConditionCreateBottomSheet';
 
 interface ConditionControllerWrapperProps {
-  control: Control<any>;
+  value?: string;
+  onChange: (value: string) => void;
+  error?: string;
 }
 
-const Wrapper = ({ control }: ConditionControllerWrapperProps) => {
-  const [selectedCondition, setSelectedCondition] = React.useState<string | undefined>(undefined);
+const Wrapper = ({ value, onChange, error }: ConditionControllerWrapperProps) => {
   console.log('Rendering ConditionCreateBottomSheet Wrapper');
   const conditionModalRef = useRef<BottomSheetRef>(null);
   const handlePresentConditionModalPress = useCallback(() => {
     conditionModalRef.current?.present();
   }, []);
 
+    // Find the label for the current value
+  const selectedLabel = React.useMemo(() => {
+    return options.find(opt => opt.value === value)?.label;
+  }, [value]);
+
   return (
     <>
-      <Controller
-        control={control}
-        name="condition"
-        rules={{
-          required: 'Выберите состояние'
+      <TouchableHighlightRow
+        variant="bordered"
+        label={'Состояние'}
+        selectedValue={selectedLabel}
+        onPress={handlePresentConditionModalPress}
+        rightIcon="chevron-down"
+        required
+        error={error}
+      />
+      <ConditionCreateBottomSheet
+        ref={conditionModalRef}
+        onChange={(condition) => {
+          onChange(condition?.value || '');
+          conditionModalRef.current?.close({ duration: 150 });
         }}
-        render={({ field: _field, fieldState: { error } }) => (
-          <>
-            <TouchableHighlightRow
-              variant="bordered"
-              label={'Состояние'}
-              selectedValue={selectedCondition ?? undefined}
-              onPress={handlePresentConditionModalPress}
-              rightIcon="chevron-down"
-              required
-              error={error?.message}
-            />
-            <ConditionCreateBottomSheet
-              ref={conditionModalRef}
-              onChange={(condition) => {
-                _field.onChange(condition?.value || '');
-                setSelectedCondition(condition?.label || '');
-                conditionModalRef.current?.close({ duration: 150 });
-              }}
-            />
-          </>
-        )}
       />
     </>
   );

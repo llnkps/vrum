@@ -1,2 +1,2 @@
-export { BodyTypeCreateBottomSheet } from './BodyTypeCreateBottomSheet';
+export { BodyTypeCreateBottomSheet } from './FrameTypeCreateBottomSheet';
 export { BodyTypeCreateBottomSheetControllerWrapper } from './ControllerWrapper';

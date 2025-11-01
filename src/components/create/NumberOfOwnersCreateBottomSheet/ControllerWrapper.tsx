@@ -1,50 +1,43 @@
 import { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
 import React, { useCallback, useRef } from 'react';
-import { Controller, Control } from 'react-hook-form';
-import { NumberOfOwnersCreateBottomSheet } from './NumberOfOwnersCreateBottomSheet';
+import { NumberOfOwnersCreateBottomSheet, options } from './NumberOfOwnersCreateBottomSheet';
 
 interface NumberOfOwnersControllerWrapperProps {
-  control: Control<any>;
+  value?: string;
+  onChange: (value: string) => void;
+  error?: string;
 }
 
-const Wrapper = ({ control }: NumberOfOwnersControllerWrapperProps) => {
-  const [selectedNumberOfOwners, setSelectedNumberOfOwners] = React.useState<string | undefined>(undefined);
+const Wrapper = ({ value, onChange, error }: NumberOfOwnersControllerWrapperProps) => {
   console.log('Rendering NumberOfOwnersCreateBottomSheet Wrapper');
   const numberOfOwnersModalRef = useRef<BottomSheetRef>(null);
   const handlePresentNumberOfOwnersModalPress = useCallback(() => {
     numberOfOwnersModalRef.current?.present();
   }, []);
 
+  // Find the label for the current value
+  const selectedLabel = React.useMemo(() => {
+    return options.find(opt => opt.value === value)?.label;
+  }, [value]);
+
   return (
     <>
-      <Controller
-        control={control}
-        name="number_of_owners"
-        rules={{
-          required: 'Выберите количество владельцев'
+      <TouchableHighlightRow
+        variant="bordered"
+        label={'Количество владельцев'}
+        selectedValue={selectedLabel}
+        onPress={handlePresentNumberOfOwnersModalPress}
+        rightIcon="chevron-down"
+        required
+        error={error}
+      />
+      <NumberOfOwnersCreateBottomSheet
+        ref={numberOfOwnersModalRef}
+        onChange={(numberOfOwners) => {
+          onChange(numberOfOwners?.value || '');
+          numberOfOwnersModalRef.current?.close({ duration: 150 });
         }}
-        render={({ field: _field, fieldState: { error } }) => (
-          <>
-            <TouchableHighlightRow
-              variant="bordered"
-              label={'Количество владельцев'}
-              selectedValue={selectedNumberOfOwners ?? undefined}
-              onPress={handlePresentNumberOfOwnersModalPress}
-              rightIcon="chevron-down"
-              required
-              error={error?.message}
-            />
-            <NumberOfOwnersCreateBottomSheet
-              ref={numberOfOwnersModalRef}
-              onChange={(numberOfOwners) => {
-                _field.onChange(numberOfOwners?.value || '');
-                setSelectedNumberOfOwners(numberOfOwners?.label || '');
-                numberOfOwnersModalRef.current?.close({ duration: 150 });
-              }}
-            />
-          </>
-        )}
       />
     </>
   );

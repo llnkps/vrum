@@ -9,7 +9,7 @@ type TransmissionCreateBottomSheetProps = {
   onChange: (value: TransmissionOption | undefined) => void;
 };
 
-const options = [
+export const options = [
   { label: 'Механика', value: 'manual' },
   { label: 'Автомат', value: 'automatic' },
   { label: 'Робот', value: 'robot' },
