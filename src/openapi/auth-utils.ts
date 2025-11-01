@@ -1,37 +1,29 @@
-import { useAuthStore } from '@/state/auth/useAuthStore';
+import { tokenManager } from '../utils/token-manager';
 
 // Helper function to create authenticated API calls with automatic token refresh
 export async function createAuthenticatedApiCall<T>(apiCall: () => Promise<T>): Promise<T> {
-  const { token, refreshAccessToken, logout } = useAuthStore.getState();
-  console.log('Creating authenticated API call');
-  console.log('Creating authenticated API call');
-  console.log("token exist", !!token);
   try {
     return await apiCall();
   } catch (error: any) {
-    console.log("API CALL ERROR", error);
     if (error.response?.status === 401) {
       // Try to refresh token
-      const refreshed = await refreshAccessToken();
-      console.log('Token refreshed:');
-      console.log(refreshed)
+      const refreshed = await tokenManager.refreshAccessToken();
+      console.log('Token refresh result:', refreshed);
       if (refreshed) {
         // Retry the API call with new token
         try {
-          console.log("TRYING AGAIN");
+          console.log("MAKE ONE MORE TRY AFTER REFRESH");
           return await apiCall();
         } catch (retryError: any) {
-          console.log("RETRY ERROR", retryError);
           if (retryError.response?.status === 401) {
             // Refresh failed, logout
-            await logout();
+            await tokenManager.logout();
           }
           throw retryError;
         }
       } else {
         // Refresh failed, logout
-        await logout();
-        throw new AuthenticationException('Token refresh failed');
+        await tokenManager.logout();
       }
     }
     throw error;

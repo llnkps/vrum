@@ -9,7 +9,7 @@ type ConditionCreateBottomSheetProps = {
   onChange: (value: ConditionOption | undefined) => void;
 };
 
-const options = [
+export const options = [
   { label: 'Новый', value: 'new' },
   { label: 'Б/у', value: 'used' },
   { label: 'На запчасти', value: 'for_parts' },

@@ -6,6 +6,7 @@ import * as Device from 'expo-device';
 import { Platform } from 'react-native';
 import { PushTokenApi, RegisterPushTokenRequestPlatformEnum } from '@/openapi/client';
 import { createAuthenticatedConfiguration } from '@/openapi/configurations';
+import { useAuthContext } from '@/context/AuthContext';
 
 interface NotificationContextType {
   expoPushToken: string | null;
@@ -29,6 +30,8 @@ interface NotificationProviderProps {
 }
 
 export const NotificationProvider: React.FC<NotificationProviderProps> = ({ children }) => {
+  const auth = useAuthContext();
+
   const [expoPushToken, setExpoPushToken] = useState<string | null>(null);
   const [notification, setNotification] = useState<Notifications.Notification | null>(null);
   const [error, setError] = useState<Error | null>(null);
@@ -38,21 +41,23 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
     try {
       const token = await registerForPushNotificationsAsync();
       setExpoPushToken(token);
-      
+
       // Register token on backend
-      try {
-        const pushTokenApi = new PushTokenApi(createAuthenticatedConfiguration());
-        await pushTokenApi.registerPushToken({
-          registerPushTokenRequest: {
-            expoPushToken: token,
-            platform: Platform.OS as RegisterPushTokenRequestPlatformEnum,
-            deviceId: Constants.installationId || 'unknown',
-            deviceName: Device.modelName || null,
-          },
-        });
-        console.log('Push token registered successfully');
-      } catch (error) {
-        console.error('Failed to register push token:', error);
+      // TODO check if authenticated before registering
+      if (auth.isAuthenticated) {
+        try {
+          const pushTokenApi = new PushTokenApi(createAuthenticatedConfiguration());
+          await pushTokenApi.registerPushToken({
+            registerPushTokenRequest: {
+              expoPushToken: token,
+              platform: Platform.OS as RegisterPushTokenRequestPlatformEnum,
+              deviceId: Constants.installationId || 'unknown',
+              deviceName: Device.modelName || null,
+            },
+          });
+        } catch (error) {
+          console.error('Failed to register push token:', error);
+        }
       }
     } catch (error) {
       setError(error as Error);
@@ -82,5 +87,9 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
     };
   }, []);
 
-  return <NotificationContext.Provider value={{ expoPushToken, notification, error, retryPermissions: registerToken }}>{children}</NotificationContext.Provider>;
+  return (
+    <NotificationContext.Provider value={{ expoPushToken, notification, error, retryPermissions: registerToken }}>
+      {children}
+    </NotificationContext.Provider>
+  );
 };

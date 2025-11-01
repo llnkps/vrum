@@ -2,7 +2,7 @@ import { SegmentedButton } from '@/components/ui/button';
 import { FavoritesTab } from '@/constants/navigation';
 import FavoritesPage from '@/modules/favorites/FavoritesPage';
 import SubscriptionsPage from '@/modules/favorites/SubscriptionsPage';
-import { useAuthStore } from '@/state/auth/useAuthStore';
+import { useAuthContext } from '@/context/AuthContext';
 import { CustomTheme } from '@/theme';
 import { useTheme } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
@@ -22,7 +22,7 @@ const tabs = [
 
 const Page = () => {
   const [tab, setTab] = useState<FavoritesTab>(FavoritesTab.FAVORITES);
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuthContext();
   console.log('=================');
   console.log('isAuthenticated', isAuthenticated);
   const router = useRouter();

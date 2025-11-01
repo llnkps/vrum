@@ -6,7 +6,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { createAuthenticatedConfiguration } from '@/openapi/configurations';
 import { UserApi } from '@/openapi/client';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { useAuthStore } from '@/state/auth/useAuthStore';
+import { useAuthContext } from '@/context/AuthContext';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
@@ -14,7 +14,7 @@ import { CustomTheme } from '@/theme';
 
 export default function ProfileEditPage() {
   const router = useRouter();
-  const { logout } = useAuthStore();
+  const { logout } = useAuthContext();
   const [profileForm, setProfileForm] = useState({
     avatar: '',
     firstName: '',

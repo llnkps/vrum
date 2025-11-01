@@ -73,6 +73,7 @@ const CustomBottomSheetModal = forwardRef<BottomSheetRef, CustomBottomSheetProps
       backgroundStyle={{
         backgroundColor: theme.colors.surface,
       }}
+      bottomInset={20}
     >
       {/* <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}> */}
       {children}

@@ -85,7 +85,7 @@ const ImagePickerModal = forwardRef<BottomSheetRef, ImagePickerModalProps>(({ on
   };
 
   return (
-    <CustomBottomSheetModal ref={ref} snapPoints={['40%']} enableContentPanningGesture={true}>
+    <CustomBottomSheetModal ref={ref} snapPoints={['25%']} enableContentPanningGesture={true} title="Добавить изображение">
       <BottomSheetView className="flex-col gap-y-4 p-4">
         <View className="gap-y-2">
           <CustomRectButton title="Выбрать из галереи" onPress={pickImages} isSelected={false} />

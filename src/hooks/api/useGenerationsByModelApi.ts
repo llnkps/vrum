@@ -9,7 +9,7 @@ export const useGenerationsByModelApi = (brandId: string | null, modelId: string
     queryFn: async () => {
       if (!brandId || !modelId) return [];
 
-      const response = await simpleAutoClient.getAppSimpleautocontextPresentationGenerationgetcollectionGetgenerations({
+      const response = await simpleAutoClient.getSimpleAutoGenerations({
         brandId,
         modelId,
       });

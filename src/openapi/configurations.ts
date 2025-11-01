@@ -1,5 +1,5 @@
 import { Configuration } from './client';
-import { useAuthStore } from '@/state/auth/useAuthStore';
+import { tokenManager } from '../utils/token-manager';
 import { jwtDecode } from 'jwt-decode';
 import { router } from 'expo-router';
 
@@ -8,48 +8,11 @@ export function createAuthenticatedConfiguration(): Configuration {
   return new Configuration({
     credentials: 'include',
     accessToken: async (name?: string, scopes?: string[]) => {
-      const { token } = useAuthStore.getState();
+      const token = tokenManager.getToken();
+      console.log("TOKEN FETCHED FOR CONFIGURATION:", token);
       return token || '';
     },
   });
-}
-
-// Function to check if token is expired
-export function isTokenExpired(token: string): boolean {
-  try {
-    const payload: any = jwtDecode(token);
-    const currentTime = Math.floor(Date.now() / 1000);
-    return payload.exp ? currentTime >= payload.exp : false;
-  } catch (error) {
-    console.error('Error decoding token:', error);
-    return true; // Assume expired if can't decode
-  }
-}
-
-// Function to validate JWT token (not expired and properly formatted)
-export function isValidJWT(token: string): boolean {
-  if (!token) return false;
-  try {
-    jwtDecode(token);
-    return !isTokenExpired(token);
-  } catch (error) {
-    console.error('Error validating JWT:', error);
-    return false;
-  }
-}
-
-// Function to ensure valid token (refresh if needed)
-export async function ensureValidToken(): Promise<boolean> {
-  const { token, refreshAccessToken } = useAuthStore.getState();
-
-  if (!token) return false;
-
-  if (isTokenExpired(token)) {
-    console.log('Token expired, attempting refresh...');
-    return await refreshAccessToken();
-  }
-
-  return true;
 }
 
 // Types for auth results

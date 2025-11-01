@@ -1,7 +1,11 @@
 import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import { CustomRectButton } from '@/components/ui/button';
-import { BottomSheetView } from '@gorhom/bottom-sheet';
+import { CustomTheme } from '@/theme';
+import { Feather } from '@expo/vector-icons';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { useTheme } from '@react-navigation/native';
 import React, { forwardRef } from 'react';
+import { Text, View } from 'react-native';
 
 type ColorOption = (typeof options)[number];
 
@@ -9,7 +13,7 @@ type ColorCreateBottomSheetProps = {
   onChange: (value: ColorOption | undefined) => void;
 };
 
-const options = [
+export const options = [
   { label: 'Черный', value: 'black', color: '#000000' },
   { label: 'Белый', value: 'white', color: '#FFFFFF' },
   { label: 'Серый', value: 'gray', color: '#808080' },
@@ -21,6 +25,7 @@ const options = [
 ];
 
 export const ColorCreateBottomSheet = forwardRef<BottomSheetRef, ColorCreateBottomSheetProps>(({ onChange }, ref) => {
+  const theme = useTheme() as CustomTheme;
   const [selectedColor, setSelectedColor] = React.useState<ColorOption | undefined>(undefined);
 
   const handleToggle = (option: ColorOption) => {
@@ -33,18 +38,26 @@ export const ColorCreateBottomSheet = forwardRef<BottomSheetRef, ColorCreateBott
   return (
     <CustomBottomSheetModal
       ref={ref}
-      snapPoints={['35%']}
+      snapPoints={['40%']}
       enableContentPanningGesture={true}
       title={'Цвет'}
       footerProps={{
         onConfirm: handleConfirm,
       }}
     >
-      <BottomSheetView className="flex-col">
+      <BottomSheetScrollView enableFooterMarginAdjustment>
         {options.map(opt => (
-          <CustomRectButton key={opt.value} title={opt.label} isSelected={selectedColor?.value === opt.value} onPress={() => handleToggle(opt)} />
+          <CustomRectButton key={opt.value} title={opt.label} isSelected={selectedColor?.value === opt.value} onPress={() => handleToggle(opt)}>
+            <View className="flex-row items-center justify-between">
+              <View className="flex-row items-center gap-2">
+                <View style={{ backgroundColor: opt.color, width: 24, height: 24, borderRadius: 12 }} />
+                <Text style={{ color: theme.colors.text, fontSize: 16 }}>{opt.label}</Text>
+              </View>
+              {selectedColor?.value === opt.value && <Feather name="check" size={18} color={theme.colors.icon} />}
+            </View>
+          </CustomRectButton>
         ))}
-      </BottomSheetView>
+      </BottomSheetScrollView>
     </CustomBottomSheetModal>
   );
 });

@@ -3,7 +3,7 @@ import { IconButton } from '@/components/ui/button';
 import { useChatMessages } from '@/modules/messages/hooks/useChatMessages';
 import { useChats } from '@/modules/messages/hooks/useChats';
 import { MessageDTO } from '@/openapi/client';
-import { useAuthStore } from '@/state/auth/useAuthStore';
+import { useAuthContext } from '@/context/AuthContext';
 import { CustomTheme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
@@ -14,14 +14,11 @@ import { ActivityIndicator, Alert, Image, Platform, StyleSheet, Text, TouchableO
 import { Bubble, GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
-  UIManager.setLayoutAnimationEnabledExperimental(true);
-}
 
 export default function ChatModal() {
   const router = useRouter();
   const theme = useTheme() as CustomTheme;
-  const user = useAuthStore(state => state.user);
+  const { user } = useAuthContext();
 
   const insets = useSafeAreaInsets();
 

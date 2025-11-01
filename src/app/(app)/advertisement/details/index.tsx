@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import CloseIcon from '@/components/global/CloseIcon';
 import { Button } from '@/components/ui/button';
-import { useAuthStore } from '@/state/auth/useAuthStore';
+import { useAuthContext } from '@/context/AuthContext';
 import * as ImagePicker from 'expo-image-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
@@ -38,7 +38,7 @@ type FormValues = {
 
 export default function AddCarPage() {
   const router = useRouter();
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuthContext();
 
   // useEffect(() => {
   //   if (!isAuthenticated) {

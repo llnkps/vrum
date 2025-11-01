@@ -9,7 +9,7 @@ type DrivetrainCreateBottomSheetProps = {
   onChange: (value: DrivetrainOption | undefined) => void;
 };
 
-const options = [
+export const options = [
   { label: 'Передний (FWD)', value: 'front' },
   { label: 'Задний (RWD)', value: 'rear' },
   { label: '4x4', value: '4wd' },
@@ -29,7 +29,7 @@ export const DrivetrainCreateBottomSheet = forwardRef<BottomSheetRef, Drivetrain
   return (
     <CustomBottomSheetModal
       ref={ref}
-      snapPoints={['35%']}
+      snapPoints={['30%']}
       enableContentPanningGesture={true}
       title={'Привод'}
       footerProps={{

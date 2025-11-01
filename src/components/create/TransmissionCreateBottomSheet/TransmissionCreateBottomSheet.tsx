@@ -9,7 +9,7 @@ type TransmissionCreateBottomSheetProps = {
   onChange: (value: TransmissionOption | undefined) => void;
 };
 
-const options = [
+export const options = [
   { label: 'Механика', value: 'manual' },
   { label: 'Автомат', value: 'automatic' },
   { label: 'Робот', value: 'robot' },
@@ -37,7 +37,7 @@ export const TransmissionCreateBottomSheet = forwardRef<BottomSheetRef, Transmis
         onConfirm: handleConfirm,
       }}
     >
-      <BottomSheetView className="flex-col">
+      <BottomSheetView enableFooterMarginAdjustment>
         {options.map(opt => (
           <CustomRectButton
             key={opt.value}
