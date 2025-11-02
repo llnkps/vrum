@@ -1,4 +1,4 @@
-import { SimpleAutoAdvertisement } from "@/openapi/client";
+import { AdvertisementItemResponse } from "@/openapi/client";
 
 export type SubscriptionItem = {
   id: string;

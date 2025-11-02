@@ -4,7 +4,7 @@ import { Text, View } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 
 import { Badge } from '@/components/global/Badge';
-import { DefaultConfig, SimpleAutoAdvertisement } from '@/openapi/client';
+import { DefaultConfig, AdvertisementItemResponse } from '@/openapi/client';
 import { useFavoritesStore } from '@/state/favorites/useFavoritesStore';
 import { CustomTheme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';

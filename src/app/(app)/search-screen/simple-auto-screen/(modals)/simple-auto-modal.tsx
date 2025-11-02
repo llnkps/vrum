@@ -14,7 +14,7 @@ import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow
 import { useSimpleGetCollectionPagination } from '@/hooks/api/useSimpleGetCollectionPagination';
 import { useImagePrefetch } from '@/hooks/useImagePrefetch';
 import { AuthenticationException, createAuthenticatedApiCall } from '@/openapi/auth-utils';
-import { showImmediateNotification } from '@/utils/notifications';
+import { UserSubscriptionFilterApi } from '@/openapi/client';
 import { createAuthenticatedConfiguration } from '@/openapi/configurations';
 import {
   getActiveFiltersCount,
@@ -25,13 +25,13 @@ import {
   selectSelectedModels,
   useAutoSelectStore,
 } from '@/state/search-screen/useAutoSelectStore';
+import { showImmediateNotification } from '@/utils/notifications';
 import { Ionicons } from '@expo/vector-icons';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { UserSubscriptionFilterApi } from '@/openapi/client';
 
 const ARRAY_FILTERS = {
   TRANSMISSION: 'transmission',
@@ -295,30 +295,31 @@ export default function SimpleAutoModal() {
 
     const userSubscriptionApi = new UserSubscriptionFilterApi(createAuthenticatedConfiguration());
     try {
-      await createAuthenticatedApiCall(async () =>
-        await userSubscriptionApi.createUserSubscriptionFilter({
-          createUserSubscriptionFilterRequest: {
-            name,
-            sourceType: 'simple-auto',
-            b: brandsWithModels,
-            r: selectedRegions.reduce(
-              (acc, r, index) => {
-                if (r.id !== undefined) {
-                  acc[index.toString()] = r.id!.toString();
-                }
-                return acc;
-              },
-              {} as Record<string, string>
-            ),
-            filterParameters: Object.keys(filterParameters).length > 0 ? filterParameters : undefined,
-          },
-        })
+      await createAuthenticatedApiCall(
+        async () =>
+          await userSubscriptionApi.createUserSubscriptionFilter({
+            createUserSubscriptionFilterRequest: {
+              name,
+              sourceType: 'simple-auto',
+              b: brandsWithModels,
+              r: selectedRegions.reduce(
+                (acc, r, index) => {
+                  if (r.id !== undefined) {
+                    acc[index.toString()] = r.id!.toString();
+                  }
+                  return acc;
+                },
+                {} as Record<string, string>
+              ),
+              filterParameters: Object.keys(filterParameters).length > 0 ? filterParameters : undefined,
+            },
+          })
       );
       // Show success notification
       await showImmediateNotification('Subscription Created', 'Your subscription has been saved successfully!');
     } catch (error) {
-      console.log("ERRRRRRRRRRRRR HERE")
-      console.log(error)
+      console.log('ERRRRRRRRRRRRR HERE');
+      console.log(error);
       if (error instanceof AuthenticationException) {
         router.push('/sign-in');
       }
@@ -471,10 +472,7 @@ export default function SimpleAutoModal() {
             <AdvertisementCard
               item={item}
               onPress={() => {
-                console.log("PRESS")
-                const params = new URLSearchParams();
-                params.set('data', JSON.stringify(item));
-                router.push(`/car-details?${params.toString()}`);
+                router.push(`/(app)/advertisement-info/simple-auto/${item.id}`);
               }}
             />
           );

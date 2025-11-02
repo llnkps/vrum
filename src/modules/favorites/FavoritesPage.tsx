@@ -7,7 +7,7 @@ import { Text, View } from 'react-native';
 import { AdvertisementCard } from '@/components/global/AdvertisementCard/AdvertisementCard';
 import { useFavoritesStore } from '@/state/favorites/useFavoritesStore';
 import EmptyState from './EmptyState';
-import { SimpleAutoAdvertisement } from '@/openapi/client/models/SimpleAutoAdvertisement';
+import { AdvertisementItemResponse } from '@/openapi/client/models/SimpleAutoAdvertisement';
 import { useTheme } from '@react-navigation/native';
 import { CustomTheme } from '@/theme';
 
@@ -57,7 +57,7 @@ const FavoritesPage = () => {
     console.log('Перейти к поиску объявлений');
   };
 
-  const renderItem = useCallback(({ item }: { item: SimpleAutoAdvertisement }) => {
+  const renderItem = useCallback(({ item }: { item: AdvertisementItemResponse }) => {
     return (
       <AdvertisementCard
         item={item}
@@ -67,7 +67,7 @@ const FavoritesPage = () => {
     );
   }, []);
 
-  const keyExtractor = useCallback((item: SimpleAutoAdvertisement) => item.id.toString(), []);
+  const keyExtractor = useCallback((item: AdvertisementItemResponse) => item.id.toString(), []);
 
   const isLoading = storeLoading;
   const error = storeError;

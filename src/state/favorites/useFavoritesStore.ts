@@ -1,24 +1,24 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SimpleAutoAdvertisement } from '@/openapi/client';
+import { AdvertisementItemResponse } from '@/openapi/client';
 
 interface FavoritesState {
-  favorites: SimpleAutoAdvertisement[];
+  favorites: AdvertisementItemResponse[];
   isLoading: boolean;
   error: string | null;
 
   // Actions
-  addFavorite: (item: SimpleAutoAdvertisement) => void;
+  addFavorite: (item: AdvertisementItemResponse) => void;
   removeFavorite: (id: number) => void;
-  toggleFavorite: (item: SimpleAutoAdvertisement) => void;
+  toggleFavorite: (item: AdvertisementItemResponse) => void;
   isFavorite: (id: number) => boolean;
   clearFavorites: () => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
 
   // Sync with API
-  syncWithApi: (apiFavorites: SimpleAutoAdvertisement[]) => void;
+  syncWithApi: (apiFavorites: AdvertisementItemResponse[]) => void;
   getFavoritesForApi: () => { advertisementId: number }[];
 }
 
@@ -31,7 +31,7 @@ export const useFavoritesStore = create<FavoritesState>()(
       isLoading: false,
       error: null,
 
-      addFavorite: (item: SimpleAutoAdvertisement) =>
+      addFavorite: (item: AdvertisementItemResponse) =>
         set(state => ({
           favorites: [...state.favorites.filter(f => f.id !== item.id), item],
         })),
@@ -41,7 +41,7 @@ export const useFavoritesStore = create<FavoritesState>()(
           favorites: state.favorites.filter(f => f.id !== id),
         })),
 
-      toggleFavorite: (item: SimpleAutoAdvertisement) =>
+      toggleFavorite: (item: AdvertisementItemResponse) =>
         set(state => {
           const exists = state.favorites.some(f => f.id === item.id);
           if (exists) {
@@ -63,7 +63,7 @@ export const useFavoritesStore = create<FavoritesState>()(
 
       setError: (error: string | null) => set({ error }),
 
-      syncWithApi: (apiFavorites: SimpleAutoAdvertisement[]) =>
+      syncWithApi: (apiFavorites: AdvertisementItemResponse[]) =>
         set(() => ({
           favorites: apiFavorites,
         })),
