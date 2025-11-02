@@ -22,17 +22,7 @@ const tabs = [
 
 const Page = () => {
   const [tab, setTab] = useState<FavoritesTab>(FavoritesTab.FAVORITES);
-  const { isAuthenticated } = useAuthStore();
-  console.log('=================');
-  console.log('isAuthenticated', isAuthenticated);
-  const router = useRouter();
   const theme = useTheme() as CustomTheme;
-
-  useEffect(() => {
-    if (tab === FavoritesTab.SUBSCRIPTIONS && !isAuthenticated) {
-      router.replace('/sign-in');
-    }
-  }, [tab, isAuthenticated, router]);
 
   const renderContent = () => {
     if (tab === FavoritesTab.FAVORITES) {
