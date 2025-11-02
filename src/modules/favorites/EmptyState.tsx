@@ -9,10 +9,18 @@ type EmptyStateProps = {
   onActionPress?: () => void;
 };
 
-const EmptyState = ({ type }: EmptyStateProps) => {
+const EmptyState = ({ type, onActionPress }: EmptyStateProps) => {
   const isFavorites = type === 'favorites';
   const router = useRouter();
   const theme = useTheme() as CustomTheme;
+
+  const handleActionPress = () => {
+    if (onActionPress) {
+      onActionPress();
+    } else {
+      router.push(isFavorites ? '/(app)/(tabs)/search-tab' : '/(app)/(tabs)/favorites');
+    }
+  };
 
   return (
     <View className="flex-1 items-center justify-center px-6">
@@ -22,23 +30,19 @@ const EmptyState = ({ type }: EmptyStateProps) => {
       </Text>
 
       <Text className="text-center text-base leading-6" style={{ color: theme.colors.textSubtle }}>
-        {isFavorites
-          ? 'Вы можете сохранить интересные объявления, добавив их в избранное'
-          : 'Сохраняйте поисковые запросы - как только появится подходящее объявление, вы сразу же получите уведомление!'}
+        {isFavorites ? 'Вы можете сохранить интересные объявления, добавив их в избранное' : 'Создайте фильтр, чтобы быстро искать нужные автомобили'}
       </Text>
 
-      {isFavorites && (
-        <TouchableOpacity
-          className="mt-4 rounded-2xl px-4 py-3"
-          style={{ backgroundColor: theme.colors.backgroundNeutral }}
-          activeOpacity={0.8}
-          onPress={() => router.push('/(app)/(tabs)/search-tab')}
-        >
-          <Text className="font-semibold" style={{ color: theme.colors.text }}>
-            Смотреть объявления
-          </Text>
-        </TouchableOpacity>
-      )}
+      <TouchableOpacity
+        className="mt-4 rounded-2xl px-4 py-3"
+        style={{ backgroundColor: theme.colors.backgroundNeutral }}
+        activeOpacity={0.8}
+        onPress={() => router.push('/(app)/(tabs)/search-tab')}
+      >
+        <Text className="font-semibold" style={{ color: theme.colors.text }}>
+          {isFavorites ? 'Перейти к поиску авто' : 'Создать фильтр'}
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };
