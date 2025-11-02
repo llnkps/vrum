@@ -9,7 +9,7 @@ type SellerCreateBottomSheetProps = {
   onChange: (value: SellerOption | undefined) => void;
 };
 
-const options = [
+export const options = [
   { label: 'Собственник', value: 'owner' },
   { label: 'Частник', value: 'private' },
   { label: 'Компания', value: 'company' },
@@ -28,7 +28,7 @@ export const SellerCreateBottomSheet = forwardRef<BottomSheetRef, SellerCreateBo
   return (
     <CustomBottomSheetModal
       ref={ref}
-      snapPoints={['35%']}
+      snapPoints={['30%']}
       enableContentPanningGesture={true}
       title={'Продавец'}
       footerProps={{

@@ -9,7 +9,7 @@ type TradeAllowCreateBottomSheetProps = {
   onChange: (value: TradeAllowOption | undefined) => void;
 };
 
-const options = [
+export const options = [
   { label: 'Торг возможен', value: 'trade_allow' },
   { label: 'Без торга', value: 'trade_disallow' },
 ];

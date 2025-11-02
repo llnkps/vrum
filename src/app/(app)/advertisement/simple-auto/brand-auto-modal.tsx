@@ -6,6 +6,7 @@ import Animated, { useAnimatedScrollHandler, useSharedValue } from 'react-native
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { HeaderSearchBar } from '@/components/global/header/HeaderSearchBar/HeaderSearchBar';
+import { LoaderIndicator } from '@/components/global/LoaderIndicator';
 import { useSimpleAutoBrandApi } from '@/hooks/api/useSimpleAutoBrandApi';
 import { useSimpleAutoFormContext } from '@/modules/advertisement/simple-auto/SimpleAutoFormProvider';
 import { DefaultConfig, SimpleAutoBrand } from '@/openapi/client';
@@ -15,7 +16,7 @@ const STATUSBAR_HEIGHT = StatusBar.currentHeight ?? 24;
 export default function ModelItemScreenFilterModal() {
   const [searchValue, setSearchValue] = useState('');
 
-  const { data, isLoading } = useSimpleAutoBrandApi();
+  const { data, isPending } = useSimpleAutoBrandApi();
   const [filteredBrands, setFilteredBrands] = useState<SimpleAutoBrand[]>([]);
   const scrollY = useSharedValue(0);
   const isScrolling = useSharedValue(false);
@@ -26,12 +27,8 @@ export default function ModelItemScreenFilterModal() {
     }
   }, [data]);
 
-  if (isLoading) {
-    return (
-      <View className="flex-1 items-center justify-center">
-        <Text className="text-font dark:text-font-dark">Loading...</Text>
-      </View>
-    );
+  if (isPending) {
+    return <LoaderIndicator />;
   }
 
   return (

@@ -3,13 +3,13 @@ import { ScrollView, View, Text, TextInput, TouchableOpacity, Alert } from 'reac
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useMutation } from '@tanstack/react-query';
-import { useAuthStore } from '@/state/auth/useAuthStore';
+import { useAuthContext } from '@/context/AuthContext';
 import { useTheme } from '@react-navigation/native';
 import { CustomTheme } from '@/theme';
 
 export default function FeedbackPage() {
   const router = useRouter();
-  const { user } = useAuthStore();
+  const { user } = useAuthContext();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [email, setEmail] = useState(user?.email || '');

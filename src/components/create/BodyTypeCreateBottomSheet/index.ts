@@ -1,1 +1,0 @@
-export { BodyTypeCreateBottomSheet } from './BodyTypeCreateBottomSheet';

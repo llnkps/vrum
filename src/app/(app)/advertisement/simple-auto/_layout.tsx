@@ -8,7 +8,6 @@ export default function ModalsLayout() {
         screenOptions={{
           headerShown: false,
           presentation: 'modal',
-          animation: 'slide_from_bottom',
         }}
       >
         <Stack.Screen name="index" />

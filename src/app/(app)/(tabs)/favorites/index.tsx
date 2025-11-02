@@ -2,7 +2,7 @@ import { SegmentedButton } from '@/components/ui/button';
 import { FavoritesTab } from '@/constants/navigation';
 import FavoritesPage from '@/modules/favorites/FavoritesPage';
 import SubscriptionsPage from '@/modules/favorites/SubscriptionsPage';
-import { useAuthStore } from '@/state/auth/useAuthStore';
+import { useAuthContext } from '@/context/AuthContext';
 import { CustomTheme } from '@/theme';
 import { useTheme } from '@react-navigation/native';
 import { useRouter } from 'expo-router';

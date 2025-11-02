@@ -1,39 +1,37 @@
+import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
+import CloseIcon from '@/components/global/CloseIcon';
+import { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
+import { OptimizedImageList } from '@/components/global/OptimizedImageList/OptimizedImageList';
+import OptimizedImagePickerModal from '@/components/global/OptimizedImagePickerModal/OptimizedImagePickerModal';
+import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow/TouchableHighlightRow';
+import { CustomRectButton } from '@/components/ui/button';
 import { InputField } from '@/components/ui/input/InputField/InputField';
+import { useAuthContext } from '@/context/AuthContext';
+import { useToast } from '@/hooks/useToast';
+import { useSimpleAutoFormContext } from '@/modules/advertisement/simple-auto/SimpleAutoFormProvider';
+import { useSimpleAutoAdvertisementCreateMutate } from '@/modules/advertisement/simple-auto/useSimpleAutoAdvertisementCreateMutate';
+import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
-import CloseIcon from '@/components/global/CloseIcon';
-import { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
-import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow/TouchableHighlightRow';
-import { Button } from '@/components/ui/button';
-import { BodyTypeCreateBottomSheet } from '@/components/create/BodyTypeCreateBottomSheet';
-import { ColorCreateBottomSheet } from '@/components/create/ColorCreateBottomSheet';
-import { ConditionCreateBottomSheet } from '@/components/create/ConditionCreateBottomSheet';
-import { CurrencyCreateBottomSheet } from '@/components/create/CurrencyCreateBottomSheet';
-import { DocumentsOkCreateBottomSheet } from '@/components/create/DocumentsOkCreateBottomSheet';
-import { DrivetrainCreateBottomSheet } from '@/components/create/DrivetrainCreateBottomSheet';
-import { EngineCapacityCreateBottomSheet } from '@/components/create/EngineCapacityCreateBottomSheet';
-import { FuelTypeCreateBottomSheet } from '@/components/create/FuelTypeCreateBottomSheet';
-import { ImagePickerModal } from '@/components/global/ImagePickerModal';
-import { DraggableImageList } from '@/components/global/DraggableImageList';
-import { NumberOfOwnersCreateBottomSheet } from '@/components/create/NumberOfOwnersCreateBottomSheet';
-import { PowerCreateBottomSheet } from '@/components/create/PowerCreateBottomSheet';
-import { RegionCreateBottomSheet } from '@/components/create/RegionCreateBottomSheet';
-import { SellerCreateBottomSheet } from '@/components/create/SellerCreateBottomSheet';
-import { TransmissionCreateBottomSheet } from '@/components/create/TransmissionCreateBottomSheet';
-import { YearCreateBottomSheet } from '@/components/create/YearCreateBottomSheet';
-import { useSimpleAutoFormContext } from '@/modules/advertisement/simple-auto/SimpleAutoFormProvider';
-import { createAuthenticatedApiCall } from '@/openapi/auth-utils';
-import { createAuthenticatedConfiguration } from '@/openapi/configurations';
-import { useMutation } from '@tanstack/react-query';
-import * as ImagePicker from 'expo-image-picker';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { useAuthStore } from '@/state/auth/useAuthStore';
-import { useSimpleAutoAdvertisementCreateMutate } from '@/hooks/api/useSimpleAutoAdvertisementCreateMutate';
+import { BodyTypeCreateBottomSheetControllerWrapper } from '@/components/create/FrameTypeCreateBottomSheet';
+import { ColorCreateBottomSheetControllerWrapper } from '@/components/create/ColorCreateBottomSheet';
+import { ConditionCreateBottomSheetControllerWrapper } from '@/components/create/ConditionCreateBottomSheet';
+import { CurrencyCreateBottomSheetControllerWrapper } from '@/components/create/CurrencyCreateBottomSheet';
+import { DocumentsOkCreateBottomSheetControllerWrapper } from '@/components/create/DocumentsOkCreateBottomSheet';
+import { DrivetrainCreateBottomSheetControllerWrapper } from '@/components/create/DrivetrainCreateBottomSheet';
+import { EngineCapacityCreateBottomSheetControllerWrapper } from '@/components/create/EngineCapacityCreateBottomSheet';
+import { FuelTypeCreateBottomSheetControllerWrapper } from '@/components/create/FuelTypeCreateBottomSheet';
+import { NumberOfOwnersCreateBottomSheetControllerWrapper } from '@/components/create/NumberOfOwnersCreateBottomSheet';
+import { PowerCreateBottomSheetControllerWrapper } from '@/components/create/PowerCreateBottomSheet';
+import { RegionCreateBottomSheetControllerWrapper } from '@/components/create/RegionCreateBottomSheet';
+import { SellerCreateBottomSheetControllerWrapper } from '@/components/create/SellerCreateBottomSheet';
+import { TransmissionCreateBottomSheetControllerWrapper } from '@/components/create/TransmissionCreateBottomSheet';
+import { YearCreateBottomSheetControllerWrapper } from '@/components/create/YearCreateBottomSheet';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 type FormValues = {
   description: string;
@@ -42,6 +40,7 @@ type FormValues = {
 
   brand?: number;
   model?: number;
+  generationId?: number;
   releaseYear?: number;
   region: string;
   currency: string;
@@ -50,7 +49,7 @@ type FormValues = {
   transmission_type: string;
   fuel_type: string;
   frame_type: string;
-  drive_train: string; // привод
+  drivetrain_type: string; // привод
   color: string;
   power: number;
   engine_capacity: number;
@@ -58,137 +57,49 @@ type FormValues = {
   trade_allow: boolean;
   condition: string;
   number_of_owner: string;
-  document_ok: boolean;
+  document_type: string;
   seller: string;
 };
 
 export default function AddCarPage() {
+  console.log('RENDERING ADD CAR PAGE');
   const router = useRouter();
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuthContext();
+  const { showToast } = useToast();
+
+  // Memoize context values to prevent unnecessary re-renders
+  const { selectedBrand, selectedModel, selectedGeneration } = useSimpleAutoFormContext();
+
+  // Memoize authentication check
+  const authCheck = useMemo(() => {
+    if (!isAuthenticated) {
+      return () =>
+        Alert.alert('Authentication Required', 'You need to be logged in to create an advertisement.', [
+          { text: 'Login', onPress: () => router.push('/sign-in') },
+          { text: 'Cancel', onPress: () => router.back() },
+        ]);
+    }
+    return null;
+  }, [isAuthenticated, router]);
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      Alert.alert('Authentication Required', 'You need to be logged in to create an advertisement.', [
-        { text: 'Login', onPress: () => router.push('/sign-in') },
-        { text: 'Cancel', onPress: () => router.back() },
-      ]);
-    }
-  }, [isAuthenticated]);
-
-  const {
-    selectedBrand,
-    selectedModel,
-    selectedGeneration,
-    selectedReleaseYear,
-    setSelectedReleaseYear,
-    selectedRegion,
-    setSelectedRegion,
-    selectedCurrency,
-    setSelectedCurrency,
-    selectedTransmissionType,
-    setSelectedTransmissionType,
-    selectedFuelType,
-    setSelectedFuelType,
-    selectedBodyType,
-    setSelectedBodyType,
-    selectedDriveTrain,
-    setSelectedDriveTrain,
-    selectedColor,
-    setSelectedColor,
-    selectedPower,
-    setSelectedPower,
-    selectedEngineCapacity,
-    setSelectedEngineCapacity,
-    selectedTradeAllow,
-    setSelectedTradeAllow,
-    selectedCondition,
-    setSelectedCondition,
-    selectedNumberOfOwner,
-    setSelectedNumberOfOwner,
-    selectedDocumentOk,
-    setSelectedDocumentOk,
-    selectedSeller,
-    setSelectedSeller,
-  } = useSimpleAutoFormContext();
-
-  // const mutateAdvertisement = useMutation({
-  //   mutationFn: async (formData: FormData) => {
-  //     const formParams = new FormData();
-
-  //     formParams.append("description", formData.get("description") as any);
-  //     formParams.append("price", formData.get("price") as any);
-  //     formParams.append("currency", formData.get("currency") as any);
-  //     formParams.append("region", formData.get("region") as any);
-  //     formParams.append("releaseYear", formData.get("releaseYear") as any);
-  //     formParams.append("brand", formData.get("brand") as any);
-  //     formParams.append("model", formData.get("model") as any);
-  //     formParams.append("generationId", formData.get("generationId") as any);
-  //     formParams.append("modificationId", formData.get("modificationId") as any);
-
-  //     formParams.append("parameters[mileage]", formData.get("mileage") as any);
-  //     formParams.append("parameters[transmission]", formData.get("transmission_type") as any);
-  //     formParams.append("parameters[fuel_type]", formData.get("fuel_type") as any);
-  //     formParams.append("parameters[frame_type]", formData.get("frame_type") as any);
-  //     formParams.append("parameters[drivetrain_type]", formData.get("drive_train") as any);
-  //     formParams.append("parameters[color]", formData.get("color") as any);
-  //     formParams.append("parameters[power]", formData.get("power") as any);
-  //     formParams.append("parameters[engine_capacity]", formData.get("engine_capacity") as any);
-  //     formParams.append("parameters[trade_allow]", formData.get("trade_allow") ? "1" : "0");
-  //     formParams.append("parameters[condition]", formData.get("condition") as any);
-  //     formParams.append("parameters[number_of_owner]", formData.get("number_of_owner") as any);
-  //     formParams.append("parameters[document_type]", formData.get("document_ok"));
-  //     formParams.append("parameters[seller]", formData.get("seller") as any);
-
-  //     formData.getAll("images").forEach((element) => {
-  //       formParams.append("images[]", element as any);
-  //     });
-
-  //     const res = await simpleAutoClient.postAppSimpleautocontextPresentationSimpleautocreateCreateRaw({
-  //       headers: {
-  //         "Content-Type": "multipart/form-data",
-  //       },
-  //       body: formParams,
-  //     });
-  //     return res;
-  //   },
-  //   onSuccess: (e) => {
-  //     console.log("SUCCESS", e);
-  //     // TODO: make something when success
-  //     reset();
-  //     router.push("/(app)/(tabs)/advertisement");
-  //   },
-  //   onError: async (error: ResponseError) => {
-  //     console.log("ERROR", error);
-  //     console.log(await error.response.json());
-  //     console.log("EMD");
-  //     console.log("EMD");
-  //     console.log("EMD");
-  //     // TODO: make something when error
-
-  // const jsonError = await error.response.json();
-
-  // if (jsonError.errors) {
-  //   for (const [field, message] of Object.entries(jsonError.errors)) {
-  //     setError(field, { message });
-  //   }
-  // }
-
-  //   },
-  // });
+    if (authCheck) authCheck();
+  }, [authCheck]);
 
   const mutateAdvertisement = useSimpleAutoAdvertisementCreateMutate({
     onSuccess: data => {
       console.log('Advertisement created successfully:', data);
+      showToast('Объявление успешно создано', 'success');
       // reset();
-      // router.push("/(app)/(tabs)/advertisement");
+      router.push("/(app)/(tabs)/advertisement");
     },
     onError: async error => {
       console.error('Error creating advertisement:', error);
       const jsonError = await error.response.json();
-
+      console.log(jsonError);
       if (jsonError.errors) {
         for (const [field, message] of Object.entries(jsonError.errors)) {
-          setError(field, { message });
+          setError(field as keyof FormValues, { message: String(message) });
         }
       }
     },
@@ -209,6 +120,7 @@ export default function AddCarPage() {
       images: [],
       brand: undefined,
       model: undefined,
+      generationId: undefined,
       releaseYear: undefined,
       region: '',
 
@@ -216,7 +128,7 @@ export default function AddCarPage() {
       fuel_type: '',
       transmission_type: '',
       frame_type: '',
-      drive_train: '',
+      drivetrain_type: '',
       engine_capacity: 0,
       power: 0,
       color: '',
@@ -224,23 +136,24 @@ export default function AddCarPage() {
       trade_allow: false,
       condition: '',
       seller: '',
+      document_type: '',
     },
   });
 
   // Form submit handler
   const onSubmit = async (data: FormValues) => {
-    console.log(data.mileage, isNaN(Number(data.mileage)), Number(data.mileage));
+    console.log(data);
 
     try {
       // Validate required fields
       if (!selectedBrand?.id || !selectedModel?.id || !data.releaseYear || !data.region) {
-        alert('Пожалуйста, заполните все обязательные поля');
+        showToast('Пожалуйста, заполните все обязательные поля', 'error');
         return;
       }
 
       // Validate images
       if (!data.images || data.images.length === 0) {
-        alert('Пожалуйста, добавьте хотя бы одно фото');
+        showToast('Пожалуйста, добавьте хотя бы одно фото', 'error');
         return;
       }
       const formData = new FormData();
@@ -274,8 +187,8 @@ export default function AddCarPage() {
         formData.append('frame_type', data.frame_type);
       }
 
-      if (data.drive_train) {
-        formData.append('drive_train', data.drive_train);
+      if (data.drivetrain_type) {
+        formData.append('drivetrain_type', data.drivetrain_type);
       }
 
       if (data.color) {
@@ -291,7 +204,7 @@ export default function AddCarPage() {
       }
 
       // Add additional info with validation
-      formData.append('trade_allow', data.trade_allow ? '1' : '0');
+      formData.append('trade_allow', data.trade_allow);
 
       if (data.condition) {
         formData.append('condition', data.condition);
@@ -301,7 +214,9 @@ export default function AddCarPage() {
         formData.append('number_of_owner', data.number_of_owner.toString());
       }
 
-      formData.append('document_ok', data.document_ok);
+      if (data.document_type) {
+        formData.append('document_type', data.document_type);
+      }
 
       if (data.seller) {
         formData.append('seller', data.seller);
@@ -340,83 +255,43 @@ export default function AddCarPage() {
     }
   };
 
-  useEffect(() => {
-    if (selectedBrand && selectedBrand.id) {
-      setValue('brand', selectedBrand.id);
-    }
-  }, [selectedBrand, setValue]);
+  const onInvalid = (errors: any) => {
+    console.log('Form validation errors:', errors);
+    showToast('Пожалуйста, исправьте ошибки в форме', 'error');
+  };
+
+  // Memoize brand/model IDs to prevent unnecessary effect runs
+  const brandId = useMemo(() => selectedBrand?.id, [selectedBrand?.id]);
+  const modelId = useMemo(() => selectedModel?.id, [selectedModel?.id]);
+  const generationId = useMemo(() => selectedGeneration?.id, [selectedGeneration?.id]);
 
   useEffect(() => {
-    if (selectedModel && selectedModel.id) {
-      setValue('model', selectedModel.id);
+    if (brandId) {
+      setValue('brand', brandId);
     }
-  }, [selectedModel, setValue]);
+  }, [brandId, setValue]);
 
-  const currencyModalRef = useRef<BottomSheetRef>(null);
-  const yearModalRef = useRef<BottomSheetRef>(null);
-  const regionModalRef = useRef<BottomSheetRef>(null);
-  const transmissionModalRef = useRef<BottomSheetRef>(null);
-  const fuelTypeModalRef = useRef<BottomSheetRef>(null);
-  const bodyTypeModalRef = useRef<BottomSheetRef>(null);
-  const drivetrainModalRef = useRef<BottomSheetRef>(null);
-  const conditionModalRef = useRef<BottomSheetRef>(null);
-  const colorModalRef = useRef<BottomSheetRef>(null);
-  const engineCapacityModalRef = useRef<BottomSheetRef>(null);
-  const powerModalRef = useRef<BottomSheetRef>(null);
-  const numberOfOwnersModalRef = useRef<BottomSheetRef>(null);
-  const documentsOkModalRef = useRef<BottomSheetRef>(null);
-  const sellerModalRef = useRef<BottomSheetRef>(null);
+  useEffect(() => {
+    if (modelId) {
+      setValue('model', modelId);
+    }
+  }, [modelId, setValue]);
+
+  useEffect(() => {
+    if (generationId) {
+      setValue('generationId', generationId);
+    }
+  }, [generationId, setValue]);
+
   const imagePickerModalRef = useRef<BottomSheetRef>(null);
 
-  const handlePresentCurrencyModalPress = useCallback(() => {
-    currencyModalRef.current?.present();
-  }, []);
-  const handlePresentYearModalPress = useCallback(() => {
-    yearModalRef.current?.present();
-  }, []);
-  const handlePresentRegionModalPress = useCallback(() => {
-    regionModalRef.current?.present();
-  }, []);
-  const handlePresentTransmissionModalPress = useCallback(() => {
-    transmissionModalRef.current?.present();
-  }, []);
-  const handlePresentFuelTypeModalPress = useCallback(() => {
-    fuelTypeModalRef.current?.present();
-  }, []);
-  const handlePresentBodyTypeModalPress = useCallback(() => {
-    bodyTypeModalRef.current?.present();
-  }, []);
-  const handlePresentDrivetrainModalPress = useCallback(() => {
-    drivetrainModalRef.current?.present();
-  }, []);
-  const handlePresentConditionModalPress = useCallback(() => {
-    conditionModalRef.current?.present();
-  }, []);
-  const handlePresentColorModalPress = useCallback(() => {
-    colorModalRef.current?.present();
-  }, []);
-  const handlePresentEngineCapacityModalPress = useCallback(() => {
-    engineCapacityModalRef.current?.present();
-  }, []);
-  const handlePresentPowerModalPress = useCallback(() => {
-    powerModalRef.current?.present();
-  }, []);
-  const handlePresentNumberOfOwnersModalPress = useCallback(() => {
-    numberOfOwnersModalRef.current?.present();
-  }, []);
-  const handlePresentDocumentsOkModalPress = useCallback(() => {
-    documentsOkModalRef.current?.present();
-  }, []);
-  const handlePresentSellerModalPress = useCallback(() => {
-    sellerModalRef.current?.present();
-  }, []);
   const handlePresentImagePickerModalPress = useCallback(() => {
     imagePickerModalRef.current?.present();
   }, []);
 
   return (
     <SafeAreaView className="flex-1 bg-background-page dark:bg-background-page-dark">
-      <KeyboardAwareScrollView>
+      <KeyboardAwareScrollView bottomOffset={80} extraKeyboardSpace={10} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
         <Header />
 
         {/* Основная информация */}
@@ -424,81 +299,86 @@ export default function AddCarPage() {
           <View className="mb-5 flex-row items-center">
             <Text className="text-xl font-bold text-font dark:text-font-dark">Основная информация</Text>
           </View>
-          {/* <Controller
-            control={control}
-            name="name"
-            rules={{
-              required: "Заголовок объявления обязателен",
-              minLength: {
-                value: 10,
-                message: "Заголовок должен содержать минимум 10 символов",
-              },
-              maxLength: {
-                value: 100,
-                message: "Заголовок не должен превышать 100 символов",
-              },
-            }}
-            render={({ field }) => {
-              return (
-                <InputField
-                  {...field}
-                  required
-                  error={errors.name?.message}
-                  label={"Заголовок объявления"}
-                  placeholder="Например: BMW X5 2020 года"
-                />
-              );
-            }}
-          /> */}
-
           {/** Brand Selection */}
-          <TouchableHighlightRow
-            variant="bordered"
-            label={'Марка'}
-            selectedValue={selectedBrand?.name ?? undefined}
-            onPress={() => router.push('/(app)/advertisement/simple-auto/brand-auto-modal')}
-            rightIcon="chevron-right"
+          <Controller
+            control={control}
+            name="brand"
+            rules={{
+              required: 'Выберите марку',
+            }}
+            render={({ field: _field, fieldState: { error } }) => (
+              <TouchableHighlightRow
+                variant="bordered"
+                label={'Марка'}
+                selectedValue={selectedBrand?.name ?? undefined}
+                onPress={() => router.push('/(app)/advertisement/simple-auto/brand-auto-modal')}
+                rightIcon="chevron-right"
+                required
+                error={error?.message}
+              />
+            )}
           />
 
-          <TouchableHighlightRow
-            variant="bordered"
-            label={'Модель'}
-            selectedValue={selectedModel?.name ?? undefined}
-            onPress={() => router.push('/(app)/advertisement/simple-auto/brand-auto-type-modal')}
-            rightIcon="chevron-right"
-            disabled={!selectedBrand}
+          <Controller
+            control={control}
+            name="model"
+            rules={{
+              required: 'Выберите модель',
+            }}
+            render={({ field: _field, fieldState: { error } }) => (
+              <TouchableHighlightRow
+                variant="bordered"
+                label={'Модель'}
+                selectedValue={selectedModel?.name ?? undefined}
+                onPress={() => router.push('/(app)/advertisement/simple-auto/brand-auto-type-modal')}
+                rightIcon="chevron-right"
+                disabled={!selectedBrand}
+                required
+                error={error?.message}
+              />
+            )}
           />
 
-          <TouchableHighlightRow
-            variant="bordered"
-            label={'Поколение'}
-            selectedValue={
-              selectedGeneration?.generation
-                ? `${selectedGeneration.generation} поколение ${selectedGeneration?.modification?.yearStart} - ${
-                    selectedGeneration?.modification?.yearEnd ?? 'н.в.'
-                  }, рестайлинг ${selectedGeneration?.modification?.restyling}`
-                : undefined
-            }
-            onPress={() => router.push('/(app)/advertisement/simple-auto/generation-modal')}
-            rightIcon="chevron-right"
-            disabled={!selectedModel}
+          <Controller
+            control={control}
+            name="generationId"
+            rules={{
+              required: 'Выберите поколение',
+            }}
+            render={({ field: _field, fieldState: { error } }) => (
+              <TouchableHighlightRow
+                variant="bordered"
+                label={'Поколение'}
+                selectedValue={
+                  selectedGeneration?.generation
+                    ? `${selectedGeneration.generation} поколение ${selectedGeneration?.modification?.yearStart} - ${
+                        selectedGeneration?.modification?.yearEnd ?? 'н.в.'
+                      }, рестайлинг ${selectedGeneration?.modification?.restyling}`
+                    : undefined
+                }
+                onPress={() => router.push('/(app)/advertisement/simple-auto/generation-modal')}
+                rightIcon="chevron-right"
+                disabled={!selectedModel}
+                required
+                error={error?.message}
+              />
+            )}
           />
 
           {/** Year Selection */}
-          <TouchableHighlightRow
-            variant="bordered"
-            label={'Год'}
-            selectedValue={selectedReleaseYear ?? undefined}
-            onPress={handlePresentYearModalPress}
-            rightIcon="chevron-down"
-          />
-          <YearCreateBottomSheet
-            ref={yearModalRef}
-            onChange={releaseYear => {
-              setValue('releaseYear', releaseYear);
-              setSelectedReleaseYear(releaseYear?.toString() || '');
-              yearModalRef.current?.close({ duration: 150 });
+          <Controller
+            control={control}
+            name="releaseYear"
+            rules={{
+              required: 'Выберите год выпуска'
             }}
+            render={({ field, fieldState: { error } }) => (
+              <YearCreateBottomSheetControllerWrapper
+                value={field.value}
+                onChange={field.onChange}
+                error={error?.message}
+              />
+            )}
           />
         </View>
 
@@ -508,123 +388,110 @@ export default function AddCarPage() {
             <Text className="text-xl font-bold text-font dark:text-font-dark">Характеристики</Text>
           </View>
           <View className="gap-y-3">
-            {/* Buttons to open modals and bottom sheet modals */}
-
-            <TouchableHighlightRow
-              variant="bordered"
-              label={'Коробка передач'}
-              onPress={handlePresentTransmissionModalPress}
-              selectedValue={selectedTransmissionType ?? undefined}
-              rightIcon="chevron-down"
-            />
-            <TransmissionCreateBottomSheet
-              ref={transmissionModalRef}
-              onChange={transmission => {
-                setValue('transmission_type', transmission?.value || '');
-                setSelectedTransmissionType(transmission?.label || '');
-                transmissionModalRef.current?.close({ duration: 150 });
+            <Controller
+              control={control}
+              name="transmission_type"
+              rules={{
+                required: 'Выберите коробку передач'
               }}
+              render={({ field, fieldState: { error } }) => (
+                <TransmissionCreateBottomSheetControllerWrapper
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={error?.message}
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              name="fuel_type"
+              rules={{
+                required: 'Выберите тип топлива',
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <FuelTypeCreateBottomSheetControllerWrapper
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={error?.message}
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              name="frame_type"
+              rules={{
+                required: 'Выберите тип кузова'
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <BodyTypeCreateBottomSheetControllerWrapper
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={error?.message}
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              name="drivetrain_type"
+              rules={{
+                required: 'Выберите привод'
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <DrivetrainCreateBottomSheetControllerWrapper
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={error?.message}
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              name="color"
+              rules={{
+                required: 'Выберите цвет'
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <ColorCreateBottomSheetControllerWrapper
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={error?.message}
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              name="engine_capacity"
+              rules={{
+                required: 'Выберите объем двигателя'
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <EngineCapacityCreateBottomSheetControllerWrapper
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={error?.message}
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              name="power"
+              rules={{
+                required: 'Выберите мощность'
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <PowerCreateBottomSheetControllerWrapper
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={error?.message}
+                />
+              )}
             />
 
-            <TouchableHighlightRow
-              variant="bordered"
-              label={'Тип топлива'}
-              onPress={handlePresentFuelTypeModalPress}
-              selectedValue={selectedFuelType ?? undefined}
-              rightIcon="chevron-down"
-            />
-            <FuelTypeCreateBottomSheet
-              ref={fuelTypeModalRef}
-              onChange={fuelType => {
-                setValue('fuel_type', fuelType?.value || '');
-                setSelectedFuelType(fuelType?.label || '');
-                fuelTypeModalRef.current?.close({ duration: 150 });
-              }}
-            />
-
-            <TouchableHighlightRow
-              variant="bordered"
-              label={'Тип кузова'}
-              onPress={handlePresentBodyTypeModalPress}
-              selectedValue={selectedBodyType ?? undefined}
-              rightIcon="chevron-down"
-            />
-            <BodyTypeCreateBottomSheet
-              ref={bodyTypeModalRef}
-              onChange={bodyType => {
-                setValue('frame_type', bodyType?.value || '');
-                setSelectedBodyType(bodyType?.label || '');
-                bodyTypeModalRef.current?.close({ duration: 150 });
-              }}
-            />
-
-            <TouchableHighlightRow
-              variant="bordered"
-              label={'Привод'}
-              onPress={handlePresentDrivetrainModalPress}
-              selectedValue={selectedDriveTrain ?? undefined}
-              rightIcon="chevron-down"
-            />
-            <DrivetrainCreateBottomSheet
-              ref={drivetrainModalRef}
-              onChange={drivetrain => {
-                setValue('drive_train', drivetrain?.value || '');
-                setSelectedDriveTrain(drivetrain?.label || '');
-                drivetrainModalRef.current?.close({ duration: 150 });
-              }}
-            />
-
-            <TouchableHighlightRow
-              variant="bordered"
-              label={'Цвет'}
-              onPress={handlePresentColorModalPress}
-              selectedValue={selectedColor ?? undefined}
-              rightIcon="chevron-down"
-            />
-            <ColorCreateBottomSheet
-              ref={colorModalRef}
-              onChange={color => {
-                setValue('color', color?.value || '');
-                setSelectedColor(color?.label || '');
-                colorModalRef.current?.close({ duration: 150 });
-              }}
-            />
-
-            <TouchableHighlightRow
-              variant="bordered"
-              label={'Объем двигателя'}
-              onPress={handlePresentEngineCapacityModalPress}
-              selectedValue={selectedEngineCapacity ? `${selectedEngineCapacity} л` : undefined}
-              rightIcon="chevron-down"
-            />
-            <EngineCapacityCreateBottomSheet
-              ref={engineCapacityModalRef}
-              onChange={engineCapacity => {
-                setValue('engine_capacity', engineCapacity || 0);
-                setSelectedEngineCapacity(engineCapacity || 0);
-                engineCapacityModalRef.current?.close({ duration: 150 });
-              }}
-            />
-
-            <TouchableHighlightRow
-              variant="bordered"
-              label={'Мощность'}
-              onPress={handlePresentPowerModalPress}
-              selectedValue={selectedPower ? `${selectedPower} л.с.` : undefined}
-              rightIcon="chevron-down"
-            />
-            <PowerCreateBottomSheet
-              ref={powerModalRef}
-              onChange={power => {
-                setValue('power', power || 0);
-                setSelectedPower(power || 0);
-                powerModalRef.current?.close({ duration: 150 });
-              }}
-            />
             <Controller
               control={control}
               name="mileage"
               rules={{
+                required: 'Пробег обязателен',
                 pattern: {
                   value: /^\d+$/,
                   message: 'Введите только цифры',
@@ -640,6 +507,7 @@ export default function AddCarPage() {
                     keyboardType="numeric"
                     placeholder="50000"
                     error={error?.message}
+                    required
                   />
                 );
               }}
@@ -648,84 +516,74 @@ export default function AddCarPage() {
         </View>
 
         <View className="mb-5 gap-y-3 rounded-2xl bg-surface p-5 dark:bg-surface-dark">
-          <TouchableHighlightRow
-            variant="bordered"
-            label={'Состояние'}
-            onPress={handlePresentConditionModalPress}
-            selectedValue={selectedCondition ?? undefined}
-            rightIcon="chevron-down"
-          />
-          <ConditionCreateBottomSheet
-            ref={conditionModalRef}
-            onChange={condition => {
-              setValue('condition', condition?.value || '');
-              setSelectedCondition(condition?.label || '');
-              conditionModalRef.current?.close({ duration: 150 });
-            }}
-          />
-
           <Controller
             control={control}
             name="trade_allow"
             render={({ field }) => {
-              console.log(field.value);
               return (
                 <CheckboxRectButton
-                  label="Обмен возможен - ТОРГ"
+                  label="Обмен возможен"
                   value={field.value}
                   onPress={() => field.onChange(!field.value)} // toggle value
                 />
               );
             }}
           />
-
-          <TouchableHighlightRow
-            variant="bordered"
-            label={'Документы в порядке'}
-            selectedValue={selectedDocumentOk !== undefined ? (selectedDocumentOk ? 'Да' : 'Нет') : undefined}
-            onPress={handlePresentDocumentsOkModalPress}
-            rightIcon="chevron-down"
-          />
-          <DocumentsOkCreateBottomSheet
-            ref={documentsOkModalRef}
-            onChange={document => {
-              const isOk = document?.value === 'ok';
-              setValue('document_ok', isOk);
-              setSelectedDocumentOk(isOk);
-              documentsOkModalRef.current?.close({ duration: 150 });
+          <Controller
+            control={control}
+            name="condition"
+            rules={{
+              required: 'Выберите состояние'
             }}
+            render={({ field, fieldState: { error } }) => (
+              <ConditionCreateBottomSheetControllerWrapper
+                value={field.value}
+                onChange={field.onChange}
+                error={error?.message}
+              />
+            )}
           />
-
-          <TouchableHighlightRow
-            variant="bordered"
-            label={'Количество владельцев'}
-            onPress={handlePresentNumberOfOwnersModalPress}
-            selectedValue={selectedNumberOfOwner ?? undefined}
-            rightIcon="chevron-down"
-          />
-          <NumberOfOwnersCreateBottomSheet
-            ref={numberOfOwnersModalRef}
-            onChange={numberOfOwner => {
-              setValue('number_of_owner', numberOfOwner?.value || '');
-              setSelectedNumberOfOwner(numberOfOwner?.label || '');
-              numberOfOwnersModalRef.current?.close({ duration: 150 });
+          <Controller
+            control={control}
+            name="document_type"
+            rules={{
+              required: 'Выберите состояние документов'
             }}
+            render={({ field, fieldState: { error } }) => (
+              <DocumentsOkCreateBottomSheetControllerWrapper
+                value={field.value}
+                onChange={(value) => field.onChange(value)}
+                error={error?.message}
+              />
+            )}
           />
-
-          <TouchableHighlightRow
-            variant="bordered"
-            label={'Продавец'}
-            onPress={handlePresentSellerModalPress}
-            rightIcon="chevron-down"
-            selectedValue={selectedSeller ?? undefined}
-          />
-          <SellerCreateBottomSheet
-            ref={sellerModalRef}
-            onChange={seller => {
-              setValue('seller', seller?.value || '');
-              setSelectedSeller(seller?.label || '');
-              sellerModalRef.current?.close({ duration: 150 });
+          <Controller
+            control={control}
+            name="number_of_owner"
+            rules={{
+              required: 'Выберите количество владельцев'
             }}
+            render={({ field, fieldState: { error } }) => (
+              <NumberOfOwnersCreateBottomSheetControllerWrapper
+                value={field.value}
+                onChange={field.onChange}
+                error={error?.message}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="seller"
+            rules={{
+              required: 'Выберите продавца'
+            }}
+            render={({ field, fieldState: { error } }) => (
+              <SellerCreateBottomSheetControllerWrapper
+                value={field.value}
+                onChange={field.onChange}
+                error={error?.message}
+              />
+            )}
           />
         </View>
 
@@ -744,17 +602,81 @@ export default function AddCarPage() {
                   required
                   error={errors.description?.message}
                   multiline
+                  numberOfLines={4}
                   textAlignVertical="top"
                   placeholder="Опишите состояние автомобиля, особенности, дополнительное оборудование..."
                 />
               );
             }}
           />
-
-          <TouchableHighlightRow variant="bordered" label="Добавить фотографии" onPress={handlePresentImagePickerModalPress} />
-          <ImagePickerModal
+          <Controller
             control={control}
+            name="price"
+            rules={{
+              required: 'Цена обязательна',
+              min: {
+                value: 0,
+                message: 'Цена должна быть больше 0',
+              },
+              pattern: {
+                value: /^\d+$/,
+                message: 'Введите только цифры',
+              },
+            }}
+            render={({ field }) => {
+              return (
+                <InputField
+                  ref={field.ref}
+                  value={field.value.toString()}
+                  onChange={e => field.onChange(e)}
+                  label={'Цена'}
+                  keyboardType="numeric"
+                  placeholder="1500"
+                  required
+                  wrapperStyle={{ flex: 1 }}
+                />
+              );
+            }}
+          />
+          <Controller
+            control={control}
+            name="currency"
+            rules={{
+              required: 'Выберите валюту'
+            }}
+            render={({ field, fieldState: { error } }) => (
+              <CurrencyCreateBottomSheetControllerWrapper
+                value={field.value}
+                onChange={field.onChange}
+                error={error?.message}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="region"
+            rules={{
+              required: 'Выберите регион'
+            }}
+            render={({ field, fieldState: { error } }) => (
+              <RegionCreateBottomSheetControllerWrapper
+                value={field.value}
+                onChange={field.onChange}
+                error={error?.message}
+              />
+            )}
+          />
+          <TouchableHighlightRow
+            variant="bordered"
+            label="Добавить фотографии"
+            onPress={handlePresentImagePickerModalPress}
+            rightIcon="chevron-down"
+            required
+            error={errors.images?.message}
+          />
+          <OptimizedImagePickerModal
             ref={imagePickerModalRef}
+            currentImageCount={control._formValues.images?.length || 0}
             onSelect={images => {
               setValue('images', images);
               imagePickerModalRef.current?.close();
@@ -765,13 +687,48 @@ export default function AddCarPage() {
           <Controller
             control={control}
             name="images"
-            render={({ field }) => {
+            rules={{
+              validate: value => {
+                if (!value || value.length === 0) {
+                  return 'Добавьте хотя бы одно фото';
+                }
+                return true;
+              },
+            }}
+            render={({ field, fieldState: { error } }) => {
+              // Show error message
+              if (error?.message) {
+                return (
+                  <View>
+                    <Text className="mb-2 text-sm text-red-500">{error.message}</Text>
+                    {field.value && field.value.length > 0 && (
+                      <OptimizedImageList
+                        images={field.value.map(img => ({ uri: img.uri }))}
+                        onReorder={reorderedImages => {
+                          // Convert back to ImagePickerAsset format, keeping original properties
+                          const reorderedAssets = reorderedImages.map(simpleImg => {
+                            const originalAsset = field.value.find(asset => asset.uri === simpleImg.uri);
+                            return originalAsset || { uri: simpleImg.uri, width: 0, height: 0 };
+                          });
+                          setValue('images', reorderedAssets);
+                        }}
+                        onDelete={index => {
+                          const newImages = field.value.filter((_, i) => i !== index);
+                          setValue('images', newImages);
+                        }}
+                        maxImages={10}
+                      />
+                    )}
+                  </View>
+                );
+              }
+
               if (!field.value || field.value.length === 0) {
                 return <View />;
               }
 
               return (
-                <DraggableImageList
+                <OptimizedImageList
                   images={field.value.map(img => ({ uri: img.uri }))}
                   onReorder={reorderedImages => {
                     // Convert back to ImagePickerAsset format, keeping original properties
@@ -785,83 +742,22 @@ export default function AddCarPage() {
                     const newImages = field.value.filter((_, i) => i !== index);
                     setValue('images', newImages);
                   }}
+                  maxImages={10}
                 />
               );
             }}
           />
-          <View className="flex-1 flex-row gap-x-2">
-            <Controller
-              control={control}
-              name="price"
-              rules={{
-                required: 'Цена обязательна',
-                min: {
-                  value: 1,
-                  message: 'Цена должна быть больше 0',
-                },
-                pattern: {
-                  value: /^\d+$/,
-                  message: 'Введите только цифры',
-                },
-              }}
-              render={({ field }) => {
-                return (
-                  <InputField
-                    ref={field.ref}
-                    value={field.value.toString()}
-                    onChange={e => field.onChange(e)}
-                    label={'Цена'}
-                    keyboardType="numeric"
-                    placeholder="1500"
-                    required
-                  />
-                );
-              }}
-            />
-
-            <TouchableHighlightRow
-              variant="bordered"
-              label={'Валюта'}
-              selectedValue={selectedCurrency ?? undefined}
-              onPress={() => handlePresentCurrencyModalPress()}
-              rightIcon="chevron-down"
-            />
-            <CurrencyCreateBottomSheet
-              ref={currencyModalRef}
-              onChange={currency => {
-                setValue('currency', currency?.value || '');
-                setSelectedCurrency(currency?.label || '');
-                currencyModalRef.current?.close({ duration: 150 });
-              }}
-            />
-          </View>
-
-          {/** Region Selection */}
-          <TouchableHighlightRow
-            variant="bordered"
-            label={'Регион'}
-            selectedValue={selectedRegion ?? undefined}
-            onPress={handlePresentRegionModalPress}
-            rightIcon="chevron-down"
-          />
-          <RegionCreateBottomSheet
-            ref={regionModalRef}
-            onChange={region => {
-              setValue('region', region?.id?.toString() || '');
-              setSelectedRegion(region?.name || '');
-              regionModalRef.current?.close({ duration: 150 });
-            }}
-          />
         </View>
 
-        {/* Кнопка создания */}
-        <Button
-          onPress={handleSubmit(onSubmit)}
-          style={{ marginVertical: 20 }}
-          // disabled={isSubmitting}
-        >
-          <Text>{'Создать объявление'}</Text>
-        </Button>
+        <View className="px-4 py-2">
+          <CustomRectButton
+            onPress={() => handleSubmit(onSubmit, onInvalid)()}
+            appearance="primary"
+            loading={mutateAdvertisement.isPending}
+          >
+            <Text className="text-center font-semibold text-white">Создать объявление</Text>
+          </CustomRectButton>
+        </View>
       </KeyboardAwareScrollView>
     </SafeAreaView>
   );

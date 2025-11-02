@@ -1,6 +1,6 @@
 import { Region, SimpleAutoApi, SimpleAutoBrand, SimpleAutoModel } from '@/openapi/client';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { ARRAY_FILTERS, BOOLEAN_FILTERS, RANGE_FILTERS } from '../../../utils/filters';
+import { ARRAY_FILTERS, BOOLEAN_FILTERS, RANGE_FILTERS } from '../../utils/filters';
 
 type BottomSheetOptionType = {
   value: string;
