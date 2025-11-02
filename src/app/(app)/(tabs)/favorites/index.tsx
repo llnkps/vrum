@@ -1,12 +1,10 @@
-import { SegmentedButton } from '@/components/ui/button';
+import { SelectableButton } from '@/components/ui/button';
 import { FavoritesTab } from '@/constants/navigation';
 import FavoritesPage from '@/modules/favorites/FavoritesPage';
 import SubscriptionsPage from '@/modules/favorites/SubscriptionsPage';
-import { useAuthContext } from '@/context/AuthContext';
 import { CustomTheme } from '@/theme';
 import { useTheme } from '@react-navigation/native';
-import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -43,17 +41,18 @@ const Page = () => {
 
       {/* Tabs */}
       <View className="mx-4 mb-2 flex-row justify-center rounded-2xl p-1" style={{ backgroundColor: theme.colors.backgroundNeutral }}>
-        {tabs.map(({ key, title, icon }) => (
-          <SegmentedButton
-            key={key}
-            title={title}
-            isActive={tab === key}
-            onPress={() => {
-              setTab(key);
-            }}
-            icon={icon}
-          />
-        ))}
+        <SelectableButton
+          appearance="subtle"
+          title="Избранное"
+          isSelected={tab === FavoritesTab.FAVORITES}
+          onPress={() => setTab(FavoritesTab.FAVORITES)}
+        />
+        <SelectableButton
+          appearance="subtle"
+          title="Подписки"
+          isSelected={tab === FavoritesTab.SUBSCRIPTIONS}
+          onPress={() => setTab(FavoritesTab.SUBSCRIPTIONS)}
+        />
       </View>
 
       {/* Main content с анимацией */}

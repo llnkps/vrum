@@ -4,10 +4,10 @@ import { FlashList } from '@shopify/flash-list';
 import { useRouter } from 'expo-router';
 import { useTheme } from '@react-navigation/native';
 import { CustomTheme } from '@/theme';
-import { useAuthStore } from '@/state/auth/useAuthStore';
 import { useSubscriptionsStore } from '@/state/subscriptions/useSubscriptionsStore';
 import SubscriptionCard from './SubscriptionCard';
 import EmptyState from './EmptyState';
+import { useAuthContext } from '@/context/AuthContext';
 
 interface ExtendedUserSubscriptionFilter {
   id: number;
@@ -23,7 +23,7 @@ interface ExtendedUserSubscriptionFilter {
 const SubscriptionsPage = () => {
   const router = useRouter();
   const theme = useTheme() as CustomTheme;
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuthContext();
 
   // Используем store для состояния подписок
   const { subscriptions, isLoading, error, fetchSubscriptions, retry, toggleSubscription } = useSubscriptionsStore();
