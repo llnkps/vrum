@@ -11,21 +11,43 @@ type Props = PropsWithChildren<
     title?: string;
     appearance?: 'primary' | 'default' | 'subtle';
     isSelected?: boolean;
+    size?: 'small' | 'medium' | 'large';
   }
 >;
 
-export const CustomRectButton = ({ loading, title, style, children, onPress, appearance = 'default', isSelected = false }: Props) => {
+export const CustomRectButton = ({ loading, title, style, children, onPress, appearance = 'default', isSelected = false, size = 'medium' }: Props) => {
   const theme = useTheme() as CustomTheme;
+
+  const getPadding = () => {
+    switch (size) {
+      case 'small':
+        return { paddingVertical: 4, paddingHorizontal: 8 };
+      case 'large':
+        return { paddingVertical: 16, paddingHorizontal: 32 };
+      default: // medium
+        return { paddingVertical: 12, paddingHorizontal: 24 };
+    }
+  };
+
+  const getFontSize = () => {
+    switch (size) {
+      case 'small':
+        return 14;
+      case 'large':
+        return 18;
+      default: // medium
+        return 16;
+    }
+  };
 
   const styles = StyleSheet.create({
     button: {
-      paddingVertical: 12,
-      paddingHorizontal: 24,
+      ...getPadding(),
       borderRadius: 8,
     },
     text: {
       color: theme.colors.text,
-      fontSize: 16,
+      fontSize: getFontSize(),
     },
 
     primary: {
@@ -49,7 +71,7 @@ export const CustomRectButton = ({ loading, title, style, children, onPress, app
           <>
             <View className="flex-row items-center justify-between">
               <Text style={styles.text}>{title}</Text>
-              {isSelected && <Feather name="check" size={18} color={theme.colors.icon} />}
+              {isSelected && <Feather name="check" size={getFontSize() - 2} color={theme.colors.icon} />}
             </View>
           </>
         ))}

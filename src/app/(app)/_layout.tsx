@@ -12,6 +12,7 @@ export default function AppLayout() {
       <Stack.Screen name="advertisement" options={{ headerShown: false }} />
       <Stack.Screen name="messages" options={{ headerShown: false }} />
       <Stack.Screen name="help-pages" options={{ headerShown: false }} />
+      <Stack.Screen name="advertisement-info" options={{ headerShown: false }} />
     </Stack>
   );
 }

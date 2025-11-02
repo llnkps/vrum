@@ -1,8 +1,9 @@
 import { Image } from 'expo-image';
-import React, { FC, memo, useState } from 'react';
+import React, { FC, memo, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 
+import { Badge } from '@/components/global/Badge';
 import { DefaultConfig, SimpleAutoAdvertisement } from '@/openapi/client';
 import { useFavoritesStore } from '@/state/favorites/useFavoritesStore';
 import { CustomTheme } from '@/theme';
@@ -66,9 +67,11 @@ type props = {
   item: SimpleAutoAdvertisement;
   onPress: () => void;
   isFavorite?: boolean;
+  showFavoriteIcon?: boolean;
+  isInVerification?: boolean;
 };
 
-export const AdvertisementCard: FC<props> = memo(({ item, onPress, isFavorite }) => {
+export const AdvertisementCard: FC<props> = memo(({ item, onPress, isFavorite, showFavoriteIcon = true, isInVerification }) => {
   const theme = useTheme() as CustomTheme;
   const { toggleFavorite: storeToggleFavorite, isFavorite: isFavoriteInStore } = useFavoritesStore();
 
@@ -90,7 +93,8 @@ export const AdvertisementCard: FC<props> = memo(({ item, onPress, isFavorite })
   };
 
   const favorite = isFavorite ?? isFavoriteInStore(item.id);
-
+  const horizontalRef = useRef(null);
+  const [scrolling, setScrolling] = useState(false);
   return (
     <RectButton
       style={{
@@ -105,6 +109,8 @@ export const AdvertisementCard: FC<props> = memo(({ item, onPress, isFavorite })
       }}
       onPress={onPress}
       rippleColor={theme.colors.button.subtlePressed}
+      waitFor={horizontalRef}
+      enabled={!scrolling}
     >
       <View style={{ position: 'relative' }}>
         {/* Pressable area for the main content */}
@@ -117,12 +123,19 @@ export const AdvertisementCard: FC<props> = memo(({ item, onPress, isFavorite })
         >
           {/* Title: Brand, Model, Year with Favorite Asterisk */}
           <View className="flex-row items-center justify-between">
-            <Text className="flex-1 text-lg font-semibold leading-tight text-font dark:text-font-dark" numberOfLines={1}>
-              {item.brand} {item.model}, {item.releaseYear}
-            </Text>
-            <RectButton onPress={handleToggleFavorite} style={{ marginLeft: 8, padding: 4 }} rippleColor="transparent">
-              <Ionicons name={favorite ? 'heart' : 'heart-outline'} size={20} color={favorite ? '#ef4444' : '#9CA3AF'} />
-            </RectButton>
+            <View className="flex-1">
+              <Text className="text-lg font-semibold leading-tight text-font dark:text-font-dark" numberOfLines={1}>
+                {item.brand} {item.model}, {item.releaseYear}
+              </Text>
+            </View>
+            <View>
+              {isInVerification && <Badge text="На проверке" variant="warning" />}
+              {showFavoriteIcon && (
+                <RectButton onPress={handleToggleFavorite} style={{ marginLeft: 8, padding: 4 }} rippleColor="transparent">
+                  <Ionicons name={favorite ? 'heart' : 'heart-outline'} size={20} color={favorite ? '#ef4444' : '#9CA3AF'} />
+                </RectButton>
+              )}
+            </View>
           </View>
 
           {/* Generation */}
@@ -142,6 +155,10 @@ export const AdvertisementCard: FC<props> = memo(({ item, onPress, isFavorite })
         {item.images && item.images.length > 0 && (
           <View className="px-4 pb-3">
             <FlashList
+              ref={horizontalRef}
+              onScrollBeginDrag={() => setScrolling(true)}
+    onScrollEndDrag={() => setScrolling(false)}
+    onMomentumScrollEnd={() => setScrolling(false)}
               horizontal
               data={item.images.slice(0, 5)}
               showsHorizontalScrollIndicator={false}

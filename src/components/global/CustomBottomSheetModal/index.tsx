@@ -1,8 +1,7 @@
 import React, { FC, forwardRef, ReactNode, useCallback, useMemo } from 'react';
-import { KeyboardAvoidingView, Platform } from 'react-native';
 
 import { CustomTheme } from '@/theme';
-import { BottomSheetBackdrop, BottomSheetFooterProps, BottomSheetModal } from '@gorhom/bottom-sheet';
+import { BottomSheetBackdrop, BottomSheetBackdropProps, BottomSheetFooterProps, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { BottomSheetVariables } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { useTheme } from '@react-navigation/native';
 import { DefaultFooter } from './footer';
@@ -18,6 +17,10 @@ type CustomBottomSheetProps = {
   handleComponent?: FC<BottomSheetVariables>;
   footerComponent?: FC<BottomSheetFooterProps>;
   enableContentPanningGesture?: boolean;
+  enablePanDownToClose?: boolean;
+  backdropComponent?: React.FC<BottomSheetBackdropProps> | null;
+  bottomInset?: number;
+  showCloseButton?: boolean;
   /** Content to render inside the bottom sheet */
   children: ReactNode;
   /** Footer callbacks */
@@ -36,6 +39,10 @@ const CustomBottomSheetModal = forwardRef<BottomSheetRef, CustomBottomSheetProps
     handleComponent,
     footerComponent,
     enableContentPanningGesture = false,
+    enablePanDownToClose = true,
+    backdropComponent,
+    bottomInset = 20,
+    showCloseButton = true,
     footerProps,
   } = props;
 
@@ -45,7 +52,7 @@ const CustomBottomSheetModal = forwardRef<BottomSheetRef, CustomBottomSheetProps
 
   const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} disappearsOnIndex={-1} appearsOnIndex={0} />, []);
 
-  const renderDefaultHeader = useCallback((props: any) => <HeaderHandle {...props} title={title} />, [title]);
+  const renderDefaultHeader = useCallback((props: any) => <HeaderHandle {...props} title={title} showCloseButton={showCloseButton} />, [title, showCloseButton]);
 
   const renderDefaultFooter = useCallback(
     (props: BottomSheetFooterProps) => (
@@ -62,22 +69,20 @@ const CustomBottomSheetModal = forwardRef<BottomSheetRef, CustomBottomSheetProps
       index={0} // initially closed
       snapPoints={memoizedSnapPoints}
       enableDynamicSizing={false}
-      backdropComponent={renderBackdrop}
+      backdropComponent={backdropComponent === null ? undefined : (backdropComponent ?? renderBackdrop)}
       handleComponent={handleComponent ?? renderDefaultHeader}
       footerComponent={finalFooterComponent}
       enableContentPanningGesture={enableContentPanningGesture}
-      enablePanDownToClose={true}
+      enablePanDownToClose={enablePanDownToClose}
       keyboardBehavior="interactive"
       // keyboardBlurBehavior="restore"
       // android_keyboardInputMode="adjustResize"
       backgroundStyle={{
         backgroundColor: theme.colors.surface,
       }}
-      bottomInset={20}
+      bottomInset={bottomInset}
     >
-      {/* <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}> */}
       {children}
-      {/* </KeyboardAvoidingView> */}
     </BottomSheetModal>
   );
 });

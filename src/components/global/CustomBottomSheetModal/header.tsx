@@ -5,16 +5,17 @@ import { StyleSheet, Text, View } from 'react-native';
 
 interface HeaderHandleProps extends BottomSheetHandleProps {
   title?: string;
+  showCloseButton?: boolean;
 }
 
-const HeaderHandleComponent = ({ title, ...rest }: HeaderHandleProps) => {
+const HeaderHandleComponent = ({ title, showCloseButton = true, ...rest }: HeaderHandleProps) => {
   const { dismiss } = useBottomSheetModal();
 
   return (
     <BottomSheetHandle {...rest}>
       <View style={styles.header}>
         <Text className="text-lg font-bold text-font dark:text-font-dark">{title ?? 'Title modal'}</Text>
-        <CloseIcon onPress={() => dismiss()} className={'p-2'} />
+        {showCloseButton && <CloseIcon onPress={() => dismiss()} className={'p-2'} />}
       </View>
     </BottomSheetHandle>
   );

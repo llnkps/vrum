@@ -17,13 +17,13 @@ import { Controller, useForm } from 'react-hook-form';
 import { Alert, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { BodyTypeCreateBottomSheetControllerWrapper } from '@/components/create/FrameTypeCreateBottomSheet';
 import { ColorCreateBottomSheetControllerWrapper } from '@/components/create/ColorCreateBottomSheet';
 import { ConditionCreateBottomSheetControllerWrapper } from '@/components/create/ConditionCreateBottomSheet';
 import { CurrencyCreateBottomSheetControllerWrapper } from '@/components/create/CurrencyCreateBottomSheet';
 import { DocumentsOkCreateBottomSheetControllerWrapper } from '@/components/create/DocumentsOkCreateBottomSheet';
 import { DrivetrainCreateBottomSheetControllerWrapper } from '@/components/create/DrivetrainCreateBottomSheet';
 import { EngineCapacityCreateBottomSheetControllerWrapper } from '@/components/create/EngineCapacityCreateBottomSheet';
+import { BodyTypeCreateBottomSheetControllerWrapper } from '@/components/create/FrameTypeCreateBottomSheet';
 import { FuelTypeCreateBottomSheetControllerWrapper } from '@/components/create/FuelTypeCreateBottomSheet';
 import { NumberOfOwnersCreateBottomSheetControllerWrapper } from '@/components/create/NumberOfOwnersCreateBottomSheet';
 import { PowerCreateBottomSheetControllerWrapper } from '@/components/create/PowerCreateBottomSheet';
@@ -31,6 +31,7 @@ import { RegionCreateBottomSheetControllerWrapper } from '@/components/create/Re
 import { SellerCreateBottomSheetControllerWrapper } from '@/components/create/SellerCreateBottomSheet';
 import { TransmissionCreateBottomSheetControllerWrapper } from '@/components/create/TransmissionCreateBottomSheet';
 import { YearCreateBottomSheetControllerWrapper } from '@/components/create/YearCreateBottomSheet';
+import { LoaderIndicator } from '@/components/global/LoaderIndicator';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 type FormValues = {
@@ -91,7 +92,7 @@ export default function AddCarPage() {
       console.log('Advertisement created successfully:', data);
       showToast('Объявление успешно создано', 'success');
       // reset();
-      router.push("/(app)/(tabs)/advertisement");
+      router.push('/(app)/(tabs)/advertisement');
     },
     onError: async error => {
       console.error('Error creating advertisement:', error);
@@ -370,14 +371,10 @@ export default function AddCarPage() {
             control={control}
             name="releaseYear"
             rules={{
-              required: 'Выберите год выпуска'
+              required: 'Выберите год выпуска',
             }}
             render={({ field, fieldState: { error } }) => (
-              <YearCreateBottomSheetControllerWrapper
-                value={field.value}
-                onChange={field.onChange}
-                error={error?.message}
-              />
+              <YearCreateBottomSheetControllerWrapper value={field.value} onChange={field.onChange} error={error?.message} />
             )}
           />
         </View>
@@ -392,14 +389,10 @@ export default function AddCarPage() {
               control={control}
               name="transmission_type"
               rules={{
-                required: 'Выберите коробку передач'
+                required: 'Выберите коробку передач',
               }}
               render={({ field, fieldState: { error } }) => (
-                <TransmissionCreateBottomSheetControllerWrapper
-                  value={field.value}
-                  onChange={field.onChange}
-                  error={error?.message}
-                />
+                <TransmissionCreateBottomSheetControllerWrapper value={field.value} onChange={field.onChange} error={error?.message} />
               )}
             />
             <Controller
@@ -409,81 +402,57 @@ export default function AddCarPage() {
                 required: 'Выберите тип топлива',
               }}
               render={({ field, fieldState: { error } }) => (
-                <FuelTypeCreateBottomSheetControllerWrapper
-                  value={field.value}
-                  onChange={field.onChange}
-                  error={error?.message}
-                />
+                <FuelTypeCreateBottomSheetControllerWrapper value={field.value} onChange={field.onChange} error={error?.message} />
               )}
             />
             <Controller
               control={control}
               name="frame_type"
               rules={{
-                required: 'Выберите тип кузова'
+                required: 'Выберите тип кузова',
               }}
               render={({ field, fieldState: { error } }) => (
-                <BodyTypeCreateBottomSheetControllerWrapper
-                  value={field.value}
-                  onChange={field.onChange}
-                  error={error?.message}
-                />
+                <BodyTypeCreateBottomSheetControllerWrapper value={field.value} onChange={field.onChange} error={error?.message} />
               )}
             />
             <Controller
               control={control}
               name="drivetrain_type"
               rules={{
-                required: 'Выберите привод'
+                required: 'Выберите привод',
               }}
               render={({ field, fieldState: { error } }) => (
-                <DrivetrainCreateBottomSheetControllerWrapper
-                  value={field.value}
-                  onChange={field.onChange}
-                  error={error?.message}
-                />
+                <DrivetrainCreateBottomSheetControllerWrapper value={field.value} onChange={field.onChange} error={error?.message} />
               )}
             />
             <Controller
               control={control}
               name="color"
               rules={{
-                required: 'Выберите цвет'
+                required: 'Выберите цвет',
               }}
               render={({ field, fieldState: { error } }) => (
-                <ColorCreateBottomSheetControllerWrapper
-                  value={field.value}
-                  onChange={field.onChange}
-                  error={error?.message}
-                />
+                <ColorCreateBottomSheetControllerWrapper value={field.value} onChange={field.onChange} error={error?.message} />
               )}
             />
             <Controller
               control={control}
               name="engine_capacity"
               rules={{
-                required: 'Выберите объем двигателя'
+                required: 'Выберите объем двигателя',
               }}
               render={({ field, fieldState: { error } }) => (
-                <EngineCapacityCreateBottomSheetControllerWrapper
-                  value={field.value}
-                  onChange={field.onChange}
-                  error={error?.message}
-                />
+                <EngineCapacityCreateBottomSheetControllerWrapper value={field.value} onChange={field.onChange} error={error?.message} />
               )}
             />
             <Controller
               control={control}
               name="power"
               rules={{
-                required: 'Выберите мощность'
+                required: 'Выберите мощность',
               }}
               render={({ field, fieldState: { error } }) => (
-                <PowerCreateBottomSheetControllerWrapper
-                  value={field.value}
-                  onChange={field.onChange}
-                  error={error?.message}
-                />
+                <PowerCreateBottomSheetControllerWrapper value={field.value} onChange={field.onChange} error={error?.message} />
               )}
             />
 
@@ -533,56 +502,40 @@ export default function AddCarPage() {
             control={control}
             name="condition"
             rules={{
-              required: 'Выберите состояние'
+              required: 'Выберите состояние',
             }}
             render={({ field, fieldState: { error } }) => (
-              <ConditionCreateBottomSheetControllerWrapper
-                value={field.value}
-                onChange={field.onChange}
-                error={error?.message}
-              />
+              <ConditionCreateBottomSheetControllerWrapper value={field.value} onChange={field.onChange} error={error?.message} />
             )}
           />
           <Controller
             control={control}
             name="document_type"
             rules={{
-              required: 'Выберите состояние документов'
+              required: 'Выберите состояние документов',
             }}
             render={({ field, fieldState: { error } }) => (
-              <DocumentsOkCreateBottomSheetControllerWrapper
-                value={field.value}
-                onChange={(value) => field.onChange(value)}
-                error={error?.message}
-              />
+              <DocumentsOkCreateBottomSheetControllerWrapper value={field.value} onChange={value => field.onChange(value)} error={error?.message} />
             )}
           />
           <Controller
             control={control}
             name="number_of_owner"
             rules={{
-              required: 'Выберите количество владельцев'
+              required: 'Выберите количество владельцев',
             }}
             render={({ field, fieldState: { error } }) => (
-              <NumberOfOwnersCreateBottomSheetControllerWrapper
-                value={field.value}
-                onChange={field.onChange}
-                error={error?.message}
-              />
+              <NumberOfOwnersCreateBottomSheetControllerWrapper value={field.value} onChange={field.onChange} error={error?.message} />
             )}
           />
           <Controller
             control={control}
             name="seller"
             rules={{
-              required: 'Выберите продавца'
+              required: 'Выберите продавца',
             }}
             render={({ field, fieldState: { error } }) => (
-              <SellerCreateBottomSheetControllerWrapper
-                value={field.value}
-                onChange={field.onChange}
-                error={error?.message}
-              />
+              <SellerCreateBottomSheetControllerWrapper value={field.value} onChange={field.onChange} error={error?.message} />
             )}
           />
         </View>
@@ -642,28 +595,20 @@ export default function AddCarPage() {
             control={control}
             name="currency"
             rules={{
-              required: 'Выберите валюту'
+              required: 'Выберите валюту',
             }}
             render={({ field, fieldState: { error } }) => (
-              <CurrencyCreateBottomSheetControllerWrapper
-                value={field.value}
-                onChange={field.onChange}
-                error={error?.message}
-              />
+              <CurrencyCreateBottomSheetControllerWrapper value={field.value} onChange={field.onChange} error={error?.message} />
             )}
           />
           <Controller
             control={control}
             name="region"
             rules={{
-              required: 'Выберите регион'
+              required: 'Выберите регион',
             }}
             render={({ field, fieldState: { error } }) => (
-              <RegionCreateBottomSheetControllerWrapper
-                value={field.value}
-                onChange={field.onChange}
-                error={error?.message}
-              />
+              <RegionCreateBottomSheetControllerWrapper value={field.value} onChange={field.onChange} error={error?.message} />
             )}
           />
           <TouchableHighlightRow
@@ -750,12 +695,8 @@ export default function AddCarPage() {
         </View>
 
         <View className="px-4 py-2">
-          <CustomRectButton
-            onPress={() => handleSubmit(onSubmit, onInvalid)()}
-            appearance="primary"
-            loading={mutateAdvertisement.isPending}
-          >
-            <Text className="text-center font-semibold text-white">Создать объявление</Text>
+          <CustomRectButton onPress={() => handleSubmit(onSubmit, onInvalid)()} appearance="primary">
+            {mutateAdvertisement.isPending ? <LoaderIndicator /> : <Text className="text-center font-semibold text-white">Создать объявление</Text>}
           </CustomRectButton>
         </View>
       </KeyboardAwareScrollView>

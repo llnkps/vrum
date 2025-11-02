@@ -16,6 +16,8 @@ import { FlashList } from '@shopify/flash-list';
 import { Image } from 'expo-image';
 import { DefaultConfig } from '@/openapi/client';
 import { useToast } from '@/hooks/useToast';
+import { CustomRectButton } from '@/components/ui/button';
+import { useRouter } from 'expo-router';
 
 const SCREEN_CONFIGS: Record<ActiveScreen, { header: React.ComponentType; item: React.ComponentType<{ item: any }> } | null> = {
   auto: {
@@ -39,8 +41,9 @@ const SCREEN_CONFIGS: Record<ActiveScreen, { header: React.ComponentType; item: 
 const renderContent = (activeScreen: ActiveScreen) => SCREEN_CONFIGS[activeScreen];
 
 export default function SearchScreen() {
-  const [activeSreen, setActiveSreen] = useState<ActiveScreen>('auto');
-  const { header: HeaderScreen } = renderContent(activeSreen) || {};
+  const router = useRouter();
+  const [activeScreen, setActiveScreen] = useState<ActiveScreen>('auto');
+  const { header: HeaderScreen } = renderContent(activeScreen) || {};
 
   const store = useAutoSelectStore();
   const { showToast } = useToast();
@@ -68,7 +71,7 @@ export default function SearchScreen() {
         ListHeaderComponent={
           <>
             <HeaderBrand />
-            <HeaderCategory activeScreen={activeSreen} setActiveScreen={setActiveSreen} />
+            <HeaderCategory activeScreen={activeScreen} setActiveScreen={setActiveScreen} />
             {HeaderScreen && <HeaderScreen />}
             <TouchableOpacity
               onPress={() => {
@@ -84,7 +87,15 @@ export default function SearchScreen() {
         refreshControl={<RefreshControl tintColor={'blue'} refreshing={isRefetching} onRefresh={refetch} />}
         ListEmptyComponent={<Text className="p-4 text-center">No data available</Text>}
         renderItem={({ item }) => {
-          return <MiniAdvertisementCard item={item} />;
+          return (
+            <MiniAdvertisementCard
+              item={item}
+              onPress={() => {
+                // Navigate to advertisement details
+                router.push(`/(app)/advertisement-info/simple-auto/${item.id}`);
+              }}
+            />
+          );
         }}
         onEndReachedThreshold={0.2}
         onEndReached={() => hasNextPage && !isFetchingNextPage && fetchNextPage()}
@@ -94,27 +105,29 @@ export default function SearchScreen() {
   );
 }
 
-const MiniAdvertisementCard = ({ item }: { item: any }) => {
+const MiniAdvertisementCard = ({ item, onPress }: { item: any; onPress: () => void }) => {
   return (
-    <View className="p-4">
-      {item.images && item.images.length > 0 ? (
-        <Image
-          source={{
-            uri: DefaultConfig.basePath + '/' + item.images[0],
-          }}
-          style={{ width: '100%', height: 150, borderRadius: 8 }}
-          contentFit="cover"
-        />
-      ) : (
-        <View style={{ width: '100%', height: 150, borderRadius: 8, backgroundColor: '#ccc' }} />
-      )}
-      <Text className="text-lg font-bold text-font dark:text-font-dark">
-        {item.brand} {item.model}, {item.releaseYear}
-      </Text>
-      <Text className="text-font-subtle dark:text-font-subtle-dark">
-        {item.price} {item.currency}
-      </Text>
-      {item.region && <Text className="text-font-subtlest dark:text-font-subtlest-dark">{item.region}</Text>}
-    </View>
+    <CustomRectButton onPress={onPress} size="small">
+      <View>
+        {item.images && item.images.length > 0 ? (
+          <Image
+            source={{
+              uri: DefaultConfig.basePath + '/' + item.images[0],
+            }}
+            style={{ width: '100%', height: 150, borderRadius: 8 }}
+            contentFit="cover"
+          />
+        ) : (
+          <View style={{ width: '100%', height: 150, borderRadius: 8, backgroundColor: '#ccc' }} />
+        )}
+        <Text className="text-lg font-bold text-font dark:text-font-dark">
+          {item.brand} {item.model}, {item.releaseYear}
+        </Text>
+        <Text className="text-font-subtle dark:text-font-subtle-dark">
+          {item.price} {item.currency}
+        </Text>
+        {item.region && <Text className="text-font-subtlest dark:text-font-subtlest-dark">{item.region}</Text>}
+      </View>
+    </CustomRectButton>
   );
 };

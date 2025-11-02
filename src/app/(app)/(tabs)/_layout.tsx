@@ -3,16 +3,59 @@ import { Ionicons } from '@expo/vector-icons';
 import { useThemeStore } from '@/state/theme/useThemeStore';
 import { useAuthContext } from '@/context/AuthContext';
 import { useRouter } from 'expo-router';
-import { Platform } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import { useEffect } from 'react';
+
+// TODO: test this func
+function withAuthGuard<P>(WrappedComponent: React.ComponentType<P>) {
+  const GuardedComponent: React.FC<P & { navigation?: any; route?: any }> = (props) => {
+    const { isAuthenticated } = useAuthContext();
+
+    useEffect(() => {
+      (async () => {
+        const token = isAuthenticated
+        if (!token) {
+          Alert.alert("Sign in required", "Please log in to access this tab", [
+            { text: "Cancel", style: "cancel" },
+            {
+              text: "Login",
+              onPress: () =>
+                props.navigation?.navigate("Login", { redirectTo: props.route?.name }),
+            },
+          ]);
+        }
+      })();
+    }, []);
+
+    return <WrappedComponent {...props} />;
+  };
+
+  GuardedComponent.displayName = `WithAuthGuard(${WrappedComponent.displayName || WrappedComponent.name || "Component"})`;
+  return GuardedComponent;
+}
 
 export default function TabLayout() {
   const { isDark } = useThemeStore();
-  const { isAuthenticated} = useAuthContext();
+  const { isAuthenticated } = useAuthContext();
   const router = useRouter();
   const backgroundColor = isDark ? '#000' : '#fff';
   const tabBarActiveTintColor = isDark ? '#BFC1C4' : '#292A2E';
   const tabBarInactiveTintColor = isDark ? '#666' : '#999';
+
+  // const requireAuth = (Component) => async props => {
+  //   const token = await getValidToken();
+  //   if (!token) {
+  //     Alert.alert('Sign in required', 'Please log in to access this tab', [
+  //       { text: 'Cancel', style: 'cancel' },
+  //       {
+  //         text: 'Login',
+  //         onPress: () => navigation.navigate('Login', { redirectTo: props.route.name }),
+  //       },
+  //     ]);
+  //     return null;
+  //   }
+  //   return <Component {...props} />;
+  // };
 
   return (
     <Tabs
