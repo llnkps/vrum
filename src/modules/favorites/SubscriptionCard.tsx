@@ -2,47 +2,32 @@ import { UserSubscriptionFilter } from '@/openapi/client';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
 import React, { useRef } from 'react';
-import { Animated, Pressable, Text, TouchableOpacity, View } from 'react-native';
-import { RectButton, Swipeable } from 'react-native-gesture-handler'; // Импорт для свайпов
+import { Pressable, Text, TouchableOpacity, View } from 'react-native';
 import { CustomTheme } from '@/theme';
+import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
+import { CustomRectButton } from '@/components/ui/button';
 
 interface SubscriptionCardProps {
   item: UserSubscriptionFilter & {
     createdAt?: string;
     lastUsed?: string;
     isDefault?: boolean;
-    isActive?: boolean; // Новое поле для активности подписки
-    newAdsCount?: number; // Новое поле для количества новых объявлений
+    isActive?: boolean;
+    newAdsCount?: number;
   };
-  onPress?: () => void; // Посмотреть результаты
+  onPress?: () => void;
   onDelete?: () => void;
   onEdit?: () => void;
-  onToggle?: (isActive: boolean) => void; // Toggle для подписки
+  onToggle?: (isActive: boolean) => void;
 }
 
 const SubscriptionCard = ({ item, onPress, onDelete, onEdit, onToggle }: SubscriptionCardProps) => {
   const theme = useTheme() as CustomTheme;
-  const swipeableRef = useRef<Swipeable>(null);
+  const swipeableRef = useRef<any>(null);
 
-  // Цвета для иконок
-  const editColor = theme.colors.icon;
-  const deleteColor = theme.colors.textDanger;
-  const notifyColor = item.isActive ? theme.colors.button.primary : theme.colors.textSubtle; // Цвет для индикатора подписки
+  const notifyColor = item.isActive ? theme.colors.button.primary : theme.colors.textSubtle;
 
-  // Форматирование даты: "Обновлено X часов назад"
-  const formatLastUpdated = (dateString?: string) => {
-    if (!dateString) return '';
-    const now = new Date();
-    const lastUsed = new Date(dateString);
-    const diffMs = now.getTime() - lastUsed.getTime();
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    if (diffHours < 1) return 'Обновлено недавно';
-    if (diffHours < 24) return `Обновлено ${diffHours} ч назад`;
-    const diffDays = Math.floor(diffHours / 24);
-    return `Обновлено ${diffDays} д назад`;
-  };
-
-  // Сжатое описание параметров (берём ключевые, например, цена, пробег)
   const filterSummary = () => {
     const filters = item.filters || {};
     const parts = [];
@@ -52,79 +37,72 @@ const SubscriptionCard = ({ item, onPress, onDelete, onEdit, onToggle }: Subscri
     return parts.slice(0, 2).join(' · ') || 'Нет параметров';
   };
 
-  // Рендер правого свайпа (Удалить)
-  const renderRightActions = (progress: Animated.AnimatedInterpolation<number>, dragX: Animated.AnimatedInterpolation<number>) => {
-    const trans = dragX.interpolate({
-      inputRange: [-100, 0],
-      outputRange: [0, 100],
-    });
+  const renderLeftActions = (progress: any, dragX: any) => {
+    const animatedStyle = useAnimatedStyle(() => ({
+      transform: [{ translateX: dragX.value - 80 }], // Анимация сдвига
+    }));
+
     return (
-      <Animated.View style={{ transform: [{ translateX: trans }] }}>
-        <RectButton
-          style={{
-            backgroundColor: deleteColor,
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: 80,
-            height: '100%',
-            borderTopRightRadius: 12,
-            borderBottomRightRadius: 12,
-          }}
+      <Animated.View
+        style={[
+          animatedStyle,
+          { width: 80, height: '100%', justifyContent: 'center', alignItems: 'center', borderTopLeftRadius: 12, borderBottomLeftRadius: 12 },
+        ]}
+      >
+        <TouchableOpacity
           onPress={() => {
-            swipeableRef.current?.close();
-            onDelete?.();
+            onEdit?.();
+            swipeableRef.current?.close(); // Закрыть свайп
           }}
-        />
-        <Ionicons name="trash-outline" size={24} color="white" />
+          style={{ alignItems: 'center' }}
+        >
+          <Ionicons name="pencil" size={24} color="white" />
+        </TouchableOpacity>
       </Animated.View>
     );
   };
 
-  // Рендер левого свайпа (Открыть результаты)
-  const renderLeftActions = (progress: Animated.AnimatedInterpolation<number>, dragX: Animated.AnimatedInterpolation<number>) => {
-    const trans = dragX.interpolate({
-      inputRange: [0, 100],
-      outputRange: [-100, 0],
-    });
+  const renderRightActions = (progress: any, dragX: any) => {
+    const animatedStyle = useAnimatedStyle(() => ({
+      transform: [{ translateX: dragX.value + 80 }], // Анимация сдвига
+    }));
+
     return (
-      <Animated.View style={{ transform: [{ translateX: trans }] }}>
-        <RectButton
-          style={{
-            backgroundColor: theme.colors.button.primary,
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: 80,
-            height: '100%',
-            borderTopLeftRadius: 12,
-            borderBottomLeftRadius: 12,
-          }}
+      <Animated.View
+        style={[
+          animatedStyle,
+          { width: 80, height: '100%', justifyContent: 'center', alignItems: 'center', borderTopRightRadius: 12, borderBottomRightRadius: 12 },
+        ]}
+      >
+        <TouchableOpacity
           onPress={() => {
-            swipeableRef.current?.close();
-            onPress?.();
+            onDelete?.();
+            swipeableRef.current?.close(); // Закрыть свайп
           }}
+          style={{ alignItems: 'center' }}
         >
-          <Ionicons name="search" size={24} color="white" />
-        </RectButton>
+          <Ionicons name="trash" size={24} color="white" />
+        </TouchableOpacity>
       </Animated.View>
     );
   };
 
   return (
-    <View style={{ marginVertical: 8 }}>
+    <View style={{ marginBottom: 12 }}>
       <Swipeable
         ref={swipeableRef}
-        renderRightActions={renderRightActions}
-        renderLeftActions={renderLeftActions}
         friction={2}
         leftThreshold={40}
         rightThreshold={40}
+        renderLeftActions={renderLeftActions}
+        renderRightActions={renderRightActions}
       >
         <Pressable
           style={{
             borderRadius: 12,
             borderWidth: 1,
             borderColor: theme.colors.border,
-            backgroundColor: theme.colors.surface,
+            backgroundColor: theme.colors.backgroundNeutral,
             shadowColor: '#000',
             shadowOffset: { width: 0, height: 2 },
             shadowOpacity: 0.1,
@@ -134,7 +112,7 @@ const SubscriptionCard = ({ item, onPress, onDelete, onEdit, onToggle }: Subscri
           onPress={onPress}
           android_ripple={{ color: '#f3f4f6' }}
         >
-          <View style={{ padding: 16 }}>
+          <View style={{ padding: 14 }}>
             {/* Верх: Название и подзаголовок */}
             <View style={{ marginBottom: 8 }}>
               <Text
@@ -151,40 +129,12 @@ const SubscriptionCard = ({ item, onPress, onDelete, onEdit, onToggle }: Subscri
               <Text style={{ fontSize: 14, color: theme.colors.textSubtle }}>{filterSummary()}</Text>
             </View>
 
-            {/* Центр: Инфо о новых объявлениях */}
-            {item.newAdsCount && item.newAdsCount > 0 && (
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: theme.colors.button.primary, // text-font-selected
-                  fontWeight: '600',
-                  marginBottom: 8,
-                }}
-              >
-                +{item.newAdsCount} новых авто за 24 ч
-              </Text>
-            )}
-
-            {/* Дата последнего обновления */}
-            <Text style={{ fontSize: 12, color: theme.colors.textSubtle, marginBottom: 12 }}>{formatLastUpdated(item.lastUsed)}</Text>
-
             {/* Низ: Кнопки действий */}
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-              <TouchableOpacity
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  paddingVertical: 8,
-                  paddingHorizontal: 12,
-                  backgroundColor: theme.colors.button.primary,
-                  borderRadius: 8,
-                }}
-                onPress={onPress}
-                activeOpacity={0.8}
-              >
+              <CustomRectButton appearance="primary" onPress={onPress} size="small" style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Ionicons name="search" size={16} color="white" style={{ marginRight: 6 }} />
-                <Text style={{ color: 'white', fontWeight: '600' }}>Посмотреть результаты</Text>
-              </TouchableOpacity>
+                <Text style={{ color: 'white', fontWeight: '600' }}>Показать</Text>
+              </CustomRectButton>
 
               {/* Toggle подписки */}
               <TouchableOpacity

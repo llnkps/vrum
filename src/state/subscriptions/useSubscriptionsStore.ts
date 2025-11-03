@@ -1,21 +1,16 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import * as SecureStorage from 'expo-secure-store';
-import { ExtendedUserSubscriptionFilter } from '@/openapi/client';
-import { userApi } from '@/openapi/userApi';
-import { createAuthenticatedApiCall } from '@/openapi/auth-utils';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { UserSubscriptionFilter, UserApi } from '@/openapi/client';
 import { createAuthenticatedConfiguration } from '@/openapi/configurations';
 
-interface ExtendedUserSubscriptionFilter {
-  id: number;
-  name: string;
-  filters: { [slug: string]: string[] };
+export type ExtendedUserSubscriptionFilter = UserSubscriptionFilter & {
   createdAt?: string;
   lastUsed?: string;
   isDefault?: boolean;
   isActive?: boolean;
   newAdsCount?: number;
-}
+};
 
 interface SubscriptionsState {
   subscriptions: ExtendedUserSubscriptionFilter[];
@@ -24,18 +19,34 @@ interface SubscriptionsState {
   fetchSubscriptions: () => Promise<void>;
   retry: () => void;
   toggleSubscription: (id: number, isActive: boolean) => Promise<void>;
+  addSubscription: (subscription: Omit<ExtendedUserSubscriptionFilter, 'id'>) => Promise<void>;
+  deleteSubscription: (id: number) => Promise<void>;
+  syncSubscriptions: () => Promise<void>;
 }
 
 const storage = {
   getItem: async (name: string) => {
-    const value = await SecureStorage.getItemAsync(name);
-    return value ? JSON.parse(value) : null;
+    try {
+      const value = await AsyncStorage.getItem(name);
+      return value ? JSON.parse(value) : null;
+    } catch (error) {
+      console.error('Error getting item from storage:', error);
+      return null;
+    }
   },
   setItem: async (name: string, value: any) => {
-    await SecureStorage.setItemAsync(name, JSON.stringify(value));
+    try {
+      await AsyncStorage.setItem(name, JSON.stringify(value));
+    } catch (error) {
+      console.error('Error setting item in storage:', error);
+    }
   },
   removeItem: async (name: string) => {
-    await SecureStorage.deleteItemAsync(name);
+    try {
+      await AsyncStorage.removeItem(name);
+    } catch (error) {
+      console.error('Error removing item from storage:', error);
+    }
   },
 };
 
@@ -49,33 +60,14 @@ export const useSubscriptionsStore = create<SubscriptionsState>()(
       fetchSubscriptions: async () => {
         set({ isLoading: true, error: null });
         try {
-          const userApi = new UserApi(createAuthenticatedConfiguration());
-          // Замените на реальный метод API, например: const response = await userApi.getUserSubscriptions();
-          // Пока используем тестовые данные
-          const mockData: ExtendedUserSubscriptionFilter[] = [
-            {
-              id: 1,
-              name: 'BMW от 2016 года',
-              filters: { brand: ['BMW'], year: ['2016', '2017', '2018'], price: ['до 20000'] },
-              createdAt: '2023-10-01T10:00:00Z',
-              lastUsed: '2023-10-15T14:30:00Z',
-              isDefault: true,
-              isActive: true,
-              newAdsCount: 5,
-            },
-            {
-              id: 2,
-              name: 'SUV до 20 000€',
-              filters: { bodyType: ['SUV'], price: ['до 20000'], region: ['Молдова'] },
-              createdAt: '2023-09-20T09:15:00Z',
-              lastUsed: '2023-10-10T16:45:00Z',
-              isDefault: false,
-              isActive: false,
-              newAdsCount: 0,
-            },
-          ];
-          set({ subscriptions: mockData, isLoading: false });
+          const api = new UserApi(createAuthenticatedConfiguration());
+          // TODO: Замените на реальный метод API для получения подписок пользователя
+          // const response = await api.getUserSubscriptions();
+          // const data = response.data as UserSubscriptionFilter[];
+          // set({ subscriptions: data as ExtendedUserSubscriptionFilter[], isLoading: false });
+          set({ subscriptions: [], isLoading: false });
         } catch (err) {
+          console.error('Error fetching subscriptions:', err);
           set({ error: 'Ошибка загрузки подписок', isLoading: false });
         }
       },
@@ -84,17 +76,75 @@ export const useSubscriptionsStore = create<SubscriptionsState>()(
         await get().fetchSubscriptions();
       },
 
-      toggleSubscription: (id: number, isActive: boolean) => {
+      toggleSubscription: async (id: number, isActive: boolean) => {
+        // Локальное обновление
         set(state => ({
           subscriptions: state.subscriptions.map(sub => (sub.id === id ? { ...sub, isActive } : sub)),
         }));
-        // TODO: API вызов для toggle, затем fetchSubscriptions для синхронизации
+        try {
+          const api = new UserApi(createAuthenticatedConfiguration());
+          // TODO: Скорректируйте под реальный метод API для переключения подписки
+          // await api.toggleSubscription(id, { isActive });
+        } catch (err) {
+          console.error('Error toggling subscription:', err);
+          // Rollback
+          set(state => ({
+            subscriptions: state.subscriptions.map(sub => (sub.id === id ? { ...sub, isActive: !isActive } : sub)),
+          }));
+          set({ error: 'Ошибка переключения подписки' });
+        }
+      },
+
+      addSubscription: async subscription => {
+        try {
+          const api = new UserApi(createAuthenticatedConfiguration());
+          // TODO: Скорректируйте под реальный метод API для создания подписки
+          // const response = await api.createSubscription(subscription);
+          // const newSub = response.data as UserSubscriptionFilter;
+          // set(state => ({ subscriptions: [...state.subscriptions, newSub as ExtendedUserSubscriptionFilter] }));
+          const newSub = { ...subscription, id: Date.now() }; // Временный ID
+          set(state => ({ subscriptions: [...state.subscriptions, newSub] }));
+        } catch (err) {
+          console.error('Error adding subscription:', err);
+          set({ error: 'Ошибка добавления подписки' });
+        }
+      },
+
+      deleteSubscription: async (id: number) => {
+        set(state => ({
+          subscriptions: state.subscriptions.filter(sub => sub.id !== id),
+        }));
+        // API вызов
+        try {
+          const api = new UserApi(createAuthenticatedConfiguration());
+          // TODO: Скорректируйте под реальный метод API для удаления подписки
+          // await api.deleteSubscription(id);
+        } catch (err) {
+          console.error('Error deleting subscription:', err);
+          // Rollback - refetch
+          await get().fetchSubscriptions();
+          set({ error: 'Ошибка удаления подписки' });
+        }
+      },
+
+      syncSubscriptions: async () => {
+        const localSubs = get().subscriptions;
+        if (localSubs.length > 0) {
+          try {
+            const api = new UserApi(createAuthenticatedConfiguration());
+            // TODO: Скорректируйте под реальный метод API для синхронизации подписок (bulk sync)
+            // await api.syncSubscriptions(localSubs);
+            await get().fetchSubscriptions();
+          } catch (err) {
+            console.error('Error syncing subscriptions:', err);
+            set({ error: 'Ошибка синхронизации подписок' });
+          }
+        }
       },
     }),
     {
       name: 'subscriptions-storage',
       storage: createJSONStorage(() => storage),
-      // Сохраняем только subscriptions, остальные поля не персистим
       partialize: state => ({ subscriptions: state.subscriptions }),
     }
   )

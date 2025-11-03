@@ -9,15 +9,6 @@ import { Text, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const tabs = [
-  { key: FavoritesTab.FAVORITES, title: 'Избранное', icon: 'star-outline' },
-  {
-    key: FavoritesTab.SUBSCRIPTIONS,
-    title: 'Подписки',
-    icon: 'notifications-outline',
-  },
-] as const;
-
 const Page = () => {
   const [tab, setTab] = useState<FavoritesTab>(FavoritesTab.FAVORITES);
   const theme = useTheme() as CustomTheme;

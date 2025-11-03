@@ -1,49 +1,65 @@
-import { useCallback, useMemo } from 'react';
-import { Alert, Text, TouchableOpacity, View } from 'react-native';
+import { useCallback, useMemo, useState } from 'react';
+import { Alert, RefreshControl, Text, TouchableOpacity, View } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import { useRouter } from 'expo-router';
 import { useTheme } from '@react-navigation/native';
 import { CustomTheme } from '@/theme';
+
+import { useUserSubscriptionFiltersApi } from '@/hooks/api/useUserSubscriptionFiltersApi';
+import { useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
 import { useSubscriptionsStore } from '@/state/subscriptions/useSubscriptionsStore';
 import SubscriptionCard from './SubscriptionCard';
 import EmptyState from './EmptyState';
-import { useAuthContext } from '@/context/AuthContext';
 
-interface ExtendedUserSubscriptionFilter {
-  id: number;
-  name: string;
-  filters: { [slug: string]: string[] };
-  createdAt?: string;
-  lastUsed?: string;
-  isDefault?: boolean;
-  isActive?: boolean;
-  newAdsCount?: number;
-}
+import { UserSubscriptionFilter } from '@/openapi/client';
+import { useAuthContext } from '@/context/AuthContext';
 
 const SubscriptionsPage = () => {
   const router = useRouter();
   const theme = useTheme() as CustomTheme;
   const { isAuthenticated } = useAuthContext();
 
-  // Используем store для состояния подписок
-  const { subscriptions, isLoading, error, fetchSubscriptions, retry, toggleSubscription } = useSubscriptionsStore();
+  const { data: apiSubscriptions, isLoading: apiLoading, error: apiError, refetch: apiRefetch } = useUserSubscriptionFiltersApi();
 
-  // Обработчики с useCallback для производительности
-  const handleApply = useCallback(
-    (item: ExtendedUserSubscriptionFilter) => {
-      router.push({ pathname: '/(app)/(tabs)/search-tab', params: { filterId: item.id } });
+  const { subscriptions: storeSubscriptions, fetchSubscriptions: storeFetch } = useSubscriptionsStore();
+
+  const subscriptions = isAuthenticated ? apiSubscriptions : storeSubscriptions;
+  const isLoading = isAuthenticated ? apiLoading : false;
+  const error = isAuthenticated ? apiError : null;
+
+  console.log('SubscriptionsPage render', { data: subscriptions });
+
+  const populateFromSubscriptionFilters = useAutoSelectStore(state => state.populateFromSubscriptionFilters);
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    if (isAuthenticated) {
+      await apiRefetch();
+    } else {
+      await storeFetch();
+    }
+    setRefreshing(false);
+  }, [isAuthenticated, apiRefetch, storeFetch]);
+
+  const handleSubscriptionItemPress = useCallback(
+    (item: UserSubscriptionFilter) => {
+      populateFromSubscriptionFilters(item.filters);
+      router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal');
     },
-    [router]
+    [populateFromSubscriptionFilters, router]
   );
 
   const handleEdit = useCallback(
-    (item: ExtendedUserSubscriptionFilter) => {
-      router.push({ pathname: '/(app)/edit-filter', params: { filterId: item.id } });
+    (item: UserSubscriptionFilter) => {
+      // router.push({ pathname: '/(app)/edit-filter', params: { filterId: item.id } });
+      console.log('Edit filter:', item.id); // Временная замена для тестирования
     },
     [router]
   );
 
-  const handleDelete = useCallback((item: ExtendedUserSubscriptionFilter) => {
+  const handleDelete = useCallback((item: UserSubscriptionFilter) => {
     Alert.alert('Удалить фильтр', 'Вы уверены?', [
       { text: 'Отмена' },
       {
@@ -52,47 +68,45 @@ const SubscriptionsPage = () => {
         onPress: async () => {
           // TODO: API вызов для удаления
           console.log('Delete filter:', item.id);
-          // После удаления обновите store: fetchSubscriptions();
+          // После удаления обновите: refetch();
         },
       },
     ]);
   }, []);
 
-  const handleToggle = useCallback(
-    (item: ExtendedUserSubscriptionFilter, isActive: boolean) => {
-      // Toggle через store
-      toggleSubscription(item.id, isActive);
-    },
-    [toggleSubscription]
-  );
+  const handleToggle = useCallback((item: UserSubscriptionFilter, isActive: boolean) => {
+    console.log('Toggle subscription:', item.id, isActive);
+    // toggleSubscription(item.id, isActive);
+  }, []);
 
-  // renderItem с useCallback
   const renderItem = useCallback(
-    ({ item }: { item: ExtendedUserSubscriptionFilter }) => (
+    ({ item }: { item: UserSubscriptionFilter }) => (
       <SubscriptionCard
         item={item}
-        onPress={() => handleApply(item)}
+        onPress={() => handleSubscriptionItemPress(item)}
         onEdit={() => handleEdit(item)}
         onDelete={() => handleDelete(item)}
         onToggle={isActive => handleToggle(item, isActive)}
       />
     ),
-    [handleApply, handleEdit, handleDelete, handleToggle]
+    [handleSubscriptionItemPress, handleEdit, handleDelete, handleToggle]
   );
 
-  // keyExtractor с useCallback
-  const keyExtractor = useCallback((item: ExtendedUserSubscriptionFilter) => item.id.toString(), []);
+  const keyExtractor = useCallback((item: UserSubscriptionFilter) => item.id.toString(), []);
 
-  // EmptyState с onActionPress
-  const emptyState = useMemo(() => <EmptyState type="subscriptions" onActionPress={() => router.push('/(app)/create-filter')} />, [router]);
+  const emptyState = useMemo(
+    () => (
+      <EmptyState
+        type="subscriptions"
+        onActionPress={() => {
+          // router.push('/(app)/create-filter')
+          console.log('Navigate to create filter');
+        }}
+      />
+    ),
+    [router]
+  );
 
-  // Если не аутентифицирован, перенаправляем
-  if (!isAuthenticated) {
-    router.replace('/sign-in');
-    return null;
-  }
-
-  // Загрузка
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background }}>
@@ -101,11 +115,12 @@ const SubscriptionsPage = () => {
     );
   }
 
-  // Ошибка с retry
   if (error) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background, padding: 16 }}>
-        <Text style={{ color: theme.colors.text, marginBottom: 16, textAlign: 'center' }}>{error}. Проверьте интернет и попробуйте снова.</Text>
+        <Text style={{ color: theme.colors.text, marginBottom: 16, textAlign: 'center' }}>
+          {typeof error === 'string' ? error : error?.message || 'Неизвестная ошибка'}. Проверьте интернет и попробуйте снова.
+        </Text>
         <TouchableOpacity
           style={{
             paddingHorizontal: 16,
@@ -113,7 +128,7 @@ const SubscriptionsPage = () => {
             backgroundColor: theme.colors.button.primary,
             borderRadius: 8,
           }}
-          onPress={retry}
+          onPress={() => apiRefetch()}
         >
           <Text style={{ color: 'white', fontWeight: '600' }}>Попробовать снова</Text>
         </TouchableOpacity>
@@ -127,6 +142,7 @@ const SubscriptionsPage = () => {
       renderItem={renderItem}
       keyExtractor={keyExtractor}
       ListEmptyComponent={emptyState}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[theme.colors.button.primary]} />}
       contentContainerStyle={{
         paddingHorizontal: 16,
         paddingBottom: 16,
@@ -135,7 +151,6 @@ const SubscriptionsPage = () => {
         backgroundColor: theme.colors.background,
       }}
       showsVerticalScrollIndicator={false}
-      estimatedItemSize={120} // Оценка размера карточки для FlashList
     />
   );
 };
