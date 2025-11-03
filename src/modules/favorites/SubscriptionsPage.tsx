@@ -23,19 +23,6 @@ const SubscriptionsPage = () => {
 
   const { subscriptions: storeSubscriptions, fetchSubscriptions: storeFetch } = useSubscriptionsStore();
 
-  const mockData: UserSubscriptionFilter[] = [
-    {
-      id: 1,
-      name: 'BMW от 2016 года',
-      filters: { brand: ['BMW'], year: ['2016', '2017', '2018'], price: ['до 20000'] },
-    },
-    {
-      id: 2,
-      name: 'SUV до 20 000€',
-      filters: { bodyType: ['SUV'], price: ['до 20000'], region: ['Молдова'] },
-    },
-  ];
-
   const subscriptions = isAuthenticated ? apiSubscriptions : storeSubscriptions;
   const isLoading = isAuthenticated ? apiLoading : false;
   const error = isAuthenticated ? apiError : null;
@@ -151,7 +138,7 @@ const SubscriptionsPage = () => {
 
   return (
     <FlashList
-      data={mockData}
+      data={subscriptions}
       renderItem={renderItem}
       keyExtractor={keyExtractor}
       ListEmptyComponent={emptyState}
