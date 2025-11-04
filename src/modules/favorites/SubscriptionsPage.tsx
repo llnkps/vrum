@@ -4,6 +4,7 @@ import { FlashList } from '@shopify/flash-list';
 import { useRouter } from 'expo-router';
 import { useTheme } from '@react-navigation/native';
 import { CustomTheme } from '@/theme';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 import { useUserSubscriptionFiltersApi } from '@/hooks/api/useUserSubscriptionFiltersApi';
 import { useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
@@ -18,6 +19,7 @@ const SubscriptionsPage = () => {
   const router = useRouter();
   const theme = useTheme() as CustomTheme;
   const { isAuthenticated } = useAuthContext();
+  const tabBarHeight = useBottomTabBarHeight();
 
   const { data: apiSubscriptions, isLoading: apiLoading, error: apiError, refetch: apiRefetch } = useUserSubscriptionFiltersApi();
 
@@ -142,13 +144,12 @@ const SubscriptionsPage = () => {
       renderItem={renderItem}
       keyExtractor={keyExtractor}
       ListEmptyComponent={emptyState}
+      scrollEnabled={subscriptions && subscriptions.length > 0}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[theme.colors.button.primary]} />}
       contentContainerStyle={{
-        paddingHorizontal: 16,
-        paddingBottom: 16,
-        paddingTop: subscriptions && subscriptions.length > 0 ? 0 : 16,
-        flexGrow: 1,
-        backgroundColor: theme.colors.background,
+        padding: 16,
+        paddingBottom: tabBarHeight,
+        flexGrow: subscriptions && subscriptions.length === 0 ? 1 : 0,
       }}
       showsVerticalScrollIndicator={false}
     />

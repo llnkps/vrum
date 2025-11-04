@@ -1,8 +1,9 @@
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useTheme } from '@react-navigation/native';
 import { CustomTheme } from '@/theme';
+import { CustomRectButton } from '@/components/ui/button';
 
 type EmptyStateProps = {
   type: 'favorites' | 'subscriptions';
@@ -18,7 +19,7 @@ const EmptyState = ({ type, onActionPress }: EmptyStateProps) => {
     if (onActionPress) {
       onActionPress();
     } else {
-      router.push(isFavorites ? '/(app)/(tabs)/search-tab' : '/(app)/(tabs)/favorites');
+      router.push('/(app)/(tabs)/search-tab');
     }
   };
 
@@ -29,20 +30,15 @@ const EmptyState = ({ type, onActionPress }: EmptyStateProps) => {
         {isFavorites ? 'Избранное пусто' : 'Нет активных подписок'}
       </Text>
 
-      <Text className="text-center text-base leading-6" style={{ color: theme.colors.textSubtle }}>
+      <Text className="mb-4 text-center text-base leading-6" style={{ color: theme.colors.textSubtle }}>
         {isFavorites ? 'Вы можете сохранить интересные объявления, добавив их в избранное' : 'Создайте фильтр, чтобы быстро искать нужные автомобили'}
       </Text>
 
-      <TouchableOpacity
-        className="mt-4 rounded-2xl px-4 py-3"
-        style={{ backgroundColor: theme.colors.backgroundNeutral }}
-        activeOpacity={0.8}
-        onPress={() => router.push('/(app)/(tabs)/search-tab')}
-      >
+      <CustomRectButton appearance="primary" onPress={handleActionPress}>
         <Text className="font-semibold" style={{ color: theme.colors.text }}>
           {isFavorites ? 'Перейти к поиску авто' : 'Создать фильтр'}
         </Text>
-      </TouchableOpacity>
+      </CustomRectButton>
     </View>
   );
 };

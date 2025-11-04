@@ -157,8 +157,8 @@ export const AdvertisementCard: FC<props> = memo(({ item, onPress, isFavorite, s
             <FlashList
               ref={horizontalRef}
               onScrollBeginDrag={() => setScrolling(true)}
-    onScrollEndDrag={() => setScrolling(false)}
-    onMomentumScrollEnd={() => setScrolling(false)}
+              onScrollEndDrag={() => setScrolling(false)}
+              onMomentumScrollEnd={() => setScrolling(false)}
               horizontal
               data={item.images.slice(0, 5)}
               showsHorizontalScrollIndicator={false}

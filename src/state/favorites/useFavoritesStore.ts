@@ -5,6 +5,7 @@ import { AdvertisementItemResponse } from '@/openapi/client';
 
 interface FavoritesState {
   favorites: AdvertisementItemResponse[];
+  sortMethod: string;
   isLoading: boolean;
   error: string | null;
 
@@ -16,6 +17,7 @@ interface FavoritesState {
   clearFavorites: () => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
+  setSortMethod: (method: string) => void;
 
   // Sync with API
   syncWithApi: (apiFavorites: AdvertisementItemResponse[]) => void;
@@ -28,6 +30,7 @@ export const useFavoritesStore = create<FavoritesState>()(
   persist(
     (set, get) => ({
       favorites: [],
+      sortMethod: 'Актульности',
       isLoading: false,
       error: null,
 
@@ -62,6 +65,8 @@ export const useFavoritesStore = create<FavoritesState>()(
       setLoading: (loading: boolean) => set({ isLoading: loading }),
 
       setError: (error: string | null) => set({ error }),
+      
+      setSortMethod: (method: string) => set({ sortMethod: method }),
 
       syncWithApi: (apiFavorites: AdvertisementItemResponse[]) =>
         set(() => ({
@@ -69,8 +74,8 @@ export const useFavoritesStore = create<FavoritesState>()(
         })),
 
       getFavoritesForApi: () =>
-        get().favorites
-          .map(fav => ({
+        get()
+          .favorites.map(fav => ({
             advertisementId: fav.id,
           }))
           .filter(item => !isNaN(item.advertisementId)),
@@ -78,7 +83,7 @@ export const useFavoritesStore = create<FavoritesState>()(
     {
       name: 'favorites-storage',
       storage,
-      partialize: (state) => ({
+      partialize: state => ({
         favorites: state.favorites,
       }),
     }

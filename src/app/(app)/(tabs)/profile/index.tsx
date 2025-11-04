@@ -114,7 +114,7 @@ export default function SettingsPage() {
   return (
     <SafeAreaView className="flex-1">
       {/* Content */}
-      <ScrollView className="px-5 py-4" contentContainerStyle={{ paddingBottom: tabBarHeight - 40 }} showsVerticalScrollIndicator={false}>
+      <ScrollView className="px-5 py-4" contentContainerStyle={{ paddingBottom: tabBarHeight }} showsVerticalScrollIndicator={false}>
         {/* Account Section */}
         <View className="mb-6 flex-1">
           <Text className="mb-1 pl-3 text-lg font-semibold uppercase" style={{ color: theme.colors.text }}>
@@ -292,7 +292,7 @@ export default function SettingsPage() {
         </View>
 
         {/* Logout */}
-        <View className="mb-6">
+        <View>
           <TouchableOpacity
             className="items-center justify-center rounded-2xl p-3"
             style={{ backgroundColor: theme.colors.backgroundNeutral }}
