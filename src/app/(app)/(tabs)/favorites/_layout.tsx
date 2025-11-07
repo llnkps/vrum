@@ -21,14 +21,6 @@ export default function FavoriteStackLayout() {
           headerShown: false,
         }}
       />
-      <Stack.Screen
-        name="sort-select"
-        options={{
-          title: 'Сортировать по',
-          headerBackTitle: 'Отмена',
-          presentation: 'modal',
-        }}
-      />
     </Stack>
   );
 }

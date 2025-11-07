@@ -1,6 +1,6 @@
 import { LoaderIndicator } from '@/components/global/LoaderIndicator';
 import { FlashList } from '@shopify/flash-list';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 // import { useUserFavoritesApi, useDeleteUserFavoriteApi } from '@/hooks/api/useUserFavoritesApi';
 // import { GetUserFavorites200ResponseItemsInner } from '@/openapi/client';
@@ -12,17 +12,16 @@ import { useTheme } from '@react-navigation/native';
 import { CustomTheme } from '@/theme';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import CustomBottomSheetModal from '@/components/global/CustomBottomSheetModal';
 
 const FavoritesPage = () => {
-  const router = useRouter();
-
   // const { data: favoritesResponse, isLoading: apiLoading, error: apiError } = useUserFavoritesApi();
   // const deleteFavoriteMutation = useDeleteUserFavoriteApi();
 
   const {
     favorites: localFavorites,
     sortMethod,
+    setSortMethod,
     isLoading: storeLoading,
     error: storeError,
     // toggleFavorite,
@@ -34,56 +33,9 @@ const FavoritesPage = () => {
   const theme = useTheme() as CustomTheme;
   const tabBarHeight = useBottomTabBarHeight();
 
-  const mockFavorites: AdvertisementItemResponse[] = [
-    {
-      id: 1,
-      title: 'BMW X5 2018',
-      price: 25000,
-      currency: 'EUR',
-      images: ['https://example.com/image1.jpg'],
-      brand: 'BMW',
-      model: 'X5',
-      releaseYear: 2018,
-      mileage: 50000,
-      region: 'Молдова',
-      createdAt: '2023-10-01T10:00:00Z',
-      updatedAt: '2023-10-15T14:30:00Z',
-      isActive: true,
-      // Добавьте другие поля по необходимости из AdvertisementItemResponse
-    },
-    {
-      id: 2,
-      title: 'Audi A4 2019',
-      price: 22000,
-      currency: 'EUR',
-      images: ['https://example.com/image2.jpg'],
-      brand: 'Audi',
-      model: 'A4',
-      releaseYear: 2019,
-      mileage: 30000,
-      region: 'Молдова',
-      createdAt: '2023-09-20T09:15:00Z',
-      updatedAt: '2023-10-10T16:45:00Z',
-      isActive: true,
-    },
-    {
-      id: 3,
-      title: 'Mercedes C-Class 2020',
-      price: 28000,
-      currency: 'EUR',
-      images: ['https://example.com/image3.jpg'],
-      brand: 'Mercedes',
-      model: 'C-Class',
-      releaseYear: 2020,
-      mileage: 20000,
-      region: 'Молдова',
-      createdAt: '2023-08-15T11:00:00Z',
-      updatedAt: '2023-10-05T12:00:00Z',
-      isActive: true,
-    },
-  ];
+  const bottomSheetRef = useRef<any>(null);
 
-  const dataToUse = mockFavorites;
+  const dataToUse = localFavorites;
 
   const sortedData = useMemo(() => {
     const sorted = [...dataToUse];
@@ -113,6 +65,12 @@ const FavoritesPage = () => {
         break;
       case 'Названию':
         sorted.sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case 'Отличной цене':
+        // TODO: Implement special price sorting logic
+        break;
+      case 'Большему объему двигателя':
+        sorted.sort((a, b) => (b.engineVolume || 0) - (a.engineVolume || 0));
         break;
       default:
         break;
@@ -161,6 +119,24 @@ const FavoritesPage = () => {
   const isLoading = storeLoading;
   const error = storeError;
 
+  const handleSortChange = (method: string) => {
+    setSortMethod(method);
+    bottomSheetRef.current?.dismiss();
+  };
+
+  const sortMethods = [
+    'Актульности',
+    'Дате размещения',
+    'Возрастанию цены',
+    'Убыванию цены',
+    'Году выпуска: новее',
+    'Году выпуска: старее',
+    'Пробегу',
+    'Названию',
+    'Отличной цене',
+    'Большему объему двигателя',
+  ];
+
   if (isLoading && dataToUse.length === 0) {
     return <LoaderIndicator />;
   }
@@ -186,31 +162,57 @@ const FavoritesPage = () => {
   const emptyState = () => <EmptyState type="favorites" onActionPress={() => console.log('Navigate to search page')} />;
 
   return (
-    <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          paddingHorizontal: 24,
-          paddingTop: 16,
-          paddingBottom: 12,
-        }}
-      >
-        <Text style={{ fontSize: 16, color: theme.colors.text }}>Избранное ({sortedData.length})</Text>
-        <TouchableOpacity onPress={() => router.push('/(app)/(tabs)/favorites/sort-select')}>
-          <Ionicons name="funnel-outline" size={24} color={theme.colors.icon} />
-        </TouchableOpacity>
+    <>
+      <View style={{ flex: 1 }}>
+        {sortedData.length > 0 && (
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              paddingHorizontal: 24,
+              paddingTop: 16,
+              paddingBottom: 12,
+            }}
+          >
+            <Text style={{ fontSize: 16, color: theme.colors.text }}>Избранное ({sortedData.length})</Text>
+            <TouchableOpacity onPress={() => bottomSheetRef.current?.present()}>
+              <Ionicons name="funnel-outline" size={24} color={theme.colors.icon} />
+            </TouchableOpacity>
+          </View>
+        )}
+        <FlashList
+          data={sortedData}
+          renderItem={renderItem}
+          keyExtractor={keyExtractor}
+          ListEmptyComponent={emptyState}
+          scrollEnabled={sortedData && sortedData.length > 0}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: tabBarHeight, flexGrow: dataToUse && dataToUse.length === 0 ? 1 : 0 }}
+        />
       </View>
-      <FlashList
-        data={sortedData}
-        renderItem={renderItem}
-        keyExtractor={keyExtractor}
-        ListEmptyComponent={emptyState}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: tabBarHeight, flexGrow: dataToUse && dataToUse.length === 0 ? 1 : 0 }}
-      />
-    </ScrollView>
+
+      <CustomBottomSheetModal ref={bottomSheetRef} initialIndex={2} title="Сортировка по">
+        <View style={{ paddingHorizontal: 16, paddingBottom: 16 }}>
+          {sortMethods.map(method => (
+            <TouchableOpacity
+              key={method}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                paddingVertical: 12,
+                borderBottomWidth: 1,
+                borderBottomColor: theme.colors.border,
+              }}
+              onPress={() => handleSortChange(method)}
+            >
+              <Text style={{ flex: 1, fontSize: 16, color: theme.colors.text }}>{method}</Text>
+              {sortMethod === method && <Ionicons name="checkmark" size={24} color={theme.colors.icon} />}
+            </TouchableOpacity>
+          ))}
+        </View>
+      </CustomBottomSheetModal>
+    </>
   );
 };
 
