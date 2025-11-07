@@ -29,6 +29,7 @@ type CustomBottomSheetProps = {
     onConfirm?: (value?: any) => void;
     onCancel?: () => void;
   };
+  initialIndex?: number;
 };
 
 const CustomBottomSheetModal = forwardRef<BottomSheetRef, CustomBottomSheetProps>((props, ref) => {
@@ -44,6 +45,7 @@ const CustomBottomSheetModal = forwardRef<BottomSheetRef, CustomBottomSheetProps
     bottomInset = 20,
     showCloseButton = true,
     footerProps,
+    initialIndex = 0,
   } = props;
 
   const memoizedSnapPoints = useMemo(() => snapPoints, [snapPoints]);
@@ -52,7 +54,10 @@ const CustomBottomSheetModal = forwardRef<BottomSheetRef, CustomBottomSheetProps
 
   const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} disappearsOnIndex={-1} appearsOnIndex={0} />, []);
 
-  const renderDefaultHeader = useCallback((props: any) => <HeaderHandle {...props} title={title} showCloseButton={showCloseButton} />, [title, showCloseButton]);
+  const renderDefaultHeader = useCallback(
+    (props: any) => <HeaderHandle {...props} title={title} showCloseButton={showCloseButton} />,
+    [title, showCloseButton]
+  );
 
   const renderDefaultFooter = useCallback(
     (props: BottomSheetFooterProps) => (
@@ -66,7 +71,7 @@ const CustomBottomSheetModal = forwardRef<BottomSheetRef, CustomBottomSheetProps
   return (
     <BottomSheetModal
       ref={ref}
-      index={0} // initially closed
+      index={initialIndex} // initially closed
       snapPoints={memoizedSnapPoints}
       enableDynamicSizing={false}
       backdropComponent={backdropComponent === null ? undefined : (backdropComponent ?? renderBackdrop)}

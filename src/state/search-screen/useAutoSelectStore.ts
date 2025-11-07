@@ -35,6 +35,7 @@ type SelectionStore = {
   engineCapacityRange?: { min?: number; max?: number };
   powerRange?: { min?: number; max?: number };
   mileageRange?: { min?: number; max?: number };
+  sortMethod?: string;
 
   addSelectedBrand: (item: SimpleAutoBrand) => void;
   addSelectedModel: (item: SimpleAutoModel) => void;
@@ -66,13 +67,14 @@ type SelectionStore = {
   setEngineCapacityRange: (range: { min?: number; max?: number } | undefined) => void;
   setPowerRange: (range: { min?: number; max?: number } | undefined) => void;
   setMileageRange: (range: { min?: number; max?: number } | undefined) => void;
+  setSortMethod: (method: string) => void;
   resetFilters: () => void;
 
   currentBrand: SimpleAutoBrand | null;
   setCurrentBrand: (brand: SimpleAutoBrand | null) => void;
 
   clearSelections: () => void;
-  populateFromFilterValues: (filterValues: Array<{slug: string, values: string[]}>) => void;
+  populateFromFilterValues: (filterValues: Array<{ slug: string; values: string[] }>) => void;
   populateFromSubscriptionFilters: (filters: { [key: string]: any }) => void;
 };
 
@@ -85,6 +87,7 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
   selectedRegions: [],
   onlyUnsold: false,
   onlyWithPhotos: false,
+  sortMethod: 'Актульности',
   currentBrand: null,
 
   getSelectedModelsByBrand: (brandId: number) => {
@@ -244,6 +247,7 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
   setEngineCapacityRange: range => set({ engineCapacityRange: range }),
   setPowerRange: range => set({ powerRange: range }),
   setMileageRange: range => set({ mileageRange: range }),
+  setSortMethod: method => set({ sortMethod: method }),
   resetFilters: () =>
     set({
       tab: 'all',
@@ -266,6 +270,7 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
       engineCapacityRange: undefined,
       powerRange: undefined,
       mileageRange: undefined,
+      sortMethod: 'Актульности',
     }),
 
   clearSelections: () =>
@@ -293,81 +298,82 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
       engineCapacityRange: undefined,
       powerRange: undefined,
       mileageRange: undefined,
+      sortMethod: 'Актульности',
       currentBrand: null,
     }),
 
-  populateFromFilterValues: (filterValues) => {
+  populateFromFilterValues: filterValues => {
     // Reset filters first
     get().resetFilters();
-    filterValues.forEach(({slug, values}) => {
-      const mappedValues = values.map(v => ({value: v, label: v}));
-      switch(slug) {
+    filterValues.forEach(({ slug, values }) => {
+      const mappedValues = values.map(v => ({ value: v, label: v }));
+      switch (slug) {
         case 'transmission':
-          set({transmission: mappedValues});
+          set({ transmission: mappedValues });
           break;
         case 'fuelType':
-          set({fuelType: mappedValues});
+          set({ fuelType: mappedValues });
           break;
         case 'drivetrain':
-          set({drivetrain: mappedValues});
+          set({ drivetrain: mappedValues });
           break;
         case 'bodyType':
-          set({bodyType: mappedValues});
+          set({ bodyType: mappedValues });
           break;
         case 'color':
-          set({color: mappedValues});
+          set({ color: mappedValues });
           break;
         case 'condition':
-          set({condition: mappedValues});
+          set({ condition: mappedValues });
           break;
         case 'documentsOk':
-          set({documentsOk: mappedValues});
+          set({ documentsOk: mappedValues });
           break;
         case 'numberOfOwners':
-          set({numberOfOwners: mappedValues});
+          set({ numberOfOwners: mappedValues });
           break;
         case 'seller':
-          set({seller: mappedValues});
+          set({ seller: mappedValues });
           break;
         case 'tradeAllow':
-          set({tradeAllow: mappedValues});
+          set({ tradeAllow: mappedValues });
           break;
         case 'currency':
-          set({currency: mappedValues});
+          set({ currency: mappedValues });
           break;
         case 'price':
           if (values.length >= 1) {
             const min = values[0] ? parseInt(values[0]) : undefined;
             const max = values[1] ? parseInt(values[1]) : undefined;
-            set({priceRange: {min, max}});
+            set({ priceRange: { min, max } });
           }
           break;
         case 'year':
           if (values.length >= 1) {
             const min = values[0] ? parseInt(values[0]) : undefined;
             const max = values[1] ? parseInt(values[1]) : undefined;
-            set({yearRange: {min, max}});
+            set({ yearRange: { min, max } });
           }
           break;
         case 'engineCapacityRange':
           if (values.length >= 1) {
             const min = values[0] ? parseFloat(values[0]) : undefined;
             const max = values[1] ? parseFloat(values[1]) : undefined;
-            set({engineCapacityRange: {min, max}});
+            set({ engineCapacityRange: { min, max } });
           }
           break;
         case 'powerRange':
           if (values.length >= 1) {
             const min = values[0] ? parseInt(values[0]) : undefined;
             const max = values[1] ? parseInt(values[1]) : undefined;
-            set({powerRange: {min, max}});
+            set({ powerRange: { min, max } });
           }
           break;
         case 'mileageRange':
           if (values.length >= 1) {
             const min = values[0] ? parseInt(values[0]) : undefined;
             const max = values[1] ? parseInt(values[1]) : undefined;
-            set({mileageRange: {min, max}});
+            set({ mileageRange: { min, max } });
           }
           break;
         default:
@@ -376,12 +382,11 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
     });
   },
 
-  populateFromSubscriptionFilters: (filters) => {
-    console.log(filters)
+  populateFromSubscriptionFilters: filters => {
+    console.log(filters);
     // Reset filters first
     get().resetFilters();
     Object.entries(filters).forEach(([key, value]) => {
-
       switch (key) {
         case 'transmission':
           if (value && typeof value === 'object') {
@@ -471,10 +476,10 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
         case 'price':
           set({ priceRange: { min: value.from, max: value.to } });
 
-        // if (value && typeof value === 'object' && 'from' in value && 'to' in value) {
-        //     const min = value.from ? parseInt(value.from) : undefined;
-        //     const max = value.to ? parseInt(value.to) : undefined;
-        //   }
+          // if (value && typeof value === 'object' && 'from' in value && 'to' in value) {
+          //     const min = value.from ? parseInt(value.from) : undefined;
+          //     const max = value.to ? parseInt(value.to) : undefined;
+          //   }
           break;
         case 'b':
           // Handle brands with models
@@ -484,7 +489,11 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
             Object.values(value as Record<string, any>).forEach((brandData: any) => {
               if (brandData.id && brandData.models) {
                 brandsMap[brandData.id] = { id: brandData.id, name: '', orderNumber: 0, image: '', imageFilePath: '' };
-                const models: SimpleAutoModel[] = Object.values(brandData.models as Record<string, number>).map((modelId: number) => ({ id: modelId, name: '', orderNumber: 0 }));
+                const models: SimpleAutoModel[] = Object.values(brandData.models as Record<string, number>).map((modelId: number) => ({
+                  id: modelId,
+                  name: '',
+                  orderNumber: 0,
+                }));
                 modelsByBrand[brandData.id] = models;
               }
             });
@@ -494,7 +503,10 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
         case 'r':
           // Handle regions
           if (value && typeof value === 'object') {
-            const regions: Region[] = Object.values(value as Record<string, string>).map((regionId: string) => ({ id: parseInt(regionId), name: '' }));
+            const regions: Region[] = Object.values(value as Record<string, string>).map((regionId: string) => ({
+              id: parseInt(regionId),
+              name: '',
+            }));
             set({ selectedRegions: regions });
           }
           break;

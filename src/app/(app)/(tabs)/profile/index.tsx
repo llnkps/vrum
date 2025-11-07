@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, Switch, Image, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -12,12 +12,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
 import { CustomTheme } from '@/theme';
 import { useAuthContext } from '@/context/AuthContext';
+import i18n from '@/i18n';
+import CustomBottomSheetModal from '@/components/global/CustomBottomSheetModal';
 
 export default function SettingsPage() {
   const router = useRouter();
   const { isAuthenticated, logout } = useAuthContext();
   const { isDark, toggleTheme } = useThemeStore();
-  const { language, location, setLocation } = usePreferencesStore();
+  const { language, setLanguage, location, setLocation } = usePreferencesStore();
   const tabBarHeight = useBottomTabBarHeight();
 
   const [form, setForm] = useState({
@@ -25,6 +27,8 @@ export default function SettingsPage() {
     pushNotifications: false,
   });
   const theme = useTheme() as CustomTheme;
+
+  const bottomSheetRef = useRef<any>(null);
 
   const menuItems = [
     {
@@ -104,6 +108,14 @@ export default function SettingsPage() {
     return names[lang];
   };
 
+  const languages: Language[] = ['en', 'ro', 'ru', 'uk'];
+
+  const handleLanguageChange = (lang: Language) => {
+    setLanguage(lang);
+    i18n.changeLanguage(lang);
+    bottomSheetRef.current?.dismiss();
+  };
+
   // if (!isAuthenticated) {
   //   return null; // Will redirect
   // }
@@ -114,7 +126,7 @@ export default function SettingsPage() {
   return (
     <SafeAreaView className="flex-1">
       {/* Content */}
-      <ScrollView className="px-5 py-4" contentContainerStyle={{ paddingBottom: tabBarHeight - 40 }} showsVerticalScrollIndicator={false}>
+      <ScrollView className="px-5 py-4" contentContainerStyle={{ paddingBottom: tabBarHeight }} showsVerticalScrollIndicator={false}>
         {/* Account Section */}
         <View className="mb-6 flex-1">
           <Text className="mb-1 pl-3 text-lg font-semibold uppercase" style={{ color: theme.colors.text }}>
@@ -175,7 +187,7 @@ export default function SettingsPage() {
               className="flex-row items-center border-b p-3"
               style={{ borderBottomColor: theme.colors.border }}
               activeOpacity={0.7}
-              onPress={() => router.push('/(app)/(tabs)/profile/language-select')}
+              onPress={() => bottomSheetRef.current?.present()}
             >
               <Text className="text-base" style={{ color: theme.colors.text }}>
                 Язык
@@ -292,7 +304,7 @@ export default function SettingsPage() {
         </View>
 
         {/* Logout */}
-        <View className="mb-6">
+        <View>
           <TouchableOpacity
             className="items-center justify-center rounded-2xl p-3"
             style={{ backgroundColor: theme.colors.backgroundNeutral }}
@@ -313,6 +325,24 @@ export default function SettingsPage() {
             </TouchableOpacity> */}
         </View>
       </ScrollView>
+
+      <CustomBottomSheetModal ref={bottomSheetRef} initialIndex={1} title="Выберите язык">
+        <View className="px-5 py-4">
+          {languages.map(lang => (
+            <TouchableOpacity
+              key={lang}
+              className="flex-row items-center border-b py-4"
+              style={{ borderBottomColor: theme.colors.border }}
+              onPress={() => handleLanguageChange(lang)}
+            >
+              <Text className="flex-1 text-lg" style={{ color: theme.colors.text }}>
+                {getLanguageDisplayName(lang)}
+              </Text>
+              {language === lang && <Ionicons name="checkmark" size={24} color={theme.colors.icon} />}
+            </TouchableOpacity>
+          ))}
+        </View>
+      </CustomBottomSheetModal>
     </SafeAreaView>
   );
 }

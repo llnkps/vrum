@@ -1,7 +1,7 @@
 import { useNavigation, useRouter } from 'expo-router';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, RefreshControl, Text, View } from 'react-native';
+import { ActivityIndicator, RefreshControl, Text, TouchableOpacity, View } from 'react-native';
 
 import { PriceBottomSheet } from '@/components/filters/PriceFilterBottomSheet';
 import { RegionBottomSheet } from '@/components/filters/RegionBottomSheet';
@@ -28,10 +28,12 @@ import {
 import { showImmediateNotification } from '@/utils/notifications';
 import { Ionicons } from '@expo/vector-icons';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { useFocusEffect } from '@react-navigation/native';
+import { ThemeContext, useFocusEffect, useTheme } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import CustomBottomSheetModal from '@/components/global/CustomBottomSheetModal';
+import { CustomTheme } from '@/theme';
 
 const ARRAY_FILTERS = {
   TRANSMISSION: 'transmission',
@@ -67,6 +69,7 @@ export default function SimpleAutoModal() {
   // console.log('Segments in SimpleAutoModal: ');
   // console.log(state?.routes);
 
+  const theme = useTheme() as CustomTheme;
   const store = useAutoSelectStore();
   const selectedBrands = selectSelectedBrands(store);
   const selectedModels = selectSelectedModels(store);
@@ -91,6 +94,8 @@ export default function SimpleAutoModal() {
     mileageRange,
     setYearRange,
     setPriceRange,
+    sortMethod,
+    setSortMethod,
   } = store;
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch, isRefetching } = useSimpleGetCollectionPagination({
@@ -118,8 +123,40 @@ export default function SimpleAutoModal() {
   });
 
   const flattenedData = useMemo(() => {
-    return data?.pages?.flatMap(page => page.data) || [];
-  }, [data]);
+    const rawData = data?.pages?.flatMap(page => page.data) || [];
+    const sorted = [...rawData];
+    switch (sortMethod) {
+      case 'Актульности':
+        // Сортировка по updatedAt (новые сначала)
+        sorted.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+        break;
+      case 'Дате размещения':
+        // Сортировка по createdAt (новые сначала)
+        sorted.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        break;
+      case 'Возрастанию цены':
+        sorted.sort((a, b) => a.price - b.price);
+        break;
+      case 'Убыванию цены':
+        sorted.sort((a, b) => b.price - a.price);
+        break;
+      case 'Году выпуска: новее':
+        sorted.sort((a, b) => b.releaseYear - a.releaseYear);
+        break;
+      case 'Году выпуска: старее':
+        sorted.sort((a, b) => a.releaseYear - b.releaseYear);
+        break;
+      case 'Пробегу':
+        sorted.sort((a, b) => a.mileage - b.mileage);
+        break;
+      case 'Названию':
+        sorted.sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      default:
+        break;
+    }
+    return sorted;
+  }, [data, sortMethod]);
 
   const { onViewableItemsChanged } = useImagePrefetch(flattenedData);
 
@@ -127,6 +164,7 @@ export default function SimpleAutoModal() {
   const priceModalRef = useRef<BottomSheetModal>(null);
   const regionModalRef = useRef<BottomSheetModal>(null);
   const routeIndexRef = useRef<number | null>(null);
+  const sortModalRef = useRef<BottomSheetModal>(null);
 
   const handlePresentYearModalPress = useCallback(() => {
     yearModalRef.current?.present();
@@ -141,6 +179,22 @@ export default function SimpleAutoModal() {
   }, []);
   const [isBrandSectionCollapsed, setIsBrandSectionCollapsed] = useState(true);
   const selectedGenerations = selectSelectedGenerations(store);
+
+  const handleSortChange = (method: string) => {
+    setSortMethod(method);
+    sortModalRef.current?.dismiss();
+  };
+
+  const sortMethods = [
+    'Актульности',
+    'Дате размещения',
+    'Возрастанию цены',
+    'Убыванию цены',
+    'Году выпуска: новее',
+    'Году выпуска: старее',
+    'Пробегу',
+    'Названию',
+  ];
 
   const handleSubscribe = async () => {
     // Build name
@@ -444,6 +498,21 @@ export default function SimpleAutoModal() {
                   }}
                 />
               )}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  paddingHorizontal: 24,
+                  paddingTop: 16,
+                  paddingBottom: 12,
+                }}
+              >
+                <Text style={{ fontSize: 16, color: theme.colors.text }}>Результаты поиск ({flattenedData.length})</Text>
+                <TouchableOpacity onPress={() => sortModalRef.current?.present()}>
+                  <Ionicons name="funnel-outline" size={24} color={theme.colors.icon} />
+                </TouchableOpacity>
+              </View>
 
               {/** component for opening year modal */}
 
@@ -494,6 +563,27 @@ export default function SimpleAutoModal() {
         selectedRegions={store.selectedRegions}
         onChange={regions => store.setSelectedRegions(Array.isArray(regions) ? regions : [regions])}
       />
+
+      <CustomBottomSheetModal ref={sortModalRef} initialIndex={2} title="Сортировка по">
+        <View style={{ paddingHorizontal: 16, paddingBottom: 16 }}>
+          {sortMethods.map(method => (
+            <TouchableOpacity
+              key={method}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                paddingVertical: 12,
+                borderBottomWidth: 1,
+                borderBottomColor: theme.colors.border,
+              }}
+              onPress={() => handleSortChange(method)}
+            >
+              <Text style={{ flex: 1, fontSize: 16, color: theme.colors.text }}>{method}</Text>
+              {sortMethod === method && <Ionicons name="checkmark" size={24} color={theme.colors.icon} />}
+            </TouchableOpacity>
+          ))}
+        </View>
+      </CustomBottomSheetModal>
     </SafeAreaView>
   );
 }

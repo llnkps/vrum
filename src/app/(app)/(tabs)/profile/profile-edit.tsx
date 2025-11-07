@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Text, TextInput, TouchableOpacity, Alert, ScrollView, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { createAuthenticatedConfiguration } from '@/openapi/configurations';
@@ -98,10 +97,9 @@ export default function ProfileEditPage() {
   };
 
   return (
-    <SafeAreaView className="flex-1">
-      <ScrollView className="px-5 py-4" contentContainerStyle={{ paddingBottom: tabBarHeight + 24 }} showsVerticalScrollIndicator={false}>
-        {/* Image */}
-        {/* <View className="flex-1 items-center">
+    <ScrollView className="px-5 py-4" contentContainerStyle={{ paddingBottom: tabBarHeight + 24 }} showsVerticalScrollIndicator={false}>
+      {/* Image */}
+      {/* <View className="flex-1 items-center">
             <TouchableOpacity onPress={pickImage} activeOpacity={0.8}>
               <Image
                 source={{ uri: profileForm.avatar || 'https://images.unsplash.com/photo-1633332755192-727a05c4013d' }}
@@ -113,117 +111,116 @@ export default function ProfileEditPage() {
             </TouchableOpacity>
           </View> */}
 
-        {/* Name */}
-        <View className="mb-6">
-          <View className="mb-2 rounded-2xl" style={{ backgroundColor: theme.colors.backgroundNeutral }}>
-            <TextInput
-              value={profileForm.firstName}
-              onChangeText={v => setProfileForm(p => ({ ...p, firstName: v }))}
-              placeholder="Имя"
-              placeholderTextColor={theme.colors.textSubtle}
-              className="border-b p-3"
-              style={{ color: theme.colors.text, borderBottomColor: theme.colors.border }}
-            />
-            <TextInput
-              value={profileForm.lastName}
-              onChangeText={v => setProfileForm(p => ({ ...p, lastName: v }))}
-              placeholder="Фамилия"
-              placeholderTextColor={theme.colors.textSubtle}
-              className="p-3"
-              style={{ color: theme.colors.text }}
-            />
-          </View>
-          <Text className="pl-3 text-sm" style={{ color: theme.colors.textSubtle }}>
-            Укажите имя и фамилию и, если хотите, добавьте фотографию для Вашего профиля.
-          </Text>
-        </View>
-
-        {/* Bio */}
-        <View className="mb-6">
+      {/* Name */}
+      <View className="mb-6">
+        <View className="mb-2 rounded-2xl" style={{ backgroundColor: theme.colors.backgroundNeutral }}>
           <TextInput
-            value={profileForm.bio}
-            onChangeText={v => setProfileForm(p => ({ ...p, bio: v }))}
-            placeholder="О себе"
-            multiline
+            value={profileForm.firstName}
+            onChangeText={v => setProfileForm(p => ({ ...p, firstName: v }))}
+            placeholder="Имя"
             placeholderTextColor={theme.colors.textSubtle}
-            className="mb-2 rounded-2xl p-3"
-            style={{ color: theme.colors.text, backgroundColor: theme.colors.backgroundNeutral }}
-            textAlignVertical="center"
+            className="border-b p-3"
+            style={{ color: theme.colors.text, borderBottomColor: theme.colors.border }}
           />
-          <Text className="pl-3 text-sm" style={{ color: theme.colors.textSubtle }}>
-            Расскажите немного о себе, чтобы другие пользователи могли узнать Вас лучше.
-          </Text>
+          <TextInput
+            value={profileForm.lastName}
+            onChangeText={v => setProfileForm(p => ({ ...p, lastName: v }))}
+            placeholder="Фамилия"
+            placeholderTextColor={theme.colors.textSubtle}
+            className="p-3"
+            style={{ color: theme.colors.text }}
+          />
         </View>
+        <Text className="pl-3 text-sm" style={{ color: theme.colors.textSubtle }}>
+          Укажите имя и фамилию и, если хотите, добавьте фотографию для Вашего профиля.
+        </Text>
+      </View>
 
-        {/* Birth day */}
-        <View className="mb-6">
-          <TouchableOpacity
-            className="mb-2 rounded-2xl p-3"
-            style={{ backgroundColor: theme.colors.backgroundNeutral }}
-            onPress={() => console.log('Change DOB')}
-          >
-            <Text className="text-base font-semibold" style={{ color: theme.colors.text }}>
-              День рождения
-            </Text>
-          </TouchableOpacity>
-          <Text className="pl-3 text-sm" style={{ color: theme.colors.textSubtle }}>
-            Ваш день рождения могут видеть только вы.
-          </Text>
-        </View>
+      {/* Bio */}
+      <View className="mb-6">
+        <TextInput
+          value={profileForm.bio}
+          onChangeText={v => setProfileForm(p => ({ ...p, bio: v }))}
+          placeholder="О себе"
+          multiline
+          placeholderTextColor={theme.colors.textSubtle}
+          className="mb-2 rounded-2xl p-3"
+          style={{ color: theme.colors.text, backgroundColor: theme.colors.backgroundNeutral }}
+          textAlignVertical="center"
+        />
+        <Text className="pl-3 text-sm" style={{ color: theme.colors.textSubtle }}>
+          Расскажите немного о себе, чтобы другие пользователи могли узнать Вас лучше.
+        </Text>
+      </View>
 
-        {/* Phone & Login */}
-        <View className="mb-6 rounded-2xl" style={{ backgroundColor: theme.colors.backgroundNeutral }}>
-          <TouchableOpacity
-            className="flex-row items-center border-b border-border/10 p-3 active:opacity-80 dark:border-border-dark/10"
-            activeOpacity={0.7}
-            onPress={() => console.log('Change Phone')}
-          >
-            <Text className="text-base font-semibold" style={{ color: theme.colors.text }}>
-              Номер телефона
-            </Text>
-            <View className="flex-1" />
-            <Text className="mr-2 text-sm font-medium" style={{ color: theme.colors.textSubtle }}>
-              +373 60 123 456
-            </Text>
-            <Ionicons name="chevron-forward" size={20} color={theme.colors.text} />
-          </TouchableOpacity>
-          <TouchableOpacity className="flex-row items-center p-3 active:opacity-80" activeOpacity={0.7} onPress={() => console.log('Change Phone')}>
-            <Text className="text-base font-semibold" style={{ color: theme.colors.text }}>
-              Имя пользователя
-            </Text>
-            <View className="flex-1" />
-            <Text className="mr-2 text-sm font-medium" style={{ color: theme.colors.textSubtle }}>
-              @username
-            </Text>
-            <Ionicons name="chevron-forward" size={20} color={theme.colors.text} />
-          </TouchableOpacity>
-        </View>
-
-        {/* Accounts */}
-        <View className="mb-6">
-          <TouchableOpacity
-            className="mb-2 items-center rounded-2xl p-3"
-            style={{ backgroundColor: theme.colors.backgroundNeutral }}
-            activeOpacity={0.8}
-            onPress={handleAddAccount}
-          >
-            <Text className="text-base font-semibold text-font-brand">Добавить Аккаунт</Text>
-          </TouchableOpacity>
-          <Text className="pl-3 text-sm" style={{ color: theme.colors.textSubtle }}>
-            Вы можете подключить несколько аккаунтов для удобного переключения между ними.
-          </Text>
-        </View>
-
+      {/* Birth day */}
+      <View className="mb-6">
         <TouchableOpacity
-          className="items-center rounded-lg px-4 py-3"
+          className="mb-2 rounded-2xl p-3"
+          style={{ backgroundColor: theme.colors.backgroundNeutral }}
+          onPress={() => console.log('Change DOB')}
+        >
+          <Text className="text-base font-semibold" style={{ color: theme.colors.text }}>
+            День рождения
+          </Text>
+        </TouchableOpacity>
+        <Text className="pl-3 text-sm" style={{ color: theme.colors.textSubtle }}>
+          Ваш день рождения могут видеть только вы.
+        </Text>
+      </View>
+
+      {/* Phone & Login */}
+      <View className="mb-6 rounded-2xl" style={{ backgroundColor: theme.colors.backgroundNeutral }}>
+        <TouchableOpacity
+          className="flex-row items-center border-b border-border/10 p-3 active:opacity-80 dark:border-border-dark/10"
+          activeOpacity={0.7}
+          onPress={() => console.log('Change Phone')}
+        >
+          <Text className="text-base font-semibold" style={{ color: theme.colors.text }}>
+            Номер телефона
+          </Text>
+          <View className="flex-1" />
+          <Text className="mr-2 text-sm font-medium" style={{ color: theme.colors.textSubtle }}>
+            +373 60 123 456
+          </Text>
+          <Ionicons name="chevron-forward" size={20} color={theme.colors.text} />
+        </TouchableOpacity>
+        <TouchableOpacity className="flex-row items-center p-3 active:opacity-80" activeOpacity={0.7} onPress={() => console.log('Change Phone')}>
+          <Text className="text-base font-semibold" style={{ color: theme.colors.text }}>
+            Имя пользователя
+          </Text>
+          <View className="flex-1" />
+          <Text className="mr-2 text-sm font-medium" style={{ color: theme.colors.textSubtle }}>
+            @username
+          </Text>
+          <Ionicons name="chevron-forward" size={20} color={theme.colors.text} />
+        </TouchableOpacity>
+      </View>
+
+      {/* Accounts */}
+      <View className="mb-6">
+        <TouchableOpacity
+          className="mb-2 items-center rounded-2xl p-3"
           style={{ backgroundColor: theme.colors.backgroundNeutral }}
           activeOpacity={0.8}
-          onPress={handleSave}
-          disabled={updateUserMutation.isPending}
+          onPress={handleAddAccount}
         >
-          <Text className="font-semibold text-white">{updateUserMutation.isPending ? 'Сохранение...' : 'Сохранить'}</Text>
+          <Text className="text-base font-semibold text-font-brand">Добавить Аккаунт</Text>
         </TouchableOpacity>
-      </ScrollView>
-    </SafeAreaView>
+        <Text className="pl-3 text-sm" style={{ color: theme.colors.textSubtle }}>
+          Вы можете подключить несколько аккаунтов для удобного переключения между ними.
+        </Text>
+      </View>
+
+      <TouchableOpacity
+        className="items-center rounded-lg px-4 py-3"
+        style={{ backgroundColor: theme.colors.backgroundNeutral }}
+        activeOpacity={0.8}
+        onPress={handleSave}
+        disabled={updateUserMutation.isPending}
+      >
+        <Text className="font-semibold text-white">{updateUserMutation.isPending ? 'Сохранение...' : 'Сохранить'}</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 }

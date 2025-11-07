@@ -27,14 +27,6 @@ export default function ProfileLayout() {
           title: 'Аккаунт',
         }}
       />
-      <Stack.Screen
-        name="language-select"
-        options={{
-          title: 'Выбор языка',
-          headerBackTitle: 'Назад',
-          presentation: 'modal',
-        }}
-      />
     </Stack>
   );
 }
