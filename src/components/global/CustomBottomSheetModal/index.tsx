@@ -42,7 +42,7 @@ const CustomBottomSheetModal = forwardRef<BottomSheetRef, CustomBottomSheetProps
     enableContentPanningGesture = false,
     enablePanDownToClose = true,
     backdropComponent,
-    bottomInset = 20,
+    bottomInset = 0,
     showCloseButton = true,
     footerProps,
     initialIndex = 0,

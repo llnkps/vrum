@@ -2,23 +2,20 @@ import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/Cust
 import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
-
-type DrivetrainOption = (typeof options)[number];
+import { useFilterConfigs, FilterOption } from '@/shared/filter-registry';
+import { BACKEND_FILTERS } from '@/shared/filter-registry';
 
 type DrivetrainFilterBottomSheetProps = {
-  onChange: (values: DrivetrainOption[]) => void;
+  onChange: (values: FilterOption[]) => void;
 };
 
-const options = [
-  { label: 'Передний (FWD)', value: 'front' },
-  { label: 'Задний (RWD)', value: 'rear' },
-  { label: '4x4', value: '4wd' },
-];
-
 export const DrivetrainFilterBottomSheet = forwardRef<BottomSheetRef, DrivetrainFilterBottomSheetProps>(({ onChange }, ref) => {
-  const [selectedDrivetrains, setSelectedDrivetrains] = React.useState<DrivetrainOption[]>([]);
+  const filterConfigs = useFilterConfigs();
+  const drivetrainConfig = filterConfigs[BACKEND_FILTERS.DRIVETRAIN_TYPE];
+  const options = drivetrainConfig?.options || [];
+  const [selectedDrivetrains, setSelectedDrivetrains] = React.useState<FilterOption[]>([]);
 
-  const handleToggle = (option: DrivetrainOption) => {
+  const handleToggle = (option: FilterOption) => {
     const isSelected = selectedDrivetrains.some(t => t.value === option.value);
     if (isSelected) {
       setSelectedDrivetrains(selectedDrivetrains.filter(t => t.value !== option.value));

@@ -1,4 +1,5 @@
 import { SimpleAutoBrand, SimpleAutoGeneration, SimpleAutoModel, Region } from '@/openapi/client';
+import { SortMethod } from '@/types/sort';
 import { create } from 'zustand';
 
 type BottomSheetOptionType = {
@@ -35,7 +36,6 @@ type SelectionStore = {
   engineCapacityRange?: { min?: number; max?: number };
   powerRange?: { min?: number; max?: number };
   mileageRange?: { min?: number; max?: number };
-  sortMethod?: string;
 
   addSelectedBrand: (item: SimpleAutoBrand) => void;
   addSelectedModel: (item: SimpleAutoModel) => void;
@@ -67,7 +67,6 @@ type SelectionStore = {
   setEngineCapacityRange: (range: { min?: number; max?: number } | undefined) => void;
   setPowerRange: (range: { min?: number; max?: number } | undefined) => void;
   setMileageRange: (range: { min?: number; max?: number } | undefined) => void;
-  setSortMethod: (method: string) => void;
   resetFilters: () => void;
 
   currentBrand: SimpleAutoBrand | null;
@@ -76,6 +75,9 @@ type SelectionStore = {
   clearSelections: () => void;
   populateFromFilterValues: (filterValues: Array<{ slug: string; values: string[] }>) => void;
   populateFromSubscriptionFilters: (filters: { [key: string]: any }) => void;
+
+  sortMethod?: SortMethod;
+  setSortMethod: (method: SortMethod) => void;
 };
 
 export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
@@ -87,8 +89,8 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
   selectedRegions: [],
   onlyUnsold: false,
   onlyWithPhotos: false,
-  sortMethod: 'Актульности',
   currentBrand: null,
+  sortMethod: {fieldName: 'createdAt', direction: 3},
 
   getSelectedModelsByBrand: (brandId: number) => {
     const state = get();
@@ -270,7 +272,7 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
       engineCapacityRange: undefined,
       powerRange: undefined,
       mileageRange: undefined,
-      sortMethod: 'Актульности',
+      sortMethod: {fieldName: 'createdAt', direction: 3},
     }),
 
   clearSelections: () =>
@@ -298,7 +300,7 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
       engineCapacityRange: undefined,
       powerRange: undefined,
       mileageRange: undefined,
-      sortMethod: 'Актульности',
+      sortMethod: {fieldName: 'createdAt', direction: 3},
       currentBrand: null,
     }),
 
@@ -340,6 +342,12 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
           break;
         case 'currency':
           set({ currency: mappedValues });
+          break;
+        case 'unsold':
+          set({ onlyUnsold: values[0] === 'true' });
+          break;
+        case 'with_image':
+          set({ onlyWithPhotos: values[0] === 'true' });
           break;
         case 'price':
           if (values.length >= 1) {

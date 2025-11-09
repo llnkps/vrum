@@ -124,6 +124,7 @@ const RegionList: FC<RegionListProps> = ({ multiple, onRegionSelect, isRegionSel
               onPress={() => onRegionSelect(region)}
               title={region.name}
               isSelected={isRegionSelected(region)}
+              appearance="subtle"
             />
           );
         }

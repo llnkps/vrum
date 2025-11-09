@@ -2,27 +2,20 @@ import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/Cust
 import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
+import { useFilterConfigs, FilterOption } from '@/shared/filter-registry';
+import { BACKEND_FILTERS } from '@/shared/filter-registry';
 
-type BodyTypeOption = (typeof options)[number];
-
-type BodyTypeModalProps = {
-  onChange: (values: BodyTypeOption[]) => void;
+type BodyTypeFilterBottomSheetProps = {
+  onChange: (values: FilterOption[]) => void;
 };
 
-const options = [
-  { label: 'Седан', value: 'sedan' },
-  { label: 'Хэтчбек', value: 'hatchback' },
-  { label: 'SUV', value: 'suv' },
-  { label: 'Купе', value: 'coupe' },
-  { label: 'Универсал', value: 'wagon' },
-  { label: 'Пикап', value: 'pickup' },
-  { label: 'Фургон', value: 'van' },
-];
+export const BodyTypeFilterBottomSheet = forwardRef<BottomSheetRef, BodyTypeFilterBottomSheetProps>(({ onChange }, ref) => {
+  const filterConfigs = useFilterConfigs();
+  const bodyTypeConfig = filterConfigs[BACKEND_FILTERS.FRAME_TYPE];
+  const options = bodyTypeConfig?.options || [];
+  const [selectedBodyTypes, setSelectedBodyTypes] = React.useState<FilterOption[]>([]);
 
-export const BodyTypeFilterBottomSheet = forwardRef<BottomSheetRef, BodyTypeModalProps>(({ onChange }, ref) => {
-  const [selectedBodyTypes, setSelectedBodyTypes] = React.useState<BodyTypeOption[]>([]);
-
-  const handleToggle = (option: BodyTypeOption) => {
+  const handleToggle = (option: FilterOption) => {
     const isSelected = selectedBodyTypes.some(t => t.value === option.value);
     if (isSelected) {
       setSelectedBodyTypes(selectedBodyTypes.filter(t => t.value !== option.value));

@@ -2,24 +2,21 @@ import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/Cust
 import { CustomRectButton } from '@/components/ui/button';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
-
-type ConditionOption = (typeof options)[number];
+import { useFilterConfigs, FilterOption } from '@/shared/filter-registry';
+import { BACKEND_FILTERS } from '@/shared/filter-registry';
 
 type ConditionFilterBottomSheetProps = {
-  onSelect: (value: ConditionOption) => void;
+  onSelect: (value: FilterOption) => void;
 };
 
-const options = [
-  { label: 'Новый', value: 'new' },
-  { label: 'Б/у', value: 'used' },
-  { label: 'На запчасти', value: 'for_parts' },
-];
-
 export const ConditionFilterBottomSheet = forwardRef<BottomSheetRef, ConditionFilterBottomSheetProps>(({ onSelect }, ref) => {
-  const [selectedCondition, setSelectedCondition] = React.useState<string | undefined>(undefined);
+  const filterConfigs = useFilterConfigs();
+  const conditionConfig = filterConfigs[BACKEND_FILTERS.CONDITION];
+  const options = conditionConfig?.options || [];
+  const [selectedCondition, setSelectedCondition] = React.useState<string | number | undefined>(undefined);
 
   return (
-    <CustomBottomSheetModal ref={ref} snapPoints={['30%']} enableContentPanningGesture={true} title="Состояние">
+    <CustomBottomSheetModal ref={ref} snapPoints={['30%']} enableContentPanningGesture={true} title={conditionConfig.label}>
       <BottomSheetView className="flex-col">
         {options.map(opt => (
           <CustomRectButton

@@ -2,24 +2,20 @@ import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/Cust
 import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
-
-type NumberOfOwnersOption = (typeof options)[number];
+import { useFilterConfigs, FilterOption } from '@/shared/filter-registry';
+import { BACKEND_FILTERS } from '@/shared/filter-registry';
 
 type NumberOfOwnersFilterBottomSheetProps = {
-  onChange: (values: NumberOfOwnersOption[]) => void;
+  onChange: (values: FilterOption[]) => void;
 };
 
-const options = [
-  { label: 'Один', value: 'one' },
-  { label: 'Два', value: 'up_to_two' },
-  { label: 'Три', value: 'up_to_three' },
-  { label: 'Больше трех', value: 'more_than_three' },
-];
-
 export const NumberOfOwnersFilterBottomSheet = forwardRef<BottomSheetRef, NumberOfOwnersFilterBottomSheetProps>(({ onChange }, ref) => {
-  const [selectedValues, setSelectedValues] = React.useState<NumberOfOwnersOption[]>([]);
+  const filterConfigs = useFilterConfigs();
+  const numberOfOwnersConfig = filterConfigs[BACKEND_FILTERS.NUMBER_OF_OWNER];
+  const options = numberOfOwnersConfig?.options || [];
+  const [selectedValues, setSelectedValues] = React.useState<FilterOption[]>([]);
 
-  const handleToggle = (option: NumberOfOwnersOption) => {
+  const handleToggle = (option: FilterOption) => {
     const isSelected = selectedValues.some(v => v.value === option.value);
     if (isSelected) {
       setSelectedValues(selectedValues.filter(v => v.value !== option.value));

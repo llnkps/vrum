@@ -27,10 +27,157 @@
   },
 
   "searchScreen": {
-    "auto": {
-      "searchPlaceholder": "Search for cars, mobile phones and more..."
+    "simpleAuto": {
+      "searchPlaceholder": "Show advertisements",
+      "quickFilters": "Quick Filters",
+      "searchedFilters": "Searched Filters",
+      "brandModelGeneration": "Brand, model, generation",
+      "year": "Year",
+      "price": "Price",
+      "parameters": "Parameters",
+      "allRegions": "All regions",
+      "recommendations": "Recommendations",
+      "fromOwners": "From owners",
+      "new": "New",
+      "upTo5k": "up to $5k",
+      "upTo10k": "up to $10k",
+      "upTo15k": "up to $15k"
     }
   },
-
-  "test": "hwww"
+  "sort": {
+    "byRelevance": "by relevance",
+    "lowPrice": "low price",
+    "highPrice": "high price",
+    "newYear": "new year",
+    "oldYear": "old year",
+    "lowMileage": "low mileage",
+    "bestPrice": "best price",
+    "largeEngine": "large engine"
+  },
+  "filters": {
+    "transmission": {
+      "label": "Transmission",
+      "manual": "Manual",
+      "automatic": "Automatic",
+      "robot": "Robotic",
+      "variator": "CVT"
+    },
+    "fuelType": {
+      "label": "Fuel Type",
+      "petrol": "Petrol",
+      "diesel": "Diesel",
+      "electric": "Electric",
+      "hybrid": "Hybrid",
+      "gas": "Gas"
+    },
+    "drivetrain": {
+      "label": "Drivetrain",
+      "fwd": "FWD",
+      "rwd": "RWD",
+      "awd": "AWD",
+      "fourwd": "4WD"
+    },
+    "frameType": {
+      "label": "Body Type",
+      "sedan": "Sedan",
+      "hatchback": "Hatchback",
+      "suv": "SUV",
+      "crossover": "Crossover",
+      "coupe": "Coupe",
+      "convertible": "Convertible",
+      "wagon": "Wagon",
+      "pickup": "Pickup",
+      "van": "Van",
+      "minivan": "Minivan"
+    },
+    "color": {
+      "label": "Color",
+      "white": "White",
+      "black": "Black",
+      "silver": "Silver",
+      "gray": "Gray",
+      "blue": "Blue",
+      "red": "Red",
+      "green": "Green",
+      "brown": "Brown",
+      "beige": "Beige",
+      "orange": "Orange",
+      "purple": "Purple",
+      "yellow": "Yellow",
+      "other": "Other"
+    },
+    "condition": {
+      "label": "Condition",
+      "excellent": "Excellent",
+      "good": "Good",
+      "satisfactory": "Satisfactory",
+      "requiresRepair": "Requires Repair",
+      "damaged": "Damaged"
+    },
+    "seller": {
+      "label": "Seller",
+      "owner": "Owner",
+      "private": "Private",
+      "company": "Company"
+    },
+    "documentType": {
+      "label": "Documents",
+      "original": "Original",
+      "duplicate": "Duplicate",
+      "missing": "Missing"
+    },
+    "numberOfOwners": {
+      "label": "Number of Owners",
+      "1": "1 owner",
+      "2": "2 owners",
+      "3": "3 owners",
+      "4plus": "4+ owners"
+    },
+    "wheelType": {
+      "label": "Steering Wheel",
+      "left": "Left",
+      "right": "Right"
+    },
+    "tradeAllow": {
+      "label": "Trade Allowed"
+    },
+    "withImage": {
+      "label": "With Photo"
+    },
+    "unsold": {
+      "label": "Unsold"
+    },
+    "engineCapacity": {
+      "label": "Engine Capacity",
+      "placeholder": "Engine Capacity (L)"
+    },
+    "power": {
+      "label": "Power",
+      "placeholder": "Power (HP)"
+    },
+    "mileage": {
+      "label": "Mileage",
+      "placeholder": "Mileage (km)"
+    },
+    "firmCountryGroup": {
+      "label": "Manufacturer",
+      "european": "European",
+      "asian": "Asian",
+      "american": "American"
+    },
+    "damagedType": {
+      "label": "Damage",
+      "notDamaged": "No Damage",
+      "lightDamage": "Light Damage",
+      "mediumDamage": "Medium Damage",
+      "heavyDamage": "Heavy Damage"
+    },
+    "sellLocation": {
+      "label": "Location",
+      "kyiv": "Kyiv",
+      "lviv": "Lviv",
+      "odesa": "Odesa"
+    }
+  }
 }
+

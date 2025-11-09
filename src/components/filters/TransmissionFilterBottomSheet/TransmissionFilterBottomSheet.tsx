@@ -2,24 +2,20 @@ import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/Cust
 import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
-
-type TransmissionOption = (typeof options)[number];
+import { useFilterConfigs, FilterOption } from '@/shared/filter-registry';
+import { BACKEND_FILTERS } from '@/shared/filter-registry';
 
 type TransmissionFilterBottomSheetProps = {
-  onChange: (values: TransmissionOption[]) => void;
+  onChange: (values: FilterOption[]) => void;
 };
 
-const options = [
-  { label: 'Механика', value: 'manual' },
-  { label: 'Автомат', value: 'automatic' },
-  { label: 'Робот', value: 'robot' },
-  { label: 'Вариатор (CVT)', value: 'cvt' },
-];
-
 export const TransmissionFilterBottomSheet = forwardRef<BottomSheetRef, TransmissionFilterBottomSheetProps>(({ onChange }, ref) => {
-  const [selectedTransmissions, setSelectedTransmissions] = React.useState<TransmissionOption[]>([]);
+  const filterConfigs = useFilterConfigs();
+  const transmissionConfig = filterConfigs[BACKEND_FILTERS.TRANSMISSION];
+  const options = transmissionConfig?.options || [];
+  const [selectedTransmissions, setSelectedTransmissions] = React.useState<FilterOption[]>([]);
 
-  const handleToggle = (option: TransmissionOption) => {
+  const handleToggle = (option: FilterOption) => {
     const isSelected = selectedTransmissions.some(t => t.value === option.value);
     if (isSelected) {
       setSelectedTransmissions(selectedTransmissions.filter(t => t.value !== option.value));

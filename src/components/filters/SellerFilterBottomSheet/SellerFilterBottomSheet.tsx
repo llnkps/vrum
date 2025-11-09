@@ -2,23 +2,20 @@ import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/Cust
 import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
-
-type SellerOption = (typeof options)[number];
+import { useFilterConfigs, FilterOption } from '@/shared/filter-registry';
+import { BACKEND_FILTERS } from '@/shared/filter-registry';
 
 type SellerFilterBottomSheetProps = {
-  onChange: (values: SellerOption[]) => void;
+  onChange: (values: FilterOption[]) => void;
 };
 
-const options = [
-  { label: 'Собственник', value: 'owner' },
-  { label: 'Частник', value: 'private' },
-  { label: 'Компания', value: 'company' },
-];
-
 export const SellerFilterBottomSheet = forwardRef<BottomSheetRef, SellerFilterBottomSheetProps>(({ onChange }, ref) => {
-  const [selectedValues, setSelectedValues] = React.useState<SellerOption[]>([]);
+  const filterConfigs = useFilterConfigs();
+  const sellerConfig = filterConfigs[BACKEND_FILTERS.SELLER];
+  const options = sellerConfig?.options || [];
+  const [selectedValues, setSelectedValues] = React.useState<FilterOption[]>([]);
 
-  const handleToggle = (option: SellerOption) => {
+  const handleToggle = (option: FilterOption) => {
     const isSelected = selectedValues.some(v => v.value === option.value);
     if (isSelected) {
       setSelectedValues(selectedValues.filter(v => v.value !== option.value));
@@ -36,7 +33,7 @@ export const SellerFilterBottomSheet = forwardRef<BottomSheetRef, SellerFilterBo
       ref={ref}
       snapPoints={['35%']}
       enableContentPanningGesture={true}
-      title="Владелец"
+      title={sellerConfig.label}
       footerProps={{
         onConfirm: handleConfirm,
       }}

@@ -2,23 +2,21 @@ import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/Cust
 import { CustomRectButton } from '@/components/ui/button';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
-
-type TradeAllowOption = (typeof options)[number];
+import { useFilterConfigs, FilterOption } from '@/shared/filter-registry';
+import { BACKEND_FILTERS } from '@/shared/filter-registry';
 
 type TradeAllowFilterBottomSheetProps = {
-  onSelect: (value: TradeAllowOption) => void;
+  onSelect: (value: FilterOption) => void;
 };
 
-const options = [
-  { label: 'Торг возможен', value: 'trade_allow' },
-  { label: 'Без торга', value: 'trade_disallow' },
-];
-
 export const TradeAllowFilterBottomSheet = forwardRef<BottomSheetRef, TradeAllowFilterBottomSheetProps>(({ onSelect }, ref) => {
-  const [selectedValue, setSelectedValue] = React.useState<string | undefined>(undefined);
+  const filterConfigs = useFilterConfigs();
+  const tradeAllowConfig = filterConfigs[BACKEND_FILTERS.TRADE_ALLOW];
+  const options = tradeAllowConfig?.options || [];
+  const [selectedValue, setSelectedValue] = React.useState<string | number | undefined>(undefined);
 
   return (
-    <CustomBottomSheetModal ref={ref} snapPoints={['35%']} enableContentPanningGesture={true} title="Торг">
+    <CustomBottomSheetModal ref={ref} snapPoints={['35%']} enableContentPanningGesture={true} title={tradeAllowConfig.label}>
       <BottomSheetView className="flex-col">
         {options.map(opt => (
           <CustomRectButton

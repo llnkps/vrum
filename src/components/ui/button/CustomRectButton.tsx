@@ -55,11 +55,17 @@ export const CustomRectButton = ({ loading, title, style, children, onPress, app
       color: '#fff',
       borderColor: 'transparent',
     },
+
+    default: {
+      // backgroundColor: theme.colors.button.neutral,
+      borderColor: theme.colors.border,
+      borderWidth: 1,
+    },
   });
 
   return (
     <RectButton
-      style={[styles.button, appearance === 'primary' && styles.primary, style]}
+      style={[styles.button, appearance === 'primary' && styles.primary, appearance === 'default' && styles.default, style]}
       borderless={false}
       onPress={onPress}
       rippleColor={theme.colors.button.subtlePressed}

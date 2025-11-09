@@ -1,180 +1,282 @@
 import { useRouter } from 'expo-router';
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, Text, View, ScrollView, TouchableOpacity } from 'react-native';
+import { ScrollView, Text, TouchableWithoutFeedback, View } from 'react-native';
 
-import { PriceBottomSheet } from '@/components/filters/PriceFilterBottomSheet';
-import { RegionBottomSheet } from '@/components/filters/RegionBottomSheet';
-import { YearBottomSheet } from '@/components/filters/YearFilterBottomSheet';
+import { PriceFilterController } from '@/components/filters/PriceFilterBottomSheet/PriceFilterController';
+import { RegionFilterController } from '@/components/filters/RegionBottomSheet/RegionFilterController';
+import { YearFilterController } from '@/components/filters/YearFilterBottomSheet/YearFilterController';
 import { SelectedRegionsBadges } from '@/components/global/SelectedItemsBadges';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
-import { getPriceDisplayValue, getYearDisplayValue, useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
+import { useSearchTab } from '@/modules/search-screen/SearchTabProvider';
+import { QuickFilter, useQuickFilters } from '@/shared/quick-filters';
+import { useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
+import { useSearchedFiltersStore } from '@/state/search-screen/useSearchedFiltersStore';
+import { BACKEND_FILTERS, isRangeFilter, isArrayFilter, isBooleanFilter } from '@/shared/filter-registry';
 import { Ionicons } from '@expo/vector-icons';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 export const AutoHeaderScreen = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const store = useAutoSelectStore();
+  const searchedFiltersStore = useSearchedFiltersStore();
 
-  const yearModalRef = useRef<BottomSheetModal>(null);
-  const priceModalRef = useRef<BottomSheetModal>(null);
-  const regionModalRef = useRef<BottomSheetModal>(null);
+  const { updateRequestParams } = useSearchTab();
 
-  const handlePresentYearModalPress = useCallback(() => {
-    yearModalRef.current?.present();
-  }, []);
+  const quickFilters = useQuickFilters();
+  const [selectedQuickFilter, setSelectedQuickFilter] = useState<string | null>('recommended');
 
-  const handlePresentPriceModalPress = useCallback(() => {
-    priceModalRef.current?.present();
-  }, []);
+  // Apply default recommended filter on mount
+  // useEffect(() => {
+  //   if (updateRequestParams) {
+  //     // updateRequestParams({ recommended: true });
+  //   }
+  // }, [updateRequestParams]);
 
-  const handlePresentRegionModalPress = useCallback(() => {
-    regionModalRef.current?.present();
-  }, []);
-
-  const getRegionDisplayValue = () => {
-    return store.selectedRegions?.map(region => region.name).join(', ');
-  };
-
-  const quickFilters = [
-    { label: 'Рекомендации', type: 'recommended' },
-    { label: 'От собственников', type: 'fromOwners' },
-    { label: 'Новые', type: 'new' },
-    { label: 'до $5к', type: 'price', value: 5000 },
-    { label: 'до $10к', type: 'price', value: 10000 },
-    { label: 'до $15к', type: 'price', value: 15000 },
-  ];
+  // Memoize searched filters to avoid calling methods during render
+  const searchedFilters = useMemo(() => {
+    const now = Date.now();
+    return searchedFiltersStore.searchedFilters.filter(f => {
+      const expirationTime = f.timestamp + (f.ttl || 7 * 24 * 60 * 60 * 1000);
+      return now < expirationTime;
+    });
+  }, [searchedFiltersStore.searchedFilters]);
 
   const handleQuickFilterPress = useCallback(
-    (filter: (typeof quickFilters)[0]) => {
-      if (filter.type === 'price') {
-        // Set price filter with max value
-        store.setPriceRange({ min: undefined, max: filter.value });
-      } else if (filter.type === 'recommended') {
-        // Handle recommended filter - you might need to add this to your store
-        // For now, just clear other filters or set a special flag
-      } else if (filter.type === 'fromOwners') {
-        // Handle from owners filter
-      } else if (filter.type === 'new') {
-        // Handle new items filter - maybe set year to current year
-        store.setYearRange({ min: new Date().getFullYear(), max: undefined });
+    (filter: QuickFilter) => {
+      // If this filter is not already selected, select it
+      if (selectedQuickFilter !== filter.type) {
+        setSelectedQuickFilter(filter.type);
+
+        // Clear all existing quick filter params first
+        if (updateRequestParams) {
+          updateRequestParams({
+            price: undefined,
+            releaseYear: undefined,
+            recommended: undefined,
+            seller: undefined,
+          });
+        }
+
+        // Call onSelect function and update request params
+        if (updateRequestParams && filter.onSelect) {
+          const params = filter.onSelect();
+          updateRequestParams(params);
+        }
+      }
+      // If already selected, do nothing (no deselection allowed)
+    },
+    [selectedQuickFilter, updateRequestParams]
+  );
+
+  const handleSearchedFilterPress = useCallback(
+    (filter: (typeof searchedFilters)[0]) => {
+
+      // Convert filter to the format expected by populateFromFilterValues
+      const filterValues: Array<{ slug: string; values: string[] }> = [];
+
+      // Special case for region since it's not in the registry
+      if (filter.type === 'region') {
+        if (filter.value && typeof filter.value === 'object' && 'id' in filter.value) {
+          store.setSelectedRegions([filter.value]);
+          router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal');
+          return;
+        }
+      }
+
+      // Map backend filter keys to the keys expected by populateFromFilterValues
+      const backendToPopulateKeyMapping: Record<string, string> = {
+        [BACKEND_FILTERS.TRANSMISSION]: 'transmission',
+        [BACKEND_FILTERS.FUEL_TYPE]: 'fuelType',
+        [BACKEND_FILTERS.DRIVETRAIN_TYPE]: 'drivetrain',
+        [BACKEND_FILTERS.FRAME_TYPE]: 'bodyType',
+        [BACKEND_FILTERS.COLOR]: 'color',
+        [BACKEND_FILTERS.CONDITION]: 'condition',
+        [BACKEND_FILTERS.SELLER]: 'seller',
+        [BACKEND_FILTERS.DOCUMENT_TYPE]: 'documentsOk',
+        [BACKEND_FILTERS.NUMBER_OF_OWNER]: 'numberOfOwners',
+        [BACKEND_FILTERS.TRADE_ALLOW]: 'tradeAllow',
+        [BACKEND_FILTERS.YEAR]: 'year',
+        [BACKEND_FILTERS.PRICE]: 'price',
+        [BACKEND_FILTERS.ENGINE_CAPACITY]: 'engineCapacityRange',
+        [BACKEND_FILTERS.POWER]: 'powerRange',
+        [BACKEND_FILTERS.MILEAGE]: 'mileageRange',
+        [BACKEND_FILTERS.UNSOLD]: 'unsold',
+        [BACKEND_FILTERS.WITH_IMAGE]: 'with_image',
+      };
+
+      const populateKey = backendToPopulateKeyMapping[filter.type];
+
+      if (populateKey) {
+        if (isRangeFilter(filter.type as any)) {
+          // Handle range filters (year, price, engine_capacity, power, mileage)
+          if (filter.value && typeof filter.value === 'object' && 'min' in filter.value && 'max' in filter.value) {
+            const { min, max } = filter.value;
+            filterValues.push({
+              slug: populateKey,
+              values: [min?.toString() || '', max?.toString() || ''],
+            });
+          }
+        } else if (isArrayFilter(filter.type as any)) {
+          // Handle array filters (transmission, fuel_type, etc.)
+          if (Array.isArray(filter.value)) {
+            filterValues.push({
+              slug: populateKey,
+              values: filter.value.map(v => v?.toString() || ''),
+            });
+          } else if (filter.value !== undefined && filter.value !== null) {
+            // Single value array filter
+            filterValues.push({
+              slug: populateKey,
+              values: [filter.value.toString()],
+            });
+          }
+        } else if (isBooleanFilter(filter.type as any)) {
+          // Handle boolean filters - convert to array format expected by populateFromFilterValues
+          if (typeof filter.value === 'boolean') {
+            filterValues.push({
+              slug: populateKey,
+              values: [filter.value.toString()],
+            });
+          }
+        }
+      }
+
+      if (filterValues.length > 0) {
+        // Populate the store with filter values
+        store.populateFromFilterValues(filterValues);
+        // Navigate to the modal
+        router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal');
       }
     },
-    [store]
+    [store, router]
   );
 
   return (
     <>
-      <View className={'gap-y-1 px-4 py-3'}>
-        <TouchableHighlightRow
-          label="Марка, модель, поколение"
-          onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/brand-auto-filter')}
-          variant="button"
-          showRightArrow={false}
-        />
-        <View className={'flex-row gap-1'}>
+      <View className="gap-y-4 px-4 py-3">
+        <View className={'gap-y-1'}>
           <TouchableHighlightRow
-            label="Год"
-            selectedValue={getYearDisplayValue(store)}
-            onPress={handlePresentYearModalPress}
+            label={t('searchScreen.simpleAuto.brandModelGeneration')}
+            onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/brand-auto-filter')}
             variant="button"
             showRightArrow={false}
-            selectedValueMode="replace"
           />
+          <View className={'flex-row gap-1'}>
+            <YearFilterController
+              value={store.yearRange}
+              onChange={yearRange => {
+                store.setYearRange(yearRange);
+                if (yearRange) {
+                  searchedFiltersStore.addSearchedFilter({
+                    type: 'year',
+                    label: `${t('searchScreen.simpleAuto.year')}: ${yearRange.min || ''}-${yearRange.max || ''}`,
+                    value: yearRange,
+                  });
+                }
+                router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal');
+              }}
+            />
 
-          <TouchableHighlightRow
-            label="Цена"
-            selectedValue={getPriceDisplayValue(store)}
-            onPress={handlePresentPriceModalPress}
-            variant="button"
-            showRightArrow={false}
-            selectedValueMode="replace"
-          />
+            <PriceFilterController
+              value={store.priceRange}
+              onChange={priceRange => {
+                store.setPriceRange(priceRange);
+                if (priceRange) {
+                  searchedFiltersStore.addSearchedFilter({
+                    type: 'price',
+                    label: `${t('searchScreen.simpleAuto.price')}: ${priceRange.min || ''}-${priceRange.max || ''}`,
+                    value: priceRange,
+                  });
+                }
+                router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal');
+              }}
+            />
 
-          <TouchableHighlightRow
-            label="Параметры"
-            onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/settings')}
-            variant="button"
-            icon={<Ionicons name="options-sharp" size={20} color="white" />}
-            showRightArrow={false}
-            fullWidth
-          />
-        </View>
-        <TouchableHighlightRow label="Все регионы" onPress={handlePresentRegionModalPress} variant="button" showRightArrow={false} />
+            <TouchableHighlightRow
+              label={t('searchScreen.simpleAuto.parameters')}
+              onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/settings')}
+              variant="button"
+              icon={<Ionicons name="options-sharp" size={20} color="white" />}
+              showRightArrow={false}
+              fullWidth
+            />
+          </View>
+          <RegionFilterController
+            value={store.selectedRegions}
+            onChange={regions => {
+              store.setSelectedRegions(regions);
 
-        {store.selectedRegions?.length > 0 && (
-          <SelectedRegionsBadges
-            selectedRegions={store.selectedRegions}
-            onRemove={region => {
-              const updatedRegions = store.selectedRegions.filter(r => r.id !== region.id);
-              store.setSelectedRegions(updatedRegions);
+              // Add each selected region to searched filters
+              regions.forEach(region => {
+                searchedFiltersStore.addSearchedFilter({
+                  type: 'region',
+                  label: region.name,
+                  value: region,
+                });
+              });
             }}
           />
-        )}
 
-        <YearBottomSheet
-          ref={yearModalRef}
-          onChange={yearRange => {
-            store.setYearRange(yearRange);
-            router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal');
-          }}
-        />
-        <PriceBottomSheet
-          ref={priceModalRef}
-          onChange={priceRange => {
-            store.setPriceRange(priceRange);
-            router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal');
-          }}
-        />
-        <RegionBottomSheet
-          ref={regionModalRef}
-          multiple
-          selectedRegions={store.selectedRegions}
-          onChange={regions => store.setSelectedRegions(Array.isArray(regions) ? regions : [regions])}
-        />
-      </View>
+          {store.selectedRegions?.length > 0 && (
+            <SelectedRegionsBadges
+              selectedRegions={store.selectedRegions}
+              onRemove={region => {
+                const updatedRegions = store.selectedRegions.filter(r => r.id !== region.id);
+                store.setSelectedRegions(updatedRegions);
+              }}
+            />
+          )}
+        </View>
 
-      <View className={'px-4 py-3'}>
         <TouchableHighlightRow
-          label={t('searchScreen.auto.searchPlaceholder')}
+          label={t('searchScreen.simpleAuto.searchPlaceholder')}
           onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal')}
           variant="button"
           showRightArrow={false}
           centerText={true}
         />
 
-        {/* Quick Filters */}
-        <View className="mt-4">
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row gap-2">
-            {quickFilters.map((filter, index) => (
-              <TouchableOpacity
-                key={index}
-                onPress={() => handleQuickFilterPress(filter)}
-                className="mr-2 rounded-full border border-border bg-surface px-4 py-2 dark:border-border-dark dark:bg-surface-dark"
-              >
-                <Text className="text-sm font-medium text-font dark:text-font-dark">{filter.label}</Text>
-              </TouchableOpacity>
-            ))}
+        {/* Searched Filters */}
+        {searchedFilters.length > 0 && (
+          <View className="gap-y-1">
+            <Text className="text-sm font-medium text-font dark:text-font-dark">{t('searchScreen.simpleAuto.searchedFilters')}</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
+              {searchedFilters.map(filter => (
+                <TouchableWithoutFeedback key={filter.id} onPress={() => handleSearchedFilterPress(filter)}>
+                  <View className="flex-row items-center rounded-full bg-gray-200 px-3 py-1 dark:bg-gray-700">
+                    <Text className="mr-2 text-sm text-font dark:text-font-dark">{filter.label}</Text>
+                    <TouchableWithoutFeedback onPress={() => searchedFiltersStore.removeSearchedFilter(filter.id)}>
+                      <Ionicons name="close" size={16} color="#6b7280" />
+                    </TouchableWithoutFeedback>
+                  </View>
+                </TouchableWithoutFeedback>
+              ))}
+            </ScrollView>
+          </View>
+        )}
+
+        {/** Quick Filters */}
+        <View className="gap-y-1">
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingVertical: 10 }}>
+            {quickFilters.map((filter, index) => {
+              const isSelected = selectedQuickFilter === filter.type;
+
+              return (
+                <TouchableWithoutFeedback key={index} onPress={() => handleQuickFilterPress(filter)}>
+                  <Text
+                    className={`text-lg font-bold ${
+                      isSelected ? 'text-font dark:text-font-dark' : 'text-font-subtlest dark:text-font-subtlest-dark'
+                    }`}
+                  >
+                    {filter.label}
+                  </Text>
+                </TouchableWithoutFeedback>
+              );
+            })}
           </ScrollView>
         </View>
       </View>
     </>
-  );
-};
-
-export const AutoItemScreen = ({ item }: { item: any }) => {
-  return (
-    <View className="mx-2 rounded-2xl shadow-md">
-      <Image source={item.image} className="h-48 w-full rounded-t-2xl" resizeMode="cover" />
-      <View className="p-4">
-        <Text className="text-lg font-bold text-font-brand dark:text-font-brand-dark">{item.title}</Text>
-        <Text className="text-base text-font dark:text-font-dark">{item.price}</Text>
-        <View className="mt-2 flex-row">
-          <Text className="mr-2 text-xs text-font dark:text-font-dark">⭐ 5-star GNCAP</Text>
-          <Text className="text-xs text-font dark:text-font-dark">🚗 More Mileage</Text>
-        </View>
-      </View>
-    </View>
   );
 };

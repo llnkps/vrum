@@ -24,5 +24,158 @@
   },
   "UserDetails": {
     "UserDetails": "Dettaglio utente"
+  },
+  "searchScreen": {
+    "simpleAuto": {
+      "searchPlaceholder": "Показати оголошення",
+      "quickFilters": "Швидкі фільтри",
+      "searchedFilters": "Пошукові фільтри",
+      "brandModelGeneration": "Марка, модель, покоління",
+      "year": "Рік",
+      "price": "Ціна",
+      "parameters": "Параметри",
+      "allRegions": "Всі регіони",
+      "recommendations": "Рекомендації",
+      "fromOwners": "Від власників",
+      "new": "Нові",
+      "upTo5k": "до $5к",
+      "upTo10k": "до $10к",
+      "upTo15k": "до $15к"
+    }
+  },
+  "sort": {
+    "byRelevance": "за актуальністю",
+    "lowPrice": "з низькою ціною",
+    "highPrice": "з високою ціною",
+    "newYear": "свіжий рік випуску",
+    "oldYear": "старий рік випуску",
+    "lowMileage": "з малим пробігом",
+    "bestPrice": "з відмінною ціною",
+    "largeEngine": "з великим об'ємом двигуна"
+  },
+  "filters": {
+    "transmission": {
+      "label": "Трансмісія",
+      "manual": "Механічна",
+      "automatic": "Автоматична",
+      "robot": "Роботизована",
+      "variator": "Варіатор"
+    },
+    "fuelType": {
+      "label": "Тип палива",
+      "petrol": "Бензин",
+      "diesel": "Дизель",
+      "electric": "Електро",
+      "hybrid": "Гібрид",
+      "gas": "Газ"
+    },
+    "drivetrain": {
+      "label": "Привід",
+      "fwd": "Передній",
+      "rwd": "Задній",
+      "awd": "Повний",
+      "fourwd": "4WD"
+    },
+    "frameType": {
+      "label": "Тип кузова",
+      "sedan": "Седан",
+      "hatchback": "Хетчбек",
+      "suv": "Позашляховик",
+      "crossover": "Кросовер",
+      "coupe": "Купе",
+      "convertible": "Кабріолет",
+      "wagon": "Універсал",
+      "pickup": "Пікап",
+      "van": "Фургон",
+      "minivan": "Мінівен"
+    },
+    "color": {
+      "label": "Колір",
+      "white": "Білий",
+      "black": "Чорний",
+      "silver": "Сріблястий",
+      "gray": "Сірий",
+      "blue": "Синій",
+      "red": "Червоний",
+      "green": "Зелений",
+      "brown": "Коричневий",
+      "beige": "Бежевий",
+      "orange": "Помаранчевий",
+      "purple": "Фіолетовий",
+      "yellow": "Жовтий",
+      "other": "Інший"
+    },
+    "condition": {
+      "label": "Стан",
+      "excellent": "Відмінний",
+      "good": "Хороший",
+      "satisfactory": "Задовільний",
+      "requiresRepair": "Потребує ремонту",
+      "damaged": "Пошкоджений"
+    },
+    "seller": {
+      "label": "Продавець",
+      "owner": "Власник",
+      "private": "Приватна особа",
+      "company": "Компанія"
+    },
+    "documentType": {
+      "label": "Документи",
+      "original": "Оригінал",
+      "duplicate": "Дублікат",
+      "missing": "Відсутні"
+    },
+    "numberOfOwners": {
+      "label": "Кількість власників",
+      "1": "1 власник",
+      "2": "2 власники",
+      "3": "3 власники",
+      "4plus": "4+ власників"
+    },
+    "wheelType": {
+      "label": "Кермо",
+      "left": "Ліве",
+      "right": "Праве"
+    },
+    "tradeAllow": {
+      "label": "Торг можливий"
+    },
+    "withImage": {
+      "label": "З фото"
+    },
+    "unsold": {
+      "label": "Не продано"
+    },
+    "engineCapacity": {
+      "label": "Об'єм двигуна",
+      "placeholder": "Об'єм двигуна (л)"
+    },
+    "power": {
+      "label": "Потужність",
+      "placeholder": "Потужність (к.с.)"
+    },
+    "mileage": {
+      "label": "Пробіг",
+      "placeholder": "Пробіг (км)"
+    },
+    "firmCountryGroup": {
+      "label": "Виробник",
+      "european": "Європейський",
+      "asian": "Азійський",
+      "american": "Американський"
+    },
+    "damagedType": {
+      "label": "Пошкодження",
+      "notDamaged": "Без пошкоджень",
+      "lightDamage": "Легкі пошкодження",
+      "mediumDamage": "Середні пошкодження",
+      "heavyDamage": "Важкі пошкодження"
+    },
+    "sellLocation": {
+      "label": "Місцезнаходження",
+      "kyiv": "Київ",
+      "lviv": "Львів",
+      "odesa": "Одеса"
+    }
   }
 }

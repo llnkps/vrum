@@ -1,106 +1,36 @@
 import { SelectedRegionsBadges } from '@/components/global/SelectedItemsBadges';
-import { RegionBottomSheet } from '@/components/filters/RegionBottomSheet';
 import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
 import { CustomRectButton, SelectableButton } from '@/components/ui/button';
 import {
-  getEngineCapacityDisplayValue,
-  getMileageDisplayValue,
-  getPowerDisplayValue,
-  getPriceDisplayValue,
-  getYearDisplayValue,
   selectSelectedBrands,
   selectSelectedGenerations,
-  selectSelectedModels,
   useAutoSelectStore,
 } from '@/state/search-screen/useAutoSelectStore';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { ScrollView, StatusBar, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-import { BodyTypeFilterBottomSheet } from '@/components/filters/BodyTypeFilterBottomSheet';
-import { ColorFilterBottomSheet } from '@/components/filters/ColorFilterBottomSheet';
-import { DrivetrainFilterBottomSheet } from '@/components/filters/DrivetrainFilterBottomSheet';
-import EngineCapacityFilterBottomSheet from '@/components/filters/EngineCapacityFilterBottomSheet';
-import { FuelTypeFilterBottomSheet } from '@/components/filters/FuelTypeFilterBottomSheet';
-import { NumberOfOwnersFilterBottomSheet } from '@/components/filters/NumberOfOwnersFilterBottomSheet';
-import PowerFilterBottomSheet from '@/components/filters/PowerFilterBottomSheet';
-import { PriceBottomSheet } from '@/components/filters/PriceFilterBottomSheet';
-import { SellerFilterBottomSheet } from '@/components/filters/SellerFilterBottomSheet';
-import { TransmissionFilterBottomSheet } from '@/components/filters/TransmissionFilterBottomSheet';
-import { YearBottomSheet } from '@/components/filters/YearFilterBottomSheet';
 import CloseIcon from '@/components/global/CloseIcon';
 import { useRouter } from 'expo-router';
-import React, { useCallback, useRef, useState } from 'react';
-import MileageFilterBottomSheet from '@/components/filters/MileageFilterBottomSheet/MileageFilterBottomSheet';
+import React, { useState } from 'react';
 
-const STATUSBAR_HEIGHT = StatusBar.currentHeight;
+// Controller imports
+import { BodyTypeFilterController } from '@/components/filters/BodyTypeFilterBottomSheet';
+import { ColorFilterController } from '@/components/filters/ColorFilterBottomSheet';
+import { DrivetrainFilterController } from '@/components/filters/DrivetrainFilterBottomSheet';
+import { EngineCapacityFilterController } from '@/components/filters/EngineCapacityFilterBottomSheet';
+import { FuelTypeFilterController } from '@/components/filters/FuelTypeFilterBottomSheet';
+import { MileageFilterController } from '@/components/filters/MileageFilterBottomSheet';
+import { NumberOfOwnersFilterController } from '@/components/filters/NumberOfOwnersFilterBottomSheet';
+import { PowerFilterController } from '@/components/filters/PowerFilterBottomSheet';
+import { PriceFilterController } from '@/components/filters/PriceFilterBottomSheet';
+import { RegionFilterController } from '@/components/filters/RegionBottomSheet';
+import { SellerFilterController } from '@/components/filters/SellerFilterBottomSheet';
+import { TransmissionFilterController } from '@/components/filters/TransmissionFilterBottomSheet';
+import { YearFilterController } from '@/components/filters/YearFilterBottomSheet';
 
 const SettingScreenFilter = () => {
   const router = useRouter();
-
-  const regionBottomSheetRef = useRef<BottomSheetModal>(null);
-  const yearModalRef = useRef<BottomSheetModal>(null);
-  const priceModalRef = useRef<BottomSheetModal>(null);
-  const transmissionModalRef = useRef<BottomSheetModal>(null);
-  const fuelTypeModalRef = useRef<BottomSheetModal>(null);
-  const mileageModalRef = useRef<BottomSheetModal>(null);
-  const drivetrainModalRef = useRef<BottomSheetModal>(null);
-  const bodyTypeModalRef = useRef<BottomSheetModal>(null);
-  const colorModalRef = useRef<BottomSheetModal>(null);
-  const numberOfOwnersModalRef = useRef<BottomSheetModal>(null);
-  const sellerModalRef = useRef<BottomSheetModal>(null);
-  const engineCapacityModalRef = useRef<BottomSheetModal>(null);
-  const powerModalRef = useRef<BottomSheetModal>(null);
-
-  const handlePresentYearModalPress = useCallback(() => {
-    yearModalRef.current?.present();
-  }, []);
-
-  const handlePresentPriceModalPress = useCallback(() => {
-    priceModalRef.current?.present();
-  }, []);
-
-  const handlePresentTransmissionModalPress = useCallback(() => {
-    transmissionModalRef.current?.present();
-  }, []);
-
-  const handlePresentFuelTypeModalPress = useCallback(() => {
-    fuelTypeModalRef.current?.present();
-  }, []);
-
-  const handlePresentDrivetrainModalPress = useCallback(() => {
-    drivetrainModalRef.current?.present();
-  }, []);
-
-  const handlePresentMileageModalPress = useCallback(() => {
-    mileageModalRef.current?.present();
-  }, []);
-
-  const handlePresentBodyTypeModalPress = useCallback(() => {
-    bodyTypeModalRef.current?.present();
-  }, []);
-
-  const handlePresentColorModalPress = useCallback(() => {
-    colorModalRef.current?.present();
-  }, []);
-
-  const handlePresentNumberOfOwnersModalPress = useCallback(() => {
-    numberOfOwnersModalRef.current?.present();
-  }, []);
-
-  const handlePresentSellerModalPress = useCallback(() => {
-    sellerModalRef.current?.present();
-  }, []);
-
-  const handlePresentEngineCapacityModalPress = useCallback(() => {
-    engineCapacityModalRef.current?.present();
-  }, []);
-
-  const handlePresentPowerModalPress = useCallback(() => {
-    powerModalRef.current?.present();
-  }, []);
 
   const [isBrandSectionCollapsed, setIsBrandSectionCollapsed] = useState(true);
 
@@ -137,13 +67,12 @@ const SettingScreenFilter = () => {
   } = store;
 
   const selectedBrands = selectSelectedBrands(store);
-  const selectedModels = selectSelectedModels(store);
   const selectedGenerations = selectSelectedGenerations(store);
   return (
     <>
       <SafeAreaView>
         <Header router={router} resetFilters={resetFilters} />
-        <ScrollView>
+        <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
           <View className="mt-2 gap-y-4 p-2">
             <View className="flex-row rounded-lg bg-surface dark:bg-surface-dark">
               <SelectableButton appearance="subtle" title="Все" isSelected={tab === 'all'} onPress={() => setTab('all')} />
@@ -152,12 +81,10 @@ const SettingScreenFilter = () => {
             </View>
 
             <View className="gap-y-2">
-              <TouchableHighlightRow
-                variant="button"
-                label="Все регионы"
-                onPress={() => regionBottomSheetRef.current?.present()}
-                showRightArrow
-                rightIcon="chevron-down"
+              <RegionFilterController
+                value={selectedRegions}
+                onChange={setSelectedRegions}
+                multiple
               />
               {selectedRegions.length > 0 && (
                 <SelectedRegionsBadges
@@ -223,26 +150,17 @@ const SettingScreenFilter = () => {
             </View>
 
             <View className="flex-col rounded-lg bg-surface p-2 dark:bg-surface-dark">
-              <TouchableHighlightRow
-                label="Год"
-                selectedValue={getYearDisplayValue(store)}
-                onPress={handlePresentYearModalPress}
+              <YearFilterController
+                value={store.yearRange}
+                onChange={yearRange => setYearRange(yearRange)}
                 variant="bordered"
-                showRightArrow={false}
-                selectedValueMode="replace"
               />
 
-              <TouchableHighlightRow
-                label="Цена"
-                selectedValue={getPriceDisplayValue(store)}
-                onPress={handlePresentPriceModalPress}
+              <PriceFilterController
+                value={store.priceRange}
+                onChange={priceRange => setPriceRange(priceRange)}
                 variant="plain"
-                showRightArrow={false}
-                selectedValueMode="replace"
               />
-
-              <YearBottomSheet ref={yearModalRef} onChange={yearRange => setYearRange(yearRange)} />
-              <PriceBottomSheet ref={priceModalRef} onChange={priceRange => setPriceRange(priceRange)} />
             </View>
 
             <View className="flex-col rounded-lg bg-surface dark:bg-surface-dark">
@@ -253,90 +171,50 @@ const SettingScreenFilter = () => {
             </View>
 
             <View className="flex-col rounded-lg bg-surface p-2 dark:bg-surface-dark">
-              <TouchableHighlightRow
-                label="Коробка передач"
-                onPress={handlePresentTransmissionModalPress}
-                showRightArrow
-                variant="bordered"
-                selectedValue={transmission?.map(t => t.label).join(', ')}
-                rightIcon="chevron-down"
+              <TransmissionFilterController
+                value={transmission}
+                onChange={setTransmission}
               />
-              <TouchableHighlightRow
-                label="Объем двигателя"
-                onPress={handlePresentEngineCapacityModalPress}
-                showRightArrow
-                variant="bordered"
-                selectedValue={getEngineCapacityDisplayValue(store)}
-                rightIcon="chevron-down"
+              <EngineCapacityFilterController
+                value={store.engineCapacityRange}
+                onChange={setEngineCapacityRange}
               />
-              <TouchableHighlightRow
-                label="Мощность"
-                onPress={handlePresentPowerModalPress}
-                showRightArrow
-                variant="bordered"
-                selectedValue={getPowerDisplayValue(store)}
-                rightIcon="chevron-down"
+              <PowerFilterController
+                value={store.powerRange}
+                onChange={setPowerRange}
               />
-              <TouchableHighlightRow
-                label="Топливо"
-                onPress={handlePresentFuelTypeModalPress}
-                showRightArrow
-                variant="bordered"
-                selectedValue={fuelType?.map(t => t.label).join(', ')}
-                rightIcon="chevron-down"
+              <FuelTypeFilterController
+                value={fuelType}
+                onChange={setFuelType}
               />
-              <TouchableHighlightRow
-                label="Привод"
-                onPress={handlePresentDrivetrainModalPress}
-                showRightArrow
-                variant="bordered"
-                selectedValue={drivetrain?.map(t => t.label).join(', ')}
-                rightIcon="chevron-down"
+              <DrivetrainFilterController
+                value={drivetrain}
+                onChange={setDrivetrain}
               />
               <TouchableHighlightRow label="Расположения руля" onPress={() => {}} showRightArrow variant="bordered" rightIcon="chevron-down" />
 
-              <TouchableHighlightRow
-                label="Пробег"
-                onPress={handlePresentMileageModalPress}
-                showRightArrow
-                variant="bordered"
-                selectedValue={getMileageDisplayValue(store)}
-                rightIcon="chevron-down"
+              <MileageFilterController
+                value={store.mileageRange}
+                onChange={setMileageRange}
               />
-              <TouchableHighlightRow
-                label="Кузов"
-                onPress={handlePresentBodyTypeModalPress}
-                showRightArrow
-                variant="bordered"
-                selectedValue={bodyType?.map(t => t.label).join(', ')}
-                rightIcon="chevron-down"
+              <BodyTypeFilterController
+                value={bodyType}
+                onChange={setBodyType}
               />
-              <TouchableHighlightRow
-                label="Цвет"
-                onPress={handlePresentColorModalPress}
-                showRightArrow
-                variant="plain"
-                selectedValue={color?.map(c => c.label).join(', ')}
-                rightIcon="chevron-down"
+              <ColorFilterController
+                value={color}
+                onChange={setColor}
               />
             </View>
 
             <View className="flex-col rounded-lg bg-surface p-2 dark:bg-surface-dark">
-              <TouchableHighlightRow
-                label="Количество владельцев"
-                onPress={handlePresentNumberOfOwnersModalPress}
-                showRightArrow
-                variant="bordered"
-                selectedValue={numberOfOwners?.map(t => t.label).join(', ')}
-                rightIcon="chevron-down"
+              <NumberOfOwnersFilterController
+                value={numberOfOwners}
+                onChange={setNumberOfOwners}
               />
-              <TouchableHighlightRow
-                label="Продавец"
-                onPress={handlePresentSellerModalPress}
-                showRightArrow
-                variant="plain"
-                selectedValue={seller?.map(s => s.label).join(', ')}
-                rightIcon="chevron-down"
+              <SellerFilterController
+                value={seller}
+                onChange={setSeller}
               />
             </View>
           </View>
@@ -352,66 +230,6 @@ const SettingScreenFilter = () => {
             </CustomRectButton>
           </View>
         </View>
-
-        <RegionBottomSheet
-          ref={regionBottomSheetRef}
-          multiple
-          selectedRegions={selectedRegions}
-          onChange={regions => setSelectedRegions(Array.isArray(regions) ? regions : [regions])}
-        />
-
-        <TransmissionFilterBottomSheet
-          ref={transmissionModalRef}
-          onChange={options => {
-            setTransmission(options);
-          }}
-        />
-
-        <FuelTypeFilterBottomSheet
-          ref={fuelTypeModalRef}
-          onChange={options => {
-            setFuelType(options);
-          }}
-        />
-
-        <DrivetrainFilterBottomSheet
-          ref={drivetrainModalRef}
-          onChange={options => {
-            setDrivetrain(options);
-          }}
-        />
-
-        <MileageFilterBottomSheet ref={mileageModalRef} onChange={range => setMileageRange(range)} />
-
-        <BodyTypeFilterBottomSheet
-          ref={bodyTypeModalRef}
-          onChange={options => {
-            setBodyType(options);
-          }}
-        />
-
-        <ColorFilterBottomSheet
-          ref={colorModalRef}
-          onChange={options => {
-            setColor(options);
-          }}
-        />
-
-        <NumberOfOwnersFilterBottomSheet
-          ref={numberOfOwnersModalRef}
-          onChange={options => {
-            setNumberOfOwners(options);
-          }}
-        />
-
-        <SellerFilterBottomSheet
-          ref={sellerModalRef}
-          onChange={options => {
-            setSeller(options);
-          }}
-        />
-        <EngineCapacityFilterBottomSheet ref={engineCapacityModalRef} onChange={range => setEngineCapacityRange(range)} />
-        <PowerFilterBottomSheet ref={powerModalRef} onChange={range => setPowerRange(range)} />
       </SafeAreaView>
     </>
   );

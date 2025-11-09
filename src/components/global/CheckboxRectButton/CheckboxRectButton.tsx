@@ -8,7 +8,7 @@ export const CheckboxRectButton = ({ value, label, onPress }: { value: boolean; 
   };
 
   return (
-    <CustomRectButton onPress={onClick}>
+    <CustomRectButton onPress={onClick} appearance="subtle">
       <View className="flex-row items-center justify-between space-x-2">
         <Text className="font-bold text-font dark:text-font-dark">{label}</Text>
         <Checkbox value={value} />
