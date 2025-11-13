@@ -1,10 +1,21 @@
-import { SimpleAutoBrand, SimpleAutoGeneration, SimpleAutoModel, Region } from '@/openapi/client';
+import { Region, SimpleAutoBrand, SimpleAutoGeneration, SimpleAutoModel } from '@/openapi/client';
+import { FilterOptionType, RangeFilterType, SelectFilterType } from '@/types/filter';
 import { SortMethod } from '@/types/sort';
 import { create } from 'zustand';
 
-type BottomSheetOptionType = {
-  value: string;
-  label: string;
+// Utility function to convert FilterOptionType[] to SelectFilterType
+const convertFilterOptionsToSelectFilter = (options: FilterOptionType[] | undefined): SelectFilterType | undefined => {
+  if (!options) return undefined;
+  return options.reduce((acc, option, index) => {
+    acc[index] = option.value;
+    return acc;
+  }, {} as SelectFilterType);
+};
+
+// Utility function to convert subscription filter object to SelectFilterType
+const convertSubscriptionFilterToSelectFilter = (value: any): SelectFilterType | undefined => {
+  if (!value || typeof value !== 'object') return undefined;
+  return value as SelectFilterType;
 };
 
 type SelectionStore = {
@@ -20,22 +31,22 @@ type SelectionStore = {
   selectedRegions: Region[];
   onlyUnsold: boolean;
   onlyWithPhotos: boolean;
-  transmission?: BottomSheetOptionType[];
-  fuelType?: BottomSheetOptionType[];
-  drivetrain?: BottomSheetOptionType[];
-  bodyType?: BottomSheetOptionType[];
-  color?: BottomSheetOptionType[];
-  condition?: BottomSheetOptionType[];
-  documentsOk?: BottomSheetOptionType[];
-  numberOfOwners?: BottomSheetOptionType[];
-  seller?: BottomSheetOptionType[];
-  tradeAllow?: BottomSheetOptionType[];
-  currency?: BottomSheetOptionType[];
-  priceRange?: { min?: number; max?: number };
-  yearRange?: { min?: number; max?: number };
-  engineCapacityRange?: { min?: number; max?: number };
-  powerRange?: { min?: number; max?: number };
-  mileageRange?: { min?: number; max?: number };
+  transmission?: SelectFilterType;
+  fuelType?: SelectFilterType;
+  drivetrain?: SelectFilterType;
+  bodyType?: SelectFilterType;
+  color?: SelectFilterType;
+  condition?: SelectFilterType;
+  documentsOk?: SelectFilterType;
+  numberOfOwners?: SelectFilterType;
+  seller?: SelectFilterType;
+  tradeAllow?: SelectFilterType;
+  currency?: SelectFilterType;
+  priceRange?: RangeFilterType;
+  yearRange?: RangeFilterType;
+  engineCapacityRange?: RangeFilterType;
+  powerRange?: RangeFilterType;
+  mileageRange?: RangeFilterType;
 
   addSelectedBrand: (item: SimpleAutoBrand) => void;
   addSelectedModel: (item: SimpleAutoModel) => void;
@@ -51,22 +62,24 @@ type SelectionStore = {
   removeRegion: (regionId: number) => void;
   toggleOnlyUnsold: () => void;
   toggleOnlyWithPhotos: () => void;
-  setTransmission: (value: BottomSheetOptionType[] | undefined) => void;
-  setFuelType: (value: BottomSheetOptionType[] | undefined) => void;
-  setDrivetrain: (value: BottomSheetOptionType[] | undefined) => void;
-  setBodyType: (value: BottomSheetOptionType[] | undefined) => void;
-  setColor: (value: BottomSheetOptionType[] | undefined) => void;
-  setCondition: (value: BottomSheetOptionType[] | undefined) => void;
-  setDocumentsOk: (value: BottomSheetOptionType[] | undefined) => void;
-  setNumberOfOwners: (value: BottomSheetOptionType[] | undefined) => void;
-  setSeller: (value: BottomSheetOptionType[] | undefined) => void;
-  setTradeAllow: (value: BottomSheetOptionType[] | undefined) => void;
-  setCurrency: (value: BottomSheetOptionType[] | undefined) => void;
-  setPriceRange: (range: { min?: number; max?: number } | undefined) => void;
-  setYearRange: (range: { min?: number; max?: number } | undefined) => void;
-  setEngineCapacityRange: (range: { min?: number; max?: number } | undefined) => void;
-  setPowerRange: (range: { min?: number; max?: number } | undefined) => void;
-  setMileageRange: (range: { min?: number; max?: number } | undefined) => void;
+
+  setTransmission: (value: FilterOptionType[] | undefined) => void;
+  setFuelType: (value: FilterOptionType[] | undefined) => void;
+  setDrivetrain: (value: FilterOptionType[] | undefined) => void;
+  setBodyType: (value: FilterOptionType[] | undefined) => void;
+  setColor: (value: FilterOptionType[] | undefined) => void;
+  setCondition: (value: FilterOptionType[] | undefined) => void;
+  setDocumentsOk: (value: FilterOptionType[] | undefined) => void;
+  setNumberOfOwners: (value: FilterOptionType[] | undefined) => void;
+  setSeller: (value: FilterOptionType[] | undefined) => void;
+  setTradeAllow: (value: FilterOptionType[] | undefined) => void;
+  setCurrency: (value: FilterOptionType[] | undefined) => void;
+  setPriceRange: (range: RangeFilterType | undefined) => void;
+  setYearRange: (range: RangeFilterType | undefined) => void;
+  setEngineCapacityRange: (range: RangeFilterType | undefined) => void;
+  setPowerRange: (range: RangeFilterType | undefined) => void;
+  setMileageRange: (range: RangeFilterType | undefined) => void;
+
   resetFilters: () => void;
 
   currentBrand: SimpleAutoBrand | null;
@@ -90,7 +103,9 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
   onlyUnsold: false,
   onlyWithPhotos: false,
   currentBrand: null,
-  sortMethod: {fieldName: 'createdAt', direction: 3},
+  sortMethod: { fieldName: 'createdAt', direction: 3 },
+
+  priceRange: {},
 
   getSelectedModelsByBrand: (brandId: number) => {
     const state = get();
@@ -233,17 +248,18 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
     })),
   toggleOnlyUnsold: () => set(state => ({ onlyUnsold: !state.onlyUnsold })),
   toggleOnlyWithPhotos: () => set(state => ({ onlyWithPhotos: !state.onlyWithPhotos })),
-  setTransmission: value => set({ transmission: value }),
-  setFuelType: value => set({ fuelType: value }),
-  setDrivetrain: value => set({ drivetrain: value }),
-  setBodyType: value => set({ bodyType: value }),
-  setColor: value => set({ color: value }),
-  setCondition: value => set({ condition: value }),
-  setDocumentsOk: value => set({ documentsOk: value }),
-  setNumberOfOwners: value => set({ numberOfOwners: value }),
-  setSeller: value => set({ seller: value }),
-  setTradeAllow: value => set({ tradeAllow: value }),
-  setCurrency: value => set({ currency: value }),
+
+  setTransmission: values => set({ transmission: convertFilterOptionsToSelectFilter(values) }),
+  setFuelType: values => set({ fuelType: convertFilterOptionsToSelectFilter(values) }),
+  setDrivetrain: values => set({ drivetrain: convertFilterOptionsToSelectFilter(values) }),
+  setBodyType: values => set({ bodyType: convertFilterOptionsToSelectFilter(values) }),
+  setColor: values => set({ color: convertFilterOptionsToSelectFilter(values) }),
+  setCondition: value => set({ condition: convertFilterOptionsToSelectFilter(value) }),
+  setDocumentsOk: value => set({ documentsOk: convertFilterOptionsToSelectFilter(value) }),
+  setNumberOfOwners: value => set({ numberOfOwners: convertFilterOptionsToSelectFilter(value) }),
+  setSeller: value => set({ seller: convertFilterOptionsToSelectFilter(value) }),
+  setTradeAllow: value => set({ tradeAllow: convertFilterOptionsToSelectFilter(value) }),
+  setCurrency: value => set({ currency: convertFilterOptionsToSelectFilter(value) }),
   setPriceRange: range => set({ priceRange: range }),
   setYearRange: range => set({ yearRange: range }),
   setEngineCapacityRange: range => set({ engineCapacityRange: range }),
@@ -272,7 +288,7 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
       engineCapacityRange: undefined,
       powerRange: undefined,
       mileageRange: undefined,
-      sortMethod: {fieldName: 'createdAt', direction: 3},
+      sortMethod: { fieldName: 'createdAt', direction: 3 },
     }),
 
   clearSelections: () =>
@@ -300,7 +316,7 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
       engineCapacityRange: undefined,
       powerRange: undefined,
       mileageRange: undefined,
-      sortMethod: {fieldName: 'createdAt', direction: 3},
+      sortMethod: { fieldName: 'createdAt', direction: 3 },
       currentBrand: null,
     }),
 
@@ -311,37 +327,37 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
       const mappedValues = values.map(v => ({ value: v, label: v }));
       switch (slug) {
         case 'transmission':
-          set({ transmission: mappedValues });
+          set({ transmission: convertFilterOptionsToSelectFilter(mappedValues) });
           break;
         case 'fuelType':
-          set({ fuelType: mappedValues });
+          set({ fuelType: convertFilterOptionsToSelectFilter(mappedValues) });
           break;
         case 'drivetrain':
-          set({ drivetrain: mappedValues });
+          set({ drivetrain: convertFilterOptionsToSelectFilter(mappedValues) });
           break;
         case 'bodyType':
-          set({ bodyType: mappedValues });
+          set({ bodyType: convertFilterOptionsToSelectFilter(mappedValues) });
           break;
         case 'color':
-          set({ color: mappedValues });
+          set({ color: convertFilterOptionsToSelectFilter(mappedValues) });
           break;
         case 'condition':
-          set({ condition: mappedValues });
+          set({ condition: convertFilterOptionsToSelectFilter(mappedValues) });
           break;
         case 'documentsOk':
-          set({ documentsOk: mappedValues });
+          set({ documentsOk: convertFilterOptionsToSelectFilter(mappedValues) });
           break;
         case 'numberOfOwners':
-          set({ numberOfOwners: mappedValues });
+          set({ numberOfOwners: convertFilterOptionsToSelectFilter(mappedValues) });
           break;
         case 'seller':
-          set({ seller: mappedValues });
+          set({ seller: convertFilterOptionsToSelectFilter(mappedValues) });
           break;
         case 'tradeAllow':
-          set({ tradeAllow: mappedValues });
+          set({ tradeAllow: convertFilterOptionsToSelectFilter(mappedValues) });
           break;
         case 'currency':
-          set({ currency: mappedValues });
+          set({ currency: convertFilterOptionsToSelectFilter(mappedValues) });
           break;
         case 'unsold':
           set({ onlyUnsold: values[0] === 'true' });
@@ -351,37 +367,37 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
           break;
         case 'price':
           if (values.length >= 1) {
-            const min = values[0] ? parseInt(values[0]) : undefined;
-            const max = values[1] ? parseInt(values[1]) : undefined;
-            set({ priceRange: { min, max } });
+            const from = values[0] ? parseInt(values[0]) : undefined;
+            const to = values[1] ? parseInt(values[1]) : undefined;
+            set({ priceRange: { from, to } });
           }
           break;
         case 'year':
           if (values.length >= 1) {
-            const min = values[0] ? parseInt(values[0]) : undefined;
-            const max = values[1] ? parseInt(values[1]) : undefined;
-            set({ yearRange: { min, max } });
+            const from = values[0] ? parseInt(values[0]) : undefined;
+            const to = values[1] ? parseInt(values[1]) : undefined;
+            set({ yearRange: { from, to } });
           }
           break;
         case 'engineCapacityRange':
           if (values.length >= 1) {
-            const min = values[0] ? parseFloat(values[0]) : undefined;
-            const max = values[1] ? parseFloat(values[1]) : undefined;
-            set({ engineCapacityRange: { min, max } });
+            const from = values[0] ? parseFloat(values[0]) : undefined;
+            const to = values[1] ? parseFloat(values[1]) : undefined;
+            set({ engineCapacityRange: { from, to } });
           }
           break;
         case 'powerRange':
           if (values.length >= 1) {
-            const min = values[0] ? parseInt(values[0]) : undefined;
-            const max = values[1] ? parseInt(values[1]) : undefined;
-            set({ powerRange: { min, max } });
+            const from = values[0] ? parseInt(values[0]) : undefined;
+            const to = values[1] ? parseInt(values[1]) : undefined;
+            set({ powerRange: { from, to } });
           }
           break;
         case 'mileageRange':
           if (values.length >= 1) {
-            const min = values[0] ? parseInt(values[0]) : undefined;
-            const max = values[1] ? parseInt(values[1]) : undefined;
-            set({ mileageRange: { min, max } });
+            const from = values[0] ? parseInt(values[0]) : undefined;
+            const to = values[1] ? parseInt(values[1]) : undefined;
+            set({ mileageRange: { from, to } });
           }
           break;
         default:
@@ -397,50 +413,28 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
     Object.entries(filters).forEach(([key, value]) => {
       switch (key) {
         case 'transmission':
-          if (value && typeof value === 'object') {
-            const values = Object.values(value as Record<string, string>);
-            set({ transmission: values.map(v => ({ value: v, label: v })) });
-          }
+          set({ transmission: convertSubscriptionFilterToSelectFilter(value) });
           break;
         case 'fuelType':
-          if (value && typeof value === 'object') {
-            const values = Object.values(value as Record<string, string>);
-            set({ fuelType: values.map(v => ({ value: v, label: v })) });
-          }
+          set({ fuelType: convertSubscriptionFilterToSelectFilter(value) });
           break;
         case 'drivetrain':
-          if (value && typeof value === 'object') {
-            const values = Object.values(value as Record<string, string>);
-            set({ drivetrain: values.map(v => ({ value: v, label: v })) });
-          }
+          set({ drivetrain: convertSubscriptionFilterToSelectFilter(value) });
           break;
         case 'bodyType':
-          if (value && typeof value === 'object') {
-            const values = Object.values(value as Record<string, string>);
-            set({ bodyType: values.map(v => ({ value: v, label: v })) });
-          }
+          set({ bodyType: convertSubscriptionFilterToSelectFilter(value) });
           break;
         case 'color':
-          if (value && typeof value === 'object') {
-            const values = Object.values(value as Record<string, string>);
-            set({ color: values.map(v => ({ value: v, label: v })) });
-          }
+          set({ color: convertSubscriptionFilterToSelectFilter(value) });
           break;
         case 'numberOfOwners':
-          if (value && typeof value === 'object') {
-            const values = Object.values(value as Record<string, string>);
-            set({ numberOfOwners: values.map(v => ({ value: v, label: v })) });
-          }
+          set({ numberOfOwners: convertSubscriptionFilterToSelectFilter(value) });
           break;
         case 'seller':
-          if (value && typeof value === 'object') {
-            const values = Object.values(value as Record<string, string>);
-            set({ seller: values.map(v => ({ value: v, label: v })) });
-          }
+          set({ seller: convertSubscriptionFilterToSelectFilter(value) });
           break;
         case 'condition':
           if (value && typeof value === 'object') {
-            const values = Object.values(value as Record<string, string>);
             const conditionValues = Object.values(value as Record<string, string>);
             if (conditionValues.includes('used')) set({ tab: 'old' });
             else if (conditionValues.includes('new')) set({ tab: 'new' });
@@ -455,34 +449,34 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
           break;
         case 'engineCapacity':
           if (value && typeof value === 'object' && 'from' in value && 'to' in value) {
-            const min = value.from ? parseFloat(value.from) : undefined;
-            const max = value.to ? parseFloat(value.to) : undefined;
-            set({ engineCapacityRange: { min, max } });
+            const from = value.from ? parseFloat(value.from) : undefined;
+            const to = value.to ? parseFloat(value.to) : undefined;
+            set({ engineCapacityRange: { from, to } });
           }
           break;
         case 'power':
           if (value && typeof value === 'object' && 'from' in value && 'to' in value) {
-            const min = value.from ? parseInt(value.from) : undefined;
-            const max = value.to ? parseInt(value.to) : undefined;
-            set({ powerRange: { min, max } });
+            const from = value.from ? parseInt(value.from) : undefined;
+            const to = value.to ? parseInt(value.to) : undefined;
+            set({ powerRange: { from, to } });
           }
           break;
         case 'mileage':
           if (value && typeof value === 'object' && 'from' in value && 'to' in value) {
-            const min = value.from ? parseInt(value.from) : undefined;
-            const max = value.to ? parseInt(value.to) : undefined;
-            set({ mileageRange: { min, max } });
+            const from = value.from ? parseInt(value.from) : undefined;
+            const to = value.to ? parseInt(value.to) : undefined;
+            set({ mileageRange: { from, to } });
           }
           break;
         case 'year':
           if (value && typeof value === 'object' && 'from' in value && 'to' in value) {
-            const min = value.from ? parseInt(value.from) : undefined;
-            const max = value.to ? parseInt(value.to) : undefined;
-            set({ yearRange: { min, max } });
+            const from = value.from ? parseInt(value.from) : undefined;
+            const to = value.to ? parseInt(value.to) : undefined;
+            set({ yearRange: { from, to } });
           }
           break;
         case 'price':
-          set({ priceRange: { min: value.from, max: value.to } });
+          set({ priceRange: { from: value.from, to: value.to } });
 
           // if (value && typeof value === 'object' && 'from' in value && 'to' in value) {
           //     const min = value.from ? parseInt(value.from) : undefined;
@@ -532,68 +526,72 @@ export const selectSelectedGenerations = (state: SelectionStore) => Object.value
 
 export const getYearDisplayValue = (state: SelectionStore) => {
   if (!state.yearRange) return undefined;
-  const { min, max } = state.yearRange;
-  if (min && max) return `${min} - ${max}`;
-  if (min) return `от ${min}`;
-  if (max) return `до ${max}`;
+  const { from, to } = state.yearRange;
+  if (from && to) return `${from} - ${to}`;
+  if (from) return `от ${from}`;
+  if (to) return `до ${to}`;
   return undefined;
 };
 
 export const getPriceDisplayValue = (state: SelectionStore) => {
   if (!state.priceRange) return undefined;
-  const { min, max } = state.priceRange;
-  if (min && max) return `${min} - ${max}`;
-  if (min) return `от ${min}`;
-  if (max) return `до ${max}`;
+  const { from, to } = state.priceRange;
+  if (from && to) return `${from} - ${to}`;
+  if (from) return `от ${from}`;
+  if (to) return `до ${to}`;
   return undefined;
 };
 
 export const getEngineCapacityDisplayValue = (state: SelectionStore) => {
   if (!state.engineCapacityRange) return undefined;
-  const { min, max } = state.engineCapacityRange;
-  if (min && max) return `${min} - ${max}`;
-  if (min) return `от ${min}`;
-  if (max) return `до ${max}`;
+  const { from, to } = state.engineCapacityRange;
+  if (from && to) return `${from} - ${to}`;
+  if (from) return `от ${from}`;
+  if (to) return `до ${to}`;
   return undefined;
 };
 
 export const getPowerDisplayValue = (state: SelectionStore) => {
   if (!state.powerRange) return undefined;
-  const { min, max } = state.powerRange;
-  if (min && max) return `${min} - ${max}`;
-  if (min) return `от ${min}`;
-  if (max) return `до ${max}`;
+  const { from, to } = state.powerRange;
+  if (from && to) return `${from} - ${to}`;
+  if (from) return `от ${from}`;
+  if (to) return `до ${to}`;
   return undefined;
 };
 
 export const getMileageDisplayValue = (state: SelectionStore) => {
   if (!state.mileageRange) return undefined;
-  const { min, max } = state.mileageRange;
-  if (min && max) return `${min} - ${max}`;
-  if (min) return `от ${min}`;
-  if (max) return `до ${max}`;
+  const { from, to } = state.mileageRange;
+  if (from && to) return `${from} - ${to}`;
+  if (from) return `от ${from}`;
+  if (to) return `до ${to}`;
   return undefined;
 };
 
 export const getActiveFiltersCount = (state: SelectionStore) => {
   let count = 0;
 
-  // Count array filters
-  if (state.transmission && state.transmission.length > 0) count++;
-  if (state.fuelType && state.fuelType.length > 0) count++;
-  if (state.drivetrain && state.drivetrain.length > 0) count++;
-  if (state.bodyType && state.bodyType.length > 0) count++;
-  if (state.color && state.color.length > 0) count++;
-  if (state.numberOfOwners && state.numberOfOwners.length > 0) count++;
-  if (state.seller && state.seller.length > 0) count++;
+  // Count select filters (SelectFilterType objects)
+  if (state.transmission && Object.keys(state.transmission).length > 0) count++;
+  if (state.fuelType && Object.keys(state.fuelType).length > 0) count++;
+  if (state.drivetrain && Object.keys(state.drivetrain).length > 0) count++;
+  if (state.bodyType && Object.keys(state.bodyType).length > 0) count++;
+  if (state.color && Object.keys(state.color).length > 0) count++;
+  if (state.condition && Object.keys(state.condition).length > 0) count++;
+  if (state.currency && Object.keys(state.currency).length > 0) count++;
+  if (state.documentsOk && Object.keys(state.documentsOk).length > 0) count++;
+  if (state.numberOfOwners && Object.keys(state.numberOfOwners).length > 0) count++;
+  if (state.seller && Object.keys(state.seller).length > 0) count++;
+  if (state.tradeAllow && Object.keys(state.tradeAllow).length > 0) count++;
   if (state.selectedRegions && state.selectedRegions.length > 0) count++;
 
   // Count range filters
-  if (state.priceRange && (state.priceRange.min !== undefined || state.priceRange.max !== undefined)) count++;
-  if (state.yearRange && (state.yearRange.min !== undefined || state.yearRange.max !== undefined)) count++;
-  if (state.engineCapacityRange && (state.engineCapacityRange.min !== undefined || state.engineCapacityRange.max !== undefined)) count++;
-  if (state.powerRange && (state.powerRange.min !== undefined || state.powerRange.max !== undefined)) count++;
-  if (state.mileageRange && (state.mileageRange.min !== undefined || state.mileageRange.max !== undefined)) count++;
+  if (state.priceRange && (state.priceRange.from !== undefined || state.priceRange.to !== undefined)) count++;
+  if (state.yearRange && (state.yearRange.from !== undefined || state.yearRange.to !== undefined)) count++;
+  if (state.engineCapacityRange && (state.engineCapacityRange.from !== undefined || state.engineCapacityRange.to !== undefined)) count++;
+  if (state.powerRange && (state.powerRange.from !== undefined || state.powerRange.to !== undefined)) count++;
+  if (state.mileageRange && (state.mileageRange.from !== undefined || state.mileageRange.to !== undefined)) count++;
 
   // Count boolean filters
   if (state.onlyUnsold) count++;

@@ -2,20 +2,23 @@ import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/Cust
 import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
-import { useFilterConfigs, FilterOption } from '@/shared/filter';
-import { BACKEND_FILTERS } from '@/shared/filter';
+import { FilterOptionType } from '@/types/filter';
 
 type DrivetrainFilterBottomSheetProps = {
-  onChange: (values: FilterOption[]) => void;
+  onChange: (values: FilterOptionType[]) => void;
+  options: readonly FilterOptionType[];
+  title: string;
+  selectedOptions?: FilterOptionType[];
 };
 
-export const DrivetrainFilterBottomSheet = forwardRef<BottomSheetRef, DrivetrainFilterBottomSheetProps>(({ onChange }, ref) => {
-  const filterConfigs = useFilterConfigs();
-  const drivetrainConfig = filterConfigs[BACKEND_FILTERS.DRIVETRAIN_TYPE];
-  const options = drivetrainConfig?.options || [];
-  const [selectedDrivetrains, setSelectedDrivetrains] = React.useState<FilterOption[]>([]);
+export const DrivetrainFilterBottomSheet = forwardRef<BottomSheetRef, DrivetrainFilterBottomSheetProps>(({ onChange, options, title, selectedOptions = [] }, ref) => {
+  const [selectedDrivetrains, setSelectedDrivetrains] = React.useState<FilterOptionType[]>(selectedOptions);
 
-  const handleToggle = (option: FilterOption) => {
+  React.useEffect(() => {
+    setSelectedDrivetrains(selectedOptions);
+  }, [selectedOptions]);
+
+  const handleToggle = (option: FilterOptionType) => {
     const isSelected = selectedDrivetrains.some(t => t.value === option.value);
     if (isSelected) {
       setSelectedDrivetrains(selectedDrivetrains.filter(t => t.value !== option.value));
@@ -33,7 +36,7 @@ export const DrivetrainFilterBottomSheet = forwardRef<BottomSheetRef, Drivetrain
       ref={ref}
       snapPoints={['30%']}
       enableContentPanningGesture={true}
-      title="Привод"
+      title={title}
       footerProps={{
         onConfirm: handleConfirm,
       }}

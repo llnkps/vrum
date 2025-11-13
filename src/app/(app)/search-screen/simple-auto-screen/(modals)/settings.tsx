@@ -172,7 +172,7 @@ const SettingScreenFilter = () => {
 
             <View className="flex-col rounded-lg bg-surface p-2 dark:bg-surface-dark">
               <TransmissionFilterController
-                value={transmission}
+                selectedOptions={transmission}
                 onChange={setTransmission}
               />
               <EngineCapacityFilterController
@@ -184,11 +184,11 @@ const SettingScreenFilter = () => {
                 onChange={setPowerRange}
               />
               <FuelTypeFilterController
-                value={fuelType}
+                selectedOptions={fuelType}
                 onChange={setFuelType}
               />
               <DrivetrainFilterController
-                value={drivetrain}
+                selectedOptions={drivetrain}
                 onChange={setDrivetrain}
               />
               <TouchableHighlightRow label="Расположения руля" onPress={() => {}} showRightArrow variant="bordered" rightIcon="chevron-down" />
@@ -198,22 +198,22 @@ const SettingScreenFilter = () => {
                 onChange={setMileageRange}
               />
               <BodyTypeFilterController
-                value={bodyType}
+                selectedOptions={bodyType}
                 onChange={setBodyType}
               />
               <ColorFilterController
-                value={color}
+                selectedOptions={color}
                 onChange={setColor}
               />
             </View>
 
             <View className="flex-col rounded-lg bg-surface p-2 dark:bg-surface-dark">
               <NumberOfOwnersFilterController
-                value={numberOfOwners}
+                selectedOptions={numberOfOwners}
                 onChange={setNumberOfOwners}
               />
               <SellerFilterController
-                value={seller}
+                selectedOptions={seller}
                 onChange={setSeller}
               />
             </View>

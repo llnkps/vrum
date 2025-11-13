@@ -3,10 +3,11 @@ import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow
 import React, { useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import MileageFilterBottomSheet from './MileageFilterBottomSheet';
+import { RangeFilterType } from '@/types/filter';
 
 interface MileageFilterControllerProps {
-  value?: { min?: number; max?: number };
-  onChange: (value: { min?: number; max?: number } | undefined) => void;
+  value?: RangeFilterType;
+  onChange: (value: RangeFilterType | undefined) => void;
   error?: string;
 }
 
@@ -20,10 +21,10 @@ const MileageFilterController = ({ value, onChange, error }: MileageFilterContro
 
   const selectedValue = React.useMemo(() => {
     if (!value) return undefined;
-    const { min, max } = value;
-    if (min && max) return `${min} - ${max}`;
-    if (min) return `от ${min}`;
-    if (max) return `до ${max}`;
+    const { from, to } = value;
+    if (from && to) return `${from} - ${to}`;
+    if (from) return `от ${from}`;
+    if (to) return `до ${to}`;
     return undefined;
   }, [value]);
 

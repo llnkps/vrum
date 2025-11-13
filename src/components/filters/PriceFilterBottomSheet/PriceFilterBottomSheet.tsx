@@ -1,5 +1,6 @@
 import CustomBottomSheetModal from '@/components/global/CustomBottomSheetModal';
 import { BottomSheetField } from '@/components/ui/input/BottomSheetField';
+import { RangeFilterType } from '@/types/filter';
 import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef, useState } from 'react';
 import { View } from 'react-native';
@@ -8,7 +9,7 @@ import { Text } from 'react-native-gesture-handler';
 export type BottomSheetRef = BottomSheetModal;
 
 type props = {
-  onChange?: (price: { min?: number; max?: number }) => void;
+  onChange?: (price: RangeFilterType) => void;
 };
 
 export const PriceBottomSheet = forwardRef<BottomSheetRef, props>((props, ref) => {
@@ -18,7 +19,7 @@ export const PriceBottomSheet = forwardRef<BottomSheetRef, props>((props, ref) =
   const handleConfirm = () => {
     const min = minPrice ? parseInt(minPrice) : undefined;
     const max = maxPrice ? parseInt(maxPrice) : undefined;
-    props.onChange?.({ min, max });
+    props.onChange?.({ from: min, to: max });
   };
 
   return (

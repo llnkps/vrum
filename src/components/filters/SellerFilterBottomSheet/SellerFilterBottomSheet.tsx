@@ -2,30 +2,33 @@ import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/Cust
 import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
-import { useFilterConfigs, FilterOption } from '@/shared/filter';
-import { BACKEND_FILTERS } from '@/shared/filter';
+import { FilterOptionType } from '@/types/filter';
 
 type SellerFilterBottomSheetProps = {
-  onChange: (values: FilterOption[]) => void;
+  onChange: (values: FilterOptionType[]) => void;
+  options: readonly FilterOptionType[];
+  title: string;
+  selectedOptions?: FilterOptionType[];
 };
 
-export const SellerFilterBottomSheet = forwardRef<BottomSheetRef, SellerFilterBottomSheetProps>(({ onChange }, ref) => {
-  const filterConfigs = useFilterConfigs();
-  const sellerConfig = filterConfigs[BACKEND_FILTERS.SELLER];
-  const options = sellerConfig?.options || [];
-  const [selectedValues, setSelectedValues] = React.useState<FilterOption[]>([]);
+export const SellerFilterBottomSheet = forwardRef<BottomSheetRef, SellerFilterBottomSheetProps>(({ onChange, options, title, selectedOptions = [] }, ref) => {
+  const [selectedSellers, setSelectedSellers] = React.useState<FilterOptionType[]>(selectedOptions);
 
-  const handleToggle = (option: FilterOption) => {
-    const isSelected = selectedValues.some(v => v.value === option.value);
+  React.useEffect(() => {
+    setSelectedSellers(selectedOptions);
+  }, [selectedOptions]);
+
+  const handleToggle = (option: FilterOptionType) => {
+    const isSelected = selectedSellers.some(v => v.value === option.value);
     if (isSelected) {
-      setSelectedValues(selectedValues.filter(v => v.value !== option.value));
+      setSelectedSellers(selectedSellers.filter(v => v.value !== option.value));
     } else {
-      setSelectedValues([...selectedValues, option]);
+      setSelectedSellers([...selectedSellers, option]);
     }
   };
 
   const handleConfirm = () => {
-    onChange(selectedValues);
+    onChange(selectedSellers);
   };
 
   return (
@@ -33,7 +36,7 @@ export const SellerFilterBottomSheet = forwardRef<BottomSheetRef, SellerFilterBo
       ref={ref}
       snapPoints={['35%']}
       enableContentPanningGesture={true}
-      title={sellerConfig.label}
+      title={title}
       footerProps={{
         onConfirm: handleConfirm,
       }}
@@ -43,7 +46,7 @@ export const SellerFilterBottomSheet = forwardRef<BottomSheetRef, SellerFilterBo
           <CheckboxRectButton
             key={opt.value}
             label={opt.label}
-            value={selectedValues.some(v => v.value === opt.value)}
+            value={selectedSellers.some(v => v.value === opt.value)}
             onPress={() => handleToggle(opt)}
           />
         ))}

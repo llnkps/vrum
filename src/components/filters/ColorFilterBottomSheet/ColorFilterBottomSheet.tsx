@@ -2,29 +2,24 @@ import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/Cust
 import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
+import { FilterOptionType } from '@/types/filter';
 import { Text, View } from 'react-native';
 
-type ColorOption = (typeof options)[number];
-
 type ColorFilterBottomSheetProps = {
-  onChange: (values: ColorOption[]) => void;
+  onChange: (values: FilterOptionType[]) => void;
+  options: readonly FilterOptionType[];
+  title: string;
+  selectedOptions?: FilterOptionType[];
 };
 
-const options = [
-  { label: 'Черный', value: 'black', color: '#000000' },
-  { label: 'Белый', value: 'white', color: '#FFFFFF' },
-  { label: 'Серый', value: 'gray', color: '#808080' },
-  { label: 'Красный', value: 'red', color: '#FF0000' },
-  { label: 'Синий', value: 'blue', color: '#0000FF' },
-  { label: 'Зеленый', value: 'green', color: '#008000' },
-  { label: 'Желтый', value: 'yellow', color: '#FFFF00' },
-  { label: 'Другой', value: 'other', color: '#CCCCCC' },
-];
+export const ColorFilterBottomSheet = forwardRef<BottomSheetRef, ColorFilterBottomSheetProps>(({ onChange, options, title, selectedOptions = [] }, ref) => {
+  const [selectedColors, setSelectedColors] = React.useState<FilterOptionType[]>(selectedOptions);
 
-export const ColorFilterBottomSheet = forwardRef<BottomSheetRef, ColorFilterBottomSheetProps>(({ onChange }, ref) => {
-  const [selectedColors, setSelectedColors] = React.useState<ColorOption[]>([]);
+  React.useEffect(() => {
+    setSelectedColors(selectedOptions);
+  }, [selectedOptions]);
 
-  const handleToggle = (option: ColorOption) => {
+  const handleToggle = (option: FilterOptionType) => {
     const isSelected = selectedColors.some(c => c.value === option.value);
     if (isSelected) {
       setSelectedColors(selectedColors.filter(c => c.value !== option.value));
@@ -37,12 +32,31 @@ export const ColorFilterBottomSheet = forwardRef<BottomSheetRef, ColorFilterBott
     onChange(selectedColors);
   };
 
+  const getColorForValue = (value: string) => {
+    const colorMap: Record<string, string> = {
+      black: '#000000',
+      white: '#FFFFFF',
+      gray: '#808080',
+      red: '#FF0000',
+      blue: '#0000FF',
+      green: '#008000',
+      yellow: '#FFFF00',
+      silver: '#C0C0C0',
+      brown: '#A52A2A',
+      beige: '#F5F5DC',
+      orange: '#FFA500',
+      purple: '#800080',
+      other: '#CCCCCC',
+    };
+    return colorMap[value] || '#CCCCCC';
+  };
+
   return (
     <CustomBottomSheetModal
       ref={ref}
       snapPoints={['60%']}
       enableContentPanningGesture={true}
-      title="Цвет"
+      title={title}
       footerProps={{
         onConfirm: handleConfirm,
       }}
@@ -60,7 +74,7 @@ export const ColorFilterBottomSheet = forwardRef<BottomSheetRef, ColorFilterBott
                     width: 24,
                     height: 24,
                     borderRadius: 4,
-                    backgroundColor: option.color,
+                    backgroundColor: getColorForValue(option.value),
                     marginRight: 16,
                     borderWidth: option.value === 'white' ? 1 : 0,
                     borderColor: '#E5E5E5',

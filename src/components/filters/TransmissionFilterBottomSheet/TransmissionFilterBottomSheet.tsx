@@ -1,21 +1,24 @@
-import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
+import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
+import { FilterOptionType } from '@/types/filter';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
-import { useFilterConfigs, FilterOption } from '@/shared/filter';
-import { BACKEND_FILTERS } from '@/shared/filter';
 
 type TransmissionFilterBottomSheetProps = {
-  onChange: (values: FilterOption[]) => void;
+  onChange: (values: FilterOptionType[]) => void;
+  options: readonly FilterOptionType[];
+  title: string;
+  selectedOptions?: FilterOptionType[];
 };
 
-export const TransmissionFilterBottomSheet = forwardRef<BottomSheetRef, TransmissionFilterBottomSheetProps>(({ onChange }, ref) => {
-  const filterConfigs = useFilterConfigs();
-  const transmissionConfig = filterConfigs[BACKEND_FILTERS.TRANSMISSION];
-  const options = transmissionConfig?.options || [];
-  const [selectedTransmissions, setSelectedTransmissions] = React.useState<FilterOption[]>([]);
+export const TransmissionFilterBottomSheet = forwardRef<BottomSheetRef, TransmissionFilterBottomSheetProps>(({ onChange, options, title, selectedOptions = [] }, ref) => {
+  const [selectedTransmissions, setSelectedTransmissions] = React.useState<FilterOptionType[]>(selectedOptions);
 
-  const handleToggle = (option: FilterOption) => {
+  React.useEffect(() => {
+    setSelectedTransmissions(selectedOptions);
+  }, [selectedOptions]);
+
+  const handleToggle = (option: FilterOptionType) => {
     const isSelected = selectedTransmissions.some(t => t.value === option.value);
     if (isSelected) {
       setSelectedTransmissions(selectedTransmissions.filter(t => t.value !== option.value));
@@ -33,7 +36,7 @@ export const TransmissionFilterBottomSheet = forwardRef<BottomSheetRef, Transmis
       ref={ref}
       snapPoints={['35%']}
       enableContentPanningGesture={true}
-      title={'Коробка передач'}
+      title={title}
       footerProps={{
         onConfirm: handleConfirm,
       }}

@@ -2,30 +2,33 @@ import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/Cust
 import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
-import { useFilterConfigs, FilterOption } from '@/shared/filter';
-import { BACKEND_FILTERS } from '@/shared/filter';
+import { FilterOptionType } from '@/types/filter';
 
 type NumberOfOwnersFilterBottomSheetProps = {
-  onChange: (values: FilterOption[]) => void;
+  onChange: (values: FilterOptionType[]) => void;
+  options: readonly FilterOptionType[];
+  title: string;
+  selectedOptions?: FilterOptionType[];
 };
 
-export const NumberOfOwnersFilterBottomSheet = forwardRef<BottomSheetRef, NumberOfOwnersFilterBottomSheetProps>(({ onChange }, ref) => {
-  const filterConfigs = useFilterConfigs();
-  const numberOfOwnersConfig = filterConfigs[BACKEND_FILTERS.NUMBER_OF_OWNER];
-  const options = numberOfOwnersConfig?.options || [];
-  const [selectedValues, setSelectedValues] = React.useState<FilterOption[]>([]);
+export const NumberOfOwnersFilterBottomSheet = forwardRef<BottomSheetRef, NumberOfOwnersFilterBottomSheetProps>(({ onChange, options, title, selectedOptions = [] }, ref) => {
+  const [selectedNumberOfOwners, setSelectedNumberOfOwners] = React.useState<FilterOptionType[]>(selectedOptions);
 
-  const handleToggle = (option: FilterOption) => {
-    const isSelected = selectedValues.some(v => v.value === option.value);
+  React.useEffect(() => {
+    setSelectedNumberOfOwners(selectedOptions);
+  }, [selectedOptions]);
+
+  const handleToggle = (option: FilterOptionType) => {
+    const isSelected = selectedNumberOfOwners.some(v => v.value === option.value);
     if (isSelected) {
-      setSelectedValues(selectedValues.filter(v => v.value !== option.value));
+      setSelectedNumberOfOwners(selectedNumberOfOwners.filter(v => v.value !== option.value));
     } else {
-      setSelectedValues([...selectedValues, option]);
+      setSelectedNumberOfOwners([...selectedNumberOfOwners, option]);
     }
   };
 
   const handleConfirm = () => {
-    onChange(selectedValues);
+    onChange(selectedNumberOfOwners);
   };
 
   return (
@@ -33,7 +36,7 @@ export const NumberOfOwnersFilterBottomSheet = forwardRef<BottomSheetRef, Number
       ref={ref}
       snapPoints={['33%']}
       enableContentPanningGesture={true}
-      title={'Количество владельцев'}
+      title={title}
       footerProps={{
         onConfirm: handleConfirm,
       }}
@@ -43,7 +46,7 @@ export const NumberOfOwnersFilterBottomSheet = forwardRef<BottomSheetRef, Number
           <CheckboxRectButton
             key={opt.value}
             label={opt.label}
-            value={selectedValues.some(v => v.value === opt.value)}
+            value={selectedNumberOfOwners.some(v => v.value === opt.value)}
             onPress={() => handleToggle(opt)}
           />
         ))}

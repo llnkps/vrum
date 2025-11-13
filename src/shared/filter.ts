@@ -1,46 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
-
-// Backend filter keys (from existing filters.ts)
-export const BACKEND_FILTERS = {
-  BRAND: 'brand',
-  MODEL: 'model',
-  GENERATION: 'generation',
-  MODIFICATION: 'modification',
-
-
-  TRANSMISSION: 'transmission',
-  FUEL_TYPE: 'fuel_type',
-  ENGINE_CAPACITY: 'engine_capacity',
-  DRIVETRAIN_TYPE: 'drivetrain_type',
-  UNSOLD: 'unsold',
-  WITH_IMAGE: 'with_image',
-  FRAME_TYPE: 'frame_type',
-  COLOR: 'color',
-  DOCUMENT_TYPE: 'document_type',
-  DAMANGED_TYPE: 'damanged_type',
-  WHEEL_TYPE: 'wheel_type',
-  POWER: 'power',
-  MILEAGE: 'mileage',
-  FIRM_COUNTRY_GROUP: 'firm_country_group',
-  SELLER: 'seller',
-  SELL_LOCATION: 'sell_location',
-  NUMBER_OF_OWNER: 'number_of_owner',
-  TRADE_ALLOW: 'trade_allow',
-  CONDITION: 'condition',
-  YEAR: 'year',
-  PRICE: 'price',
-} as const;
-
-export type BackendFilterKey = (typeof BACKEND_FILTERS)[keyof typeof BACKEND_FILTERS];
-
-
-// Filter option interface
-export interface FilterOption {
-  label: string;
-  value: string | number;
-  disabled?: boolean;
-}
+import { BACKEND_FILTERS, BackendFilterKey, FilterOptionType } from '@/types/filter';
 
 // Base filter config
 interface BaseFilterConfig {
@@ -84,15 +44,13 @@ interface SingleFilterConfig extends BaseFilterConfig {
   }>;
 }
 
-type FilterConfigType = RangeFilterConfig | BooleanFilterConfig | ArrayFilterConfig | SingleFilterConfig;
-
 // Exported FilterConfig interface for consumers
 export interface FilterConfig {
   key: BackendFilterKey;
   type: 'range' | 'boolean' | 'array' | 'single';
   label: string;
   placeholder?: string;
-  options?: readonly FilterOption[];
+  options?: readonly FilterOptionType[];
   min?: number;
   max?: number;
   step?: number;
@@ -399,12 +357,3 @@ export const isBooleanFilter = (key: BackendFilterKey): boolean => {
 export const isArrayFilter = (key: BackendFilterKey): boolean => {
   return FILTER_CONFIGS[key]?.type === 'array';
 };
-
-// Type for filter values
-export type FilterValue = string | number | boolean | string[] | { min?: number; max?: number };
-
-export interface AppliedFilter {
-  key: BackendFilterKey;
-  value: FilterValue;
-  label: string;
-}

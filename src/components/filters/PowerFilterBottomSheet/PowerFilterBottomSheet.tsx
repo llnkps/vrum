@@ -1,12 +1,13 @@
 import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import CustomWheelPicker from '@/components/global/CustomWheelPicker';
+import { RangeFilterType } from '@/types/filter';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import { PickerItem, ValueChangedEvent } from '@quidone/react-native-wheel-picker';
 import React, { forwardRef, useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 type PowerModalProps = {
-  onChange: (range: { min?: number; max?: number }) => void;
+  onChange: (range: RangeFilterType) => void;
 };
 
 const powerArray = [
@@ -30,7 +31,7 @@ const PowerFilterBottomSheet = forwardRef<BottomSheetRef, PowerModalProps>(({ on
   };
 
   const handleConfirm = () => {
-    onChange({ min: minValue, max: maxValue });
+    onChange({ from: minValue, to: maxValue });
   };
 
   return (

@@ -11,7 +11,7 @@ import { useSimpleAutoModelByBrandApi } from '@/hooks/api/useSimpleAutoModelByBr
 import { SimpleAutoModel } from '@/openapi/client';
 import { useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
 import { useSearchedFiltersStore } from '@/state/search-screen/useSearchedFiltersStore';
-import { BACKEND_FILTERS } from '@/shared/filter';
+import { BACKEND_FILTERS } from '@/types/filter';
 import FilterBadge from '@/components/global/FilterBadge';
 
 // const STATUSBAR_HEIGHT = StatusBar.currentHeight ?? 24;

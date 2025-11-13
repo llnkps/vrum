@@ -1,4 +1,4 @@
-import { BACKEND_FILTERS, BackendFilterKey, FilterValue } from '@/shared/filter';
+import { BACKEND_FILTERS, BackendFilterKey, FilterValue } from '@/types/filter';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';

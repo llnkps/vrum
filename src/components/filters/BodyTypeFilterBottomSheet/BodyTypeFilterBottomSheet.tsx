@@ -2,20 +2,23 @@ import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/Cust
 import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
-import { useFilterConfigs, FilterOption } from '@/shared/filter';
-import { BACKEND_FILTERS } from '@/shared/filter';
+import { FilterOptionType } from '@/types/filter';
 
 type BodyTypeFilterBottomSheetProps = {
-  onChange: (values: FilterOption[]) => void;
+  onChange: (values: FilterOptionType[]) => void;
+  options: readonly FilterOptionType[];
+  title: string;
+  selectedOptions?: FilterOptionType[];
 };
 
-export const BodyTypeFilterBottomSheet = forwardRef<BottomSheetRef, BodyTypeFilterBottomSheetProps>(({ onChange }, ref) => {
-  const filterConfigs = useFilterConfigs();
-  const bodyTypeConfig = filterConfigs[BACKEND_FILTERS.FRAME_TYPE];
-  const options = bodyTypeConfig?.options || [];
-  const [selectedBodyTypes, setSelectedBodyTypes] = React.useState<FilterOption[]>([]);
+export const BodyTypeFilterBottomSheet = forwardRef<BottomSheetRef, BodyTypeFilterBottomSheetProps>(({ onChange, options, title, selectedOptions = [] }, ref) => {
+  const [selectedBodyTypes, setSelectedBodyTypes] = React.useState<FilterOptionType[]>(selectedOptions);
 
-  const handleToggle = (option: FilterOption) => {
+  React.useEffect(() => {
+    setSelectedBodyTypes(selectedOptions);
+  }, [selectedOptions]);
+
+  const handleToggle = (option: FilterOptionType) => {
     const isSelected = selectedBodyTypes.some(t => t.value === option.value);
     if (isSelected) {
       setSelectedBodyTypes(selectedBodyTypes.filter(t => t.value !== option.value));
@@ -33,7 +36,7 @@ export const BodyTypeFilterBottomSheet = forwardRef<BottomSheetRef, BodyTypeFilt
       ref={ref}
       snapPoints={['45%']}
       enableContentPanningGesture={true}
-      title="Кузова"
+      title={title}
       footerProps={{
         onConfirm: handleConfirm,
       }}

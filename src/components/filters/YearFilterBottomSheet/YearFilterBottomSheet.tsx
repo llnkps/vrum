@@ -1,5 +1,6 @@
 import CustomBottomSheetModal from '@/components/global/CustomBottomSheetModal';
 import CustomWheelPicker from '@/components/global/CustomWheelPicker';
+import { RangeFilterType } from '@/types/filter';
 import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import { PickerItem, ValueChangedEvent } from '@quidone/react-native-wheel-picker';
 import React, { forwardRef, useState } from 'react';
@@ -8,7 +9,7 @@ import { View } from 'react-native';
 export type BottomSheetRef = BottomSheetModal;
 
 type YearModalProps = {
-  onChange?: (year: { min?: number; max?: number }) => void;
+  onChange?: (year: RangeFilterType) => void;
 };
 
 const years = [
@@ -32,7 +33,7 @@ export const YearBottomSheet = forwardRef<BottomSheetRef, YearModalProps>((props
   };
 
   const handleConfirm = () => {
-    props.onChange?.({ min: minYear, max: maxYear });
+    props.onChange?.({ from: minYear, to: maxYear });
   };
 
   return (

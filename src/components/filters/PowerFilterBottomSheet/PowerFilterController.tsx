@@ -1,12 +1,13 @@
 import { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
+import { RangeFilterType } from '@/types/filter';
 import React, { useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import PowerFilterBottomSheet from './PowerFilterBottomSheet';
 
 interface PowerFilterControllerProps {
-  value?: { min?: number; max?: number };
-  onChange: (value: { min?: number; max?: number } | undefined) => void;
+  value?: RangeFilterType;
+  onChange: (value: RangeFilterType | undefined) => void;
   error?: string;
 }
 
@@ -20,10 +21,10 @@ const PowerFilterController = ({ value, onChange, error }: PowerFilterController
 
   const selectedValue = React.useMemo(() => {
     if (!value) return undefined;
-    const { min, max } = value;
-    if (min && max) return `${min} - ${max}`;
-    if (min) return `от ${min}`;
-    if (max) return `до ${max}`;
+    const { from, to } = value;
+    if (from && to) return `${from} - ${to}`;
+    if (from) return `от ${from}`;
+    if (to) return `до ${to}`;
     return undefined;
   }, [value]);
 
@@ -41,7 +42,7 @@ const PowerFilterController = ({ value, onChange, error }: PowerFilterController
       />
       <PowerFilterBottomSheet
         ref={powerModalRef}
-        onChange={(range) => {
+        onChange={range => {
           onChange(range);
           powerModalRef.current?.close({ duration: 150 });
         }}

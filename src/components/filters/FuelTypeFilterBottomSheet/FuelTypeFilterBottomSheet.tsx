@@ -2,20 +2,23 @@ import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/Cust
 import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
-import { useFilterConfigs, FilterOption } from '@/shared/filter';
-import { BACKEND_FILTERS } from '@/shared/filter';
+import { FilterOptionType } from '@/types/filter';
 
 type FuelTypeFilterBottomSheetProps = {
-  onChange: (values: FilterOption[]) => void;
+  onChange: (values: FilterOptionType[]) => void;
+  options: readonly FilterOptionType[];
+  title: string;
+  selectedOptions?: FilterOptionType[];
 };
 
-export const FuelTypeFilterBottomSheet = forwardRef<BottomSheetRef, FuelTypeFilterBottomSheetProps>(({ onChange }, ref) => {
-  const filterConfigs = useFilterConfigs();
-  const fuelTypeConfig = filterConfigs[BACKEND_FILTERS.FUEL_TYPE];
-  const options = fuelTypeConfig?.options || [];
-  const [selectedFuelTypes, setSelectedFuelTypes] = React.useState<FilterOption[]>([]);
+export const FuelTypeFilterBottomSheet = forwardRef<BottomSheetRef, FuelTypeFilterBottomSheetProps>(({ onChange, options, title, selectedOptions = [] }, ref) => {
+  const [selectedFuelTypes, setSelectedFuelTypes] = React.useState<FilterOptionType[]>(selectedOptions);
 
-  const handleToggle = (option: FilterOption) => {
+  React.useEffect(() => {
+    setSelectedFuelTypes(selectedOptions);
+  }, [selectedOptions]);
+
+  const handleToggle = (option: FilterOptionType) => {
     const isSelected = selectedFuelTypes.some(t => t.value === option.value);
     if (isSelected) {
       setSelectedFuelTypes(selectedFuelTypes.filter(t => t.value !== option.value));
@@ -33,7 +36,7 @@ export const FuelTypeFilterBottomSheet = forwardRef<BottomSheetRef, FuelTypeFilt
       ref={ref}
       snapPoints={['35%']}
       enableContentPanningGesture={true}
-      title={'Тип топлива'}
+      title={title}
       footerProps={{
         onConfirm: handleConfirm,
       }}

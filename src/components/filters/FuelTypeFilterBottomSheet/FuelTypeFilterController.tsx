@@ -1,27 +1,48 @@
 import { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
+import { BACKEND_FILTERS, FilterOptionType, SelectFilterType } from '@/types/filter';
 import React, { useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FuelTypeFilterBottomSheet } from './FuelTypeFilterBottomSheet';
+import { useFilterConfigs } from '@/shared/filter';
 
 interface FuelTypeFilterControllerProps {
-  value?: Array<{ label: string; value: string }>;
-  onChange: (value: Array<{ label: string; value: string }> | undefined) => void;
+  selectedOptions?: SelectFilterType;
+  onChange: (value: FilterOptionType[] | undefined) => void;
   error?: string;
 }
 
-const FuelTypeFilterController = ({ value, onChange, error }: FuelTypeFilterControllerProps) => {
+const FuelTypeFilterController = ({ selectedOptions, onChange, error }: FuelTypeFilterControllerProps) => {
   const { t } = useTranslation();
   const fuelTypeModalRef = useRef<BottomSheetRef>(null);
+
+  const filterConfigs = useFilterConfigs();
+  const fuelTypeConfig = filterConfigs[BACKEND_FILTERS.FUEL_TYPE];
+  const options = fuelTypeConfig?.options || [];
 
   const handlePresentFuelTypeModalPress = useCallback(() => {
     fuelTypeModalRef.current?.present();
   }, []);
 
   const selectedValue = React.useMemo(() => {
-    if (!value || value.length === 0) return undefined;
-    return value.map(t => t.label).join(', ');
-  }, [value]);
+    if (!selectedOptions) return undefined;
+    const selectedValues = Object.values(selectedOptions);
+    const selectedValuesSet = new Set(selectedValues);
+
+    const selectedLabels = options
+      .filter(option => selectedValuesSet.has(option.value))
+      .map(option => option.label);
+
+    return selectedLabels.join(', ');
+  }, [selectedOptions, options]);
+
+  const selectedOptionsArray = React.useMemo(() => {
+    if (!selectedOptions) return [];
+    const selectedValues = Object.values(selectedOptions);
+    const selectedValuesSet = new Set(selectedValues);
+
+    return options.filter(option => selectedValuesSet.has(option.value));
+  }, [selectedOptions, options]);
 
   return (
     <>
@@ -37,6 +58,9 @@ const FuelTypeFilterController = ({ value, onChange, error }: FuelTypeFilterCont
       />
       <FuelTypeFilterBottomSheet
         ref={fuelTypeModalRef}
+        options={options}
+        title={fuelTypeConfig?.label || 'Fuel Type'}
+        selectedOptions={selectedOptionsArray}
         onChange={(options) => {
           onChange(options.length > 0 ? options : undefined);
           fuelTypeModalRef.current?.close({ duration: 150 });

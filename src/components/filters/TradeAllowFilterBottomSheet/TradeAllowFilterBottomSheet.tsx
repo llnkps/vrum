@@ -2,21 +2,19 @@ import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/Cust
 import { CustomRectButton } from '@/components/ui/button';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
-import { useFilterConfigs, FilterOption } from '@/shared/filter';
-import { BACKEND_FILTERS } from '@/shared/filter';
+import { FilterOptionType } from '@/types/filter';
 
 type TradeAllowFilterBottomSheetProps = {
   onSelect: (value: FilterOption) => void;
+  options: readonly FilterOptionType[];
+  title: string;
 };
 
-export const TradeAllowFilterBottomSheet = forwardRef<BottomSheetRef, TradeAllowFilterBottomSheetProps>(({ onSelect }, ref) => {
-  const filterConfigs = useFilterConfigs();
-  const tradeAllowConfig = filterConfigs[BACKEND_FILTERS.TRADE_ALLOW];
-  const options = tradeAllowConfig?.options || [];
+export const TradeAllowFilterBottomSheet = forwardRef<BottomSheetRef, TradeAllowFilterBottomSheetProps>(({ onSelect, options, title }, ref) => {
   const [selectedValue, setSelectedValue] = React.useState<string | number | undefined>(undefined);
 
   return (
-    <CustomBottomSheetModal ref={ref} snapPoints={['35%']} enableContentPanningGesture={true} title={tradeAllowConfig.label}>
+    <CustomBottomSheetModal ref={ref} snapPoints={['35%']} enableContentPanningGesture={true} title={title}>
       <BottomSheetView className="flex-col">
         {options.map(opt => (
           <CustomRectButton
