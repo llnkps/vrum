@@ -10,6 +10,8 @@ import { CustomRectButton } from '@/components/ui/button';
 import { useSimpleAutoModelByBrandApi } from '@/hooks/api/useSimpleAutoModelByBrandApi';
 import { SimpleAutoModel } from '@/openapi/client';
 import { useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
+import { useSearchedFiltersStore } from '@/state/search-screen/useSearchedFiltersStore';
+import { BACKEND_FILTERS } from '@/shared/filter';
 import FilterBadge from '@/components/global/FilterBadge';
 
 // const STATUSBAR_HEIGHT = StatusBar.currentHeight ?? 24;
@@ -22,55 +24,86 @@ export default function ModelFilter() {
 
   const [searchValue, setSearchValue] = useState('');
 
-    const { currentBrand } = useAutoSelectStore();
+  const { 
+    currentBrand, 
+    selectedModelsByBrand, 
+    removeSelectedModel,
+    selectedBrandsMap,
+    selectedRegions,
+    onlyUnsold,
+    onlyWithPhotos,
+    transmission,
+    fuelType,
+    drivetrain,
+    bodyType,
+    color,
+    condition,
+    documentsOk,
+    numberOfOwners,
+    seller,
+    tradeAllow,
+    priceRange,
+    yearRange,
+    engineCapacityRange,
+    powerRange,
+    mileageRange
+  } = useAutoSelectStore();
 
-  // Local state instead of store for performance testing
-  const [selectedModelsByBrand, setSelectedModelsByBrand] = useState<Record<number, SimpleAutoModel[]>>({});
-  // const [currentBrand, setCurrentBrand] = useState<SimpleAutoBrand | null>(null);
+  const { addSearchedItem } = useSearchedFiltersStore();
 
   const { data, isLoading } = useSimpleAutoModelByBrandApi(currentBrand ? currentBrand.id.toString() : undefined);
-
-  // Simulate getting currentBrand - in real app this would come from navigation or store
-  // useEffect(() => {
-  //   // For testing, we'll assume we have a brand. In real usage, this would be set from navigation params
-  //   // or from the store when navigating to this screen
-  //   const mockBrand: SimpleAutoBrand = {
-  //     id: 1,
-  //     name: 'Test Brand',
-  //     orderNumber: 1,
-  //     image: '',
-  //     imageFilePath: ''
-  //   };
-  //   setCurrentBrand(mockBrand);
-  // }, []);
-
-  const removeSelectedModel = useCallback((id: number) => {
-    if (!currentBrand) return;
-    setSelectedModelsByBrand(prev => ({
-      ...prev,
-      [currentBrand.id]: (prev[currentBrand.id] || []).filter((m: SimpleAutoModel) => m.id !== id)
-    }));
-  }, [currentBrand]);
-
-  // Memoize filtered models to avoid unnecessary recalculations
-  const filteredModels = useMemo(() => {
-    if (!data) return [];
-    if (!searchValue) return data;
-
-    const searchValueLowerCase = searchValue.toLowerCase();
-    return data.filter(i => {
-      if (!i.name) return false;
-      return i.name.toLowerCase().includes(searchValueLowerCase);
-    });
-  }, [data, searchValue]);
-
-  // Memoize selected models for current brand
-  const selectedModelsForCurrentBrand = useMemo(() => {
-    return currentBrand ? selectedModelsByBrand[currentBrand.id] || [] : [];
-  }, [currentBrand, selectedModelsByBrand]);
+  const [filteredModels, setFilteredModels] = useState<SimpleAutoModel[]>([]);
 
   const scrollY = useSharedValue(0);
   const isScrolling = useSharedValue(false);
+
+  // Function to collect current filter data and save to searched filters
+  const saveCurrentFiltersToSearched = () => {
+    const filters: Record<string, any> = {};
+
+    // Add selected brands
+    const selectedBrands = Object.values(selectedBrandsMap);
+    if (selectedBrands.length > 0) {
+      filters[BACKEND_FILTERS.BRAND] = selectedBrands[0].name; // For simplicity, take first brand
+    }
+
+    // Add selected models for current brand
+    const selectedModels = selectedModelsByBrand[currentBrand?.id || 0] || [];
+    if (selectedModels.length > 0) {
+      filters[BACKEND_FILTERS.MODEL] = selectedModels.map(m => m.name).join(', ');
+    }
+
+    // Add other filters
+    if (yearRange) filters[BACKEND_FILTERS.YEAR] = yearRange;
+    if (priceRange) filters[BACKEND_FILTERS.PRICE] = priceRange;
+    if (transmission?.length) filters[BACKEND_FILTERS.TRANSMISSION] = transmission.map(t => t.value);
+    if (fuelType?.length) filters[BACKEND_FILTERS.FUEL_TYPE] = fuelType.map(f => f.value);
+    if (drivetrain?.length) filters[BACKEND_FILTERS.DRIVETRAIN_TYPE] = drivetrain.map(d => d.value);
+    if (bodyType?.length) filters[BACKEND_FILTERS.FRAME_TYPE] = bodyType.map(b => b.value);
+    if (color?.length) filters[BACKEND_FILTERS.COLOR] = color.map(c => c.value);
+    if (condition?.length) filters[BACKEND_FILTERS.CONDITION] = condition.map(c => c.value);
+    if (documentsOk?.length) filters[BACKEND_FILTERS.DOCUMENT_TYPE] = documentsOk.map(d => d.value);
+    if (numberOfOwners?.length) filters[BACKEND_FILTERS.NUMBER_OF_OWNER] = numberOfOwners.map(n => n.value);
+    if (seller?.length) filters[BACKEND_FILTERS.SELLER] = seller.map(s => s.value);
+    if (tradeAllow?.length) filters[BACKEND_FILTERS.TRADE_ALLOW] = tradeAllow[0]?.value === 'true';
+    if (engineCapacityRange) filters[BACKEND_FILTERS.ENGINE_CAPACITY] = engineCapacityRange;
+    if (powerRange) filters[BACKEND_FILTERS.POWER] = powerRange;
+    if (mileageRange) filters[BACKEND_FILTERS.MILEAGE] = mileageRange;
+    if (onlyUnsold) filters[BACKEND_FILTERS.UNSOLD] = true;
+    if (onlyWithPhotos) filters[BACKEND_FILTERS.WITH_IMAGE] = true;
+
+    // Only save if there are actual filters
+    if (Object.keys(filters).length > 0) {
+      addSearchedItem({ filters });
+    }
+  };
+
+  // Sync filteredModels with data when data loads
+  useEffect(() => {
+    if (data) {
+      setFilteredModels(data);
+    }
+  }, [data]);
 
   useEffect(() => {
     if (!currentBrand) {
@@ -100,11 +133,20 @@ export default function ModelFilter() {
           searchValue={searchValue}
           onSearch={value => {
             setSearchValue(value);
+            if (data) {
+              const searchValueLowerCase = value.toLowerCase();
+              setFilteredModels(
+                data.filter(i => {
+                  if (!i.name) return false;
+                  return i.name.toLowerCase().includes(searchValueLowerCase);
+                })
+              );
+            }
           }}
           searchPlaceholder="Марка или модель"
         />
 
-        {(selectedModelsForCurrentBrand.length || 0) > 0 && (
+        {(selectedModelsByBrand[currentBrand.id]?.length || 0) > 0 && (
           <View>
             <ScrollView
               horizontal
@@ -113,7 +155,7 @@ export default function ModelFilter() {
               style={{ height: 50 }}
               contentContainerStyle={{ alignItems: 'center', paddingVertical: 8 }}
             >
-              {selectedModelsForCurrentBrand.map((model: SimpleAutoModel) => (
+              {selectedModelsByBrand[currentBrand.id]?.map(model => (
                 <View key={model.id} className="mr-2 self-start">
                   <FilterBadge label={model.name || ''} onRemove={() => removeSelectedModel(model.id!)} />
                 </View>
@@ -128,6 +170,10 @@ export default function ModelFilter() {
         <View className="absolute bottom-2 left-0 right-0 px-3 pb-6">
           <CustomRectButton
             onPress={() => {
+              // Save current filters to searched filters store
+              saveCurrentFiltersToSearched();
+
+              // Navigate based on source
               if (searchParams.from === 'settings') {
                 router.replace('/(app)/search-screen/simple-auto-screen/(modals)/settings');
               } else {

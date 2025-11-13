@@ -73,6 +73,11 @@ export default function SimpleAutoModal() {
 
   const theme = useTheme() as CustomTheme;
   const store = useAutoSelectStore();
+  console.log("==============")
+  console.log("==============")
+  console.log("==============")
+  console.log(store.selectedModelsByBrand)
+  console.log(store.transmission)
   const selectedBrands = selectSelectedBrands(store);
   const selectedModels = selectSelectedModels(store);
   // console.log("selected Brands: ", selectedBrands)
