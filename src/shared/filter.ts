@@ -3,6 +3,12 @@ import { useMemo } from 'react';
 
 // Backend filter keys (from existing filters.ts)
 export const BACKEND_FILTERS = {
+  BRAND: 'brand',
+  MODEL: 'model',
+  GENERATION: 'generation',
+  MODIFICATION: 'modification',
+
+
   TRANSMISSION: 'transmission',
   FUEL_TYPE: 'fuel_type',
   ENGINE_CAPACITY: 'engine_capacity',

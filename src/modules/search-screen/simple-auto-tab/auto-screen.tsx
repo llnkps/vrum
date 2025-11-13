@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, Text, TouchableWithoutFeedback, View } from 'react-native';
 
@@ -9,10 +9,10 @@ import { YearFilterController } from '@/components/filters/YearFilterBottomSheet
 import { SelectedRegionsBadges } from '@/components/global/SelectedItemsBadges';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
 import { useSearchTab } from '@/modules/search-screen/SearchTabProvider';
+import { BACKEND_FILTERS, isArrayFilter, isBooleanFilter, isRangeFilter } from '@/shared/filter';
 import { QuickFilter, useQuickFilters } from '@/shared/quick-filters';
 import { useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
-import { useSearchedFiltersStore } from '@/state/search-screen/useSearchedFiltersStore';
-import { BACKEND_FILTERS, isRangeFilter, isArrayFilter, isBooleanFilter } from '@/shared/filter-registry';
+import { SearchedItem, useSearchedFiltersStore } from '@/state/search-screen/useSearchedFiltersStore';
 import { Ionicons } from '@expo/vector-icons';
 
 export const AutoHeaderScreen = () => {
@@ -34,13 +34,13 @@ export const AutoHeaderScreen = () => {
   // }, [updateRequestParams]);
 
   // Memoize searched filters to avoid calling methods during render
-  const searchedFilters = useMemo(() => {
-    const now = Date.now();
-    return searchedFiltersStore.searchedFilters.filter(f => {
-      const expirationTime = f.timestamp + (f.ttl || 7 * 24 * 60 * 60 * 1000);
-      return now < expirationTime;
-    });
-  }, [searchedFiltersStore.searchedFilters]);
+  // const searchedFilters = useMemo(() => {
+  //   const now = Date.now();
+  //   return searchedFiltersStore.searchedFilters.filter(f => {
+  //     const expirationTime = f.timestamp + (f.ttl || 7 * 24 * 60 * 60 * 1000);
+  //     return now < expirationTime;
+  //   });
+  // }, [searchedFiltersStore.searchedFilters]);
 
   const handleQuickFilterPress = useCallback(
     (filter: QuickFilter) => {
@@ -70,19 +70,11 @@ export const AutoHeaderScreen = () => {
   );
 
   const handleSearchedFilterPress = useCallback(
-    (filter: (typeof searchedFilters)[0]) => {
-
-      // Convert filter to the format expected by populateFromFilterValues
+    (searchedItem: SearchedItem) => {
+      console.log(searchedItem);
+      return null;
+      // Convert searched item filters to the format expected by populateFromFilterValues
       const filterValues: Array<{ slug: string; values: string[] }> = [];
-
-      // Special case for region since it's not in the registry
-      if (filter.type === 'region') {
-        if (filter.value && typeof filter.value === 'object' && 'id' in filter.value) {
-          store.setSelectedRegions([filter.value]);
-          router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal');
-          return;
-        }
-      }
 
       // Map backend filter keys to the keys expected by populateFromFilterValues
       const backendToPopulateKeyMapping: Record<string, string> = {
@@ -105,42 +97,45 @@ export const AutoHeaderScreen = () => {
         [BACKEND_FILTERS.WITH_IMAGE]: 'with_image',
       };
 
-      const populateKey = backendToPopulateKeyMapping[filter.type];
+      // Process each filter in the searched item's filters object
+      Object.entries(searchedItem.filters).forEach(([backendKey, value]) => {
+        const populateKey = backendToPopulateKeyMapping[backendKey];
 
-      if (populateKey) {
-        if (isRangeFilter(filter.type as any)) {
-          // Handle range filters (year, price, engine_capacity, power, mileage)
-          if (filter.value && typeof filter.value === 'object' && 'min' in filter.value && 'max' in filter.value) {
-            const { min, max } = filter.value;
-            filterValues.push({
-              slug: populateKey,
-              values: [min?.toString() || '', max?.toString() || ''],
-            });
-          }
-        } else if (isArrayFilter(filter.type as any)) {
-          // Handle array filters (transmission, fuel_type, etc.)
-          if (Array.isArray(filter.value)) {
-            filterValues.push({
-              slug: populateKey,
-              values: filter.value.map(v => v?.toString() || ''),
-            });
-          } else if (filter.value !== undefined && filter.value !== null) {
-            // Single value array filter
-            filterValues.push({
-              slug: populateKey,
-              values: [filter.value.toString()],
-            });
-          }
-        } else if (isBooleanFilter(filter.type as any)) {
-          // Handle boolean filters - convert to array format expected by populateFromFilterValues
-          if (typeof filter.value === 'boolean') {
-            filterValues.push({
-              slug: populateKey,
-              values: [filter.value.toString()],
-            });
+        if (populateKey && value !== undefined && value !== null) {
+          if (isRangeFilter(backendKey as any)) {
+            // Handle range filters (year, price, engine_capacity, power, mileage)
+            if (value && typeof value === 'object' && 'min' in value && 'max' in value) {
+              const { min, max } = value as { min?: number; max?: number };
+              filterValues.push({
+                slug: populateKey,
+                values: [min?.toString() || '', max?.toString() || ''],
+              });
+            }
+          } else if (isArrayFilter(backendKey as any)) {
+            // Handle array filters (transmission, fuel_type, etc.)
+            if (Array.isArray(value)) {
+              filterValues.push({
+                slug: populateKey,
+                values: value.map(v => v?.toString() || ''),
+              });
+            } else {
+              // Single value array filter
+              filterValues.push({
+                slug: populateKey,
+                values: [value.toString()],
+              });
+            }
+          } else if (isBooleanFilter(backendKey as any)) {
+            // Handle boolean filters
+            if (typeof value === 'boolean') {
+              filterValues.push({
+                slug: populateKey,
+                values: [value.toString()],
+              });
+            }
           }
         }
-      }
+      });
 
       if (filterValues.length > 0) {
         // Populate the store with filter values
@@ -158,7 +153,7 @@ export const AutoHeaderScreen = () => {
         <View className={'gap-y-1'}>
           <TouchableHighlightRow
             label={t('searchScreen.simpleAuto.brandModelGeneration')}
-            onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/brand-auto-filter')}
+            onPress={() => router.navigate('/(app)/search-screen/simple-auto-screen/(modals)/brand-auto-filter')}
             variant="button"
             showRightArrow={false}
           />
@@ -168,10 +163,10 @@ export const AutoHeaderScreen = () => {
               onChange={yearRange => {
                 store.setYearRange(yearRange);
                 if (yearRange) {
-                  searchedFiltersStore.addSearchedFilter({
-                    type: 'year',
-                    label: `${t('searchScreen.simpleAuto.year')}: ${yearRange.min || ''}-${yearRange.max || ''}`,
-                    value: yearRange,
+                  searchedFiltersStore.addSearchedItem({
+                    filters: {
+                      [BACKEND_FILTERS.YEAR]: yearRange,
+                    },
                   });
                 }
                 router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal');
@@ -183,10 +178,10 @@ export const AutoHeaderScreen = () => {
               onChange={priceRange => {
                 store.setPriceRange(priceRange);
                 if (priceRange) {
-                  searchedFiltersStore.addSearchedFilter({
-                    type: 'price',
-                    label: `${t('searchScreen.simpleAuto.price')}: ${priceRange.min || ''}-${priceRange.max || ''}`,
-                    value: priceRange,
+                  searchedFiltersStore.addSearchedItem({
+                    filters: {
+                      [BACKEND_FILTERS.PRICE]: priceRange,
+                    },
                   });
                 }
                 router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal');
@@ -206,15 +201,6 @@ export const AutoHeaderScreen = () => {
             value={store.selectedRegions}
             onChange={regions => {
               store.setSelectedRegions(regions);
-
-              // Add each selected region to searched filters
-              regions.forEach(region => {
-                searchedFiltersStore.addSearchedFilter({
-                  type: 'region',
-                  label: region.name,
-                  value: region,
-                });
-              });
             }}
           />
 
@@ -238,15 +224,15 @@ export const AutoHeaderScreen = () => {
         />
 
         {/* Searched Filters */}
-        {searchedFilters.length > 0 && (
+        {searchedFiltersStore.searchedItems.length > 0 && (
           <View className="gap-y-1">
             <Text className="text-sm font-medium text-font dark:text-font-dark">{t('searchScreen.simpleAuto.searchedFilters')}</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
-              {searchedFilters.map(filter => (
-                <TouchableWithoutFeedback key={filter.id} onPress={() => handleSearchedFilterPress(filter)}>
+              {searchedFiltersStore.searchedItems.map(searchedItem => (
+                <TouchableWithoutFeedback key={searchedItem.id} onPress={() => handleSearchedFilterPress(searchedItem)}>
                   <View className="flex-row items-center rounded-full bg-gray-200 px-3 py-1 dark:bg-gray-700">
-                    <Text className="mr-2 text-sm text-font dark:text-font-dark">{filter.label}</Text>
-                    <TouchableWithoutFeedback onPress={() => searchedFiltersStore.removeSearchedFilter(filter.id)}>
+                    <Text className="mr-2 text-sm text-font dark:text-font-dark">{searchedItem.name}</Text>
+                    <TouchableWithoutFeedback onPress={() => searchedFiltersStore.removeSearchedFilter(searchedItem.id)}>
                       <Ionicons name="close" size={16} color="#6b7280" />
                     </TouchableWithoutFeedback>
                   </View>

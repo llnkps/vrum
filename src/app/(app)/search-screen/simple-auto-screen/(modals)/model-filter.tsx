@@ -22,20 +22,55 @@ export default function ModelFilter() {
 
   const [searchValue, setSearchValue] = useState('');
 
-  const { currentBrand, selectedModelsByBrand, removeSelectedModel } = useAutoSelectStore();
+    const { currentBrand } = useAutoSelectStore();
+
+  // Local state instead of store for performance testing
+  const [selectedModelsByBrand, setSelectedModelsByBrand] = useState<Record<number, SimpleAutoModel[]>>({});
+  // const [currentBrand, setCurrentBrand] = useState<SimpleAutoBrand | null>(null);
 
   const { data, isLoading } = useSimpleAutoModelByBrandApi(currentBrand ? currentBrand.id.toString() : undefined);
-  const [filteredModels, setFilteredModels] = useState<SimpleAutoModel[]>([]);
+
+  // Simulate getting currentBrand - in real app this would come from navigation or store
+  // useEffect(() => {
+  //   // For testing, we'll assume we have a brand. In real usage, this would be set from navigation params
+  //   // or from the store when navigating to this screen
+  //   const mockBrand: SimpleAutoBrand = {
+  //     id: 1,
+  //     name: 'Test Brand',
+  //     orderNumber: 1,
+  //     image: '',
+  //     imageFilePath: ''
+  //   };
+  //   setCurrentBrand(mockBrand);
+  // }, []);
+
+  const removeSelectedModel = useCallback((id: number) => {
+    if (!currentBrand) return;
+    setSelectedModelsByBrand(prev => ({
+      ...prev,
+      [currentBrand.id]: (prev[currentBrand.id] || []).filter((m: SimpleAutoModel) => m.id !== id)
+    }));
+  }, [currentBrand]);
+
+  // Memoize filtered models to avoid unnecessary recalculations
+  const filteredModels = useMemo(() => {
+    if (!data) return [];
+    if (!searchValue) return data;
+
+    const searchValueLowerCase = searchValue.toLowerCase();
+    return data.filter(i => {
+      if (!i.name) return false;
+      return i.name.toLowerCase().includes(searchValueLowerCase);
+    });
+  }, [data, searchValue]);
+
+  // Memoize selected models for current brand
+  const selectedModelsForCurrentBrand = useMemo(() => {
+    return currentBrand ? selectedModelsByBrand[currentBrand.id] || [] : [];
+  }, [currentBrand, selectedModelsByBrand]);
 
   const scrollY = useSharedValue(0);
   const isScrolling = useSharedValue(false);
-
-  // Sync filteredModels with data when data loads
-  useEffect(() => {
-    if (data) {
-      setFilteredModels(data);
-    }
-  }, [data]);
 
   useEffect(() => {
     if (!currentBrand) {
@@ -65,20 +100,11 @@ export default function ModelFilter() {
           searchValue={searchValue}
           onSearch={value => {
             setSearchValue(value);
-            if (data) {
-              const searchValueLowerCase = value.toLowerCase();
-              setFilteredModels(
-                data.filter(i => {
-                  if (!i.name) return false;
-                  return i.name.toLowerCase().includes(searchValueLowerCase);
-                })
-              );
-            }
           }}
           searchPlaceholder="Марка или модель"
         />
 
-        {(selectedModelsByBrand[currentBrand.id]?.length || 0) > 0 && (
+        {(selectedModelsForCurrentBrand.length || 0) > 0 && (
           <View>
             <ScrollView
               horizontal
@@ -87,7 +113,7 @@ export default function ModelFilter() {
               style={{ height: 50 }}
               contentContainerStyle={{ alignItems: 'center', paddingVertical: 8 }}
             >
-              {selectedModelsByBrand[currentBrand.id]?.map(model => (
+              {selectedModelsForCurrentBrand.map((model: SimpleAutoModel) => (
                 <View key={model.id} className="mr-2 self-start">
                   <FilterBadge label={model.name || ''} onRemove={() => removeSelectedModel(model.id!)} />
                 </View>

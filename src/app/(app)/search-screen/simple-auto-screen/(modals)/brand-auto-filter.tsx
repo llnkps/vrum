@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { FC, useEffect, useState } from 'react';
-import { ScrollView, StatusBar, Text, TouchableHighlight, View } from 'react-native';
+import { ScrollView, StatusBar, Text, View } from 'react-native';
 import Animated, { useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -10,8 +10,9 @@ import { HeaderSearchBar } from '@/components/global/header/HeaderSearchBar/Head
 import { LoaderIndicator } from '@/components/global/LoaderIndicator';
 import { CustomRectButton } from '@/components/ui/button';
 import { useSimpleAutoBrandApi } from '@/hooks/api/useSimpleAutoBrandApi';
-import { DefaultConfig, SimpleAutoBrand, SimpleAutoModel } from '@/openapi/client';
+import { DefaultConfig, SimpleAutoBrand } from '@/openapi/client';
 import { selectSelectedBrands, useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
+import { useTheme } from '@react-navigation/native';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight ?? 24;
 
@@ -21,7 +22,7 @@ export default function BrandAutoFilter() {
 
   const store = useAutoSelectStore();
   const selectedBrands = selectSelectedBrands(store);
-  const { removeSelectedBrand, setCurrentBrand, selectedModelsByBrand, addSelectedBrand } = store;
+  const { removeSelectedBrand } = store;
 
   const [searchValue, setSearchValue] = useState('');
   const { data, isLoading } = useSimpleAutoBrandApi();
@@ -82,15 +83,7 @@ export default function BrandAutoFilter() {
           </View>
         )}
 
-        <BrandAutoList
-          brands={filteredBrands}
-          scrollY={scrollY}
-          isScrolling={isScrolling}
-          setCurrentBrand={setCurrentBrand}
-          addSelectedBrand={addSelectedBrand}
-          selectedModelsByBrand={selectedModelsByBrand}
-          searchParams={searchParams}
-        />
+        <BrandAutoList brands={filteredBrands} scrollY={scrollY} isScrolling={isScrolling} />
 
         {/* Fixed Button */}
         <View className="absolute bottom-2 left-0 right-0 px-3 pb-6">
@@ -116,15 +109,9 @@ type props = {
   brands: SimpleAutoBrand[];
   scrollY: any;
   isScrolling: any;
-  setCurrentBrand: (brand: SimpleAutoBrand | null) => void;
-  addSelectedBrand: (brand: SimpleAutoBrand) => void;
-  selectedModelsByBrand: Record<number, SimpleAutoModel[]>;
-  searchParams: any;
 };
 
-const BrandAutoList: FC<props> = ({ brands, scrollY, isScrolling, setCurrentBrand, addSelectedBrand, selectedModelsByBrand, searchParams }) => {
-  const router = useRouter();
-
+const BrandAutoList: FC<props> = ({ brands, scrollY, isScrolling }) => {
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: event => {
       scrollY.value = event.contentOffset.y;
@@ -137,13 +124,6 @@ const BrandAutoList: FC<props> = ({ brands, scrollY, isScrolling, setCurrentBran
     },
   });
 
-  const handleSelectBrand = (brand: SimpleAutoBrand) => {
-    addSelectedBrand(brand);
-    setCurrentBrand(brand);
-    const fromParam = searchParams.from === 'settings' ? '?from=settings' : '';
-    router.push(`/(app)/search-screen/simple-auto-screen/(modals)/model-filter${fromParam}`);
-  };
-
   return (
     <>
       <View className="mt-2">
@@ -154,30 +134,10 @@ const BrandAutoList: FC<props> = ({ brands, scrollY, isScrolling, setCurrentBran
           onScroll={scrollHandler}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
-            paddingBottom: 120 + STATUSBAR_HEIGHT + 100 + 80, // Extra padding for fixed button
+            paddingBottom: 120 + STATUSBAR_HEIGHT, // Extra padding for fixed button
           }}
           renderItem={({ item }) => {
-            const selectedCount = selectedModelsByBrand[item.id!]?.length || 0;
-            return (
-              <TouchableHighlight
-                onPress={() => handleSelectBrand(item)}
-                className={'border-b border-border p-4 last:border-0 dark:border-border-dark'}
-              >
-                <View className="flex-row gap-x-4">
-                  <Image
-                    source={{
-                      uri: DefaultConfig.basePath + '/' + item.imageFilePath,
-                    }}
-                    style={{ width: 25, height: 25 }}
-                    contentFit="cover"
-                  />
-                  <View className="flex-1">
-                    <Text className="text-xl text-font dark:text-font-dark">{item.name}</Text>
-                    {selectedCount > 0 && <Text className="text-sm text-font dark:text-font-dark">Выбрано моделей: {selectedCount}</Text>}
-                  </View>
-                </View>
-              </TouchableHighlight>
-            );
+            return <ListItem item={item} />;
           }}
           initialNumToRender={18}
           windowSize={10}
@@ -187,5 +147,41 @@ const BrandAutoList: FC<props> = ({ brands, scrollY, isScrolling, setCurrentBran
         />
       </View>
     </>
+  );
+};
+
+const ListItem = ({ item }) => {
+  const theme = useTheme();
+  const searchParams = useLocalSearchParams();
+  const router = useRouter();
+
+  const { setCurrentBrand, selectedModelsByBrand } = useAutoSelectStore();
+  const selectedCount = selectedModelsByBrand[item.id!]?.length || 0;
+
+  const handleSelectBrand = (brand: SimpleAutoBrand) => {
+    setCurrentBrand(brand);
+
+    const fromParam = searchParams.from === 'settings' ? '?from=settings' : '';
+    router.navigate(`/(app)/search-screen/simple-auto-screen/(modals)/model-filter${fromParam}`);
+  };
+
+  return (
+    <View style={{ borderBottomWidth: 1, borderBottomColor: theme.colors.border }}>
+      <CustomRectButton onPress={() => handleSelectBrand(item)} appearance="subtle">
+        <View className="flex-row gap-x-4">
+          <Image
+            source={{
+              uri: DefaultConfig.basePath + '/' + item.imageFilePath,
+            }}
+            style={{ width: 25, height: 25 }}
+            contentFit="cover"
+          />
+          <View className="flex-1">
+            <Text className="text-xl text-font dark:text-font-dark">{item.name}</Text>
+            {selectedCount > 0 && <Text className="text-sm text-font dark:text-font-dark">Выбрано моделей: {selectedCount}</Text>}
+          </View>
+        </View>
+      </CustomRectButton>
+    </View>
   );
 };

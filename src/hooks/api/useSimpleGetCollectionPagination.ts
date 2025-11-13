@@ -1,6 +1,6 @@
 import { Region, SimpleAutoApi, SimpleAutoBrand, SimpleAutoModel } from '@/openapi/client';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { BACKEND_FILTERS } from '@/shared/filter-registry';
+import { BACKEND_FILTERS } from '@/shared/filter';
 import { SortMethod } from '@/types/sort';
 
 type BottomSheetOptionType = {

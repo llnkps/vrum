@@ -1,3 +1,5 @@
+// TODO: depreacted. Move functionality to CustomRectButton
+
 import { CustomTheme } from '@/theme';
 import { useTheme } from '@react-navigation/native';
 import React, { PropsWithChildren } from 'react';

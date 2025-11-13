@@ -44,7 +44,7 @@ type FormValues = {
   generationId?: number;
   releaseYear?: number;
   region: string;
-  currency: string;
+  // currency: string;
 
   mileage: string;
   transmission_type: string;
@@ -117,7 +117,7 @@ export default function AddCarPage() {
     defaultValues: {
       description: '',
       price: '',
-      currency: '',
+      // currency: '',
       images: [],
       brand: undefined,
       model: undefined,
@@ -162,7 +162,7 @@ export default function AddCarPage() {
       // Add main fields with validation
       formData.append('description', (data.description || '').trim());
       formData.append('price', data.price.toString());
-      formData.append('currency', data.currency);
+      // formData.append('currency', data.currency);
       formData.append('region', data.region);
 
       // Add car details
@@ -591,7 +591,7 @@ export default function AddCarPage() {
               );
             }}
           />
-          <Controller
+          {/* <Controller
             control={control}
             name="currency"
             rules={{
@@ -600,7 +600,7 @@ export default function AddCarPage() {
             render={({ field, fieldState: { error } }) => (
               <CurrencyCreateBottomSheetControllerWrapper value={field.value} onChange={field.onChange} error={error?.message} />
             )}
-          />
+          /> */}
           <Controller
             control={control}
             name="region"

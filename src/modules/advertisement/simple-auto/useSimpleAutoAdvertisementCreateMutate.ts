@@ -15,7 +15,7 @@ export function useSimpleAutoAdvertisementCreateMutate({ onSuccess, onError }: p
 
       formParams.append('description', formData.get('description') as any);
       formParams.append('price', formData.get('price') as any);
-      formParams.append('currency', formData.get('currency') as any);
+      // formParams.append('currency', formData.get('currency') as any);
       formParams.append('region', formData.get('region') as any);
       formParams.append('releaseYear', formData.get('releaseYear') as any);
       formParams.append('brand', formData.get('brand') as any);

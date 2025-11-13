@@ -1,3 +1,5 @@
+// TODO: depreacted
+
 import { CustomTheme } from '@/theme';
 import { useTheme } from '@react-navigation/native';
 import React from 'react';

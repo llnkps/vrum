@@ -2,8 +2,8 @@ import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/Cust
 import { CustomRectButton } from '@/components/ui/button';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
-import { useFilterConfigs, FilterOption } from '@/shared/filter-registry';
-import { BACKEND_FILTERS } from '@/shared/filter-registry';
+import { useFilterConfigs, FilterOption } from '@/shared/filter';
+import { BACKEND_FILTERS } from '@/shared/filter';
 
 type ConditionFilterBottomSheetProps = {
   onSelect: (value: FilterOption) => void;
