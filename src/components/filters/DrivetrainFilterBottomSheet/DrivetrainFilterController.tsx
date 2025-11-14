@@ -12,7 +12,7 @@ interface DrivetrainFilterControllerProps {
   error?: string;
 }
 
-const DrivetrainFilterController = ({ selectedOptions, onChange, error }: DrivetrainFilterControllerProps) => {
+const DrivetrainFilterController = React.memo(({ selectedOptions, onChange, error }: DrivetrainFilterControllerProps) => {
   const { t } = useTranslation();
   const drivetrainModalRef = useRef<BottomSheetRef>(null);
 
@@ -29,9 +29,7 @@ const DrivetrainFilterController = ({ selectedOptions, onChange, error }: Drivet
     const selectedValues = Object.values(selectedOptions);
     const selectedValuesSet = new Set(selectedValues);
 
-    const selectedLabels = options
-      .filter(option => selectedValuesSet.has(option.value))
-      .map(option => option.label);
+    const selectedLabels = options.filter(option => selectedValuesSet.has(option.value)).map(option => option.label);
 
     return selectedLabels.join(', ');
   }, [selectedOptions, options]);
@@ -61,13 +59,15 @@ const DrivetrainFilterController = ({ selectedOptions, onChange, error }: Drivet
         options={options}
         title={drivetrainConfig?.label || 'Drivetrain'}
         selectedOptions={selectedOptionsArray}
-        onChange={(options) => {
+        onChange={options => {
           onChange(options.length > 0 ? options : undefined);
           drivetrainModalRef.current?.close({ duration: 150 });
         }}
       />
     </>
   );
-};
+});
+
+DrivetrainFilterController.displayName = 'DrivetrainFilterController';
 
 export { DrivetrainFilterController };

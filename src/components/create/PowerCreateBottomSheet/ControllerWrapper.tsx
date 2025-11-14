@@ -29,7 +29,7 @@ const Wrapper = ({ value, onChange, error }: PowerControllerWrapperProps) => {
       />
       <PowerCreateBottomSheet
         ref={powerModalRef}
-        onChange={(power) => {
+        onChange={power => {
           if (!power) {
             return;
           }

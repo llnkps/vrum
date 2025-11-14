@@ -12,7 +12,7 @@ interface PriceFilterControllerProps {
   variant?: 'plain' | 'bordered' | 'button';
 }
 
-const PriceFilterController = ({ value, onChange, error, variant = 'button' }: PriceFilterControllerProps) => {
+const PriceFilterController = React.memo(({ value, onChange, error, variant = 'button' }: PriceFilterControllerProps) => {
   const { t } = useTranslation();
   const priceModalRef = useRef<BottomSheetRef>(null);
 
@@ -23,11 +23,11 @@ const PriceFilterController = ({ value, onChange, error, variant = 'button' }: P
   const selectedValue = React.useMemo(() => {
     if (!value) return undefined;
     const { from, to } = value;
-    if (from && to) return `${from} - ${to}`;
-    if (from) return `от ${from}`;
-    if (to) return `до ${to}`;
+    if (from && to) return t('filters.price.range', { from: t('filters.price.from', { value: from }), to: t('filters.price.to', { value: to }) });
+    if (from) return t('filters.price.from', { value: from });
+    if (to) return t('filters.price.to', { value: to });
     return undefined;
-  }, [value]);
+  }, [value, t]);
 
   return (
     <>
@@ -42,13 +42,15 @@ const PriceFilterController = ({ value, onChange, error, variant = 'button' }: P
       />
       <PriceBottomSheet
         ref={priceModalRef}
-        onChange={(priceRange) => {
+        onChange={priceRange => {
           onChange(priceRange);
           priceModalRef.current?.close({ duration: 150 });
         }}
       />
     </>
   );
-};
+});
+
+PriceFilterController.displayName = 'PriceFilterController';
 
 export { PriceFilterController };

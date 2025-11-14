@@ -18,9 +18,7 @@ export const useChatSSE = (chatId: number | null, onMessageReceived: (message: a
 
       // Get subscription info from API
       const chatApi = new ChatApi(createAuthenticatedConfiguration());
-      const subscriptionInfo = await createAuthenticatedApiCall(async () =>
-        await chatApi.getChatSubscriptionInfo({ chatId })
-      );
+      const subscriptionInfo = await createAuthenticatedApiCall(async () => await chatApi.getChatSubscriptionInfo({ chatId }));
 
       console.log('Subscription info:', subscriptionInfo);
 
@@ -34,9 +32,8 @@ export const useChatSSE = (chatId: number | null, onMessageReceived: (message: a
       let authToken = '';
       if (config && config.accessToken) {
         const token = config.accessToken;
-        authToken = await token("Bearer", []);
+        authToken = await token('Bearer', []);
       }
-
 
       const merucureUrl = DefaultConfig.basePath + '/.well-known/mercure';
 
@@ -45,7 +42,7 @@ export const useChatSSE = (chatId: number | null, onMessageReceived: (message: a
       console.log('Connecting to Mercure URL:', mercureUrlWithTopic);
       const eventSource = new EventSource(mercureUrlWithTopic, {
         // headers: {
-          // 'Authorization': `Bearer ${authToken}`,
+        // 'Authorization': `Bearer ${authToken}`,
         // },
       });
 
@@ -70,7 +67,7 @@ export const useChatSSE = (chatId: number | null, onMessageReceived: (message: a
       });
 
       // Handle connection errors
-      eventSource.addEventListener('error', (error) => {
+      eventSource.addEventListener('error', error => {
         console.error('SSE connection error:', error);
         // Attempt to reconnect after a delay
         setTimeout(() => connectSSE(), 5000);
@@ -80,7 +77,6 @@ export const useChatSSE = (chatId: number | null, onMessageReceived: (message: a
       eventSource.addEventListener('close', () => {
         console.log('SSE connection closed for chat:', chatId);
       });
-
     } catch (error) {
       console.error('Failed to connect to SSE:', error);
       // Retry connection after delay

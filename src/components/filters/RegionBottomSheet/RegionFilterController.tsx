@@ -13,7 +13,7 @@ interface RegionFilterControllerProps {
   variant?: 'plain' | 'bordered' | 'button';
 }
 
-const RegionFilterController = ({ value = [], onChange, error, multiple = true, variant = 'button' }: RegionFilterControllerProps) => {
+const RegionFilterController = React.memo(({ value = [], onChange, error, multiple = true, variant = 'button' }: RegionFilterControllerProps) => {
   const { t } = useTranslation();
   const regionModalRef = useRef<BottomSheetRef>(null);
 
@@ -41,7 +41,7 @@ const RegionFilterController = ({ value = [], onChange, error, multiple = true, 
         ref={regionModalRef}
         multiple={multiple}
         selectedRegions={value}
-        onChange={(regions) => {
+        onChange={regions => {
           const regionArray = Array.isArray(regions) ? regions : [regions];
           onChange(regionArray);
           regionModalRef.current?.close({ duration: 150 });
@@ -49,6 +49,8 @@ const RegionFilterController = ({ value = [], onChange, error, multiple = true, 
       />
     </>
   );
-};
+});
+
+RegionFilterController.displayName = 'RegionFilterController';
 
 export { RegionFilterController };

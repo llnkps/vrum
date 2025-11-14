@@ -105,7 +105,7 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
   currentBrand: null,
   sortMethod: { fieldName: 'createdAt', direction: 3 },
 
-  priceRange: {},
+  // priceRange: {},
 
   getSelectedModelsByBrand: (brandId: number) => {
     const state = get();

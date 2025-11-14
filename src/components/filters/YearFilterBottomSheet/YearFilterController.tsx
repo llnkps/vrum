@@ -12,7 +12,7 @@ interface YearFilterControllerProps {
   variant?: 'plain' | 'bordered' | 'button';
 }
 
-const YearFilterController = ({ value, onChange, error, variant = 'button' }: YearFilterControllerProps) => {
+const YearFilterController = React.memo(({ value, onChange, error, variant = 'button' }: YearFilterControllerProps) => {
   const { t } = useTranslation();
   const yearModalRef = useRef<BottomSheetRef>(null);
 
@@ -23,11 +23,11 @@ const YearFilterController = ({ value, onChange, error, variant = 'button' }: Ye
   const selectedValue = React.useMemo(() => {
     if (!value) return undefined;
     const { from, to } = value;
-    if (from && to) return `${from} - ${to}`;
-    if (from) return `от ${from}`;
-    if (to) return `до ${to}`;
+    if (from && to) return t('filters.year.range', { from: t('filters.year.from', { value: from }), to: t('filters.year.to', { value: to }) });
+    if (from) return t('filters.year.from', { value: from });
+    if (to) return t('filters.year.to', { value: to });
     return undefined;
-  }, [value]);
+  }, [value, t]);
 
   return (
     <>
@@ -42,13 +42,15 @@ const YearFilterController = ({ value, onChange, error, variant = 'button' }: Ye
       />
       <YearBottomSheet
         ref={yearModalRef}
-        onChange={(yearRange) => {
+        onChange={yearRange => {
           onChange(yearRange);
           yearModalRef.current?.close({ duration: 150 });
         }}
       />
     </>
   );
-};
+});
+
+YearFilterController.displayName = 'YearFilterController';
 
 export { YearFilterController };

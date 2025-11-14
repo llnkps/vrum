@@ -77,47 +77,50 @@ const MiniAdvertisementCard = ({ item, onPress }: { item: any; onPress: () => vo
   );
 };
 
-const TAB_CONFIGS: Record<ActiveScreen, {
-  header: React.ComponentType;
-  item: React.ComponentType<{ item: any; onPress: () => void }>;
-  useDataHook: (params: Record<string, any>) => {
-    data: any;
-    fetchNextPage: () => void;
-    hasNextPage: boolean;
-    isFetchingNextPage: boolean;
-    refetch: () => void;
-    isRefetching: boolean;
-  };
-  fetchParams?: Record<string, any>;
-  getDetailUrl: (item: any) => string;
-}> = {
+const TAB_CONFIGS: Record<
+  ActiveScreen,
+  {
+    header: React.ComponentType;
+    item: React.ComponentType<{ item: any; onPress: () => void }>;
+    useDataHook: (params: Record<string, any>) => {
+      data: any;
+      fetchNextPage: () => void;
+      hasNextPage: boolean;
+      isFetchingNextPage: boolean;
+      refetch: () => void;
+      isRefetching: boolean;
+    };
+    fetchParams?: Record<string, any>;
+    getDetailUrl: (item: any) => string;
+  }
+> = {
   auto: {
     header: AutoHeaderScreen,
     item: MiniAdvertisementCard,
     useDataHook: useSimpleGetCollectionPagination,
     fetchParams: {},
-    getDetailUrl: (item) => `/(app)/advertisement-info/simple-auto/${item.id}`,
+    getDetailUrl: item => `/(app)/advertisement-info/simple-auto/${item.id}`,
   },
   auto_detail: {
     header: AutoDetailHeaderScreen,
     item: MiniAdvertisementCard,
     useDataHook: useSimpleGetCollectionPagination,
     fetchParams: {},
-    getDetailUrl: (item) => `/(app)/advertisement-info/auto-detail/${item.id}`,
+    getDetailUrl: item => `/(app)/advertisement-info/auto-detail/${item.id}`,
   },
   spec_auto: {
     header: SpecAutoHeaderScreen,
     item: MiniAdvertisementCard,
     useDataHook: useSimpleGetCollectionPagination,
     fetchParams: {},
-    getDetailUrl: (item) => `/(app)/advertisement-info/spec-auto/${item.id}`,
+    getDetailUrl: item => `/(app)/advertisement-info/spec-auto/${item.id}`,
   },
   moto: {
     header: MotoHeaderScreen,
     item: MiniAdvertisementCard,
     useDataHook: useSimpleGetCollectionPagination,
     fetchParams: {},
-    getDetailUrl: (item) => `/(app)/advertisement-info/moto/${item.id}`,
+    getDetailUrl: item => `/(app)/advertisement-info/moto/${item.id}`,
   },
 };
 
@@ -198,9 +201,5 @@ export const SearchTabProvider: React.FC<SearchTabProviderProps> = ({ children }
     fetchParams,
   };
 
-  return (
-    <SearchTabContext.Provider value={contextValue}>
-      {children}
-    </SearchTabContext.Provider>
-  );
+  return <SearchTabContext.Provider value={contextValue}>{children}</SearchTabContext.Provider>;
 };

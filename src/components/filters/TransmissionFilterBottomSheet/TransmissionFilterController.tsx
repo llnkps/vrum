@@ -12,7 +12,7 @@ interface TransmissionFilterControllerProps {
   error?: string;
 }
 
-const TransmissionFilterController = ({ selectedOptions, onChange, error }: TransmissionFilterControllerProps) => {
+const TransmissionFilterController = React.memo(({ selectedOptions, onChange, error }: TransmissionFilterControllerProps) => {
   const { t } = useTranslation();
   const transmissionModalRef = useRef<BottomSheetRef>(null);
 
@@ -29,9 +29,7 @@ const TransmissionFilterController = ({ selectedOptions, onChange, error }: Tran
     const selectedValues = Object.values(selectedOptions);
     const selectedValuesSet = new Set(selectedValues);
 
-    const selectedLabels = options
-      .filter(option => selectedValuesSet.has(option.value))
-      .map(option => option.label);
+    const selectedLabels = options.filter(option => selectedValuesSet.has(option.value)).map(option => option.label);
 
     return selectedLabels.join(', ');
   }, [selectedOptions, options]);
@@ -67,6 +65,8 @@ const TransmissionFilterController = ({ selectedOptions, onChange, error }: Tran
       />
     </>
   );
-};
+});
+
+TransmissionFilterController.displayName = 'TransmissionFilterController';
 
 export { TransmissionFilterController };

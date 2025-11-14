@@ -24,7 +24,7 @@ export const CustomIconButton = ({
   style,
   onPress,
   appearance = 'default',
-  size = 'medium'
+  size = 'medium',
 }: Props) => {
   const theme = useTheme() as CustomTheme;
 
@@ -87,16 +87,18 @@ export const CustomIconButton = ({
 
   return (
     <RectButton
-      style={[styles.button, appearance === 'primary' && styles.primary, appearance === 'default' && styles.default, appearance === 'subtle' && styles.subtle, style]}
+      style={[
+        styles.button,
+        appearance === 'primary' && styles.primary,
+        appearance === 'default' && styles.default,
+        appearance === 'subtle' && styles.subtle,
+        style,
+      ]}
       borderless={false}
       onPress={onPress}
       rippleColor={theme.colors.button.subtlePressed}
     >
-      {loading ? (
-        <ActivityIndicator size="small" color={getIconColor()} />
-      ) : (
-        <IconComp name={iconName} size={getIconSize()} color={getIconColor()} />
-      )}
+      {loading ? <ActivityIndicator size="small" color={getIconColor()} /> : <IconComp name={iconName} size={getIconSize()} color={getIconColor()} />}
     </RectButton>
   );
 };

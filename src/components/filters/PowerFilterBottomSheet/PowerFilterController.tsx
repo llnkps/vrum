@@ -11,7 +11,7 @@ interface PowerFilterControllerProps {
   error?: string;
 }
 
-const PowerFilterController = ({ value, onChange, error }: PowerFilterControllerProps) => {
+const PowerFilterController = React.memo(({ value, onChange, error }: PowerFilterControllerProps) => {
   const { t } = useTranslation();
   const powerModalRef = useRef<BottomSheetRef>(null);
 
@@ -22,11 +22,11 @@ const PowerFilterController = ({ value, onChange, error }: PowerFilterController
   const selectedValue = React.useMemo(() => {
     if (!value) return undefined;
     const { from, to } = value;
-    if (from && to) return `${from} - ${to}`;
-    if (from) return `от ${from}`;
-    if (to) return `до ${to}`;
+    if (from && to) return t('filters.power.range', { from: t('filters.power.from', { value: from }), to: t('filters.power.to', { value: to }) });
+    if (from) return t('filters.power.from', { value: from });
+    if (to) return t('filters.power.to', { value: to });
     return undefined;
-  }, [value]);
+  }, [value, t]);
 
   return (
     <>
@@ -49,6 +49,8 @@ const PowerFilterController = ({ value, onChange, error }: PowerFilterController
       />
     </>
   );
-};
+});
+
+PowerFilterController.displayName = 'PowerFilterController';
 
 export { PowerFilterController };

@@ -203,15 +203,38 @@
     },
     "engineCapacity": {
       "label": "Объем двигателя",
-      "placeholder": "Объем двигателя (л)"
+      "placeholder": "Объем двигателя (л)",
+      "from": "от {{value}}",
+      "to": "до {{value}}",
+      "range": "{{from}} - {{to}}"
     },
     "power": {
       "label": "Мощность",
-      "placeholder": "Мощность (л.с.)"
+      "placeholder": "Мощность (л.с.)",
+      "from": "от {{value}}",
+      "to": "до {{value}}",
+      "range": "{{from}} - {{to}}"
     },
     "mileage": {
       "label": "Пробег",
-      "placeholder": "Пробег (км)"
+      "placeholder": "Пробег (км)",
+      "from": "от {{value}}",
+      "to": "до {{value}}",
+      "range": "{{from}} - {{to}}"
+    },
+    "year": {
+      "label": "Год",
+      "placeholder": "Год выпуска",
+      "from": "от {{value}}",
+      "to": "до {{value}}",
+      "range": "{{from}} - {{to}}"
+    },
+    "price": {
+      "label": "Цена",
+      "placeholder": "Цена",
+      "from": "от {{value}}",
+      "to": "до {{value}}",
+      "range": "{{from}} - {{to}}"
     },
     "firmCountryGroup": {
       "label": "Производитель",

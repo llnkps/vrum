@@ -14,15 +14,7 @@ interface DraggableImageProps {
   totalImages: number;
 }
 
-const DraggableImage = memo<DraggableImageProps>(({
-  uri,
-  index,
-  isPrimary = false,
-  onDelete,
-  onDragStart,
-  onDragEnd,
-  totalImages
-}) => {
+const DraggableImage = memo<DraggableImageProps>(({ uri, index, isPrimary = false, onDelete, onDragStart, onDragEnd, totalImages }) => {
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const isDragging = useSharedValue(false);
@@ -68,18 +60,9 @@ const DraggableImage = memo<DraggableImageProps>(({
     <Animated.View style={animatedStyle}>
       <GestureDetector gesture={panGesture}>
         <View className="mr-3">
-          <OptimizedImagePreview
-            uri={uri}
-            width={96}
-            height={96}
-            isPrimary={isPrimary}
-            onDelete={() => onDelete(index)}
-            showDeleteButton={true}
-          />
+          <OptimizedImagePreview uri={uri} width={96} height={96} isPrimary={isPrimary} onDelete={() => onDelete(index)} showDeleteButton={true} />
           <View className="mt-1 items-center">
-            <Text className="text-xs text-gray-500 dark:text-gray-400">
-              {index + 1}
-            </Text>
+            <Text className="text-xs text-gray-500 dark:text-gray-400">{index + 1}</Text>
           </View>
         </View>
       </GestureDetector>
@@ -97,29 +80,29 @@ interface OptimizedImageListProps {
   showReorderHint?: boolean;
 }
 
-export const OptimizedImageList = memo<OptimizedImageListProps>(({
-  images,
-  onReorder,
-  onDelete,
-  maxImages = 10,
-  showReorderHint = true,
-}) => {
+export const OptimizedImageList = memo<OptimizedImageListProps>(({ images, onReorder, onDelete, maxImages = 10, showReorderHint = true }) => {
   // Memoize the images array to prevent unnecessary re-renders
   const memoizedImages = useMemo(() => images, [images]);
 
-  const handleDelete = useCallback((index: number) => {
-    onDelete(index);
-  }, [onDelete]);
+  const handleDelete = useCallback(
+    (index: number) => {
+      onDelete(index);
+    },
+    [onDelete]
+  );
 
-  const handleReorder = useCallback((fromIndex: number, toIndex: number) => {
-    if (!onReorder || fromIndex === toIndex) return;
+  const handleReorder = useCallback(
+    (fromIndex: number, toIndex: number) => {
+      if (!onReorder || fromIndex === toIndex) return;
 
-    const newImages = [...memoizedImages];
-    const [movedItem] = newImages.splice(fromIndex, 1);
-    newImages.splice(toIndex, 0, movedItem);
+      const newImages = [...memoizedImages];
+      const [movedItem] = newImages.splice(fromIndex, 1);
+      newImages.splice(toIndex, 0, movedItem);
 
-    onReorder(newImages);
-  }, [memoizedImages, onReorder]);
+      onReorder(newImages);
+    },
+    [memoizedImages, onReorder]
+  );
 
   if (memoizedImages.length === 0) {
     return null;
@@ -129,17 +112,11 @@ export const OptimizedImageList = memo<OptimizedImageListProps>(({
     <View className="mt-4">
       {showReorderHint && (
         <Text className="mb-2 text-sm font-medium text-font dark:text-font-dark">
-          Выбранные фотографии ({memoizedImages.length}/{maxImages})
-          {onReorder && ' • Зажмите и перетащите для изменения порядка'}
+          Выбранные фотографии ({memoizedImages.length}/{maxImages}){onReorder && ' • Зажмите и перетащите для изменения порядка'}
         </Text>
       )}
 
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        className="flex-row"
-        contentContainerStyle={{ paddingRight: 20 }}
-      >
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row" contentContainerStyle={{ paddingRight: 20 }}>
         {memoizedImages.map((image, index) => (
           <DraggableImage
             key={`${image.uri}-${index}`}

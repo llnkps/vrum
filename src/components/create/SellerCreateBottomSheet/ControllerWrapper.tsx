@@ -34,7 +34,7 @@ const Wrapper = ({ value, onChange, error }: SellerControllerWrapperProps) => {
       />
       <SellerCreateBottomSheet
         ref={sellerModalRef}
-        onChange={(seller) => {
+        onChange={seller => {
           onChange(seller?.value || '');
           sellerModalRef.current?.close({ duration: 150 });
         }}

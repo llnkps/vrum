@@ -11,47 +11,49 @@ type NumberOfOwnersFilterBottomSheetProps = {
   selectedOptions?: FilterOptionType[];
 };
 
-export const NumberOfOwnersFilterBottomSheet = forwardRef<BottomSheetRef, NumberOfOwnersFilterBottomSheetProps>(({ onChange, options, title, selectedOptions = [] }, ref) => {
-  const [selectedNumberOfOwners, setSelectedNumberOfOwners] = React.useState<FilterOptionType[]>(selectedOptions);
+export const NumberOfOwnersFilterBottomSheet = forwardRef<BottomSheetRef, NumberOfOwnersFilterBottomSheetProps>(
+  ({ onChange, options, title, selectedOptions = [] }, ref) => {
+    const [selectedNumberOfOwners, setSelectedNumberOfOwners] = React.useState<FilterOptionType[]>(selectedOptions);
 
-  React.useEffect(() => {
-    setSelectedNumberOfOwners(selectedOptions);
-  }, [selectedOptions]);
+    React.useEffect(() => {
+      setSelectedNumberOfOwners(selectedOptions);
+    }, [selectedOptions]);
 
-  const handleToggle = (option: FilterOptionType) => {
-    const isSelected = selectedNumberOfOwners.some(v => v.value === option.value);
-    if (isSelected) {
-      setSelectedNumberOfOwners(selectedNumberOfOwners.filter(v => v.value !== option.value));
-    } else {
-      setSelectedNumberOfOwners([...selectedNumberOfOwners, option]);
-    }
-  };
+    const handleToggle = (option: FilterOptionType) => {
+      const isSelected = selectedNumberOfOwners.some(v => v.value === option.value);
+      if (isSelected) {
+        setSelectedNumberOfOwners(selectedNumberOfOwners.filter(v => v.value !== option.value));
+      } else {
+        setSelectedNumberOfOwners([...selectedNumberOfOwners, option]);
+      }
+    };
 
-  const handleConfirm = () => {
-    onChange(selectedNumberOfOwners);
-  };
+    const handleConfirm = () => {
+      onChange(selectedNumberOfOwners);
+    };
 
-  return (
-    <CustomBottomSheetModal
-      ref={ref}
-      snapPoints={['33%']}
-      enableContentPanningGesture={true}
-      title={title}
-      footerProps={{
-        onConfirm: handleConfirm,
-      }}
-    >
-      <BottomSheetView className="flex-col">
-        {options.map(opt => (
-          <CheckboxRectButton
-            key={opt.value}
-            label={opt.label}
-            value={selectedNumberOfOwners.some(v => v.value === opt.value)}
-            onPress={() => handleToggle(opt)}
-          />
-        ))}
-      </BottomSheetView>
-    </CustomBottomSheetModal>
-  );
-});
+    return (
+      <CustomBottomSheetModal
+        ref={ref}
+        snapPoints={['33%']}
+        enableContentPanningGesture={true}
+        title={title}
+        footerProps={{
+          onConfirm: handleConfirm,
+        }}
+      >
+        <BottomSheetView className="flex-col">
+          {options.map(opt => (
+            <CheckboxRectButton
+              key={opt.value}
+              label={opt.label}
+              value={selectedNumberOfOwners.some(v => v.value === opt.value)}
+              onPress={() => handleToggle(opt)}
+            />
+          ))}
+        </BottomSheetView>
+      </CustomBottomSheetModal>
+    );
+  }
+);
 NumberOfOwnersFilterBottomSheet.displayName = 'NumberOfOwnersFilterBottomSheet';

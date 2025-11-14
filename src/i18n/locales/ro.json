@@ -148,15 +148,38 @@
     },
     "engineCapacity": {
       "label": "Capacitate motor",
-      "placeholder": "Capacitate motor (L)"
+      "placeholder": "Capacitate motor (L)",
+      "from": "de la {{value}}",
+      "to": "până la {{value}}",
+      "range": "{{from}} - {{to}}"
     },
     "power": {
       "label": "Putere",
-      "placeholder": "Putere (CP)"
+      "placeholder": "Putere (CP)",
+      "from": "de la {{value}}",
+      "to": "până la {{value}}",
+      "range": "{{from}} - {{to}}"
     },
     "mileage": {
       "label": "Kilometraj",
-      "placeholder": "Kilometraj (km)"
+      "placeholder": "Kilometraj (km)",
+      "from": "de la {{value}}",
+      "to": "până la {{value}}",
+      "range": "{{from}} - {{to}}"
+    },
+    "year": {
+      "label": "An",
+      "placeholder": "Anul fabricației",
+      "from": "de la {{value}}",
+      "to": "până la {{value}}",
+      "range": "{{from}} - {{to}}"
+    },
+    "price": {
+      "label": "Preț",
+      "placeholder": "Preț",
+      "from": "de la {{value}}",
+      "to": "până la {{value}}",
+      "range": "{{from}} - {{to}}"
     },
     "firmCountryGroup": {
       "label": "Producător",

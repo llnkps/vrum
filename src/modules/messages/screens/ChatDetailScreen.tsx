@@ -106,7 +106,9 @@ export default function ChatDetailScreen({ chat, onBack }: ChatDetailScreenProps
 
   const renderMessage = useCallback(
     ({ item }: { item: GetMessages200ResponseInner }) => (
-      <View className={`mb-2 max-w-[80%] rounded-lg p-3 ${item.sender === currentUserId ? 'self-end bg-blue-500' : 'self-start bg-gray-200 dark:bg-gray-700'}`}>
+      <View
+        className={`mb-2 max-w-[80%] rounded-lg p-3 ${item.sender === currentUserId ? 'self-end bg-blue-500' : 'self-start bg-gray-200 dark:bg-gray-700'}`}
+      >
         <Text className={item.sender === currentUserId ? 'text-white' : 'text-font dark:text-font-dark'}>{item.content}</Text>
         <Text className={`mt-1 text-xs ${item.sender === currentUserId ? 'text-blue-100' : 'text-font-subtlest dark:text-font-subtlest-dark'}`}>
           {item.createdAt ? new Date(item.createdAt).toLocaleTimeString() : ''}

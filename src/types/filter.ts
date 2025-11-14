@@ -46,4 +46,4 @@ export type FilterValue = string | number | boolean | string[] | RangeFilterType
 export type FilterOptionType = {
   label: string;
   value: string;
-}
+};

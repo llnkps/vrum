@@ -148,15 +148,38 @@
     },
     "engineCapacity": {
       "label": "Об'єм двигуна",
-      "placeholder": "Об'єм двигуна (л)"
+      "placeholder": "Об'єм двигуна (л)",
+      "from": "від {{value}}",
+      "to": "до {{value}}",
+      "range": "{{from}} - {{to}}"
     },
     "power": {
       "label": "Потужність",
-      "placeholder": "Потужність (к.с.)"
+      "placeholder": "Потужність (к.с.)",
+      "from": "від {{value}}",
+      "to": "до {{value}}",
+      "range": "{{from}} - {{to}}"
     },
     "mileage": {
       "label": "Пробіг",
-      "placeholder": "Пробіг (км)"
+      "placeholder": "Пробіг (км)",
+      "from": "від {{value}}",
+      "to": "до {{value}}",
+      "range": "{{from}} - {{to}}"
+    },
+    "year": {
+      "label": "Рік",
+      "placeholder": "Рік випуску",
+      "from": "від {{value}}",
+      "to": "до {{value}}",
+      "range": "{{from}} - {{to}}"
+    },
+    "price": {
+      "label": "Ціна",
+      "placeholder": "Ціна",
+      "from": "від {{value}}",
+      "to": "до {{value}}",
+      "range": "{{from}} - {{to}}"
     },
     "firmCountryGroup": {
       "label": "Виробник",

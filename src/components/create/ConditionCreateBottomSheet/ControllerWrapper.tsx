@@ -16,7 +16,7 @@ const Wrapper = ({ value, onChange, error }: ConditionControllerWrapperProps) =>
     conditionModalRef.current?.present();
   }, []);
 
-    // Find the label for the current value
+  // Find the label for the current value
   const selectedLabel = React.useMemo(() => {
     return options.find(opt => opt.value === value)?.label;
   }, [value]);
@@ -34,7 +34,7 @@ const Wrapper = ({ value, onChange, error }: ConditionControllerWrapperProps) =>
       />
       <ConditionCreateBottomSheet
         ref={conditionModalRef}
-        onChange={(condition) => {
+        onChange={condition => {
           onChange(condition?.value || '');
           conditionModalRef.current?.close({ duration: 150 });
         }}

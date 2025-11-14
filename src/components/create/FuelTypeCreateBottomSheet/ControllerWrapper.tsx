@@ -33,7 +33,7 @@ const Wrapper = ({ value, onChange, error }: FuelTypeControllerWrapperProps) => 
       />
       <FuelTypeCreateBottomSheet
         ref={fuelTypeModalRef}
-        onChange={(fuelType) => {
+        onChange={fuelType => {
           onChange(fuelType?.value || '');
           fuelTypeModalRef.current?.close({ duration: 150 });
         }}

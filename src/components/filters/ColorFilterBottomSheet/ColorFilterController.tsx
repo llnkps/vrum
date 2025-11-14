@@ -12,7 +12,7 @@ interface ColorFilterControllerProps {
   error?: string;
 }
 
-const ColorFilterController = ({ selectedOptions, onChange, error }: ColorFilterControllerProps) => {
+const ColorFilterController = React.memo(({ selectedOptions, onChange, error }: ColorFilterControllerProps) => {
   const { t } = useTranslation();
   const colorModalRef = useRef<BottomSheetRef>(null);
 
@@ -29,9 +29,7 @@ const ColorFilterController = ({ selectedOptions, onChange, error }: ColorFilter
     const selectedValues = Object.values(selectedOptions);
     const selectedValuesSet = new Set(selectedValues);
 
-    const selectedLabels = options
-      .filter(option => selectedValuesSet.has(option.value))
-      .map(option => option.label);
+    const selectedLabels = options.filter(option => selectedValuesSet.has(option.value)).map(option => option.label);
 
     return selectedLabels.join(', ');
   }, [selectedOptions, options]);
@@ -61,13 +59,15 @@ const ColorFilterController = ({ selectedOptions, onChange, error }: ColorFilter
         options={options}
         title={colorConfig?.label || 'Color'}
         selectedOptions={selectedOptionsArray}
-        onChange={(options) => {
+        onChange={options => {
           onChange(options.length > 0 ? options : undefined);
           colorModalRef.current?.close({ duration: 150 });
         }}
       />
     </>
   );
-};
+});
+
+ColorFilterController.displayName = 'ColorFilterController';
 
 export { ColorFilterController };

@@ -12,7 +12,7 @@ interface BodyTypeFilterControllerProps {
   error?: string;
 }
 
-const BodyTypeFilterController = ({ selectedOptions, onChange, error }: BodyTypeFilterControllerProps) => {
+const BodyTypeFilterController = React.memo(({ selectedOptions, onChange, error }: BodyTypeFilterControllerProps) => {
   const { t } = useTranslation();
   const bodyTypeModalRef = useRef<BottomSheetRef>(null);
 
@@ -29,9 +29,7 @@ const BodyTypeFilterController = ({ selectedOptions, onChange, error }: BodyType
     const selectedValues = Object.values(selectedOptions);
     const selectedValuesSet = new Set(selectedValues);
 
-    const selectedLabels = options
-      .filter(option => selectedValuesSet.has(option.value))
-      .map(option => option.label);
+    const selectedLabels = options.filter(option => selectedValuesSet.has(option.value)).map(option => option.label);
 
     return selectedLabels.join(', ');
   }, [selectedOptions, options]);
@@ -61,13 +59,15 @@ const BodyTypeFilterController = ({ selectedOptions, onChange, error }: BodyType
         options={options}
         title={bodyTypeConfig?.label || 'Body Type'}
         selectedOptions={selectedOptionsArray}
-        onChange={(options) => {
+        onChange={options => {
           onChange(options.length > 0 ? options : undefined);
           bodyTypeModalRef.current?.close({ duration: 150 });
         }}
       />
     </>
   );
-};
+});
+
+BodyTypeFilterController.displayName = 'BodyTypeFilterController';
 
 export { BodyTypeFilterController };

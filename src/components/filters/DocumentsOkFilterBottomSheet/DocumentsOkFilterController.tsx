@@ -44,7 +44,7 @@ const DocumentsOkFilterController = ({ selectedOption, onChange, error }: Docume
         ref={documentsOkModalRef}
         options={options}
         title={documentsOkConfig?.label || 'Documents'}
-        onSelect={(option) => {
+        onSelect={option => {
           onChange(option);
           documentsOkModalRef.current?.close({ duration: 150 });
         }}

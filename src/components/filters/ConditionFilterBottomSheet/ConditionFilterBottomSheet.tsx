@@ -1,12 +1,12 @@
 import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import { CustomRectButton } from '@/components/ui/button';
+import { useFilterConfigs } from '@/shared/filter';
+import { BACKEND_FILTERS, FilterOptionType } from '@/types/filter';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
-import { useFilterConfigs, FilterOptionType }pe } from '@/shared/filter';
-import { BACKEND_FILTERS } from '@/shared/filter';
 
 type ConditionFilterBottomSheetProps = {
-  onSelect: (value: FilterOption) => void;
+  onSelect: (value: FilterOptionType) => void;
 };
 
 export const ConditionFilterBottomSheet = forwardRef<BottomSheetRef, ConditionFilterBottomSheetProps>(({ onSelect }, ref) => {

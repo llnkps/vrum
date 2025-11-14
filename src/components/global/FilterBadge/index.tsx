@@ -18,7 +18,7 @@ export type FilterBadgeProps = {
  */
 const FilterBadge: React.FC<FilterBadgeProps> = ({ label, onRemove, className, textClassName }) => {
   return (
-    <View className={clsx('flex-row items-center gap-1 px-2 rounded-md bg-background-neutral-bold dark:bg-background-neutral-bold', className)}>
+    <View className={clsx('flex-row items-center gap-1 rounded-md bg-background-neutral-bold px-2 dark:bg-background-neutral-bold', className)}>
       <Text numberOfLines={1} className={clsx('font-bold text-font dark:text-font-dark', textClassName)}>
         {label}
       </Text>

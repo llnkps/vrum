@@ -67,7 +67,9 @@ export const exchangeCodeAsync = async (
 };
 
 // Refresh OAuth tokens
-export const refreshOAuthToken = async (refreshToken: string): Promise<{
+export const refreshOAuthToken = async (
+  refreshToken: string
+): Promise<{
   accessToken: string;
   refreshToken?: string;
   expiresIn?: number;

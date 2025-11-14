@@ -34,7 +34,7 @@ const Wrapper = ({ value, onChange, error }: TradeAllowControllerWrapperProps) =
       />
       <TradeAllowCreateBottomSheet
         ref={tradeAllowModalRef}
-        onChange={(tradeAllow) => {
+        onChange={tradeAllow => {
           onChange(tradeAllow?.value || '');
           tradeAllowModalRef.current?.close({ duration: 150 });
         }}

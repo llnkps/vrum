@@ -12,7 +12,7 @@ export async function createAuthenticatedApiCall<T>(apiCall: () => Promise<T>): 
       if (refreshed) {
         // Retry the API call with new token
         try {
-          console.log("MAKE ONE MORE TRY AFTER REFRESH");
+          console.log('MAKE ONE MORE TRY AFTER REFRESH');
           return await apiCall();
         } catch (retryError: any) {
           if (retryError.response?.status === 401) {

@@ -47,25 +47,13 @@ export default function AuthTestScreen() {
       <Text style={styles.title}>Authentication Test</Text>
 
       <View style={styles.statusContainer}>
-        <Text style={styles.statusText}>
-          Authenticated: {isAuthenticated ? 'Yes' : 'No'}
-        </Text>
-        <Text style={styles.statusText}>
-          Loading: {isLoading ? 'Yes' : 'No'}
-        </Text>
-        <Text style={styles.statusText}>
-          Initialized: {isInitialized ? 'Yes' : 'No'}
-        </Text>
-        {user && (
-          <Text style={styles.statusText}>
-            User: {user.email}
-          </Text>
-        )}
+        <Text style={styles.statusText}>Authenticated: {isAuthenticated ? 'Yes' : 'No'}</Text>
+        <Text style={styles.statusText}>Loading: {isLoading ? 'Yes' : 'No'}</Text>
+        <Text style={styles.statusText}>Initialized: {isInitialized ? 'Yes' : 'No'}</Text>
+        {user && <Text style={styles.statusText}>User: {user.email}</Text>}
         {token && (
           <>
-            <Text style={styles.statusText}>
-              Token: {token.substring(0, 20)}...
-            </Text>
+            <Text style={styles.statusText}>Token: {token.substring(0, 20)}...</Text>
             <Text style={[styles.statusText, { color: isTokenExpired() ? 'red' : 'green' }]}>
               Token Status: {isTokenExpired() ? 'Expired' : 'Valid'}
             </Text>
@@ -83,32 +71,14 @@ export default function AuthTestScreen() {
             autoCapitalize="none"
             keyboardType="email-address"
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-          />
-          <Button
-            title={isLoading ? "Logging in..." : "Login"}
-            onPress={handleLogin}
-            disabled={isLoading || !email || !password}
-          />
+          <TextInput style={styles.input} placeholder="Password" value={password} onChangeText={setPassword} secureTextEntry />
+          <Button title={isLoading ? 'Logging in...' : 'Login'} onPress={handleLogin} disabled={isLoading || !email || !password} />
           <View style={styles.spacer} />
-          <Button
-            title={isLoading ? "Logging in..." : "Login with Google"}
-            onPress={handleGoogleLogin}
-            disabled={isLoading}
-          />
+          <Button title={isLoading ? 'Logging in...' : 'Login with Google'} onPress={handleGoogleLogin} disabled={isLoading} />
         </View>
       ) : (
         <View style={styles.logoutContainer}>
-          <Button
-            title={isLoading ? "Logging out..." : "Logout"}
-            onPress={handleLogout}
-            disabled={isLoading}
-          />
+          <Button title={isLoading ? 'Logging out...' : 'Logout'} onPress={handleLogout} disabled={isLoading} />
         </View>
       )}
     </View>

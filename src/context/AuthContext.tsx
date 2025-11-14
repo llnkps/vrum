@@ -6,13 +6,7 @@ import { tokenManager } from '@/utils/token-manager';
 import { Platform } from 'react-native';
 import { tokenCache } from '@/utils/auth-utils';
 import * as AuthSession from 'expo-auth-session';
-import {
-  getTokenExpirationTime,
-  isTokenExpired,
-  saveAuthData,
-  loadAuthData,
-  clearAuthData
-} from '@/utils/auth-utils';
+import { getTokenExpirationTime, isTokenExpired, saveAuthData, loadAuthData, clearAuthData } from '@/utils/auth-utils';
 
 interface User {
   id: string;
@@ -101,7 +95,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
         // Validate authentication with server
         await validateAuthentication();
-
       } catch (error) {
         console.error('❌ Error initializing auth:', error);
         await clearAuthData();
@@ -118,9 +111,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.log('🔍 Validating authentication with server...');
 
       const userApi = new UserApi(createAuthenticatedConfiguration());
-      const response = await createAuthenticatedApiCall(
-        async () => await userApi.getAppUserdomainPresentationGetmeGetmeRaw()
-      );
+      const response = await createAuthenticatedApiCall(async () => await userApi.getAppUserdomainPresentationGetmeGetmeRaw());
 
       const userData = await response.value();
       const currentUser = {
@@ -138,7 +129,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         isLoading: false,
         isInitialized: true,
       }));
-
     } catch (error: any) {
       console.error('❌ Authentication validation failed:', error);
 
@@ -278,7 +268,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         await tokenCache.saveToken('accessToken', newToken);
         await tokenCache.saveToken('refreshToken', newRefreshToken);
       }
-
     } catch (error) {
       console.error('❌ Login error:', error);
       setState(prev => ({ ...prev, isLoading: false }));
@@ -299,7 +288,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       console.log('✅ Signup successful');
       setState(prev => ({ ...prev, isLoading: false }));
-
     } catch (error) {
       console.error('❌ Signup error:', error);
       setState(prev => ({ ...prev, isLoading: false }));
@@ -315,9 +303,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       // OAuth Configuration
       const config = {
-        clientId: Platform.OS === 'web'
-          ? (process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || '')
-          : (process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID || ''),
+        clientId: Platform.OS === 'web' ? process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || '' : process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID || '',
         scopes: ['openid', 'profile', 'email'],
         redirectUri: AuthSession.makeRedirectUri({
           path: 'oauthredirect',
@@ -399,9 +385,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         user: newUser,
         token: tokenResult.accessToken,
         refreshToken: tokenResult.refreshToken || null,
-        tokenExpiration: tokenResult.expiresIn
-          ? Math.floor(Date.now() / 1000) + tokenResult.expiresIn
-          : null,
+        tokenExpiration: tokenResult.expiresIn ? Math.floor(Date.now() / 1000) + tokenResult.expiresIn : null,
         isLoading: false,
       }));
 
@@ -410,9 +394,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         user: newUser,
         token: tokenResult.accessToken,
         refreshToken: tokenResult.refreshToken || null,
-        tokenExpiration: tokenResult.expiresIn
-          ? Math.floor(Date.now() / 1000) + tokenResult.expiresIn
-          : null,
+        tokenExpiration: tokenResult.expiresIn ? Math.floor(Date.now() / 1000) + tokenResult.expiresIn : null,
       });
 
       // Save to token cache
@@ -422,7 +404,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           await tokenCache.saveToken('refreshToken', tokenResult.refreshToken);
         }
       }
-
     } catch (error) {
       console.error('❌ Google OAuth error:', error);
       setState(prev => ({ ...prev, isLoading: false }));
@@ -489,9 +470,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, [state.token, refreshAccessToken, clearAuthData, validateAuthentication]);
 
   // Token expiration checker
-  const checkTokenExpired = useCallback((tokenToCheck?: string | null): boolean => {
-    return isTokenExpired(tokenToCheck ?? state.token);
-  }, [state.token]);
+  const checkTokenExpired = useCallback(
+    (tokenToCheck?: string | null): boolean => {
+      return isTokenExpired(tokenToCheck ?? state.token);
+    },
+    [state.token]
+  );
 
   // Context value
   const value: AuthContextType = {

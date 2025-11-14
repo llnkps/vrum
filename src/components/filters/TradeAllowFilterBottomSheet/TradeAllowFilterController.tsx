@@ -44,7 +44,7 @@ const TradeAllowFilterController = ({ selectedOption, onChange, error }: TradeAl
         ref={tradeAllowModalRef}
         options={options}
         title={tradeAllowConfig?.label || 'Trade Allow'}
-        onSelect={(option) => {
+        onSelect={option => {
           onChange(option);
           tradeAllowModalRef.current?.close({ duration: 150 });
         }}

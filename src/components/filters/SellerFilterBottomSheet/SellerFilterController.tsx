@@ -12,7 +12,7 @@ interface SellerFilterControllerProps {
   error?: string;
 }
 
-const SellerFilterController = ({ selectedOptions, onChange, error }: SellerFilterControllerProps) => {
+const SellerFilterController = React.memo(({ selectedOptions, onChange, error }: SellerFilterControllerProps) => {
   const { t } = useTranslation();
   const sellerModalRef = useRef<BottomSheetRef>(null);
 
@@ -29,9 +29,7 @@ const SellerFilterController = ({ selectedOptions, onChange, error }: SellerFilt
     const selectedValues = Object.values(selectedOptions);
     const selectedValuesSet = new Set(selectedValues);
 
-    const selectedLabels = options
-      .filter(option => selectedValuesSet.has(option.value))
-      .map(option => option.label);
+    const selectedLabels = options.filter(option => selectedValuesSet.has(option.value)).map(option => option.label);
 
     return selectedLabels.join(', ');
   }, [selectedOptions, options]);
@@ -61,13 +59,15 @@ const SellerFilterController = ({ selectedOptions, onChange, error }: SellerFilt
         options={options}
         title={sellerConfig?.label || 'Seller'}
         selectedOptions={selectedOptionsArray}
-        onChange={(options) => {
+        onChange={options => {
           onChange(options.length > 0 ? options : undefined);
           sellerModalRef.current?.close({ duration: 150 });
         }}
       />
     </>
   );
-};
+});
+
+SellerFilterController.displayName = 'SellerFilterController';
 
 export { SellerFilterController };

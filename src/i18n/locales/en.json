@@ -149,15 +149,38 @@
     },
     "engineCapacity": {
       "label": "Engine Capacity",
-      "placeholder": "Engine Capacity (L)"
+      "placeholder": "Engine Capacity (L)",
+      "from": "from {{value}}",
+      "to": "to {{value}}",
+      "range": "{{from}} - {{to}}"
     },
     "power": {
       "label": "Power",
-      "placeholder": "Power (HP)"
+      "placeholder": "Power (HP)",
+      "from": "from {{value}}",
+      "to": "to {{value}}",
+      "range": "{{from}} - {{to}}"
     },
     "mileage": {
       "label": "Mileage",
-      "placeholder": "Mileage (km)"
+      "placeholder": "Mileage (km)",
+      "from": "from {{value}}",
+      "to": "to {{value}}",
+      "range": "{{from}} - {{to}}"
+    },
+    "year": {
+      "label": "Year",
+      "placeholder": "Year of manufacture",
+      "from": "from {{value}}",
+      "to": "to {{value}}",
+      "range": "{{from}} - {{to}}"
+    },
+    "price": {
+      "label": "Price",
+      "placeholder": "Price",
+      "from": "from {{value}}",
+      "to": "to {{value}}",
+      "range": "{{from}} - {{to}}"
     },
     "firmCountryGroup": {
       "label": "Manufacturer",
@@ -180,4 +203,3 @@
     }
   }
 }
-

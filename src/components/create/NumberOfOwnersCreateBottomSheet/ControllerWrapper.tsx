@@ -34,7 +34,7 @@ const Wrapper = ({ value, onChange, error }: NumberOfOwnersControllerWrapperProp
       />
       <NumberOfOwnersCreateBottomSheet
         ref={numberOfOwnersModalRef}
-        onChange={(numberOfOwners) => {
+        onChange={numberOfOwners => {
           onChange(numberOfOwners?.value || '');
           numberOfOwnersModalRef.current?.close({ duration: 150 });
         }}

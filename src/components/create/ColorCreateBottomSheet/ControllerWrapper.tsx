@@ -16,7 +16,7 @@ const Wrapper = ({ value, onChange, error }: ColorControllerWrapperProps) => {
     colorModalRef.current?.present();
   }, []);
 
-    // Find the label for the current value
+  // Find the label for the current value
   const selectedLabel = React.useMemo(() => {
     return options.find(opt => opt.value === value)?.label;
   }, [value]);
@@ -34,7 +34,7 @@ const Wrapper = ({ value, onChange, error }: ColorControllerWrapperProps) => {
       />
       <ColorCreateBottomSheet
         ref={colorModalRef}
-        onChange={(color) => {
+        onChange={color => {
           onChange(color?.value || '');
           colorModalRef.current?.close({ duration: 150 });
         }}

@@ -1,18 +1,14 @@
-import { SelectedRegionsBadges } from '@/components/global/SelectedItemsBadges';
 import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
+import CloseIcon from '@/components/global/CloseIcon';
+import { SelectedRegionsBadges } from '@/components/global/SelectedItemsBadges';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
 import { CustomRectButton, SelectableButton } from '@/components/ui/button';
-import {
-  selectSelectedBrands,
-  selectSelectedGenerations,
-  useAutoSelectStore,
-} from '@/state/search-screen/useAutoSelectStore';
+import { selectSelectedBrands, selectSelectedGenerations, useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
+import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import CloseIcon from '@/components/global/CloseIcon';
-import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
 
 // Controller imports
 import { BodyTypeFilterController } from '@/components/filters/BodyTypeFilterBottomSheet';
@@ -28,6 +24,7 @@ import { RegionFilterController } from '@/components/filters/RegionBottomSheet';
 import { SellerFilterController } from '@/components/filters/SellerFilterBottomSheet';
 import { TransmissionFilterController } from '@/components/filters/TransmissionFilterBottomSheet';
 import { YearFilterController } from '@/components/filters/YearFilterBottomSheet';
+import { ShowAdvertisementButton } from '@/modules/search-screen/simple-auto-tab/ShowAdvertisementButton';
 
 const SettingScreenFilter = () => {
   const router = useRouter();
@@ -81,11 +78,7 @@ const SettingScreenFilter = () => {
             </View>
 
             <View className="gap-y-2">
-              <RegionFilterController
-                value={selectedRegions}
-                onChange={setSelectedRegions}
-                multiple
-              />
+              <RegionFilterController value={selectedRegions} onChange={setSelectedRegions} multiple />
               {selectedRegions.length > 0 && (
                 <SelectedRegionsBadges
                   selectedRegions={selectedRegions}
@@ -150,17 +143,9 @@ const SettingScreenFilter = () => {
             </View>
 
             <View className="flex-col rounded-lg bg-surface p-2 dark:bg-surface-dark">
-              <YearFilterController
-                value={store.yearRange}
-                onChange={yearRange => setYearRange(yearRange)}
-                variant="bordered"
-              />
+              <YearFilterController value={store.yearRange} onChange={yearRange => setYearRange(yearRange)} variant="bordered" />
 
-              <PriceFilterController
-                value={store.priceRange}
-                onChange={priceRange => setPriceRange(priceRange)}
-                variant="plain"
-              />
+              <PriceFilterController value={store.priceRange} onChange={priceRange => setPriceRange(priceRange)} variant="plain" />
             </View>
 
             <View className="flex-col rounded-lg bg-surface dark:bg-surface-dark">
@@ -171,63 +156,28 @@ const SettingScreenFilter = () => {
             </View>
 
             <View className="flex-col rounded-lg bg-surface p-2 dark:bg-surface-dark">
-              <TransmissionFilterController
-                selectedOptions={transmission}
-                onChange={setTransmission}
-              />
-              <EngineCapacityFilterController
-                value={store.engineCapacityRange}
-                onChange={setEngineCapacityRange}
-              />
-              <PowerFilterController
-                value={store.powerRange}
-                onChange={setPowerRange}
-              />
-              <FuelTypeFilterController
-                selectedOptions={fuelType}
-                onChange={setFuelType}
-              />
-              <DrivetrainFilterController
-                selectedOptions={drivetrain}
-                onChange={setDrivetrain}
-              />
+              <TransmissionFilterController selectedOptions={transmission} onChange={setTransmission} />
+              <EngineCapacityFilterController value={store.engineCapacityRange} onChange={setEngineCapacityRange} />
+              <PowerFilterController value={store.powerRange} onChange={setPowerRange} />
+              <FuelTypeFilterController selectedOptions={fuelType} onChange={setFuelType} />
+              <DrivetrainFilterController selectedOptions={drivetrain} onChange={setDrivetrain} />
               <TouchableHighlightRow label="Расположения руля" onPress={() => {}} showRightArrow variant="bordered" rightIcon="chevron-down" />
 
-              <MileageFilterController
-                value={store.mileageRange}
-                onChange={setMileageRange}
-              />
-              <BodyTypeFilterController
-                selectedOptions={bodyType}
-                onChange={setBodyType}
-              />
-              <ColorFilterController
-                selectedOptions={color}
-                onChange={setColor}
-              />
+              <MileageFilterController value={store.mileageRange} onChange={setMileageRange} />
+              <BodyTypeFilterController selectedOptions={bodyType} onChange={setBodyType} />
+              <ColorFilterController selectedOptions={color} onChange={setColor} />
             </View>
 
             <View className="flex-col rounded-lg bg-surface p-2 dark:bg-surface-dark">
-              <NumberOfOwnersFilterController
-                selectedOptions={numberOfOwners}
-                onChange={setNumberOfOwners}
-              />
-              <SellerFilterController
-                selectedOptions={seller}
-                onChange={setSeller}
-              />
+              <NumberOfOwnersFilterController selectedOptions={numberOfOwners} onChange={setNumberOfOwners} />
+              <SellerFilterController selectedOptions={seller} onChange={setSeller} />
             </View>
           </View>
         </ScrollView>
 
         <View className="absolute bottom-14 left-0 right-0 items-center">
           <View className="px-4 py-8">
-            <CustomRectButton
-              onPress={() => router.replace('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal')}
-              appearance="primary"
-            >
-              <Text className="text-center font-semibold text-white">Показать объявления</Text>
-            </CustomRectButton>
+            <ShowAdvertisementButton />
           </View>
         </View>
       </SafeAreaView>

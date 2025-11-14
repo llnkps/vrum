@@ -20,9 +20,7 @@ export const InputField = ({ label, onChange, value, Icon, ref, required = false
     <View className="gap-1" style={wrapperStyle}>
       {label && (
         <View className="flex-row gap-1">
-          <Text className="font-bold text-font dark:text-font-dark">
-            {label}
-          </Text>
+          <Text className="font-bold text-font dark:text-font-dark">{label}</Text>
           {required && <Text className="text-font-danger">*</Text>}
         </View>
       )}

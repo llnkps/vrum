@@ -16,6 +16,11 @@ import { useTheme } from '@react-navigation/native';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight ?? 24;
 
+export const unstable_settings = {
+  // This tells Expo Router to unmount the screen when it loses focus
+  unmountOnBlur: true,
+};
+
 export default function BrandAutoFilter() {
   const router = useRouter();
   const searchParams = useLocalSearchParams();
@@ -25,7 +30,7 @@ export default function BrandAutoFilter() {
   const { removeSelectedBrand } = store;
 
   const [searchValue, setSearchValue] = useState('');
-  const { data, isLoading } = useSimpleAutoBrandApi();
+  const { data, isPending } = useSimpleAutoBrandApi();
   const [filteredBrands, setFilteredBrands] = useState<SimpleAutoBrand[]>([]);
 
   const scrollY = useSharedValue(0);
@@ -37,7 +42,7 @@ export default function BrandAutoFilter() {
     }
   }, [data]);
 
-  if (isLoading) {
+  if (isPending) {
     return <LoaderIndicator />;
   }
 

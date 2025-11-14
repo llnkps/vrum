@@ -11,47 +11,49 @@ type TransmissionFilterBottomSheetProps = {
   selectedOptions?: FilterOptionType[];
 };
 
-export const TransmissionFilterBottomSheet = forwardRef<BottomSheetRef, TransmissionFilterBottomSheetProps>(({ onChange, options, title, selectedOptions = [] }, ref) => {
-  const [selectedTransmissions, setSelectedTransmissions] = React.useState<FilterOptionType[]>(selectedOptions);
+export const TransmissionFilterBottomSheet = forwardRef<BottomSheetRef, TransmissionFilterBottomSheetProps>(
+  ({ onChange, options, title, selectedOptions = [] }, ref) => {
+    const [selectedTransmissions, setSelectedTransmissions] = React.useState<FilterOptionType[]>(selectedOptions);
 
-  React.useEffect(() => {
-    setSelectedTransmissions(selectedOptions);
-  }, [selectedOptions]);
+    React.useEffect(() => {
+      setSelectedTransmissions(selectedOptions);
+    }, [selectedOptions]);
 
-  const handleToggle = (option: FilterOptionType) => {
-    const isSelected = selectedTransmissions.some(t => t.value === option.value);
-    if (isSelected) {
-      setSelectedTransmissions(selectedTransmissions.filter(t => t.value !== option.value));
-    } else {
-      setSelectedTransmissions([...selectedTransmissions, option]);
-    }
-  };
+    const handleToggle = (option: FilterOptionType) => {
+      const isSelected = selectedTransmissions.some(t => t.value === option.value);
+      if (isSelected) {
+        setSelectedTransmissions(selectedTransmissions.filter(t => t.value !== option.value));
+      } else {
+        setSelectedTransmissions([...selectedTransmissions, option]);
+      }
+    };
 
-  const handleConfirm = () => {
-    onChange(selectedTransmissions);
-  };
+    const handleConfirm = () => {
+      onChange(selectedTransmissions);
+    };
 
-  return (
-    <CustomBottomSheetModal
-      ref={ref}
-      snapPoints={['35%']}
-      enableContentPanningGesture={true}
-      title={title}
-      footerProps={{
-        onConfirm: handleConfirm,
-      }}
-    >
-      <BottomSheetView className="flex-col">
-        {options.map(opt => (
-          <CheckboxRectButton
-            key={opt.value}
-            label={opt.label}
-            value={selectedTransmissions.some(t => t.value === opt.value)}
-            onPress={() => handleToggle(opt)}
-          />
-        ))}
-      </BottomSheetView>
-    </CustomBottomSheetModal>
-  );
-});
+    return (
+      <CustomBottomSheetModal
+        ref={ref}
+        snapPoints={['35%']}
+        enableContentPanningGesture={true}
+        title={title}
+        footerProps={{
+          onConfirm: handleConfirm,
+        }}
+      >
+        <BottomSheetView className="flex-col">
+          {options.map(opt => (
+            <CheckboxRectButton
+              key={opt.value}
+              label={opt.label}
+              value={selectedTransmissions.some(t => t.value === opt.value)}
+              onPress={() => handleToggle(opt)}
+            />
+          ))}
+        </BottomSheetView>
+      </CustomBottomSheetModal>
+    );
+  }
+);
 TransmissionFilterBottomSheet.displayName = 'TransmissionFilterBottomSheet';

@@ -12,7 +12,7 @@ interface FuelTypeFilterControllerProps {
   error?: string;
 }
 
-const FuelTypeFilterController = ({ selectedOptions, onChange, error }: FuelTypeFilterControllerProps) => {
+const FuelTypeFilterController = React.memo(({ selectedOptions, onChange, error }: FuelTypeFilterControllerProps) => {
   const { t } = useTranslation();
   const fuelTypeModalRef = useRef<BottomSheetRef>(null);
 
@@ -29,9 +29,7 @@ const FuelTypeFilterController = ({ selectedOptions, onChange, error }: FuelType
     const selectedValues = Object.values(selectedOptions);
     const selectedValuesSet = new Set(selectedValues);
 
-    const selectedLabels = options
-      .filter(option => selectedValuesSet.has(option.value))
-      .map(option => option.label);
+    const selectedLabels = options.filter(option => selectedValuesSet.has(option.value)).map(option => option.label);
 
     return selectedLabels.join(', ');
   }, [selectedOptions, options]);
@@ -61,13 +59,15 @@ const FuelTypeFilterController = ({ selectedOptions, onChange, error }: FuelType
         options={options}
         title={fuelTypeConfig?.label || 'Fuel Type'}
         selectedOptions={selectedOptionsArray}
-        onChange={(options) => {
+        onChange={options => {
           onChange(options.length > 0 ? options : undefined);
           fuelTypeModalRef.current?.close({ duration: 150 });
         }}
       />
     </>
   );
-};
+});
+
+FuelTypeFilterController.displayName = 'FuelTypeFilterController';
 
 export { FuelTypeFilterController };

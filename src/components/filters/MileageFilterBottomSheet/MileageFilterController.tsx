@@ -11,7 +11,7 @@ interface MileageFilterControllerProps {
   error?: string;
 }
 
-const MileageFilterController = ({ value, onChange, error }: MileageFilterControllerProps) => {
+const MileageFilterController = React.memo(({ value, onChange, error }: MileageFilterControllerProps) => {
   const { t } = useTranslation();
   const mileageModalRef = useRef<BottomSheetRef>(null);
 
@@ -22,11 +22,11 @@ const MileageFilterController = ({ value, onChange, error }: MileageFilterContro
   const selectedValue = React.useMemo(() => {
     if (!value) return undefined;
     const { from, to } = value;
-    if (from && to) return `${from} - ${to}`;
-    if (from) return `от ${from}`;
-    if (to) return `до ${to}`;
+    if (from && to) return t('filters.mileage.range', { from: t('filters.mileage.from', { value: from }), to: t('filters.mileage.to', { value: to }) });
+    if (from) return t('filters.mileage.from', { value: from });
+    if (to) return t('filters.mileage.to', { value: to });
     return undefined;
-  }, [value]);
+  }, [value, t]);
 
   return (
     <>
@@ -42,13 +42,15 @@ const MileageFilterController = ({ value, onChange, error }: MileageFilterContro
       />
       <MileageFilterBottomSheet
         ref={mileageModalRef}
-        onChange={(range) => {
+        onChange={range => {
           onChange(range);
           mileageModalRef.current?.close({ duration: 150 });
         }}
       />
     </>
   );
-};
+});
+
+MileageFilterController.displayName = 'MileageFilterController';
 
 export { MileageFilterController };

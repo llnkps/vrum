@@ -8,19 +8,18 @@ import { useEffect } from 'react';
 
 // TODO: test this func
 function withAuthGuard<P>(WrappedComponent: React.ComponentType<P>) {
-  const GuardedComponent: React.FC<P & { navigation?: any; route?: any }> = (props) => {
+  const GuardedComponent: React.FC<P & { navigation?: any; route?: any }> = props => {
     const { isAuthenticated } = useAuthContext();
 
     useEffect(() => {
       (async () => {
-        const token = isAuthenticated
+        const token = isAuthenticated;
         if (!token) {
-          Alert.alert("Sign in required", "Please log in to access this tab", [
-            { text: "Cancel", style: "cancel" },
+          Alert.alert('Sign in required', 'Please log in to access this tab', [
+            { text: 'Cancel', style: 'cancel' },
             {
-              text: "Login",
-              onPress: () =>
-                props.navigation?.navigate("Login", { redirectTo: props.route?.name }),
+              text: 'Login',
+              onPress: () => props.navigation?.navigate('Login', { redirectTo: props.route?.name }),
             },
           ]);
         }
@@ -30,7 +29,7 @@ function withAuthGuard<P>(WrappedComponent: React.ComponentType<P>) {
     return <WrappedComponent {...props} />;
   };
 
-  GuardedComponent.displayName = `WithAuthGuard(${WrappedComponent.displayName || WrappedComponent.name || "Component"})`;
+  GuardedComponent.displayName = `WithAuthGuard(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`;
   return GuardedComponent;
 }
 

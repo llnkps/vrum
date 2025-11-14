@@ -485,7 +485,6 @@ export default function SimpleAutoModal() {
         selectedRegions={store.selectedRegions}
         onChange={regions => store.setSelectedRegions(Array.isArray(regions) ? regions : [regions])}
       />
-
     </SafeAreaView>
   );
 }

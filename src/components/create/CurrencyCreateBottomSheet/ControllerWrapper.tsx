@@ -16,7 +16,7 @@ const Wrapper = ({ value, onChange, error }: CurrencyControllerWrapperProps) => 
     currencyModalRef.current?.present();
   }, []);
 
-    // Find the label for the current value
+  // Find the label for the current value
   const selectedLabel = React.useMemo(() => {
     return options.find(opt => opt.value === value)?.label;
   }, [value]);
@@ -34,7 +34,7 @@ const Wrapper = ({ value, onChange, error }: CurrencyControllerWrapperProps) => 
       />
       <CurrencyCreateBottomSheet
         ref={currencyModalRef}
-        onChange={(currency) => {
+        onChange={currency => {
           onChange(currency?.value || '');
           currencyModalRef.current?.close({ duration: 150 });
         }}

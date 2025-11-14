@@ -11,47 +11,49 @@ type BodyTypeFilterBottomSheetProps = {
   selectedOptions?: FilterOptionType[];
 };
 
-export const BodyTypeFilterBottomSheet = forwardRef<BottomSheetRef, BodyTypeFilterBottomSheetProps>(({ onChange, options, title, selectedOptions = [] }, ref) => {
-  const [selectedBodyTypes, setSelectedBodyTypes] = React.useState<FilterOptionType[]>(selectedOptions);
+export const BodyTypeFilterBottomSheet = forwardRef<BottomSheetRef, BodyTypeFilterBottomSheetProps>(
+  ({ onChange, options, title, selectedOptions = [] }, ref) => {
+    const [selectedBodyTypes, setSelectedBodyTypes] = React.useState<FilterOptionType[]>(selectedOptions);
 
-  React.useEffect(() => {
-    setSelectedBodyTypes(selectedOptions);
-  }, [selectedOptions]);
+    React.useEffect(() => {
+      setSelectedBodyTypes(selectedOptions);
+    }, [selectedOptions]);
 
-  const handleToggle = (option: FilterOptionType) => {
-    const isSelected = selectedBodyTypes.some(t => t.value === option.value);
-    if (isSelected) {
-      setSelectedBodyTypes(selectedBodyTypes.filter(t => t.value !== option.value));
-    } else {
-      setSelectedBodyTypes([...selectedBodyTypes, option]);
-    }
-  };
+    const handleToggle = (option: FilterOptionType) => {
+      const isSelected = selectedBodyTypes.some(t => t.value === option.value);
+      if (isSelected) {
+        setSelectedBodyTypes(selectedBodyTypes.filter(t => t.value !== option.value));
+      } else {
+        setSelectedBodyTypes([...selectedBodyTypes, option]);
+      }
+    };
 
-  const handleConfirm = () => {
-    onChange(selectedBodyTypes);
-  };
+    const handleConfirm = () => {
+      onChange(selectedBodyTypes);
+    };
 
-  return (
-    <CustomBottomSheetModal
-      ref={ref}
-      snapPoints={['45%']}
-      enableContentPanningGesture={true}
-      title={title}
-      footerProps={{
-        onConfirm: handleConfirm,
-      }}
-    >
-      <BottomSheetView className="flex-col">
-        {options.map(opt => (
-          <CheckboxRectButton
-            key={opt.value}
-            label={opt.label}
-            value={selectedBodyTypes.some(t => t.value === opt.value)}
-            onPress={() => handleToggle(opt)}
-          />
-        ))}
-      </BottomSheetView>
-    </CustomBottomSheetModal>
-  );
-});
+    return (
+      <CustomBottomSheetModal
+        ref={ref}
+        snapPoints={['45%']}
+        enableContentPanningGesture={true}
+        title={title}
+        footerProps={{
+          onConfirm: handleConfirm,
+        }}
+      >
+        <BottomSheetView className="flex-col">
+          {options.map(opt => (
+            <CheckboxRectButton
+              key={opt.value}
+              label={opt.label}
+              value={selectedBodyTypes.some(t => t.value === opt.value)}
+              onPress={() => handleToggle(opt)}
+            />
+          ))}
+        </BottomSheetView>
+      </CustomBottomSheetModal>
+    );
+  }
+);
 BodyTypeFilterBottomSheet.displayName = 'BodyTypeFilterBottomSheet';

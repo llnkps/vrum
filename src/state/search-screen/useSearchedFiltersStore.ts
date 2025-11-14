@@ -1,4 +1,4 @@
-import { BACKEND_FILTERS, BackendFilterKey, FilterValue } from '@/types/filter';
+import { BACKEND_FILTERS, BackendFilterKey, FilterValue, SelectFilterType } from '@/types/filter';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
@@ -35,6 +35,8 @@ export const useSearchedFiltersStore = create<SearchedFiltersStore>()(
 
         const id = generateIdFromFilters(item.filters);
         const name = generateNameFromFilters(item.filters);
+
+
 
         // Check if item with same filters already exists
         const existingItem = searchedItems.find(existing => existing.id === id);
@@ -116,6 +118,14 @@ const generateIdFromFilters = (filters: FilterType) => {
   // Helper to get filter value as string
   const getFilterValue = (filterKey: BackendFilterKey) => {
     const value = filters[filterKey];
+    if (Array.isArray(value)) {
+      // Handle arrays of labels - join them for ID generation
+      return value.join(',');
+    }
+    if (value && typeof value === 'object' && !('min' in value) && !('max' in value)) {
+      // Handle SelectFilterType objects - use keys (values) for ID (fallback for old data)
+      return Object.keys(value as SelectFilterType).join(',');
+    }
     return value ? String(value) : '';
   };
 
@@ -206,9 +216,13 @@ const generateNameFromFilters = (filters: FilterType) => {
           if (value) otherFilters.push(filterKey.replace(/_/g, ' '));
         } else if (Array.isArray(value)) {
           if (value.length > 0) otherFilters.push(`${filterKey.replace(/_/g, ' ')}: ${value.slice(0, 2).join(', ')}${value.length > 2 ? '...' : ''}`);
+        } else if (typeof value === 'object' && value !== null && !('min' in value) && !('max' in value)) {
+          // Handle SelectFilterType objects - extract labels (fallback for old data)
+          const labels = Object.values(value as SelectFilterType);
+          if (labels.length > 0) otherFilters.push(`${filterKey.replace(/_/g, ' ')}: ${labels.slice(0, 2).join(', ')}${labels.length > 2 ? '...' : ''}`);
         } else if (typeof value === 'object' && value !== null && 'min' in value && 'max' in value) {
           const { min, max } = value as { min?: number; max?: number };
-          const rangeStr = min && max ? `${min}-${max}` : (min || max || '');
+          const rangeStr = min && max ? `${min}-${max}` : min || max || '';
           if (rangeStr) otherFilters.push(`${filterKey.replace(/_/g, ' ')}: ${rangeStr}`);
         } else {
           otherFilters.push(`${filterKey.replace(/_/g, ' ')}: ${value}`);

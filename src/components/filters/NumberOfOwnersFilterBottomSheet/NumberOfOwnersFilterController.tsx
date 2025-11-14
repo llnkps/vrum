@@ -12,7 +12,7 @@ interface NumberOfOwnersFilterControllerProps {
   error?: string;
 }
 
-const NumberOfOwnersFilterController = ({ selectedOptions, onChange, error }: NumberOfOwnersFilterControllerProps) => {
+const NumberOfOwnersFilterController = React.memo(({ selectedOptions, onChange, error }: NumberOfOwnersFilterControllerProps) => {
   const { t } = useTranslation();
   const numberOfOwnersModalRef = useRef<BottomSheetRef>(null);
 
@@ -29,9 +29,7 @@ const NumberOfOwnersFilterController = ({ selectedOptions, onChange, error }: Nu
     const selectedValues = Object.values(selectedOptions);
     const selectedValuesSet = new Set(selectedValues);
 
-    const selectedLabels = options
-      .filter(option => selectedValuesSet.has(option.value))
-      .map(option => option.label);
+    const selectedLabels = options.filter(option => selectedValuesSet.has(option.value)).map(option => option.label);
 
     return selectedLabels.join(', ');
   }, [selectedOptions, options]);
@@ -61,13 +59,15 @@ const NumberOfOwnersFilterController = ({ selectedOptions, onChange, error }: Nu
         options={options}
         title={numberOfOwnersConfig?.label || 'Number of Owners'}
         selectedOptions={selectedOptionsArray}
-        onChange={(options) => {
+        onChange={options => {
           onChange(options.length > 0 ? options : undefined);
           numberOfOwnersModalRef.current?.close({ duration: 150 });
         }}
       />
     </>
   );
-};
+});
+
+NumberOfOwnersFilterController.displayName = 'NumberOfOwnersFilterController';
 
 export { NumberOfOwnersFilterController };

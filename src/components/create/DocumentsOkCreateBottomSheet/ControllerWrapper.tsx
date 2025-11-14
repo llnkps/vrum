@@ -33,7 +33,7 @@ const Wrapper = ({ value, onChange, error }: DocumentsOkControllerWrapperProps) 
       />
       <DocumentsOkCreateBottomSheet
         ref={documentsOkModalRef}
-        onChange={(documentsOk) => {
+        onChange={documentsOk => {
           onChange(documentsOk?.value || '');
           documentsOkModalRef.current?.close({ duration: 150 });
         }}

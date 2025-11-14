@@ -34,7 +34,7 @@ const Wrapper = ({ value, onChange, error }: DrivetrainControllerWrapperProps) =
       />
       <DrivetrainCreateBottomSheet
         ref={drivetrainModalRef}
-        onChange={(drivetrain) => {
+        onChange={drivetrain => {
           onChange(drivetrain?.value || '');
           drivetrainModalRef.current?.close({ duration: 150 });
         }}

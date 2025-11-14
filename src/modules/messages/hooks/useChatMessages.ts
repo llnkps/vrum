@@ -16,11 +16,9 @@ export const useChatMessages = (chat: GetChats200ResponseInner | null) => {
     queryKey: ['chat-messages', chat?.id],
     queryFn: async () => {
       if (!chat) return [];
-    
+
       const chatApi = new ChatApi(createAuthenticatedConfiguration());
-      const fetchedChat = await createAuthenticatedApiCall(async () =>
-        await chatApi.getMessages({ chatId: chat.id! })
-      );
+      const fetchedChat = await createAuthenticatedApiCall(async () => await chatApi.getMessages({ chatId: chat.id! }));
       return fetchedChat || [];
     },
     enabled: !!chat,
@@ -29,7 +27,7 @@ export const useChatMessages = (chat: GetChats200ResponseInner | null) => {
   const sendMessageMutation = useMutation({
     mutationFn: async (content: string) => {
       if (!chat) throw new Error('No chat selected');
-      console.log("SENDING MESSAGE:", content, chat);
+      console.log('SENDING MESSAGE:', content, chat);
 
       const chatApi = new ChatApi(createAuthenticatedConfiguration());
       const sendMessageRequest: SendMessageRequest = {
@@ -37,7 +35,7 @@ export const useChatMessages = (chat: GetChats200ResponseInner | null) => {
       };
 
       return await createAuthenticatedApiCall(async () => {
-        console.log("INSIDE CALL BACK");
+        console.log('INSIDE CALL BACK');
         return await chatApi.sendMessage({
           chatId: chat.id!,
           sendMessageRequest,

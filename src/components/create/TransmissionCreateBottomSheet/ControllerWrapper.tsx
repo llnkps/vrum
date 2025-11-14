@@ -34,7 +34,7 @@ const Wrapper = ({ value, onChange, error }: TransmissionControllerWrapperProps)
       />
       <TransmissionCreateBottomSheet
         ref={transmissionModalRef}
-        onChange={(transmission) => {
+        onChange={transmission => {
           onChange(transmission?.value || '');
           transmissionModalRef.current?.close({ duration: 150 });
         }}
