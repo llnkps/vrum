@@ -51,7 +51,6 @@ const BodyTypeFilterController = React.memo(({ selectedOptions, onChange, error 
         variant="bordered"
         showRightArrow
         rightIcon="chevron-down"
-        selectedValueMode="replace"
         error={error}
       />
       <BodyTypeFilterBottomSheet

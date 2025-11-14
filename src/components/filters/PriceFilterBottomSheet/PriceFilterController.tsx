@@ -4,6 +4,7 @@ import React, { useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PriceBottomSheet } from './PriceFilterBottomSheet';
 import { RangeFilterType } from '@/types/filter';
+import { useTranslateRangeFilter } from '@/utils/useTranslateRangeFilter';
 
 interface PriceFilterControllerProps {
   value?: RangeFilterType;
@@ -15,19 +16,11 @@ interface PriceFilterControllerProps {
 const PriceFilterController = React.memo(({ value, onChange, error, variant = 'button' }: PriceFilterControllerProps) => {
   const { t } = useTranslation();
   const priceModalRef = useRef<BottomSheetRef>(null);
+  const selectedValue = useTranslateRangeFilter('price', value);
 
   const handlePresentPriceModalPress = useCallback(() => {
     priceModalRef.current?.present();
   }, []);
-
-  const selectedValue = React.useMemo(() => {
-    if (!value) return undefined;
-    const { from, to } = value;
-    if (from && to) return t('filters.price.range', { from: t('filters.price.from', { value: from }), to: t('filters.price.to', { value: to }) });
-    if (from) return t('filters.price.from', { value: from });
-    if (to) return t('filters.price.to', { value: to });
-    return undefined;
-  }, [value, t]);
 
   return (
     <>
@@ -37,7 +30,6 @@ const PriceFilterController = React.memo(({ value, onChange, error, variant = 'b
         onPress={handlePresentPriceModalPress}
         variant={variant}
         showRightArrow={false}
-        selectedValueMode="replace"
         error={error}
       />
       <PriceBottomSheet

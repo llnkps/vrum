@@ -7,6 +7,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text } from 'react-native';
+import { formatRangeFilterValue } from '@/utils/useTranslateRangeFilter';
 
 export const ShowAdvertisementButton = React.memo(() => {
   const router = useRouter();
@@ -70,10 +71,10 @@ export const ShowAdvertisementButton = React.memo(() => {
 
     // Add other filters - convert SelectFilterType to arrays of labels
     if (yearRange) {
-      filters[BACKEND_FILTERS.YEAR] = yearRange;
+      filters[BACKEND_FILTERS.YEAR] = formatRangeFilterValue(BACKEND_FILTERS.YEAR, yearRange, t);
     }
     if (priceRange) {
-      filters[BACKEND_FILTERS.PRICE] = priceRange;
+      filters[BACKEND_FILTERS.PRICE] = formatRangeFilterValue(BACKEND_FILTERS.PRICE, priceRange, t);
     }
     if (transmission && Object.keys(transmission).length > 0) {
       filters[BACKEND_FILTERS.TRANSMISSION] = getLabelsForSelectedValues(BACKEND_FILTERS.TRANSMISSION, transmission);
@@ -106,13 +107,13 @@ export const ShowAdvertisementButton = React.memo(() => {
       filters[BACKEND_FILTERS.TRADE_ALLOW] = getLabelsForSelectedValues(BACKEND_FILTERS.TRADE_ALLOW, tradeAllow);
     }
     if (engineCapacityRange) {
-      filters[BACKEND_FILTERS.ENGINE_CAPACITY] = engineCapacityRange;
+      filters[BACKEND_FILTERS.ENGINE_CAPACITY] = formatRangeFilterValue(BACKEND_FILTERS.ENGINE_CAPACITY, engineCapacityRange, t);
     }
     if (powerRange) {
-      filters[BACKEND_FILTERS.POWER] = powerRange;
+      filters[BACKEND_FILTERS.POWER] = formatRangeFilterValue(BACKEND_FILTERS.POWER, powerRange, t);
     }
     if (mileageRange) {
-      filters[BACKEND_FILTERS.MILEAGE] = mileageRange;
+      filters[BACKEND_FILTERS.MILEAGE] = formatRangeFilterValue(BACKEND_FILTERS.MILEAGE, mileageRange, t);
     }
     if (onlyUnsold) {
       filters[BACKEND_FILTERS.UNSOLD] = true;
@@ -124,7 +125,7 @@ export const ShowAdvertisementButton = React.memo(() => {
     console.log(filters, transmission)
     // Only save if there are actual filters
     if (Object.keys(filters).length > 0) {
-      // addSearchedItem({ filters });
+      addSearchedItem({ filters });
     }
   };
 

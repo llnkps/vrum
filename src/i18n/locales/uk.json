@@ -1,7 +1,12 @@
 {
   "common": {
     "italian": "Italiano",
-    "english": "Inglese"
+    "english": "Inglese",
+    "cancel": "Скасувати",
+    "confirm": "Підтвердити",
+    "save": "Зберегти",
+    "loading": "Завантаження...",
+    "error": "Помилка"
   },
   "Header": {
     "back": "Indietro"
@@ -146,40 +151,50 @@
     "unsold": {
       "label": "Не продано"
     },
-    "engineCapacity": {
+    "engine_capacity": {
       "label": "Об'єм двигуна",
       "placeholder": "Об'єм двигуна (л)",
       "from": "від {{value}}",
       "to": "до {{value}}",
-      "range": "{{from}} - {{to}}"
+      "range": "{{from}} - {{to}}",
+      "fromLabel": "від",
+      "toLabel": "до"
     },
     "power": {
       "label": "Потужність",
       "placeholder": "Потужність (к.с.)",
       "from": "від {{value}}",
       "to": "до {{value}}",
-      "range": "{{from}} - {{to}}"
+      "range": "{{from}} - {{to}}",
+      "fromLabel": "від",
+      "toLabel": "до"
     },
     "mileage": {
       "label": "Пробіг",
       "placeholder": "Пробіг (км)",
       "from": "від {{value}}",
       "to": "до {{value}}",
-      "range": "{{from}} - {{to}}"
+      "range": "{{from}} - {{to}}",
+      "fromLabel": "від",
+      "toLabel": "до"
     },
     "year": {
       "label": "Рік",
       "placeholder": "Рік випуску",
       "from": "від {{value}}",
       "to": "до {{value}}",
-      "range": "{{from}} - {{to}}"
+      "range": "{{from}} - {{to}}",
+      "fromLabel": "від",
+      "toLabel": "до"
     },
     "price": {
       "label": "Ціна",
       "placeholder": "Ціна",
       "from": "від {{value}}",
       "to": "до {{value}}",
-      "range": "{{from}} - {{to}}"
+      "range": "{{from}} - {{to}}",
+      "fromLabel": "від",
+      "toLabel": "до"
     },
     "firmCountryGroup": {
       "label": "Виробник",

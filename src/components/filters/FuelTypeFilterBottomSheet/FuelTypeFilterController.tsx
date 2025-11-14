@@ -51,7 +51,6 @@ const FuelTypeFilterController = React.memo(({ selectedOptions, onChange, error 
         variant="bordered"
         showRightArrow
         rightIcon="chevron-down"
-        selectedValueMode="replace"
         error={error}
       />
       <FuelTypeFilterBottomSheet

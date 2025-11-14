@@ -37,7 +37,6 @@ const TradeAllowFilterController = ({ selectedOption, onChange, error }: TradeAl
         variant="bordered"
         showRightArrow
         rightIcon="chevron-down"
-        selectedValueMode="replace"
         error={error}
       />
       <TradeAllowFilterBottomSheet

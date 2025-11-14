@@ -37,7 +37,6 @@ const DocumentsOkFilterController = ({ selectedOption, onChange, error }: Docume
         variant="bordered"
         showRightArrow
         rightIcon="chevron-down"
-        selectedValueMode="replace"
         error={error}
       />
       <DocumentsOkFilterBottomSheet

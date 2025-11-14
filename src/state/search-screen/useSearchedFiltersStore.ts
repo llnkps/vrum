@@ -36,8 +36,6 @@ export const useSearchedFiltersStore = create<SearchedFiltersStore>()(
         const id = generateIdFromFilters(item.filters);
         const name = generateNameFromFilters(item.filters);
 
-
-
         // Check if item with same filters already exists
         const existingItem = searchedItems.find(existing => existing.id === id);
 

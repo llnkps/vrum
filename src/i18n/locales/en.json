@@ -1,7 +1,12 @@
 {
   "common": {
     "italian": "Italian",
-    "english": "English"
+    "english": "English",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "loading": "Loading...",
+    "error": "Error"
   },
   "Header": {
     "back": "Back"
@@ -147,40 +152,50 @@
     "unsold": {
       "label": "Unsold"
     },
-    "engineCapacity": {
+    "engine_capacity": {
       "label": "Engine Capacity",
       "placeholder": "Engine Capacity (L)",
       "from": "from {{value}}",
       "to": "to {{value}}",
-      "range": "{{from}} - {{to}}"
+      "range": "{{from}} - {{to}}",
+      "fromLabel": "from",
+      "toLabel": "to"
     },
     "power": {
       "label": "Power",
-      "placeholder": "Power (HP)",
+      "placeholder": "Power (hp)",
       "from": "from {{value}}",
       "to": "to {{value}}",
-      "range": "{{from}} - {{to}}"
+      "range": "{{from}} - {{to}}",
+      "fromLabel": "from",
+      "toLabel": "to"
     },
     "mileage": {
       "label": "Mileage",
       "placeholder": "Mileage (km)",
       "from": "from {{value}}",
       "to": "to {{value}}",
-      "range": "{{from}} - {{to}}"
+      "range": "{{from}} - {{to}}",
+      "fromLabel": "from",
+      "toLabel": "to"
     },
     "year": {
       "label": "Year",
       "placeholder": "Year of manufacture",
       "from": "from {{value}}",
       "to": "to {{value}}",
-      "range": "{{from}} - {{to}}"
+      "range": "{{from}} - {{to}}",
+      "fromLabel": "from",
+      "toLabel": "to"
     },
     "price": {
       "label": "Price",
       "placeholder": "Price",
       "from": "from {{value}}",
       "to": "to {{value}}",
-      "range": "{{from}} - {{to}}"
+      "range": "{{from}} - {{to}}",
+      "fromLabel": "from",
+      "toLabel": "to"
     },
     "firmCountryGroup": {
       "label": "Manufacturer",

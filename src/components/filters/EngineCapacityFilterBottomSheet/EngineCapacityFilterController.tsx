@@ -3,7 +3,8 @@ import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow
 import React, { useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import EngineCapacityFilterBottomSheet from './EngineCapacityFilterBottomSheet';
-import { RangeFilterType } from '@/types/filter';
+import { BACKEND_FILTERS, RangeFilterType } from '@/types/filter';
+import { useTranslateRangeFilter } from '@/utils/useTranslateRangeFilter';
 
 interface EngineCapacityFilterControllerProps {
   value?: RangeFilterType;
@@ -14,30 +15,21 @@ interface EngineCapacityFilterControllerProps {
 const EngineCapacityFilterController = React.memo(({ value, onChange, error }: EngineCapacityFilterControllerProps) => {
   const { t } = useTranslation();
   const engineCapacityModalRef = useRef<BottomSheetRef>(null);
+  const selectedValue = useTranslateRangeFilter(BACKEND_FILTERS.ENGINE_CAPACITY, value);
 
   const handlePresentEngineCapacityModalPress = useCallback(() => {
     engineCapacityModalRef.current?.present();
   }, []);
 
-  const selectedValue = React.useMemo(() => {
-    if (!value) return undefined;
-    const { from, to } = value;
-    if (from && to) return t('filters.engineCapacity.range', { from: t('filters.engineCapacity.from', { value: from }), to: t('filters.engineCapacity.to', { value: to }) });
-    if (from) return t('filters.engineCapacity.from', { value: from });
-    if (to) return t('filters.engineCapacity.to', { value: to });
-    return undefined;
-  }, [value, t]);
-
   return (
     <>
       <TouchableHighlightRow
-        label={t('filters.engineCapacity.label')}
+        label={t(`filters.${BACKEND_FILTERS.ENGINE_CAPACITY}.label`)}
         selectedValue={selectedValue}
         onPress={handlePresentEngineCapacityModalPress}
         variant="bordered"
         showRightArrow
         rightIcon="chevron-down"
-        selectedValueMode="replace"
         error={error}
       />
       <EngineCapacityFilterBottomSheet

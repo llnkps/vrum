@@ -4,8 +4,8 @@ import { SelectedRegionsBadges } from '@/components/global/SelectedItemsBadges';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
 import { CustomRectButton, SelectableButton } from '@/components/ui/button';
 import { selectSelectedBrands, selectSelectedGenerations, useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
-import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import React, { useCallback, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -61,10 +61,22 @@ const SettingScreenFilter = () => {
     setMileageRange,
     setNumberOfOwners,
     setSeller,
+    clearSelections,
   } = store;
 
   const selectedBrands = selectSelectedBrands(store);
   const selectedGenerations = selectSelectedGenerations(store);
+
+  useFocusEffect(
+    useCallback(() => {
+      // This runs when screen comes into focus
+      return () => {
+        // This cleanup function runs when screen loses focus (user navigates back)
+        clearSelections();
+      };
+    }, [clearSelections])
+  );
+
   return (
     <>
       <SafeAreaView>

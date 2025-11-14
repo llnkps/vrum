@@ -1,11 +1,84 @@
 import { CustomTheme } from '@/theme';
 import { useTheme } from '@react-navigation/native';
 import { FC, ReactNode } from 'react';
-import { Text, View, ViewStyle, TextStyle, ActivityIndicator } from 'react-native';
+import { Text, View, ViewStyle, TextStyle, ActivityIndicator, StyleSheet } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 import Entypo from '@expo/vector-icons/Entypo';
 
-import clsx from 'clsx';
+const styles = StyleSheet.create({
+  button: {
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  buttonCenter: {
+    justifyContent: 'center',
+  },
+  buttonSpaceBetween: {
+    justifyContent: 'space-between',
+  },
+  containerBase: {
+    marginVertical: 2,
+  },
+  containerFullWidth: {
+    flex: 1,
+  },
+  containerBordered: {
+    borderBottomWidth: 1,
+  },
+  containerDefault: {
+    backgroundColor: 'transparent', // Will be overridden by theme
+    borderRadius: 8,
+  },
+  containerButton: {
+    backgroundColor: 'transparent', // Will be overridden by theme
+    borderWidth: 1,
+    borderRadius: 8,
+  },
+  iconContainer: {
+    marginRight: 2,
+  },
+  contentContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  rightContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  subtitle: {
+    marginTop: 2,
+  },
+  error: {
+    marginTop: 2,
+  },
+  // Text styles
+  selectedValueReplace: {
+    fontSize: 18, // text-lg
+    fontWeight: 'bold',
+  },
+  labelContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4, // gap-1
+  },
+  label: {
+    fontWeight: 'bold',
+  },
+  required: {
+    color: 'transparent', // Will be overridden by theme
+  },
+  subtitleText: {
+    fontSize: 14, // text-sm
+  },
+  selectedValueUnder: {
+    // Will be combined with theme colors
+  },
+  errorText: {
+    fontSize: 14, // text-sm
+  },
+});
 
 type TouchableHighlightRowProps = {
   label: string;
@@ -50,49 +123,39 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
 }) => {
   const theme = useTheme() as CustomTheme;
 
-  const getButtonStyle = () => {
-    return {
-      paddingVertical: 12,
-      paddingHorizontal: 14,
-    };
-  };
-
   const getContainerStyle = () => {
     const baseStyle: ViewStyle = {
-      flex: fullWidth ? 1 : undefined,
+      ...styles.containerBase,
+      ...(fullWidth ? styles.containerFullWidth : {}),
     };
 
     switch (variant) {
       case 'bordered':
-        return {
-          ...baseStyle,
-          borderBottomColor: theme.colors.border,
-          borderBottomWidth: 1,
-          ...containerStyle,
-        };
+        return StyleSheet.flatten([
+          baseStyle,
+          styles.containerBordered,
+          { borderBottomColor: theme.colors.border },
+          containerStyle,
+        ]);
       case 'plain':
-        return {
-          ...baseStyle,
-          ...containerStyle,
-        };
+        return StyleSheet.flatten([baseStyle, containerStyle]);
       case 'button':
-        return {
-          ...baseStyle,
-          backgroundColor: theme.colors.button.neutral,
-          borderColor: theme.colors.border,
-          borderWidth: 1,
-          borderRadius: 8,
-          marginVertical: 2,
-          ...containerStyle,
-        };
+        return StyleSheet.flatten([
+          baseStyle,
+          styles.containerButton,
+          {
+            backgroundColor: theme.colors.button.neutral,
+            borderColor: theme.colors.border,
+          },
+          containerStyle,
+        ]);
       default:
-        return {
-          ...baseStyle,
-          backgroundColor: theme.colors.background,
-          borderRadius: 8,
-          marginVertical: 2,
-          ...containerStyle,
-        };
+        return StyleSheet.flatten([
+          baseStyle,
+          styles.containerDefault,
+          { backgroundColor: theme.colors.background },
+          containerStyle,
+        ]);
     }
   };
 
@@ -105,49 +168,79 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
     <View style={getContainerStyle()}>
       <RectButton
         onPress={handlePress}
-        style={{
-          ...getButtonStyle(),
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: centerText ? 'center' : 'space-between',
-        }}
+        style={StyleSheet.flatten([
+          styles.button,
+          centerText ? styles.buttonCenter : styles.buttonSpaceBetween,
+        ])}
         rippleColor={theme.colors.border}
         enabled={!disabled}
       >
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          {icon && <View style={{ marginRight: 2 }}>{icon}</View>}
+        <View style={styles.contentContainer}>
+          {icon && <View style={styles.iconContainer}>{icon}</View>}
           <View>
             {selectedValue && selectedValueMode === 'replace' ? (
-              <Text className="text-lg font-bold  text-font-subtle dark:text-font-subtle-dark" style={selectedValueStyle}>
+              <Text
+                style={StyleSheet.flatten([
+                  styles.selectedValueReplace,
+                  { color: theme.colors.text },
+                  selectedValueStyle,
+                ])}
+              >
                 {selectedValue}
               </Text>
             ) : (
               <>
-                <View className="align-items-center flex-row gap-1">
+                <View style={styles.labelContainer}>
                   <Text
-                    className={clsx('font-bold text-font dark:text-font-dark', {
-                      'text-font dark:text-font-dark': !disabled,
-                      'text-font-disabled dark:text-font-disabled-dark': disabled,
-                    })}
-                    style={labelStyle}
+                    style={StyleSheet.flatten([
+                      styles.label,
+                      {
+                        color: disabled
+                          ? theme.colors.tabBarInactiveTintColor
+                          : theme.colors.text,
+                      },
+                      labelStyle,
+                    ])}
                   >
                     {label}
                   </Text>
-                  <View>{required && <Text className="text-red-500">*</Text>}</View>
+                  {required && (
+                    <Text style={StyleSheet.flatten([styles.required, { color: theme.colors.textDanger }])}>
+                      *
+                    </Text>
+                  )}
                 </View>
 
                 {subtitle && (
-                  <Text className={clsx('text-sm text-font-subtle dark:text-font-subtle-dark')} style={{ marginTop: 2 }}>
+                  <Text
+                    style={StyleSheet.flatten([
+                      styles.subtitleText,
+                      styles.subtitle,
+                      { color: theme.colors.tabBarInactiveTintColor },
+                    ])}
+                  >
                     {subtitle}
                   </Text>
                 )}
                 {selectedValue && selectedValueMode === 'under' && (
-                  <Text className="text-font-subtle dark:text-font-subtle-dark" style={selectedValueStyle}>
+                  <Text
+                    style={StyleSheet.flatten([
+                      styles.selectedValueUnder,
+                      { color: theme.colors.tabBarInactiveTintColor },
+                      selectedValueStyle,
+                    ])}
+                  >
                     {selectedValue}
                   </Text>
                 )}
                 {error && (
-                  <Text className="text-sm text-red-500" style={{ marginTop: 2 }}>
+                  <Text
+                    style={StyleSheet.flatten([
+                      styles.errorText,
+                      styles.error,
+                      { color: theme.colors.textDanger },
+                    ])}
+                  >
                     {error}
                   </Text>
                 )}
@@ -157,7 +250,7 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
         </View>
 
         {!centerText && (
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={styles.rightContainer}>
             {loading ? (
               <ActivityIndicator size="small" color={theme.colors.icon} />
             ) : (

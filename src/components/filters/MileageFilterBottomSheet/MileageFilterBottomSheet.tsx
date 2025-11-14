@@ -3,13 +3,15 @@ import CustomWheelPicker from '@/components/global/CustomWheelPicker';
 import { RangeFilterType } from '@/types/filter';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import { PickerItem, ValueChangedEvent } from '@quidone/react-native-wheel-picker';
-import React, { forwardRef, useState } from 'react';
-import { Text, View } from 'react-native';
+import React, { forwardRef, memo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { View } from 'react-native';
 
 type MileageModalProps = {
   onChange: (range: RangeFilterType) => void;
 };
 
+// Move mileage arrays outside component to avoid recreation on every render
 const minMileageArray = [
   { value: undefined as number | undefined, label: '--' },
   { value: 1000, label: '1000' },
@@ -28,7 +30,8 @@ const maxMileageArray = [
   }),
 ];
 
-const MileageFilterBottomSheet = forwardRef<BottomSheetRef, MileageModalProps>(({ onChange }, ref) => {
+const MileageFilterBottomSheet = memo(forwardRef<BottomSheetRef, MileageModalProps>(({ onChange }, ref) => {
+  const { t } = useTranslation();
   const [minValue, setMinValue] = useState<number | undefined>(undefined);
   const [maxValue, setMaxValue] = useState<number | undefined>(undefined);
 
@@ -48,7 +51,7 @@ const MileageFilterBottomSheet = forwardRef<BottomSheetRef, MileageModalProps>((
     <CustomBottomSheetModal
       ref={ref}
       snapPoints={['45%']}
-      title={'Пробег'}
+      title={t('filters.mileage.label')}
       footerProps={{
         onConfirm: handleConfirm,
       }}
@@ -56,16 +59,16 @@ const MileageFilterBottomSheet = forwardRef<BottomSheetRef, MileageModalProps>((
       <BottomSheetView>
         <View className="flex-row items-center justify-center gap-x-4">
           <View className="flex-1">
-            <CustomWheelPicker data={minMileageArray} value={minValue} onValueChanged={handleMinChange} label="От" />
+            <CustomWheelPicker data={minMileageArray} value={minValue} onValueChanged={handleMinChange} label={t('filters.mileage.fromLabel')} />
           </View>
           <View className="flex-1">
-            <CustomWheelPicker data={maxMileageArray} value={maxValue} onValueChanged={handleMaxChange} label="До" />
+            <CustomWheelPicker data={maxMileageArray} value={maxValue} onValueChanged={handleMaxChange} label={t('filters.mileage.toLabel')} />
           </View>
         </View>
       </BottomSheetView>
     </CustomBottomSheetModal>
   );
-});
+}));
 MileageFilterBottomSheet.displayName = 'MileageFilterBottomSheet';
 
 export default MileageFilterBottomSheet;

@@ -1,6 +1,6 @@
 import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
-import { BottomSheetView } from '@gorhom/bottom-sheet';
+import { BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
 import { FilterOptionType } from '@/types/filter';
 
@@ -35,14 +35,14 @@ export const NumberOfOwnersFilterBottomSheet = forwardRef<BottomSheetRef, Number
     return (
       <CustomBottomSheetModal
         ref={ref}
-        snapPoints={['33%']}
+        snapPoints={['35%']}
         enableContentPanningGesture={true}
         title={title}
         footerProps={{
           onConfirm: handleConfirm,
         }}
       >
-        <BottomSheetView className="flex-col">
+        <BottomSheetScrollView className="flex-col" enableFooterMarginAdjustment={true}>
           {options.map(opt => (
             <CheckboxRectButton
               key={opt.value}
@@ -51,7 +51,7 @@ export const NumberOfOwnersFilterBottomSheet = forwardRef<BottomSheetRef, Number
               onPress={() => handleToggle(opt)}
             />
           ))}
-        </BottomSheetView>
+        </BottomSheetScrollView>
       </CustomBottomSheetModal>
     );
   }

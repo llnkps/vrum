@@ -51,7 +51,6 @@ const SellerFilterController = React.memo(({ selectedOptions, onChange, error }:
         variant="plain"
         showRightArrow
         rightIcon="chevron-down"
-        selectedValueMode="replace"
         error={error}
       />
       <SellerFilterBottomSheet

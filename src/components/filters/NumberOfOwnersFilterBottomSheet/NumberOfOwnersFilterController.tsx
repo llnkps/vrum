@@ -51,7 +51,6 @@ const NumberOfOwnersFilterController = React.memo(({ selectedOptions, onChange, 
         variant="bordered"
         showRightArrow
         rightIcon="chevron-down"
-        selectedValueMode="replace"
         error={error}
       />
       <NumberOfOwnersFilterBottomSheet

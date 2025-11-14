@@ -15,6 +15,14 @@ const Overlay = ({ itemHeight, overlayItemStyle, label }: OverlayProps) => {
 
   const displayLabel = label ? `${label}` : '';
 
+  const themedStyles = StyleSheet.create({
+    labelText: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      color: theme.colors.text,
+    },
+  });
+
   return (
     <View style={[styles.overlayContainer]} pointerEvents={'none'}>
       <View
@@ -28,7 +36,7 @@ const Overlay = ({ itemHeight, overlayItemStyle, label }: OverlayProps) => {
       />
       {displayLabel && (
         <View style={styles.labelContainer}>
-          <Text style={[styles.labelText, { color: theme.colors.text }]}>{displayLabel}</Text>
+          <Text style={themedStyles.labelText}>{displayLabel}</Text>
         </View>
       )}
     </View>
@@ -51,10 +59,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 4,
-  },
-  labelText: {
-    fontSize: 16,
-    fontWeight: 'bold',
   },
 });
 export default memo(Overlay);

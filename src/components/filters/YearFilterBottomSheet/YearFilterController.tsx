@@ -4,6 +4,7 @@ import React, { useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { YearBottomSheet } from './YearFilterBottomSheet';
 import { RangeFilterType } from '@/types/filter';
+import { useTranslateRangeFilter } from '@/utils/useTranslateRangeFilter';
 
 interface YearFilterControllerProps {
   value?: RangeFilterType;
@@ -15,19 +16,11 @@ interface YearFilterControllerProps {
 const YearFilterController = React.memo(({ value, onChange, error, variant = 'button' }: YearFilterControllerProps) => {
   const { t } = useTranslation();
   const yearModalRef = useRef<BottomSheetRef>(null);
+  const selectedValue = useTranslateRangeFilter('year', value);
 
   const handlePresentYearModalPress = useCallback(() => {
     yearModalRef.current?.present();
   }, []);
-
-  const selectedValue = React.useMemo(() => {
-    if (!value) return undefined;
-    const { from, to } = value;
-    if (from && to) return t('filters.year.range', { from: t('filters.year.from', { value: from }), to: t('filters.year.to', { value: to }) });
-    if (from) return t('filters.year.from', { value: from });
-    if (to) return t('filters.year.to', { value: to });
-    return undefined;
-  }, [value, t]);
 
   return (
     <>
@@ -37,7 +30,6 @@ const YearFilterController = React.memo(({ value, onChange, error, variant = 'bu
         onPress={handlePresentYearModalPress}
         variant={variant}
         showRightArrow={false}
-        selectedValueMode="replace"
         error={error}
       />
       <YearBottomSheet

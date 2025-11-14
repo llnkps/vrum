@@ -1,7 +1,12 @@
 {
   "common": {
     "italian": "Italiano",
-    "english": "Inglese"
+    "english": "Inglese",
+    "cancel": "Anulează",
+    "confirm": "Confirmă",
+    "save": "Salvează",
+    "loading": "Se încarcă...",
+    "error": "Eroare"
   },
   "Header": {
     "back": "Indietro"
@@ -146,40 +151,50 @@
     "unsold": {
       "label": "Nevândut"
     },
-    "engineCapacity": {
+    "engine_capacity": {
       "label": "Capacitate motor",
       "placeholder": "Capacitate motor (L)",
       "from": "de la {{value}}",
       "to": "până la {{value}}",
-      "range": "{{from}} - {{to}}"
+      "range": "{{from}} - {{to}}",
+      "fromLabel": "de la",
+      "toLabel": "până la"
     },
     "power": {
       "label": "Putere",
       "placeholder": "Putere (CP)",
       "from": "de la {{value}}",
       "to": "până la {{value}}",
-      "range": "{{from}} - {{to}}"
+      "range": "{{from}} - {{to}}",
+      "fromLabel": "de la",
+      "toLabel": "până la"
     },
     "mileage": {
       "label": "Kilometraj",
       "placeholder": "Kilometraj (km)",
       "from": "de la {{value}}",
       "to": "până la {{value}}",
-      "range": "{{from}} - {{to}}"
+      "range": "{{from}} - {{to}}",
+      "fromLabel": "de la",
+      "toLabel": "până la"
     },
     "year": {
       "label": "An",
       "placeholder": "Anul fabricației",
       "from": "de la {{value}}",
       "to": "până la {{value}}",
-      "range": "{{from}} - {{to}}"
+      "range": "{{from}} - {{to}}",
+      "fromLabel": "de la",
+      "toLabel": "până la"
     },
     "price": {
       "label": "Preț",
       "placeholder": "Preț",
       "from": "de la {{value}}",
       "to": "până la {{value}}",
-      "range": "{{from}} - {{to}}"
+      "range": "{{from}} - {{to}}",
+      "fromLabel": "de la",
+      "toLabel": "până la"
     },
     "firmCountryGroup": {
       "label": "Producător",

@@ -51,7 +51,6 @@ const DrivetrainFilterController = React.memo(({ selectedOptions, onChange, erro
         variant="bordered"
         showRightArrow
         rightIcon="chevron-down"
-        selectedValueMode="replace"
         error={error}
       />
       <DrivetrainFilterBottomSheet

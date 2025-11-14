@@ -1,8 +1,8 @@
-import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
-import { BottomSheetView } from '@gorhom/bottom-sheet';
-import React, { forwardRef } from 'react';
+import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import { FilterOptionType } from '@/types/filter';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import React, { forwardRef } from 'react';
 
 type BodyTypeFilterBottomSheetProps = {
   onChange: (values: FilterOptionType[]) => void;
@@ -42,7 +42,7 @@ export const BodyTypeFilterBottomSheet = forwardRef<BottomSheetRef, BodyTypeFilt
           onConfirm: handleConfirm,
         }}
       >
-        <BottomSheetView className="flex-col">
+        <BottomSheetScrollView className="flex-col">
           {options.map(opt => (
             <CheckboxRectButton
               key={opt.value}
@@ -51,7 +51,7 @@ export const BodyTypeFilterBottomSheet = forwardRef<BottomSheetRef, BodyTypeFilt
               onPress={() => handleToggle(opt)}
             />
           ))}
-        </BottomSheetView>
+        </BottomSheetScrollView>
       </CustomBottomSheetModal>
     );
   }

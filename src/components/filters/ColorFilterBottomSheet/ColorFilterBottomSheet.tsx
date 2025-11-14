@@ -1,8 +1,8 @@
-import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
-import { BottomSheetView } from '@gorhom/bottom-sheet';
-import React, { forwardRef } from 'react';
+import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import { FilterOptionType } from '@/types/filter';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import React, { forwardRef } from 'react';
 import { Text, View } from 'react-native';
 
 type ColorFilterBottomSheetProps = {
@@ -62,7 +62,7 @@ export const ColorFilterBottomSheet = forwardRef<BottomSheetRef, ColorFilterBott
           onConfirm: handleConfirm,
         }}
       >
-        <BottomSheetView className="flex-col">
+        <BottomSheetScrollView className="flex-col" enableFooterMarginAdjustment={true}>
           {options.map(option => (
             <CheckboxRectButton
               key={option.value}
@@ -86,7 +86,7 @@ export const ColorFilterBottomSheet = forwardRef<BottomSheetRef, ColorFilterBott
               }
             />
           ))}
-        </BottomSheetView>
+        </BottomSheetScrollView>
       </CustomBottomSheetModal>
     );
   }

@@ -1,8 +1,8 @@
-import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
-import { BottomSheetView } from '@gorhom/bottom-sheet';
-import React, { forwardRef } from 'react';
+import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import { FilterOptionType } from '@/types/filter';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import React, { forwardRef } from 'react';
 
 type DrivetrainFilterBottomSheetProps = {
   onChange: (values: FilterOptionType[]) => void;
@@ -35,14 +35,14 @@ export const DrivetrainFilterBottomSheet = forwardRef<BottomSheetRef, Drivetrain
     return (
       <CustomBottomSheetModal
         ref={ref}
-        snapPoints={['30%']}
+        snapPoints={['35%']}
         enableContentPanningGesture={true}
         title={title}
         footerProps={{
           onConfirm: handleConfirm,
         }}
       >
-        <BottomSheetView className="flex-col">
+        <BottomSheetScrollView className="flex-col" enableFooterMarginAdjustment={true}>
           {options.map(opt => (
             <CheckboxRectButton
               key={opt.value}
@@ -51,7 +51,7 @@ export const DrivetrainFilterBottomSheet = forwardRef<BottomSheetRef, Drivetrain
               onPress={() => handleToggle(opt)}
             />
           ))}
-        </BottomSheetView>
+        </BottomSheetScrollView>
       </CustomBottomSheetModal>
     );
   }

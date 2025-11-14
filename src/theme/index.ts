@@ -28,11 +28,26 @@ export interface CustomTheme extends NavigationTheme {
     textSubtle: string;
     textDanger: string;
   };
+  text: {
+    xs: number;
+    sm: number;
+    base: number;
+    lg: number;
+  }
 }
+
+const Text = {
+  xs: 12,
+  sm: 14,
+  base: 16,
+  lg: 18,
+}
+
 
 // for navigation elements: tab, header
 export const MyLightTheme: CustomTheme = {
   ...DefaultTheme,
+  text: Text,
   colors: {
     ...DefaultTheme.colors,
     background: '#FFFFFF',
@@ -69,6 +84,7 @@ export const MyLightTheme: CustomTheme = {
 
 export const MyDarkTheme: CustomTheme = {
   ...DarkTheme,
+  text: Text,
   colors: {
     ...DarkTheme.colors,
     background: '#000',
