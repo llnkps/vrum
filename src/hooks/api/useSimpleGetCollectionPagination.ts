@@ -3,11 +3,6 @@ import { BACKEND_FILTERS, RangeFilterType, SelectFilterType } from '@/types/filt
 import { SortMethod } from '@/types/sort';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
-type BottomSheetOptionType = {
-  value: string;
-  label: string;
-};
-
 type props = {
   brands?: SimpleAutoBrand[];
   models?: Record<number, SimpleAutoModel[]>;
@@ -30,6 +25,7 @@ type props = {
   powerRange?: RangeFilterType;
   mileageRange?: RangeFilterType;
   sortMethod?: SortMethod;
+  onSuccess?: (data: any) => void;
 };
 
 export const useSimpleGetCollectionPagination = ({
@@ -59,7 +55,6 @@ export const useSimpleGetCollectionPagination = ({
   return useInfiniteQuery({
     gcTime: 0,
     staleTime: 0,
-
     queryKey: [
       'advertisement-simple-auto-pagination',
       brands,

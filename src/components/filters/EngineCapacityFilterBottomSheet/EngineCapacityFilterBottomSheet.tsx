@@ -51,6 +51,7 @@ const EngineCapacityBottomSheet = memo(
           <View className="flex-row items-center justify-center gap-x-10 px-4 pt-5">
             <View className="flex-1">
               <CustomWheelPicker
+                virtualized={true}
                 data={engineCapacity}
                 value={minValue}
                 onValueChanged={handleMinChange}
@@ -59,6 +60,7 @@ const EngineCapacityBottomSheet = memo(
             </View>
             <View className="flex-1">
               <CustomWheelPicker
+                virtualized={true}
                 data={engineCapacity}
                 value={maxValue}
                 onValueChanged={handleMaxChange}

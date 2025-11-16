@@ -215,5 +215,14 @@
       "lviv": "Lvov",
       "odesa": "Odesa"
     }
+  },
+  "units": {
+    "currency": "€",
+    "million": "mln",
+    "thousand": "k",
+    "power": "CP",
+    "engineCapacity": "l",
+    "year": "ani",
+    "mileage": "km"
   }
 }

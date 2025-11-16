@@ -227,8 +227,8 @@ const FILTER_CONFIGS = {
   [BACKEND_FILTERS.ENGINE_CAPACITY]: {
     key: BACKEND_FILTERS.ENGINE_CAPACITY,
     type: 'range' as const,
-    labelKey: 'filters.engineCapacity.label',
-    placeholder: 'filters.engineCapacity.placeholder',
+    labelKey: 'filters.engine_capacity.label',
+    placeholder: 'filters.engine_capacity.placeholder',
     min: 0.5,
     max: 10.0,
     step: 0.1,

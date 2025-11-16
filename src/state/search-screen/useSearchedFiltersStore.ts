@@ -1,7 +1,29 @@
 import { BACKEND_FILTERS, BackendFilterKey, FilterValue, SelectFilterType } from '@/types/filter';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+
+
+
+
+import { StateStorage } from 'zustand/middleware'
+import { createMMKV } from 'react-native-mmkv'
+
+
+const storage = createMMKV()
+
+export const zustandStorage = createJSONStorage(() => ({
+  setItem: (name, value) => {
+    storage.set(name, value);
+  },
+  getItem: name => {
+    const value = storage.getString(name);
+    return value ?? null;
+  },
+  removeItem: name => {
+    storage.remove(name);
+  },
+}));
+
 
 type FilterType = Partial<Record<BackendFilterKey, FilterValue>>;
 
@@ -15,7 +37,9 @@ export type SearchedItem = {
 
 type SearchedFiltersStore = {
   searchedItems: SearchedItem[];
+  currentSessionId: string | null;
   addSearchedItem: (item: Omit<SearchedItem, 'id' | 'timestamp' | 'name'>) => void;
+  setCurrentSessionId: (id: string | null) => void;
   removeSearchedFilter: (id: string) => void;
 
   clearExpiredFilters: () => void;
@@ -29,20 +53,23 @@ export const useSearchedFiltersStore = create<SearchedFiltersStore>()(
   persist(
     (set, get) => ({
       searchedItems: [],
+      currentSessionId: null,
+
+      setCurrentSessionId: id => set({ currentSessionId: id }),
 
       addSearchedItem: item => {
-        const { searchedItems } = get();
+        const { searchedItems, currentSessionId } = get();
 
-        const id = generateIdFromFilters(item.filters);
+        const id = currentSessionId || generateIdFromFilters(item.filters);
         const name = generateNameFromFilters(item.filters);
 
-        // Check if item with same filters already exists
+        // Check if item with same id already exists
         const existingItem = searchedItems.find(existing => existing.id === id);
 
         if (existingItem) {
-          // Update timestamp instead of adding duplicate
+          // Update the existing item with new filters and timestamp
           set({
-            searchedItems: searchedItems.map(f => (f.id === existingItem.id ? { ...f, timestamp: Date.now() } : f)),
+            searchedItems: searchedItems.map(f => (f.id === existingItem.id ? { ...item, id, name, timestamp: Date.now(), ttl: item.ttl || DEFAULT_TTL } : f)),
           });
         } else {
           // Add new item
@@ -91,19 +118,7 @@ export const useSearchedFiltersStore = create<SearchedFiltersStore>()(
     }),
     {
       name: 'searched-filters-storage',
-      storage: createJSONStorage(() => {
-        try {
-          return AsyncStorage;
-        } catch {
-          console.warn('AsyncStorage not available, using in-memory storage');
-          // Fallback to a simple in-memory storage if AsyncStorage fails
-          return {
-            getItem: async () => null,
-            setItem: async () => {},
-            removeItem: async () => {},
-          };
-        }
-      }),
+      storage: zustandStorage,
       partialize: state => ({ searchedItems: state.searchedItems }),
     }
   )
@@ -192,7 +207,7 @@ const generateNameFromFilters = (filters: FilterType) => {
       const priceStr = min && max ? `$${min}-${max}` : (min ? `$${min}` : max ? `$${max}` : '').toString();
       if (priceStr) nameParts.push(priceStr);
     } else {
-      nameParts.push(`$${price}`);
+      nameParts.push(`${price}`);
     }
   }
 

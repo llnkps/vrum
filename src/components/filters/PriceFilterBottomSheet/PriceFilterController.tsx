@@ -4,7 +4,7 @@ import React, { useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PriceBottomSheet } from './PriceFilterBottomSheet';
 import { RangeFilterType } from '@/types/filter';
-import { useTranslateRangeFilter } from '@/utils/useTranslateRangeFilter';
+import { useTranslateRangeFilter, createFilterFormatCallback } from '@/utils/useTranslateRangeFilter';
 
 interface PriceFilterControllerProps {
   value?: RangeFilterType;
@@ -16,7 +16,7 @@ interface PriceFilterControllerProps {
 const PriceFilterController = React.memo(({ value, onChange, error, variant = 'button' }: PriceFilterControllerProps) => {
   const { t } = useTranslation();
   const priceModalRef = useRef<BottomSheetRef>(null);
-  const selectedValue = useTranslateRangeFilter('price', value);
+  const selectedValue = useTranslateRangeFilter('price', value, createFilterFormatCallback('price'));
 
   const handlePresentPriceModalPress = useCallback(() => {
     priceModalRef.current?.present();

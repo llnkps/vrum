@@ -30,45 +30,59 @@ const maxMileageArray = [
   }),
 ];
 
-const MileageFilterBottomSheet = memo(forwardRef<BottomSheetRef, MileageModalProps>(({ onChange }, ref) => {
-  const { t } = useTranslation();
-  const [minValue, setMinValue] = useState<number | undefined>(undefined);
-  const [maxValue, setMaxValue] = useState<number | undefined>(undefined);
+const MileageFilterBottomSheet = memo(
+  forwardRef<BottomSheetRef, MileageModalProps>(({ onChange }, ref) => {
+    const { t } = useTranslation();
+    const [minValue, setMinValue] = useState<number | undefined>(undefined);
+    const [maxValue, setMaxValue] = useState<number | undefined>(undefined);
 
-  const handleMinChange = (value: ValueChangedEvent<PickerItem<number>>) => {
-    setMinValue(value.item.value);
-  };
+    const handleMinChange = (value: ValueChangedEvent<PickerItem<number>>) => {
+      setMinValue(value.item.value);
+    };
 
-  const handleMaxChange = (value: ValueChangedEvent<PickerItem<number>>) => {
-    setMaxValue(value.item.value);
-  };
+    const handleMaxChange = (value: ValueChangedEvent<PickerItem<number>>) => {
+      setMaxValue(value.item.value);
+    };
 
-  const handleConfirm = () => {
-    onChange({ from: minValue, to: maxValue });
-  };
+    const handleConfirm = () => {
+      onChange({ from: minValue, to: maxValue });
+    };
 
-  return (
-    <CustomBottomSheetModal
-      ref={ref}
-      snapPoints={['45%']}
-      title={t('filters.mileage.label')}
-      footerProps={{
-        onConfirm: handleConfirm,
-      }}
-    >
-      <BottomSheetView>
-        <View className="flex-row items-center justify-center gap-x-4">
-          <View className="flex-1">
-            <CustomWheelPicker data={minMileageArray} value={minValue} onValueChanged={handleMinChange} label={t('filters.mileage.fromLabel')} />
+    return (
+      <CustomBottomSheetModal
+        ref={ref}
+        snapPoints={['45%']}
+        title={t('filters.mileage.label')}
+        footerProps={{
+          onConfirm: handleConfirm,
+        }}
+      >
+        <BottomSheetView>
+          <View className="flex-row items-center justify-center gap-x-4">
+            <View className="flex-1">
+              <CustomWheelPicker
+                virtualized={true}
+                data={minMileageArray}
+                value={minValue}
+                onValueChanged={handleMinChange}
+                label={t('filters.mileage.fromLabel')}
+              />
+            </View>
+            <View className="flex-1">
+              <CustomWheelPicker
+                virtualized={true}
+                data={maxMileageArray}
+                value={maxValue}
+                onValueChanged={handleMaxChange}
+                label={t('filters.mileage.toLabel')}
+              />
+            </View>
           </View>
-          <View className="flex-1">
-            <CustomWheelPicker data={maxMileageArray} value={maxValue} onValueChanged={handleMaxChange} label={t('filters.mileage.toLabel')} />
-          </View>
-        </View>
-      </BottomSheetView>
-    </CustomBottomSheetModal>
-  );
-}));
+        </BottomSheetView>
+      </CustomBottomSheetModal>
+    );
+  })
+);
 MileageFilterBottomSheet.displayName = 'MileageFilterBottomSheet';
 
 export default MileageFilterBottomSheet;

@@ -265,5 +265,14 @@
       "lviv": "Львов",
       "odesa": "Одесса"
     }
+  },
+  "units": {
+    "currency": "€",
+    "million": "млн",
+    "thousand": "тыс",
+    "power": "л.с.",
+    "engineCapacity": "л",
+    "year": "г.",
+    "mileage": "км"
   }
 }

@@ -11,9 +11,10 @@ interface YearFilterControllerProps {
   onChange: (value: RangeFilterType | undefined) => void;
   error?: string;
   variant?: 'plain' | 'bordered' | 'button';
+  selectedValueMode?: 'under' | 'replace';
 }
 
-const YearFilterController = React.memo(({ value, onChange, error, variant = 'button' }: YearFilterControllerProps) => {
+const YearFilterController = React.memo(({ value, onChange, error, variant = 'button', selectedValueMode = 'under' }: YearFilterControllerProps) => {
   const { t } = useTranslation();
   const yearModalRef = useRef<BottomSheetRef>(null);
   const selectedValue = useTranslateRangeFilter('year', value);
@@ -31,6 +32,7 @@ const YearFilterController = React.memo(({ value, onChange, error, variant = 'bu
         variant={variant}
         showRightArrow={false}
         error={error}
+        selectedValueMode={selectedValueMode}
       />
       <YearBottomSheet
         ref={yearModalRef}

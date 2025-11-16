@@ -1,78 +1,50 @@
 import { useNavigation, useRouter } from 'expo-router';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, RefreshControl, Text, View } from 'react-native';
 
-import { PriceBottomSheet } from '@/components/filters/PriceFilterBottomSheet';
-import { RegionBottomSheet } from '@/components/filters/RegionBottomSheet';
-import { YearBottomSheet } from '@/components/filters/YearFilterBottomSheet';
+import { PriceFilterController } from '@/components/filters/PriceFilterBottomSheet';
+import { RegionFilterController } from '@/components/filters/RegionBottomSheet';
+import { YearFilterController } from '@/components/filters/YearFilterBottomSheet';
 import { AdvertisementCard } from '@/components/global/AdvertisementCard/AdvertisementCard';
-import CustomBottomSheetModal from '@/components/global/CustomBottomSheetModal';
 import { HeaderBackSaveFilter } from '@/components/global/header';
 import { SelectedBrandsSection } from '@/components/global/SelectedBrandsSection';
 import { SelectedRegionsBadges } from '@/components/global/SelectedItemsBadges';
+import { SimpleAutoSortBottomSheet } from '@/components/global/SortBottomSheet/SimpleAutoSortBottomSheet';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
-import { CustomIconButton, CustomRectButton } from '@/components/ui/button';
 import { useSimpleGetCollectionPagination } from '@/hooks/api/useSimpleGetCollectionPagination';
 import { useImagePrefetch } from '@/hooks/useImagePrefetch';
 import { AuthenticationException, createAuthenticatedApiCall } from '@/openapi/auth-utils';
 import { UserSubscriptionFilterApi } from '@/openapi/client';
 import { createAuthenticatedConfiguration } from '@/openapi/configurations';
+import { useFilterConfigs } from '@/shared/filter';
 import {
   getActiveFiltersCount,
-  getPriceDisplayValue,
-  getYearDisplayValue,
   selectSelectedBrands,
   selectSelectedGenerations,
   selectSelectedModels,
   useAutoSelectStore,
 } from '@/state/search-screen/useAutoSelectStore';
-import { CustomTheme } from '@/theme';
+import { useSearchedFiltersStore } from '@/state/search-screen/useSearchedFiltersStore';
+import { BACKEND_FILTERS, SelectFilterType } from '@/types/filter';
 import { showImmediateNotification } from '@/utils/notifications';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
-import { useFocusEffect, useTheme } from '@react-navigation/native';
+import { createFilterFormatCallback, formatRangeFilterValue } from '@/utils/useTranslateRangeFilter';
+import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { SimpleAutoSortBottomSheet } from '@/components/global/SortBottomSheet/SimpleAutoSortBottomSheet';
-
-const ARRAY_FILTERS = {
-  TRANSMISSION: 'transmission',
-  FUEL_TYPE: 'fuelType',
-  DRIVETRAIN_TYPE: 'drivetrain',
-  FRAME_TYPE: 'bodyType',
-  COLOR: 'color',
-  NUMBER_OF_OWNER: 'numberOfOwners',
-  SELLER: 'seller',
-  CONDITION: 'condition',
-};
-
-const BOOLEAN_FILTERS = {
-  UNSOLD: 'onlyUnsold',
-  WITH_IMAGE: 'onlyWithPhotos',
-};
-
-const RANGE_FILTERS = {
-  ENGINE_CAPACITY: 'engineCapacity',
-  POWER: 'power',
-  MILEAGE: 'mileage',
-  YEAR: 'year',
-  PRICE: 'price',
-};
 
 export default function SimpleAutoModal() {
   const { t } = useTranslation();
   const router = useRouter();
   const navigation = useNavigation();
-  const state = navigation.getState();
-  // navigationState will contain an object with routes, index, etc.
-  // The 'routes' array within navigationState represents the current stack.
-  // console.log('Segments in SimpleAutoModal: ');
-  // console.log(state?.routes);
 
-  const theme = useTheme() as CustomTheme;
   const store = useAutoSelectStore();
+
+  // Hook to save searched filters
+  const saveCurrentFiltersToSearched = useSaveSearchedFilters();
+  const { setCurrentSessionId } = useSearchedFiltersStore();
 
   const selectedBrands = selectSelectedBrands(store);
   const selectedModels = selectSelectedModels(store);
@@ -100,8 +72,8 @@ export default function SimpleAutoModal() {
     sortMethod,
     setSortMethod,
   } = store;
-
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch, isRefetching } = useSimpleGetCollectionPagination({
+  console.log(yearRange, priceRange)
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch, isRefetching, isSuccess } = useSimpleGetCollectionPagination({
     brands: selectedBrands,
     models: selectedModelsByBrand,
     pageSize: '10',
@@ -130,24 +102,64 @@ export default function SimpleAutoModal() {
 
   const { onViewableItemsChanged } = useImagePrefetch(flattenedData);
 
-  const yearModalRef = useRef<BottomSheetModal>(null);
-  const priceModalRef = useRef<BottomSheetModal>(null);
-  const regionModalRef = useRef<BottomSheetModal>(null);
   const routeIndexRef = useRef<number | null>(null);
+  const hasSavedFiltersRef = useRef(false);
 
-  const handlePresentYearModalPress = useCallback(() => {
-    yearModalRef.current?.present();
-  }, []);
-
-  const handlePresentPriceModalPress = useCallback(() => {
-    priceModalRef.current?.present();
-  }, []);
-
-  const handlePresentRegionModalPress = useCallback(() => {
-    regionModalRef.current?.present();
-  }, []);
   const [isBrandSectionCollapsed, setIsBrandSectionCollapsed] = useState(true);
   const selectedGenerations = selectSelectedGenerations(store);
+
+  // Create a key that changes when filters change to reset the save session
+  const filterKey = useMemo(() => {
+    return JSON.stringify({
+      selectedBrands,
+      selectedModels,
+      tab,
+      selectedRegions,
+      onlyUnsold,
+      onlyWithPhotos,
+      transmission,
+      fuelType,
+      drivetrain,
+      bodyType,
+      color,
+      numberOfOwners,
+      seller,
+      priceRange,
+      yearRange,
+      engineCapacityRange,
+      powerRange,
+      mileageRange,
+      sortMethod,
+    });
+  }, [
+    selectedBrands,
+    selectedModels,
+    tab,
+    selectedRegions,
+    onlyUnsold,
+    onlyWithPhotos,
+    transmission,
+    fuelType,
+    drivetrain,
+    bodyType,
+    color,
+    numberOfOwners,
+    seller,
+    priceRange,
+    yearRange,
+    engineCapacityRange,
+    powerRange,
+    mileageRange,
+    sortMethod,
+  ]);
+
+  // Reset save session when filters change
+  useEffect(() => {
+    hasSavedFiltersRef.current = false;
+    // Start a new session for this filter set
+    const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    setCurrentSessionId(newSessionId);
+  }, [filterKey, setCurrentSessionId]);
 
   const handleSubscribe = async () => {
     // Build name
@@ -339,11 +351,12 @@ export default function SimpleAutoModal() {
   useFocusEffect(
     useCallback(() => {
       const unsubscribe = navigation.addListener('beforeRemove', e => {
-        // Prevent default back behavior
-        e.preventDefault();
-        // Clear store and navigate to search tab
+        // // Prevent default back behavior
+        // e.preventDefault();
+        // // Clear store and navigate to search tab
+        // console.log('CLEAR STATE SIMPLE AUTO MODAL - beforeRemove');
         store.clearSelections();
-        router.push('/search-tab');
+        // router.push('/search-tab');
       });
 
       return unsubscribe;
@@ -364,7 +377,7 @@ export default function SimpleAutoModal() {
         const currentState = navigation.getState();
         const previousIndex = routeIndexRef.current;
 
-        // Only clear store if navigating back (index decreased)
+        // // Only clear store if navigating back (index decreased)
         if (currentState && previousIndex !== null && currentState.index < previousIndex) {
           console.log('CLEAR STATE SIMPLE AUTO MODAL - Going back');
           store.clearSelections();
@@ -372,6 +385,41 @@ export default function SimpleAutoModal() {
       };
     }, [navigation, store])
   );
+
+  // useEffect(() => {
+  //   console.log("call again")
+  //   if (isSuccess && !hasSavedFiltersRef.current) {
+  //     console.log('Data fetched successfully in SimpleAutoModal. Total items:', flattenedData.length);
+  //     // Save current filters to searched filters only once per session
+  //     saveCurrentFiltersToSearched();
+  //     hasSavedFiltersRef.current = true;
+  //   }
+  // }, [isSuccess, saveCurrentFiltersToSearched, flattenedData.length]);
+
+  useEffect(() => {
+    if (isSuccess && !hasSavedFiltersRef.current) {
+      console.log('Data fetched successfully in SimpleAutoModal. Total items:', flattenedData.length);
+      // Save current filters to searched filters only once per session
+      saveCurrentFiltersToSearched();
+      hasSavedFiltersRef.current = true;
+    }
+  }, [isSuccess, saveCurrentFiltersToSearched, flattenedData.length]);
+
+  // Reset session when component unmounts (user leaves modal)
+  // useEffect(() => {
+  //   return () => {
+  //     hasSavedFiltersRef.current = false;
+  //   };
+  // }, []);
+
+  // Reset session when component unmounts (user leaves modal)
+  useEffect(() => {
+    return () => {
+      console.log("BYE")
+      hasSavedFiltersRef.current = false;
+      setCurrentSessionId(null);
+    };
+  }, [setCurrentSessionId]);
 
   return (
     <SafeAreaView className="flex-1">
@@ -388,7 +436,7 @@ export default function SimpleAutoModal() {
               <View className="gap-y-1">
                 <TouchableHighlightRow
                   variant="button"
-                  label="Марка, модель, поколение"
+                  label={t('searchScreen.simpleAuto.brandModelGeneration')}
                   onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/brand-auto-filter')}
                   showRightArrow
                 />
@@ -404,29 +452,21 @@ export default function SimpleAutoModal() {
               </View>
 
               <View className={'flex flex-row gap-1'}>
-                <TouchableHighlightRow
-                  variant="button"
-                  label={'Год'}
-                  selectedValue={getYearDisplayValue(store)}
-                  onPress={() => handlePresentYearModalPress()}
-                  showRightArrow={false}
-                  selectedValueMode="replace"
+                <YearFilterController
+                  value={yearRange}
+                  onChange={yearRange => {
+                    store.setYearRange(yearRange);
+                  }}
                 />
-                <YearBottomSheet ref={yearModalRef} />
-
-                <TouchableHighlightRow
-                  variant="button"
-                  label={'Цена'}
-                  selectedValue={getPriceDisplayValue(store)}
-                  onPress={() => handlePresentPriceModalPress()}
-                  showRightArrow={false}
-                  selectedValueMode="replace"
+                <PriceFilterController
+                  value={priceRange}
+                  onChange={priceRange => {
+                    store.setPriceRange(priceRange);
+                  }}
                 />
-                <PriceBottomSheet ref={priceModalRef} />
-
                 <TouchableHighlightRow
                   variant="button"
-                  label={'Параметры' + (getActiveFiltersCount(store) > 0 ? ` (${getActiveFiltersCount(store)})` : '')}
+                  label={t('searchScreen.simpleAuto.parameters') + (getActiveFiltersCount(store) > 0 ? ` (${getActiveFiltersCount(store)})` : '')}
                   onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/settings')}
                   showRightArrow={false}
                   icon={<Ionicons name="options-sharp" size={20} color="white" />}
@@ -434,12 +474,11 @@ export default function SimpleAutoModal() {
                 />
               </View>
 
-              <TouchableHighlightRow
-                variant="button"
-                label={'Все регионы'}
-                selectedValue={undefined}
-                onPress={handlePresentRegionModalPress}
-                rightIcon="chevron-down"
+              <RegionFilterController
+                value={store.selectedRegions}
+                onChange={regions => {
+                  store.setSelectedRegions(regions);
+                }}
               />
 
               {store.selectedRegions?.length > 0 && (
@@ -476,15 +515,144 @@ export default function SimpleAutoModal() {
         }}
         onViewableItemsChanged={onViewableItemsChanged}
       />
-
-      <YearBottomSheet ref={yearModalRef} onChange={yearRange => setYearRange(yearRange)} />
-      <PriceBottomSheet ref={priceModalRef} onChange={priceRange => setPriceRange(priceRange)} />
-      <RegionBottomSheet
-        ref={regionModalRef}
-        multiple
-        selectedRegions={store.selectedRegions}
-        onChange={regions => store.setSelectedRegions(Array.isArray(regions) ? regions : [regions])}
-      />
     </SafeAreaView>
   );
 }
+
+// Custom hook to save current filters to searched filters
+const useSaveSearchedFilters = () => {
+  const { t } = useTranslation();
+  const { addSearchedItem } = useSearchedFiltersStore();
+  const filterConfigs = useFilterConfigs();
+  const {
+    currentBrand,
+    selectedModelsByBrand,
+    selectedBrandsMap,
+    onlyUnsold,
+    onlyWithPhotos,
+    transmission,
+    fuelType,
+    drivetrain,
+    bodyType,
+    color,
+    condition,
+    documentsOk,
+    numberOfOwners,
+    seller,
+    tradeAllow,
+    priceRange,
+    yearRange,
+    engineCapacityRange,
+    powerRange,
+    mileageRange,
+  } = useAutoSelectStore();
+
+  // Helper function to get labels for selected values from filter config
+  const getLabelsForSelectedValues = (filterKey: string, selectedValues: SelectFilterType) => {
+    const config = filterConfigs[filterKey as keyof typeof filterConfigs];
+    if (!config || !config.options) return [];
+
+    const selectedKeys = Object.values(selectedValues);
+    return config.options.filter(option => selectedKeys.includes(String(option.value))).map(option => option.label);
+  };
+
+  const saveCurrentFiltersToSearched = () => {
+    const filters: Record<string, any> = {};
+
+    // Get selected brands and models
+    const selectedBrands = Object.values(selectedBrandsMap);
+    const selectedModels = selectedModelsByBrand[currentBrand?.id || 0] || [];
+
+    // Logic for brand and model display:
+    // 1. If one brand and one model: show both brand and model
+    // 2. If multiple models: show only models (no brand)
+    if (selectedBrands.length === 1 && selectedModels.length === 1) {
+      // One brand and one model: show both
+      filters[BACKEND_FILTERS.BRAND] = selectedBrands[0].name;
+      filters[BACKEND_FILTERS.MODEL] = selectedModels[0].name;
+    } else if (selectedModels.length > 1) {
+      // Multiple models: show only models
+      filters[BACKEND_FILTERS.MODEL] = selectedModels.map(m => m.name).join(', ');
+    }
+
+    // Add other filters - convert SelectFilterType to arrays of labels
+    if (yearRange) {
+      filters[BACKEND_FILTERS.YEAR] = formatRangeFilterValue(BACKEND_FILTERS.YEAR, yearRange, t, createFilterFormatCallback(BACKEND_FILTERS.YEAR));
+    }
+    if (priceRange) {
+      filters[BACKEND_FILTERS.PRICE] = formatRangeFilterValue(
+        BACKEND_FILTERS.PRICE,
+        priceRange,
+        t,
+        createFilterFormatCallback(BACKEND_FILTERS.PRICE)
+      );
+    }
+    if (transmission && Object.keys(transmission).length > 0) {
+      filters[BACKEND_FILTERS.TRANSMISSION] = getLabelsForSelectedValues(BACKEND_FILTERS.TRANSMISSION, transmission);
+    }
+    if (fuelType && Object.keys(fuelType).length > 0) {
+      filters[BACKEND_FILTERS.FUEL_TYPE] = getLabelsForSelectedValues(BACKEND_FILTERS.FUEL_TYPE, fuelType);
+    }
+    if (drivetrain && Object.keys(drivetrain).length > 0) {
+      filters[BACKEND_FILTERS.DRIVETRAIN_TYPE] = getLabelsForSelectedValues(BACKEND_FILTERS.DRIVETRAIN_TYPE, drivetrain);
+    }
+    if (bodyType && Object.keys(bodyType).length > 0) {
+      filters[BACKEND_FILTERS.FRAME_TYPE] = getLabelsForSelectedValues(BACKEND_FILTERS.FRAME_TYPE, bodyType);
+    }
+    if (color && Object.keys(color).length > 0) {
+      filters[BACKEND_FILTERS.COLOR] = getLabelsForSelectedValues(BACKEND_FILTERS.COLOR, color);
+    }
+    if (condition && Object.keys(condition).length > 0) {
+      filters[BACKEND_FILTERS.CONDITION] = getLabelsForSelectedValues(BACKEND_FILTERS.CONDITION, condition);
+    }
+    if (documentsOk && Object.keys(documentsOk).length > 0) {
+      filters[BACKEND_FILTERS.DOCUMENT_TYPE] = getLabelsForSelectedValues(BACKEND_FILTERS.DOCUMENT_TYPE, documentsOk);
+    }
+    if (numberOfOwners && Object.keys(numberOfOwners).length > 0) {
+      filters[BACKEND_FILTERS.NUMBER_OF_OWNER] = getLabelsForSelectedValues(BACKEND_FILTERS.NUMBER_OF_OWNER, numberOfOwners);
+    }
+    if (seller && Object.keys(seller).length > 0) {
+      filters[BACKEND_FILTERS.SELLER] = getLabelsForSelectedValues(BACKEND_FILTERS.SELLER, seller);
+    }
+    if (tradeAllow && Object.keys(tradeAllow).length > 0) {
+      filters[BACKEND_FILTERS.TRADE_ALLOW] = getLabelsForSelectedValues(BACKEND_FILTERS.TRADE_ALLOW, tradeAllow);
+    }
+    if (engineCapacityRange) {
+      filters[BACKEND_FILTERS.ENGINE_CAPACITY] = formatRangeFilterValue(
+        BACKEND_FILTERS.ENGINE_CAPACITY,
+        engineCapacityRange,
+        t,
+        createFilterFormatCallback(BACKEND_FILTERS.ENGINE_CAPACITY)
+      );
+    }
+    if (powerRange) {
+      filters[BACKEND_FILTERS.POWER] = formatRangeFilterValue(
+        BACKEND_FILTERS.POWER,
+        powerRange,
+        t,
+        createFilterFormatCallback(BACKEND_FILTERS.POWER)
+      );
+    }
+    if (mileageRange) {
+      filters[BACKEND_FILTERS.MILEAGE] = formatRangeFilterValue(
+        BACKEND_FILTERS.MILEAGE,
+        mileageRange,
+        t,
+        createFilterFormatCallback(BACKEND_FILTERS.MILEAGE)
+      );
+    }
+    if (onlyUnsold) {
+      filters[BACKEND_FILTERS.UNSOLD] = true;
+    }
+    if (onlyWithPhotos) {
+      filters[BACKEND_FILTERS.WITH_IMAGE] = true;
+    }
+
+    // Only save if there are actual filters
+    if (Object.keys(filters).length > 0) {
+      addSearchedItem({ filters });
+    }
+  };
+
+  return saveCurrentFiltersToSearched;
+};

@@ -8,9 +8,6 @@
     "loading": "Loading...",
     "error": "Error"
   },
-  "Header": {
-    "back": "Back"
-  },
   "Homepage": {
     "welcome": "Thank you for using the React Native Starter App\n😍 😘 🙏🏻",
     "releasedWithLove": "Created and released with ❤️ for you",
@@ -216,5 +213,14 @@
       "lviv": "Lviv",
       "odesa": "Odesa"
     }
+  },
+  "units": {
+    "currency": "€",
+    "million": "mln",
+    "thousand": "k",
+    "power": "hp",
+    "engineCapacity": "l",
+    "year": "yrs",
+    "mileage": "km"
   }
 }

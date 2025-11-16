@@ -10,7 +10,7 @@ export default function ModalsLayout() {
       <Stack.Screen
         name="settings"
         options={{
-          presentation: 'modal',
+          // presentation: 'modal',
           headerShown: false,
           animation: 'default',
         }}

@@ -1,5 +1,5 @@
 import { CustomTheme } from '@/theme';
-import WheelPicker, { OnValueChanged, OnValueChanging, PickerItem, RenderItemContainer, RenderOverlay } from '@quidone/react-native-wheel-picker';
+import WheelPicker, { OnValueChanged, OnValueChanging, PickerItem, RenderItemContainer, RenderOverlay, withVirtualized } from '@quidone/react-native-wheel-picker';
 import { KeyExtractor } from '@quidone/react-native-wheel-picker/dest/typescript/base/types';
 import { useTheme } from '@react-navigation/native';
 import React, { memo } from 'react';
@@ -14,19 +14,23 @@ type props<ItemT extends PickerItem<any>> = {
   onValueChanged?: OnValueChanged<ItemT>;
   keyExtractor?: KeyExtractor<ItemT>;
   label?: string;
+  virtualized?: boolean;
 };
 
 // render our item container to not have the default animation
 const renderItemContainer: RenderItemContainer<any> = ({ key, ...props }) => <PickerItemContainer key={key} {...props} />;
 
 const CustomizedPicker = <ItemT extends PickerItem<any>>(props: props<ItemT>) => {
-  const { data, value, onValueChanged, onValueChanging, label } = props;
+  const { data, value, onValueChanged, onValueChanging, label, virtualized = false } = props;
   const theme = useTheme() as CustomTheme;
 
   const renderOverlay: RenderOverlay = props => <OverlayComponent {...props} label={label} />;
 
+  // Create virtualized picker if requested
+  const PickerComponent = virtualized ? withVirtualized(WheelPicker) : WheelPicker;
+
   return (
-    <WheelPicker
+    <PickerComponent
       value={value}
       renderItemContainer={renderItemContainer}
       renderOverlay={renderOverlay}

@@ -524,51 +524,6 @@ export const selectSelectedBrands = (state: SelectionStore) => Object.values(sta
 export const selectSelectedModels = (state: SelectionStore) => Object.values(state.selectedModelsByBrand).flat();
 export const selectSelectedGenerations = (state: SelectionStore) => Object.values(state.selectedGenerationsByModel).flat();
 
-export const getYearDisplayValue = (state: SelectionStore) => {
-  if (!state.yearRange) return undefined;
-  const { from, to } = state.yearRange;
-  if (from && to) return `${from} - ${to}`;
-  if (from) return `от ${from}`;
-  if (to) return `до ${to}`;
-  return undefined;
-};
-
-export const getPriceDisplayValue = (state: SelectionStore) => {
-  if (!state.priceRange) return undefined;
-  const { from, to } = state.priceRange;
-  if (from && to) return `${from} - ${to}`;
-  if (from) return `от ${from}`;
-  if (to) return `до ${to}`;
-  return undefined;
-};
-
-export const getEngineCapacityDisplayValue = (state: SelectionStore) => {
-  if (!state.engineCapacityRange) return undefined;
-  const { from, to } = state.engineCapacityRange;
-  if (from && to) return `${from} - ${to}`;
-  if (from) return `от ${from}`;
-  if (to) return `до ${to}`;
-  return undefined;
-};
-
-export const getPowerDisplayValue = (state: SelectionStore) => {
-  if (!state.powerRange) return undefined;
-  const { from, to } = state.powerRange;
-  if (from && to) return `${from} - ${to}`;
-  if (from) return `от ${from}`;
-  if (to) return `до ${to}`;
-  return undefined;
-};
-
-export const getMileageDisplayValue = (state: SelectionStore) => {
-  if (!state.mileageRange) return undefined;
-  const { from, to } = state.mileageRange;
-  if (from && to) return `${from} - ${to}`;
-  if (from) return `от ${from}`;
-  if (to) return `до ${to}`;
-  return undefined;
-};
-
 export const getActiveFiltersCount = (state: SelectionStore) => {
   let count = 0;
 

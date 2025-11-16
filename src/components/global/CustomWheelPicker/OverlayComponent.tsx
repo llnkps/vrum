@@ -1,7 +1,7 @@
-import React, { memo } from 'react';
-import { type StyleProp, type ViewStyle, StyleSheet, Text, View } from 'react-native';
-import { useTheme } from '@react-navigation/native';
 import { CustomTheme } from '@/theme';
+import { useTheme } from '@react-navigation/native';
+import React, { memo, useMemo } from 'react';
+import { type StyleProp, type ViewStyle, StyleSheet, Text, View } from 'react-native';
 
 type OverlayProps = {
   itemHeight: number;
@@ -12,16 +12,8 @@ type OverlayProps = {
 
 const Overlay = ({ itemHeight, overlayItemStyle, label }: OverlayProps) => {
   const theme = useTheme() as CustomTheme;
-
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const displayLabel = label ? `${label}` : '';
-
-  const themedStyles = StyleSheet.create({
-    labelText: {
-      fontSize: 16,
-      fontWeight: 'bold',
-      color: theme.colors.text,
-    },
-  });
 
   return (
     <View style={[styles.overlayContainer]} pointerEvents={'none'}>
@@ -36,29 +28,37 @@ const Overlay = ({ itemHeight, overlayItemStyle, label }: OverlayProps) => {
       />
       {displayLabel && (
         <View style={styles.labelContainer}>
-          <Text style={themedStyles.labelText}>{displayLabel}</Text>
+          <Text style={styles.labelText}>{displayLabel}</Text>
         </View>
       )}
     </View>
   );
 };
-const styles = StyleSheet.create({
-  overlayContainer: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  selection: {
-    backgroundColor: '#00000022',
-    borderRadius: 8,
-    alignSelf: 'stretch',
-  },
-  labelContainer: {
-    position: 'absolute',
-    left: 10,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-  },
-});
+
+const createStyles = (theme: CustomTheme) =>
+  StyleSheet.create({
+    overlayContainer: {
+      ...StyleSheet.absoluteFillObject,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    selection: {
+      backgroundColor: '#00000022',
+      borderRadius: 8,
+      alignSelf: 'stretch',
+    },
+    labelContainer: {
+      position: 'absolute',
+      left: 10,
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+      borderRadius: 4,
+    },
+    labelText: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      color: theme.colors.text,
+    },
+  });
+
 export default memo(Overlay);

@@ -20,45 +20,59 @@ const powerArray = [
   }),
 ];
 
-const PowerFilterBottomSheet = memo(forwardRef<BottomSheetRef, PowerModalProps>(({ onChange }, ref) => {
-  const { t } = useTranslation();
-  const [minValue, setMinValue] = useState<number | undefined>(undefined);
-  const [maxValue, setMaxValue] = useState<number | undefined>(undefined);
+const PowerFilterBottomSheet = memo(
+  forwardRef<BottomSheetRef, PowerModalProps>(({ onChange }, ref) => {
+    const { t } = useTranslation();
+    const [minValue, setMinValue] = useState<number | undefined>(undefined);
+    const [maxValue, setMaxValue] = useState<number | undefined>(undefined);
 
-  const handleMinChange = (value: ValueChangedEvent<PickerItem<number>>) => {
-    setMinValue(value.item.value);
-  };
+    const handleMinChange = (value: ValueChangedEvent<PickerItem<number>>) => {
+      setMinValue(value.item.value);
+    };
 
-  const handleMaxChange = (value: ValueChangedEvent<PickerItem<number>>) => {
-    setMaxValue(value.item.value);
-  };
+    const handleMaxChange = (value: ValueChangedEvent<PickerItem<number>>) => {
+      setMaxValue(value.item.value);
+    };
 
-  const handleConfirm = () => {
-    onChange({ from: minValue, to: maxValue });
-  };
+    const handleConfirm = () => {
+      onChange({ from: minValue, to: maxValue });
+    };
 
-  return (
-    <CustomBottomSheetModal
-      ref={ref}
-      snapPoints={['45%']}
-      title={t('filters.power.label')}
-      footerProps={{
-        onConfirm: handleConfirm,
-      }}
-    >
-      <BottomSheetView>
-        <View className="flex-row items-center justify-center gap-x-4">
-          <View className="flex-1">
-            <CustomWheelPicker data={powerArray} value={minValue} onValueChanged={handleMinChange} label={t('filters.power.fromLabel')} />
+    return (
+      <CustomBottomSheetModal
+        ref={ref}
+        snapPoints={['45%']}
+        title={t('filters.power.label')}
+        footerProps={{
+          onConfirm: handleConfirm,
+        }}
+      >
+        <BottomSheetView>
+          <View className="flex-row items-center justify-center gap-x-4">
+            <View className="flex-1">
+              <CustomWheelPicker
+                virtualized={true}
+                data={powerArray}
+                value={minValue}
+                onValueChanged={handleMinChange}
+                label={t('filters.power.fromLabel')}
+              />
+            </View>
+            <View className="flex-1">
+              <CustomWheelPicker
+                virtualized={true}
+                data={powerArray}
+                value={maxValue}
+                onValueChanged={handleMaxChange}
+                label={t('filters.power.toLabel')}
+              />
+            </View>
           </View>
-          <View className="flex-1">
-            <CustomWheelPicker data={powerArray} value={maxValue} onValueChanged={handleMaxChange} label={t('filters.power.toLabel')} />
-          </View>
-        </View>
-      </BottomSheetView>
-    </CustomBottomSheetModal>
-  );
-}));
+        </BottomSheetView>
+      </CustomBottomSheetModal>
+    );
+  })
+);
 PowerFilterBottomSheet.displayName = 'PowerFilterBottomSheet';
 
 export default PowerFilterBottomSheet;

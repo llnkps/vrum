@@ -5,9 +5,7 @@ import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import { PickerItem, ValueChangedEvent } from '@quidone/react-native-wheel-picker';
 import React, { forwardRef, memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from '@react-navigation/native';
-import { View, StyleSheet } from 'react-native';
-import { CustomTheme } from '@/theme';
+import { StyleSheet, View } from 'react-native';
 
 export type BottomSheetRef = BottomSheetModal;
 
@@ -38,44 +36,58 @@ const styles = StyleSheet.create({
   },
 });
 
-export const YearBottomSheet = memo(forwardRef<BottomSheetRef, YearModalProps>((props, ref) => {
-  const { t } = useTranslation();
-  const [minYear, setMinYear] = useState<number | undefined>(undefined);
-  const [maxYear, setMaxYear] = useState<number | undefined>(undefined);
+export const YearBottomSheet = memo(
+  forwardRef<BottomSheetRef, YearModalProps>((props, ref) => {
+    const { t } = useTranslation();
+    const [minYear, setMinYear] = useState<number | undefined>(undefined);
+    const [maxYear, setMaxYear] = useState<number | undefined>(undefined);
 
-  const handleMinYearChange = (value: ValueChangedEvent<PickerItem<number>>) => {
-    setMinYear(value.item.value);
-  };
+    const handleMinYearChange = (value: ValueChangedEvent<PickerItem<number>>) => {
+      setMinYear(value.item.value);
+    };
 
-  const handleMaxYearChange = (value: ValueChangedEvent<PickerItem<number>>) => {
-    setMaxYear(value.item.value);
-  };
+    const handleMaxYearChange = (value: ValueChangedEvent<PickerItem<number>>) => {
+      setMaxYear(value.item.value);
+    };
 
-  const handleConfirm = () => {
-    props.onChange?.({ from: minYear, to: maxYear });
-  };
+    const handleConfirm = () => {
+      props.onChange?.({ from: minYear, to: maxYear });
+    };
 
-  return (
-    <CustomBottomSheetModal
-      ref={ref}
-      snapPoints={['50%']}
-      footerProps={{
-        onConfirm: handleConfirm,
-      }}
-      title={t('filters.year.label')}
-    >
-      <BottomSheetView>
-        <View style={styles.container}>
-          <View style={styles.fieldContainer}>
-            <CustomWheelPicker data={years} value={minYear} onValueChanged={handleMinYearChange} label={t('filters.year.fromLabel')} />
+    return (
+      <CustomBottomSheetModal
+        ref={ref}
+        snapPoints={['50%']}
+        footerProps={{
+          onConfirm: handleConfirm,
+        }}
+        title={t('filters.year.label')}
+      >
+        <BottomSheetView>
+          <View style={styles.container}>
+            <View style={styles.fieldContainer}>
+              <CustomWheelPicker
+                virtualized={true}
+                data={years}
+                value={minYear}
+                onValueChanged={handleMinYearChange}
+                label={t('filters.year.fromLabel')}
+              />
+            </View>
+
+            <View style={styles.fieldContainer}>
+              <CustomWheelPicker
+                virtualized={true}
+                data={years}
+                value={maxYear}
+                onValueChanged={handleMaxYearChange}
+                label={t('filters.year.toLabel')}
+              />
+            </View>
           </View>
-
-          <View style={styles.fieldContainer}>
-            <CustomWheelPicker data={years} value={maxYear} onValueChanged={handleMaxYearChange} label={t('filters.year.toLabel')} />
-          </View>
-        </View>
-      </BottomSheetView>
-    </CustomBottomSheetModal>
-  );
-}));
+        </BottomSheetView>
+      </CustomBottomSheetModal>
+    );
+  })
+);
 YearBottomSheet.displayName = 'YearBottomSheet';

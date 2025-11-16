@@ -4,7 +4,7 @@ import React, { useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import EngineCapacityFilterBottomSheet from './EngineCapacityFilterBottomSheet';
 import { BACKEND_FILTERS, RangeFilterType } from '@/types/filter';
-import { useTranslateRangeFilter } from '@/utils/useTranslateRangeFilter';
+import { useTranslateRangeFilter, createFilterFormatCallback } from '@/utils/useTranslateRangeFilter';
 
 interface EngineCapacityFilterControllerProps {
   value?: RangeFilterType;
@@ -15,7 +15,7 @@ interface EngineCapacityFilterControllerProps {
 const EngineCapacityFilterController = React.memo(({ value, onChange, error }: EngineCapacityFilterControllerProps) => {
   const { t } = useTranslation();
   const engineCapacityModalRef = useRef<BottomSheetRef>(null);
-  const selectedValue = useTranslateRangeFilter(BACKEND_FILTERS.ENGINE_CAPACITY, value);
+  const selectedValue = useTranslateRangeFilter(BACKEND_FILTERS.ENGINE_CAPACITY, value, createFilterFormatCallback(BACKEND_FILTERS.ENGINE_CAPACITY));
 
   const handlePresentEngineCapacityModalPress = useCallback(() => {
     engineCapacityModalRef.current?.present();

@@ -7,7 +7,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text } from 'react-native';
-import { formatRangeFilterValue } from '@/utils/useTranslateRangeFilter';
+import { createFilterFormatCallback, formatRangeFilterValue } from '@/utils/useTranslateRangeFilter';
 
 export const ShowAdvertisementButton = React.memo(() => {
   const router = useRouter();
@@ -71,10 +71,10 @@ export const ShowAdvertisementButton = React.memo(() => {
 
     // Add other filters - convert SelectFilterType to arrays of labels
     if (yearRange) {
-      filters[BACKEND_FILTERS.YEAR] = formatRangeFilterValue(BACKEND_FILTERS.YEAR, yearRange, t);
+      filters[BACKEND_FILTERS.YEAR] = formatRangeFilterValue(BACKEND_FILTERS.YEAR, yearRange, t, createFilterFormatCallback(BACKEND_FILTERS.YEAR));
     }
     if (priceRange) {
-      filters[BACKEND_FILTERS.PRICE] = formatRangeFilterValue(BACKEND_FILTERS.PRICE, priceRange, t);
+      filters[BACKEND_FILTERS.PRICE] = formatRangeFilterValue(BACKEND_FILTERS.PRICE, priceRange, t, createFilterFormatCallback(BACKEND_FILTERS.PRICE));
     }
     if (transmission && Object.keys(transmission).length > 0) {
       filters[BACKEND_FILTERS.TRANSMISSION] = getLabelsForSelectedValues(BACKEND_FILTERS.TRANSMISSION, transmission);
@@ -107,13 +107,13 @@ export const ShowAdvertisementButton = React.memo(() => {
       filters[BACKEND_FILTERS.TRADE_ALLOW] = getLabelsForSelectedValues(BACKEND_FILTERS.TRADE_ALLOW, tradeAllow);
     }
     if (engineCapacityRange) {
-      filters[BACKEND_FILTERS.ENGINE_CAPACITY] = formatRangeFilterValue(BACKEND_FILTERS.ENGINE_CAPACITY, engineCapacityRange, t);
+      filters[BACKEND_FILTERS.ENGINE_CAPACITY] = formatRangeFilterValue(BACKEND_FILTERS.ENGINE_CAPACITY, engineCapacityRange, t, createFilterFormatCallback(BACKEND_FILTERS.ENGINE_CAPACITY));
     }
     if (powerRange) {
-      filters[BACKEND_FILTERS.POWER] = formatRangeFilterValue(BACKEND_FILTERS.POWER, powerRange, t);
+      filters[BACKEND_FILTERS.POWER] = formatRangeFilterValue(BACKEND_FILTERS.POWER, powerRange, t, createFilterFormatCallback(BACKEND_FILTERS.POWER));
     }
     if (mileageRange) {
-      filters[BACKEND_FILTERS.MILEAGE] = formatRangeFilterValue(BACKEND_FILTERS.MILEAGE, mileageRange, t);
+      filters[BACKEND_FILTERS.MILEAGE] = formatRangeFilterValue(BACKEND_FILTERS.MILEAGE, mileageRange, t, createFilterFormatCallback(BACKEND_FILTERS.MILEAGE));
     }
     if (onlyUnsold) {
       filters[BACKEND_FILTERS.UNSOLD] = true;
@@ -133,14 +133,14 @@ export const ShowAdvertisementButton = React.memo(() => {
     <CustomRectButton
       onPress={() => {
         // Save current filters to searched filters store
-        saveCurrentFiltersToSearched();
+        // saveCurrentFiltersToSearched();
 
         // Navigate based on source
-        // if (searchParams.from === 'settings') {
-        //   router.replace('/(app)/search-screen/simple-auto-screen/(modals)/settings');
-        // } else {
-        //   router.replace('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal');
-        // }
+        if (searchParams.from === 'settings') {
+          router.replace('/(app)/search-screen/simple-auto-screen/(modals)/settings');
+        } else {
+          router.replace('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal');
+        }
       }}
       appearance="primary"
     >

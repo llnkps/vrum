@@ -9,11 +9,14 @@ import { YearFilterController } from '@/components/filters/YearFilterBottomSheet
 import { SelectedRegionsBadges } from '@/components/global/SelectedItemsBadges';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
 import { useSearchTab } from '@/modules/search-screen/SearchTabProvider';
-import { BACKEND_FILTERS, isArrayFilter, isBooleanFilter, isRangeFilter } from '@/shared/filter';
+import { isArrayFilter, isBooleanFilter, isRangeFilter } from '@/shared/filter';
 import { QuickFilter, useQuickFilters } from '@/shared/quick-filters';
 import { useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
 import { SearchedItem, useSearchedFiltersStore } from '@/state/search-screen/useSearchedFiltersStore';
 import { Ionicons } from '@expo/vector-icons';
+import FilterBadge from '@/components/global/FilterBadge';
+import { BACKEND_FILTERS } from '@/types/filter';
+import { createFilterFormatCallback, formatRangeFilterValue } from '@/utils/useTranslateRangeFilter';
 
 export const AutoHeaderScreen = () => {
   const { t } = useTranslation();
@@ -159,13 +162,13 @@ export const AutoHeaderScreen = () => {
           />
           <View className={'flex-row gap-1'}>
             <YearFilterController
-              value={store.yearRange}
+              // value={store.yearRange}
               onChange={yearRange => {
                 store.setYearRange(yearRange);
                 if (yearRange) {
                   searchedFiltersStore.addSearchedItem({
                     filters: {
-                      [BACKEND_FILTERS.YEAR]: yearRange,
+                      [BACKEND_FILTERS.YEAR]: formatRangeFilterValue(BACKEND_FILTERS.YEAR, yearRange, t, createFilterFormatCallback(BACKEND_FILTERS.YEAR)),
                     },
                   });
                 }
@@ -180,7 +183,7 @@ export const AutoHeaderScreen = () => {
                 if (priceRange) {
                   searchedFiltersStore.addSearchedItem({
                     filters: {
-                      [BACKEND_FILTERS.PRICE]: priceRange,
+                      [BACKEND_FILTERS.PRICE]: formatRangeFilterValue(BACKEND_FILTERS.PRICE, priceRange, t, createFilterFormatCallback(BACKEND_FILTERS.PRICE)),
                     },
                   });
                 }
@@ -230,12 +233,7 @@ export const AutoHeaderScreen = () => {
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
               {searchedFiltersStore.searchedItems.map(searchedItem => (
                 <TouchableWithoutFeedback key={searchedItem.id} onPress={() => handleSearchedFilterPress(searchedItem)}>
-                  <View className="flex-row items-center rounded-full bg-gray-200 px-3 py-1 dark:bg-gray-700">
-                    <Text className="mr-2 text-sm text-font dark:text-font-dark">{searchedItem.name}</Text>
-                    <TouchableWithoutFeedback onPress={() => searchedFiltersStore.removeSearchedFilter(searchedItem.id)}>
-                      <Ionicons name="close" size={16} color="#6b7280" />
-                    </TouchableWithoutFeedback>
-                  </View>
+                  <FilterBadge label={searchedItem.name} onRemove={() => searchedFiltersStore.removeSearchedFilter(searchedItem.id)} />
                 </TouchableWithoutFeedback>
               ))}
             </ScrollView>
