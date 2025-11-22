@@ -49,7 +49,7 @@ type SelectionStore = {
   mileageRange?: RangeFilterType;
 
   addSelectedBrand: (item: SimpleAutoBrand) => void;
-  addSelectedModel: (item: SimpleAutoModel) => void;
+  addSelectedModel: (items: SimpleAutoModel[]) => void;
   addSelectedGeneration: (item: SimpleAutoGeneration) => void;
   removeSelectedBrand: (id: number) => void;
   removeSelectedModel: (id: number) => void;
@@ -93,7 +93,7 @@ type SelectionStore = {
   setSortMethod: (method: SortMethod) => void;
 };
 
-export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
+export const useSimpleAutoFilterStore = create<SelectionStore>((set, get) => ({
   selectedBrandsMap: {},
   selectedModelsByBrand: {},
   selectedGenerationsByModel: {},
@@ -127,22 +127,45 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
         },
       };
     }),
-  addSelectedModel: selectedModel =>
+  addSelectedModel: selectedModels =>
     set(state => {
-      const brandId = state.currentBrand?.id;
-      if (!brandId) return state;
+      const brand = state.currentBrand;
+      if (!brand?.id || !selectedModels || selectedModels.length === 0) {
+        return state;
+      }
 
+      const brandId = brand.id;
       const existingModels = state.selectedModelsByBrand[brandId] || [];
 
-      const isAlreadySelected = existingModels.some(m => m.id === selectedModel.id);
-      if (isAlreadySelected) return state;
+      const mergedModelsMap = new Map<number, SimpleAutoModel>();
+      existingModels.forEach(model => {
+        if (model?.id !== undefined) {
+          mergedModelsMap.set(model.id, model);
+        }
+      });
 
-      const newModelsForBrand = [...existingModels, selectedModel];
+      selectedModels.forEach(model => {
+        if (model?.id !== undefined) {
+          mergedModelsMap.set(model.id, model);
+        }
+      });
+
+      const mergedModels = Array.from(mergedModelsMap.values());
+
+      const updatedSelectedModelsByBrand = { ...state.selectedModelsByBrand };
+      const updatedSelectedBrandsMap = { ...state.selectedBrandsMap };
+
+      if (mergedModels.length > 0) {
+        updatedSelectedModelsByBrand[brandId] = mergedModels;
+        updatedSelectedBrandsMap[brandId] = brand;
+      } else {
+        delete updatedSelectedModelsByBrand[brandId];
+        delete updatedSelectedBrandsMap[brandId];
+      }
+
       return {
-        selectedModelsByBrand: {
-          ...state.selectedModelsByBrand,
-          [brandId]: newModelsForBrand,
-        },
+        selectedModelsByBrand: updatedSelectedModelsByBrand,
+        selectedBrandsMap: updatedSelectedBrandsMap,
       };
     }),
   addSelectedGeneration: selectedGeneration =>
@@ -508,6 +531,8 @@ export const useAutoSelectStore = create<SelectionStore>((set, get) => ({
             const regions: Region[] = Object.values(value as Record<string, string>).map((regionId: string) => ({
               id: parseInt(regionId),
               name: '',
+              slug: '',
+              orderNumber: 0,
             }));
             set({ selectedRegions: regions });
           }

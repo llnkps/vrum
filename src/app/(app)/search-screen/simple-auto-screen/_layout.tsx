@@ -19,7 +19,15 @@ export default function SearchFilterLayout() {
   //   }
   // };
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="simple-auto-modal" />
+      <Stack.Screen name="brand-auto-filter" />
+      <Stack.Screen name="model-filter" />
+      <Stack.Screen name="generation-filter" />
+      <Stack.Screen name="settings" />
+    </Stack>
+  );
 
   return (
     <Stack>

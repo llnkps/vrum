@@ -9,5 +9,6 @@ export const useSimpleAutoBrandApi = () => {
     queryFn: async () => {
       return simpleAutoApi.getSimpleAutoBrands();
     },
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 };

@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
-import { useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
 import { ActiveScreen } from '@/modules/search-screen/types';
 import { useSimpleGetCollectionPagination } from '@/hooks/api/useSimpleGetCollectionPagination';
 import { AutoHeaderScreen } from '@/modules/search-screen/simple-auto-tab/auto-screen';
@@ -50,7 +49,7 @@ interface SearchTabProviderProps {
   children: React.ReactNode;
 }
 
-const MiniAdvertisementCard = ({ item, onPress }: { item: any; onPress: () => void }) => {
+const MiniAdvertisementCard = React.memo(({ item, onPress }: { item: any; onPress: () => void }) => {
   return (
     <CustomRectButton onPress={onPress} size="small" appearance="subtle">
       <View>
@@ -75,7 +74,9 @@ const MiniAdvertisementCard = ({ item, onPress }: { item: any; onPress: () => vo
       </View>
     </CustomRectButton>
   );
-};
+});
+
+MiniAdvertisementCard.displayName = 'MiniAdvertisementCard';
 
 const TAB_CONFIGS: Record<
   ActiveScreen,
@@ -127,7 +128,6 @@ const TAB_CONFIGS: Record<
 export const SearchTabProvider: React.FC<SearchTabProviderProps> = ({ children }) => {
   const [activeScreen, setActiveScreen] = useState<ActiveScreen>('auto');
   const [dynamicParams, setDynamicParams] = useState<Record<string, any>>({});
-  const store = useAutoSelectStore();
   const config = TAB_CONFIGS[activeScreen];
 
   // Function to update dynamic params from tab content
@@ -171,7 +171,7 @@ export const SearchTabProvider: React.FC<SearchTabProviderProps> = ({ children }
 
   // Create header component
   const HeaderComponent = useMemo(() => {
-    const Component = () => <config.header />;
+    const Component = React.memo(() => <config.header />);
     Component.displayName = `HeaderComponent_${activeScreen}`;
     return Component;
   }, [config.header, activeScreen]);

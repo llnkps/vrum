@@ -3,7 +3,7 @@ import CloseIcon from '@/components/global/CloseIcon';
 import { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import { OptimizedImageList } from '@/components/global/OptimizedImageList/OptimizedImageList';
 import OptimizedImagePickerModal from '@/components/global/OptimizedImagePickerModal/OptimizedImagePickerModal';
-import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow/TouchableHighlightRow';
+import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
 import { CustomRectButton } from '@/components/ui/button';
 import { InputField } from '@/components/ui/input/InputField/InputField';
 import { useAuthContext } from '@/context/AuthContext';

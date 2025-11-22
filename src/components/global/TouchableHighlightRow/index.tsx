@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   },
   // Text styles
   selectedValueReplace: {
-    fontSize: 18, // text-lg
+    fontSize: 14, // text-sm
     fontWeight: 'bold',
   },
   labelContainer: {

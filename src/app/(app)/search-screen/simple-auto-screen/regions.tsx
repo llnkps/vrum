@@ -8,7 +8,7 @@ import Animated, { Extrapolation, interpolate, useAnimatedScrollHandler, useAnim
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { InputField } from '@/components/ui/input/InputField/InputField';
-import { useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
+import { useSimpleAutoFilterStore } from '@/state/search-screen/useSimpleAutoFilterStore';
 import { Ionicons } from '@expo/vector-icons';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;

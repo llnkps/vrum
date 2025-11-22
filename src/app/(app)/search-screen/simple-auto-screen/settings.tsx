@@ -3,9 +3,9 @@ import CloseIcon from '@/components/global/CloseIcon';
 import { SelectedRegionsBadges } from '@/components/global/SelectedItemsBadges';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
 import { CustomRectButton, SelectableButton } from '@/components/ui/button';
-import { selectSelectedBrands, selectSelectedGenerations, useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
-import { useFocusEffect, useRouter } from 'expo-router';
-import React, { useCallback, useState } from 'react';
+import { selectSelectedBrands, selectSelectedGenerations, useSimpleAutoFilterStore } from '@/state/search-screen/useSimpleAutoFilterStore';
+import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -31,7 +31,7 @@ const SettingScreenFilter = () => {
 
   const [isBrandSectionCollapsed, setIsBrandSectionCollapsed] = useState(true);
 
-  const store = useAutoSelectStore();
+  const store = useSimpleAutoFilterStore();
   const {
     tab,
     selectedRegions,
@@ -61,21 +61,10 @@ const SettingScreenFilter = () => {
     setMileageRange,
     setNumberOfOwners,
     setSeller,
-    clearSelections,
   } = store;
 
   const selectedBrands = selectSelectedBrands(store);
   const selectedGenerations = selectSelectedGenerations(store);
-
-  useFocusEffect(
-    useCallback(() => {
-      // This runs when screen comes into focus
-      return () => {
-        // This cleanup function runs when screen loses focus (user navigates back)
-        clearSelections();
-      };
-    }, [clearSelections])
-  );
 
   return (
     <>
@@ -106,7 +95,7 @@ const SettingScreenFilter = () => {
               <TouchableHighlightRow
                 variant="button"
                 label="Марка, модель, поколение"
-                onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/brand-auto-filter?from=settings')}
+                onPress={() => router.push('/(app)/search-screen/simple-auto-screen/brand-auto-filter?from=settings')}
                 showRightArrow
               />
               {selectedBrands.length !== 0 && (
@@ -131,7 +120,7 @@ const SettingScreenFilter = () => {
                               label="Модель"
                               selectedValue={selectedModels.map(m => m.name).join(', ')}
                               selectedValueMode="replace"
-                              onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/model-filter?from=settings')}
+                              onPress={() => router.push('/(app)/search-screen/simple-auto-screen/model-filter?from=settings')}
                               showRightArrow
                             />
 
@@ -141,7 +130,7 @@ const SettingScreenFilter = () => {
                                 label="Поколение"
                                 selectedValue={selectedGenerations.map(m => `${m.generation} поколение`).join(', ')}
                                 selectedValueMode="replace"
-                                onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/generation-filter?from=settings')}
+                                onPress={() => router.push('/(app)/search-screen/simple-auto-screen/generation-filter?from=settings')}
                                 showRightArrow
                               />
                             )}

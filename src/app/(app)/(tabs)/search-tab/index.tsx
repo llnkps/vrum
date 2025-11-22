@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ActivityIndicator, RefreshControl, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -8,6 +8,7 @@ import { SearchTabProvider, useSearchTab } from '@/modules/search-screen/SearchT
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { FlashList } from '@shopify/flash-list';
 import { useRouter } from 'expo-router';
+import CustomFlashList from '@/components/global/CustomFlashList/CustomFlashList';
 
 export default function SearchScreen() {
   return (
@@ -35,25 +36,34 @@ function SearchScreenContent() {
     getDetailUrl,
   } = useSearchTab();
 
+  const MemoizedHeader = useMemo(
+    () => (
+      <>
+        <HeaderBrand />
+        <HeaderCategory activeScreen={activeScreen} setActiveScreen={setActiveScreen} />
+        {HeaderComponent && <HeaderComponent />}
+      </>
+    ),
+    [activeScreen, setActiveScreen, HeaderComponent]
+  );
+
   return (
     <SafeAreaView className="flex-1">
-      <FlashList
+      <CustomFlashList
         numColumns={2}
         data={flattenedData}
         keyExtractor={(item: any) => item.id?.toString() || `item-${Math.random()}`}
-        refreshControl={<RefreshControl tintColor={'blue'} refreshing={isRefetching} onRefresh={refetch} />}
+        
+        onRefresh={refetch}
+        refreshing={isRefetching}
+
         onEndReachedThreshold={0.2}
         onEndReached={() => hasNextPage && !isFetchingNextPage && fetchNextPage()}
-        ListEmptyComponent={<Text className="p-4 text-center">No data available</Text>}
         ListFooterComponent={isFetchingNextPage ? <ActivityIndicator color="blue" size="small" style={{ marginBottom: 5 }} /> : null}
         contentContainerStyle={{ paddingBottom: tabBarHeight }}
-        ListHeaderComponent={
-          <>
-            <HeaderBrand />
-            <HeaderCategory activeScreen={activeScreen} setActiveScreen={setActiveScreen} />
-            {HeaderComponent && <HeaderComponent />}
-          </>
-        }
+        
+        ListHeaderComponent={MemoizedHeader}
+
         renderItem={({ item }) => {
           return ItemComponent ? (
             <ItemComponent

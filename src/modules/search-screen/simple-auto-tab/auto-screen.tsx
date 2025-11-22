@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, Text, TouchableWithoutFeedback, View } from 'react-native';
 
@@ -11,7 +11,7 @@ import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow
 import { useSearchTab } from '@/modules/search-screen/SearchTabProvider';
 import { isArrayFilter, isBooleanFilter, isRangeFilter } from '@/shared/filter';
 import { QuickFilter, useQuickFilters } from '@/shared/quick-filters';
-import { useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
+import { useSimpleAutoFilterStore } from '@/state/search-screen/useSimpleAutoFilterStore';
 import { SearchedItem, useSearchedFiltersStore } from '@/state/search-screen/useSearchedFiltersStore';
 import { Ionicons } from '@expo/vector-icons';
 import FilterBadge from '@/components/global/FilterBadge';
@@ -21,7 +21,7 @@ import { createFilterFormatCallback, formatRangeFilterValue } from '@/utils/useT
 export const AutoHeaderScreen = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const store = useAutoSelectStore();
+  const store = useSimpleAutoFilterStore();
   const searchedFiltersStore = useSearchedFiltersStore();
 
   const { updateRequestParams } = useSearchTab();
@@ -150,50 +150,39 @@ export const AutoHeaderScreen = () => {
     [store, router]
   );
 
-  return (
+  useEffect(() => {
+    router.prefetch('/(app)/search-screen/simple-auto-screen/simple-auto-modal');
+    router.prefetch('/(app)/search-screen/simple-auto-screen/brand-auto-filter');
+  }, []);
+
+  return (  
     <>
       <View className="gap-y-4 px-4 py-3">
         <View className={'gap-y-1'}>
           <TouchableHighlightRow
             label={t('searchScreen.simpleAuto.brandModelGeneration')}
-            onPress={() => router.navigate('/(app)/search-screen/simple-auto-screen/(modals)/brand-auto-filter')}
+            onPress={() => router.navigate('/(app)/search-screen/simple-auto-screen/brand-auto-filter')}
             variant="button"
             showRightArrow={false}
           />
           <View className={'flex-row gap-1'}>
             <YearFilterController
-              // value={store.yearRange}
               onChange={yearRange => {
                 store.setYearRange(yearRange);
-                if (yearRange) {
-                  searchedFiltersStore.addSearchedItem({
-                    filters: {
-                      [BACKEND_FILTERS.YEAR]: formatRangeFilterValue(BACKEND_FILTERS.YEAR, yearRange, t, createFilterFormatCallback(BACKEND_FILTERS.YEAR)),
-                    },
-                  });
-                }
-                router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal');
+                router.navigate('/(app)/search-screen/simple-auto-screen/simple-auto-modal');
               }}
             />
 
             <PriceFilterController
-              value={store.priceRange}
               onChange={priceRange => {
                 store.setPriceRange(priceRange);
-                if (priceRange) {
-                  searchedFiltersStore.addSearchedItem({
-                    filters: {
-                      [BACKEND_FILTERS.PRICE]: formatRangeFilterValue(BACKEND_FILTERS.PRICE, priceRange, t, createFilterFormatCallback(BACKEND_FILTERS.PRICE)),
-                    },
-                  });
-                }
-                router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal');
+                router.navigate('/(app)/search-screen/simple-auto-screen/simple-auto-modal');
               }}
             />
 
             <TouchableHighlightRow
               label={t('searchScreen.simpleAuto.parameters')}
-              onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/settings')}
+              onPress={() => router.navigate('/(app)/search-screen/simple-auto-screen/settings')}
               variant="button"
               icon={<Ionicons name="options-sharp" size={20} color="white" />}
               showRightArrow={false}
@@ -220,7 +209,7 @@ export const AutoHeaderScreen = () => {
 
         <TouchableHighlightRow
           label={t('searchScreen.simpleAuto.searchPlaceholder')}
-          onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal')}
+          onPress={() => router.push('/(app)/search-screen/simple-auto-screen/simple-auto-modal')}
           variant="button"
           showRightArrow={false}
           centerText={true}

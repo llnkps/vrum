@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { FC, useEffect, useState } from 'react';
-import { ScrollView, StatusBar, Text, View } from 'react-native';
+import { FC, memo, useCallback, useEffect, useState } from 'react';
+import { ScrollView, StatusBar, Text, View, RefreshControl, VirtualizedList } from 'react-native';
 import Animated, { useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -11,7 +11,7 @@ import { LoaderIndicator } from '@/components/global/LoaderIndicator';
 import { CustomRectButton } from '@/components/ui/button';
 import { useSimpleAutoBrandApi } from '@/hooks/api/useSimpleAutoBrandApi';
 import { DefaultConfig, SimpleAutoBrand } from '@/openapi/client';
-import { selectSelectedBrands, useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
+import { selectSelectedBrands, useSimpleAutoFilterStore } from '@/state/search-screen/useSimpleAutoFilterStore';
 import { useTheme } from '@react-navigation/native';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight ?? 24;
@@ -25,12 +25,13 @@ export default function BrandAutoFilter() {
   const router = useRouter();
   const searchParams = useLocalSearchParams();
 
-  const store = useAutoSelectStore();
+  const store = useSimpleAutoFilterStore();
   const selectedBrands = selectSelectedBrands(store);
   const { removeSelectedBrand } = store;
 
   const [searchValue, setSearchValue] = useState('');
-  const { data, isPending } = useSimpleAutoBrandApi();
+
+  const { data, isPending, refetch } = useSimpleAutoBrandApi();
   const [filteredBrands, setFilteredBrands] = useState<SimpleAutoBrand[]>([]);
 
   const scrollY = useSharedValue(0);
@@ -42,9 +43,9 @@ export default function BrandAutoFilter() {
     }
   }, [data]);
 
-  if (isPending) {
-    return <LoaderIndicator />;
-  }
+  // useEffect(() => {
+  //   router.prefetch(`/(app)/search-screen/simple-auto-screen/model-filter`);
+  // }, [router])
 
   return (
     <>
@@ -88,16 +89,16 @@ export default function BrandAutoFilter() {
           </View>
         )}
 
-        <BrandAutoList brands={filteredBrands} scrollY={scrollY} isScrolling={isScrolling} />
+        <BrandAutoList brands={filteredBrands} scrollY={scrollY} isScrolling={isScrolling} onRefresh={refetch} refreshing={isPending} />
 
         {/* Fixed Button */}
         <View className="absolute bottom-2 left-0 right-0 px-3 pb-6">
           <CustomRectButton
             onPress={() => {
               if (searchParams.from === 'settings') {
-                router.replace('/(app)/search-screen/simple-auto-screen/(modals)/settings');
+                router.replace('/(app)/search-screen/simple-auto-screen/settings');
               } else {
-                router.replace('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal');
+                router.replace('/(app)/search-screen/simple-auto-screen/simple-auto-modal');
               }
             }}
             appearance="primary"
@@ -114,9 +115,13 @@ type props = {
   brands: SimpleAutoBrand[];
   scrollY: any;
   isScrolling: any;
+  onRefresh: () => void;
+  refreshing: boolean;
 };
 
-const BrandAutoList: FC<props> = ({ brands, scrollY, isScrolling }) => {
+const AnimatedVirtualizedList = Animated.createAnimatedComponent(VirtualizedList);
+
+const BrandAutoList: FC<props> = ({ brands, scrollY, isScrolling, onRefresh, refreshing }) => {
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: event => {
       scrollY.value = event.contentOffset.y;
@@ -132,43 +137,52 @@ const BrandAutoList: FC<props> = ({ brands, scrollY, isScrolling }) => {
   return (
     <>
       <View className="mt-2">
-        <Animated.FlatList
+        <AnimatedVirtualizedList
           data={brands}
+          
+          getItemCount={d => d.length}
+          getItem={(d, index) => d[index]}
+
           keyExtractor={item => `${item.id}`}
-          scrollEventThrottle={16}
           onScroll={scrollHandler}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
             paddingBottom: 120 + STATUSBAR_HEIGHT, // Extra padding for fixed button
           }}
           renderItem={({ item }) => {
-            return <ListItem item={item} />;
+            return <ListItem item={item as SimpleAutoBrand} />;
           }}
-          initialNumToRender={18}
-          windowSize={10}
-          maxToRenderPerBatch={20}
+          initialNumToRender={13}
+          scrollEventThrottle={16}
+          windowSize={5}
+          maxToRenderPerBatch={10}
           updateCellsBatchingPeriod={50}
           removeClippedSubviews={true}
+          refreshing={refreshing}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         />
       </View>
     </>
   );
 };
 
-const ListItem = ({ item }) => {
+interface ListItemProps {
+  item: SimpleAutoBrand;
+}
+
+const ListItem = memo<ListItemProps>(({ item }) => {
   const theme = useTheme();
   const searchParams = useLocalSearchParams();
   const router = useRouter();
 
-  const { setCurrentBrand, selectedModelsByBrand } = useAutoSelectStore();
+  const { setCurrentBrand, selectedModelsByBrand } = useSimpleAutoFilterStore();
   const selectedCount = selectedModelsByBrand[item.id!]?.length || 0;
-
-  const handleSelectBrand = (brand: SimpleAutoBrand) => {
+  const handleSelectBrand = useCallback((brand: SimpleAutoBrand) => {
     setCurrentBrand(brand);
 
     const fromParam = searchParams.from === 'settings' ? '?from=settings' : '';
-    router.navigate(`/(app)/search-screen/simple-auto-screen/(modals)/model-filter${fromParam}`);
-  };
+    router.navigate(`/(app)/search-screen/simple-auto-screen/model-filter${fromParam}`);
+  }, [setCurrentBrand, searchParams.from, router]);
 
   return (
     <View style={{ borderBottomWidth: 1, borderBottomColor: theme.colors.border }}>
@@ -189,4 +203,6 @@ const ListItem = ({ item }) => {
       </CustomRectButton>
     </View>
   );
-};
+});
+
+ListItem.displayName = 'ListItem';

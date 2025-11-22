@@ -23,8 +23,8 @@ import {
   selectSelectedBrands,
   selectSelectedGenerations,
   selectSelectedModels,
-  useAutoSelectStore,
-} from '@/state/search-screen/useAutoSelectStore';
+  useSimpleAutoFilterStore,
+} from '@/state/search-screen/useSimpleAutoFilterStore';
 import { useSearchedFiltersStore } from '@/state/search-screen/useSearchedFiltersStore';
 import { BACKEND_FILTERS, SelectFilterType } from '@/types/filter';
 import { showImmediateNotification } from '@/utils/notifications';
@@ -40,60 +40,37 @@ export default function SimpleAutoModal() {
   const router = useRouter();
   const navigation = useNavigation();
 
-  const store = useAutoSelectStore();
-
+  const simpleAutoFilterStore = useSimpleAutoFilterStore();
+  console.log(simpleAutoFilterStore.yearRange);
   // Hook to save searched filters
   const saveCurrentFiltersToSearched = useSaveSearchedFilters();
-  const { setCurrentSessionId } = useSearchedFiltersStore();
-
-  const selectedBrands = selectSelectedBrands(store);
-  const selectedModels = selectSelectedModels(store);
+  const { setCurrentSessionId, currentSessionId } = useSearchedFiltersStore();
+  console.log('Current Session ID in Modal: ', currentSessionId);
+  const selectedBrands = selectSelectedBrands(simpleAutoFilterStore);
+  const selectedModels = selectSelectedModels(simpleAutoFilterStore);
   // console.log("selected Brands: ", selectedBrands)
-  const {
-    selectedModelsByBrand,
-    tab,
-    selectedRegions,
-    onlyUnsold,
-    onlyWithPhotos,
-    transmission,
-    fuelType,
-    drivetrain,
-    bodyType,
-    color,
-    numberOfOwners,
-    seller,
-    priceRange,
-    yearRange,
-    engineCapacityRange,
-    powerRange,
-    mileageRange,
-    setYearRange,
-    setPriceRange,
-    sortMethod,
-    setSortMethod,
-  } = store;
-  console.log(yearRange, priceRange)
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch, isRefetching, isSuccess } = useSimpleGetCollectionPagination({
     brands: selectedBrands,
-    models: selectedModelsByBrand,
+    models: simpleAutoFilterStore.selectedModelsByBrand,
     pageSize: '10',
-    tab,
-    selectedRegions,
-    onlyUnsold,
-    onlyWithPhotos,
-    transmission,
-    fuelType,
-    drivetrain,
-    bodyType,
-    color,
-    numberOfOwners,
-    seller,
-    priceRange,
-    yearRange,
-    engineCapacityRange,
-    powerRange,
-    mileageRange,
-    sortMethod,
+    tab: simpleAutoFilterStore.tab,
+    selectedRegions: simpleAutoFilterStore.selectedRegions,
+    onlyUnsold: simpleAutoFilterStore.onlyUnsold,
+    onlyWithPhotos: simpleAutoFilterStore.onlyWithPhotos,
+    transmission: simpleAutoFilterStore.transmission,
+    fuelType: simpleAutoFilterStore.fuelType,
+    drivetrain: simpleAutoFilterStore.drivetrain,
+    bodyType: simpleAutoFilterStore.bodyType,
+    color: simpleAutoFilterStore.color,
+    numberOfOwners: simpleAutoFilterStore.numberOfOwners,
+    seller: simpleAutoFilterStore.seller,
+    priceRange: simpleAutoFilterStore.priceRange,
+    yearRange: simpleAutoFilterStore.yearRange,
+    engineCapacityRange: simpleAutoFilterStore.engineCapacityRange,
+    powerRange: simpleAutoFilterStore.powerRange,
+    mileageRange: simpleAutoFilterStore.mileageRange,
+    sortMethod: simpleAutoFilterStore.sortMethod,
   });
 
   const flattenedData = useMemo(() => {
@@ -102,63 +79,65 @@ export default function SimpleAutoModal() {
 
   const { onViewableItemsChanged } = useImagePrefetch(flattenedData);
 
-  const routeIndexRef = useRef<number | null>(null);
   const hasSavedFiltersRef = useRef(false);
 
   const [isBrandSectionCollapsed, setIsBrandSectionCollapsed] = useState(true);
-  const selectedGenerations = selectSelectedGenerations(store);
+  const selectedGenerations = selectSelectedGenerations(simpleAutoFilterStore);
 
   // Create a key that changes when filters change to reset the save session
   const filterKey = useMemo(() => {
     return JSON.stringify({
       selectedBrands,
       selectedModels,
-      tab,
-      selectedRegions,
-      onlyUnsold,
-      onlyWithPhotos,
-      transmission,
-      fuelType,
-      drivetrain,
-      bodyType,
-      color,
-      numberOfOwners,
-      seller,
-      priceRange,
-      yearRange,
-      engineCapacityRange,
-      powerRange,
-      mileageRange,
-      sortMethod,
+      tab: simpleAutoFilterStore.tab,
+      selectedRegions: simpleAutoFilterStore.selectedRegions,
+      onlyUnsold: simpleAutoFilterStore.onlyUnsold,
+      onlyWithPhotos: simpleAutoFilterStore.onlyWithPhotos,
+      transmission: simpleAutoFilterStore.transmission,
+      fuelType: simpleAutoFilterStore.fuelType,
+      drivetrain: simpleAutoFilterStore.drivetrain,
+      bodyType: simpleAutoFilterStore.bodyType,
+      color: simpleAutoFilterStore.color,
+      numberOfOwners: simpleAutoFilterStore.numberOfOwners,
+      seller: simpleAutoFilterStore.seller,
+      priceRange: simpleAutoFilterStore.priceRange,
+      yearRange: simpleAutoFilterStore.yearRange,
+      engineCapacityRange: simpleAutoFilterStore.engineCapacityRange,
+      powerRange: simpleAutoFilterStore.powerRange,
+      mileageRange: simpleAutoFilterStore.mileageRange,
+      sortMethod: simpleAutoFilterStore.sortMethod,
     });
   }, [
     selectedBrands,
     selectedModels,
-    tab,
-    selectedRegions,
-    onlyUnsold,
-    onlyWithPhotos,
-    transmission,
-    fuelType,
-    drivetrain,
-    bodyType,
-    color,
-    numberOfOwners,
-    seller,
-    priceRange,
-    yearRange,
-    engineCapacityRange,
-    powerRange,
-    mileageRange,
-    sortMethod,
+    simpleAutoFilterStore.tab,
+    simpleAutoFilterStore.selectedRegions,
+    simpleAutoFilterStore.onlyUnsold,
+    simpleAutoFilterStore.onlyWithPhotos,
+    simpleAutoFilterStore.transmission,
+    simpleAutoFilterStore.fuelType,
+    simpleAutoFilterStore.drivetrain,
+    simpleAutoFilterStore.bodyType,
+    simpleAutoFilterStore.color,
+    simpleAutoFilterStore.numberOfOwners,
+    simpleAutoFilterStore.seller,
+    simpleAutoFilterStore.priceRange,
+    simpleAutoFilterStore.yearRange,
+    simpleAutoFilterStore.engineCapacityRange,
+    simpleAutoFilterStore.powerRange,
+    simpleAutoFilterStore.mileageRange,
+    simpleAutoFilterStore.sortMethod,
   ]);
 
   // Reset save session when filters change
   useEffect(() => {
     hasSavedFiltersRef.current = false;
     // Start a new session for this filter set
-    const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    setCurrentSessionId(newSessionId);
+    if (!currentSessionId) {
+      const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      console.log('New session ID:', newSessionId);
+      setCurrentSessionId(newSessionId);
+    }
   }, [filterKey, setCurrentSessionId]);
 
   const handleSubscribe = async () => {
@@ -348,43 +327,40 @@ export default function SimpleAutoModal() {
   };
 
   // Handle back navigation (button and gesture)
-  useFocusEffect(
-    useCallback(() => {
-      const unsubscribe = navigation.addListener('beforeRemove', e => {
-        // // Prevent default back behavior
-        // e.preventDefault();
-        // // Clear store and navigate to search tab
-        // console.log('CLEAR STATE SIMPLE AUTO MODAL - beforeRemove');
-        store.clearSelections();
-        // router.push('/search-tab');
-      });
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     const unsubscribe = navigation.addListener('beforeRemove', e => {
+  //       console.log("hello eorld")
+  //       e.preventDefault();
+  //       router.push('/search-tab');
+  //     });
 
-      return unsubscribe;
-    }, [navigation, store, router])
-  );
+  //     return unsubscribe;
+  //   }, [navigation, simpleAutoFilterStore, router])
+  // );
 
-  // Reset store when navigating away from this screen (for forward navigation)
-  useFocusEffect(
-    useCallback(() => {
-      // Store the current route index when screen gains focus
-      const currentState = navigation.getState();
-      if (currentState) {
-        routeIndexRef.current = currentState.index;
-      }
+  // // Reset store when navigating away from this screen (for forward navigation)
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     // Store the current route index when screen gains focus
+  //     const currentState = navigation.getState();
+  //     if (currentState) {
+  //       routeIndexRef.current = currentState.index;
+  //     }
 
-      return () => {
-        // This cleanup function runs when the screen loses focus
-        const currentState = navigation.getState();
-        const previousIndex = routeIndexRef.current;
+  //     return () => {
+  //       // This cleanup function runs when the screen loses focus
+  //       const currentState = navigation.getState();
+  //       const previousIndex = routeIndexRef.current;
 
-        // // Only clear store if navigating back (index decreased)
-        if (currentState && previousIndex !== null && currentState.index < previousIndex) {
-          console.log('CLEAR STATE SIMPLE AUTO MODAL - Going back');
-          store.clearSelections();
-        }
-      };
-    }, [navigation, store])
-  );
+  //       // // Only clear store if navigating back (index decreased)
+  //       if (currentState && previousIndex !== null && currentState.index < previousIndex) {
+  //         console.log('CLEAR STATE SIMPLE AUTO MODAL - Going back');
+  //         simpleAutoFilterStore.clearSelections();
+  //       }
+  //     };
+  //   }, [navigation, simpleAutoFilterStore])
+  // );
 
   // useEffect(() => {
   //   console.log("call again")
@@ -408,18 +384,23 @@ export default function SimpleAutoModal() {
   // Reset session when component unmounts (user leaves modal)
   // useEffect(() => {
   //   return () => {
+  //     console.log('BYE');
   //     hasSavedFiltersRef.current = false;
+  //     setCurrentSessionId(null);
   //   };
-  // }, []);
+  // }, [setCurrentSessionId]);
 
-  // Reset session when component unmounts (user leaves modal)
+
   useEffect(() => {
-    return () => {
-      console.log("BYE")
-      hasSavedFiltersRef.current = false;
-      setCurrentSessionId(null);
-    };
-  }, [setCurrentSessionId]);
+    const sub = navigation.addListener('beforeRemove', e => {
+      console.log("hello world")
+      e.preventDefault();
+      sub(); // Remove the listener immediately to prevent further calls
+      router.replace('/search-tab');
+    });
+
+    return sub;
+  }, []);
 
   return (
     <SafeAreaView className="flex-1">
@@ -437,37 +418,42 @@ export default function SimpleAutoModal() {
                 <TouchableHighlightRow
                   variant="button"
                   label={t('searchScreen.simpleAuto.brandModelGeneration')}
-                  onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/brand-auto-filter')}
+                  onPress={() => router.navigate('/(app)/search-screen/simple-auto-screen/brand-auto-filter')}
                   showRightArrow
                 />
                 <SelectedBrandsSection
                   selectedBrands={selectedBrands}
-                  getSelectedModelsByBrand={store.getSelectedModelsByBrand}
+                  getSelectedModelsByBrand={simpleAutoFilterStore.getSelectedModelsByBrand}
                   selectedGenerations={selectedGenerations}
                   isCollapsed={isBrandSectionCollapsed}
                   onToggleCollapse={() => setIsBrandSectionCollapsed(!isBrandSectionCollapsed)}
-                  onPressModel={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/model-filter?from=settings')}
-                  onPressGeneration={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/generation-filter?from=settings')}
+                  onPressModel={() => router.navigate('/(app)/search-screen/simple-auto-screen/model-filter?from=settings')}
+                  onPressGeneration={() => router.navigate('/(app)/search-screen/simple-auto-screen/generation-filter?from=settings')}
                 />
               </View>
 
               <View className={'flex flex-row gap-1'}>
                 <YearFilterController
-                  value={yearRange}
+                  value={simpleAutoFilterStore.yearRange}
                   onChange={yearRange => {
-                    store.setYearRange(yearRange);
+                    simpleAutoFilterStore.setYearRange(yearRange);
                   }}
+                  selectedValueMode="replace"
                 />
                 <PriceFilterController
-                  value={priceRange}
+                  value={simpleAutoFilterStore.priceRange}
                   onChange={priceRange => {
-                    store.setPriceRange(priceRange);
+                    simpleAutoFilterStore.setPriceRange(priceRange);
                   }}
+                  selectedValueMode="replace"
                 />
                 <TouchableHighlightRow
                   variant="button"
-                  label={t('searchScreen.simpleAuto.parameters') + (getActiveFiltersCount(store) > 0 ? ` (${getActiveFiltersCount(store)})` : '')}
-                  onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/settings')}
+                  label={
+                    t('searchScreen.simpleAuto.parameters') +
+                    (getActiveFiltersCount(simpleAutoFilterStore) > 0 ? ` (${getActiveFiltersCount(simpleAutoFilterStore)})` : '')
+                  }
+                  onPress={() => router.navigate('/(app)/search-screen/simple-auto-screen/settings')}
                   showRightArrow={false}
                   icon={<Ionicons name="options-sharp" size={20} color="white" />}
                   fullWidth
@@ -475,22 +461,22 @@ export default function SimpleAutoModal() {
               </View>
 
               <RegionFilterController
-                value={store.selectedRegions}
+                value={simpleAutoFilterStore.selectedRegions}
                 onChange={regions => {
-                  store.setSelectedRegions(regions);
+                  simpleAutoFilterStore.setSelectedRegions(regions);
                 }}
               />
 
-              {store.selectedRegions?.length > 0 && (
+              {simpleAutoFilterStore.selectedRegions?.length > 0 && (
                 <SelectedRegionsBadges
-                  selectedRegions={store.selectedRegions}
+                  selectedRegions={simpleAutoFilterStore.selectedRegions}
                   onRemove={region => {
-                    const updatedRegions = store.selectedRegions.filter(r => r.id !== region.id);
-                    store.setSelectedRegions(updatedRegions);
+                    const updatedRegions = simpleAutoFilterStore.selectedRegions.filter(r => r.id !== region.id);
+                    simpleAutoFilterStore.setSelectedRegions(updatedRegions);
                   }}
                 />
               )}
-              <SimpleAutoSortBottomSheet sortMethod={sortMethod} setSortMethod={setSortMethod} />
+              <SimpleAutoSortBottomSheet sortMethod={simpleAutoFilterStore.sortMethod} setSortMethod={simpleAutoFilterStore.setSortMethod} />
             </View>
           </>
         }
@@ -521,6 +507,9 @@ export default function SimpleAutoModal() {
 
 // Custom hook to save current filters to searched filters
 const useSaveSearchedFilters = () => {
+  console.log('UPDATE');
+  console.log('UPDATE');
+  console.log('UPDATE');
   const { t } = useTranslation();
   const { addSearchedItem } = useSearchedFiltersStore();
   const filterConfigs = useFilterConfigs();
@@ -545,7 +534,7 @@ const useSaveSearchedFilters = () => {
     engineCapacityRange,
     powerRange,
     mileageRange,
-  } = useAutoSelectStore();
+  } = useSimpleAutoFilterStore();
 
   // Helper function to get labels for selected values from filter config
   const getLabelsForSelectedValues = (filterKey: string, selectedValues: SelectFilterType) => {

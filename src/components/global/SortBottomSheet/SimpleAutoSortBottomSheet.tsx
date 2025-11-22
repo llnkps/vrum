@@ -13,7 +13,6 @@ type props = {
 };
 
 export const SimpleAutoSortBottomSheet: FC<props> = ({ sortMethod, setSortMethod }) => {
-  console.log(sortMethod);
   const { t } = useTranslation();
   const sortModalRef = useRef<BottomSheetModal>(null);
 

@@ -49,15 +49,14 @@ export const HeaderSearchBar: FC<HeaderProps> = ({
 
   // Title (font size + vertical shift)
   const animatedTitle = useAnimatedStyle(() => {
-    const fontSize = interpolate(scrollY.value, [0, offsetValue], [24, 18], Extrapolation.CLAMP);
+    const scale = interpolate(scrollY.value, [0, offsetValue], [1, 18 / 24], Extrapolation.CLAMP);
 
     const translateY = interpolate(scrollY.value, [0, offsetValue], [0, -32], Extrapolation.CLAMP);
 
-    const translateX = interpolate(scrollY.value, [0, offsetValue], [0, 40], Extrapolation.CLAMP);
+    const translateX = interpolate(scrollY.value, [0, offsetValue], [0, 0], Extrapolation.CLAMP);
 
     return {
-      fontSize,
-      transform: [{ translateY }, { translateX }],
+      transform: [{ translateY }, { translateX }, { scale }],
     };
   });
 
@@ -84,8 +83,8 @@ export const HeaderSearchBar: FC<HeaderProps> = ({
         </View>
 
         {/* Title */}
-        <Animated.View style={[{ paddingHorizontal: 12 }, animatedSpacer]}>
-          <Animated.Text style={[{ fontWeight: 'bold', color: theme.colors.text, fontSize: 20 }, animatedTitle]}>{title}</Animated.Text>
+        <Animated.View style={[{ paddingHorizontal: 6 }, animatedSpacer]}>
+          <Animated.Text style={[{ fontWeight: 'bold', color: theme.colors.text, fontSize: 24 }, animatedTitle]}>{title}</Animated.Text>
         </Animated.View>
       </Animated.View>
 

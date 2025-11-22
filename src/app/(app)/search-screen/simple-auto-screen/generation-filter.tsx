@@ -9,7 +9,7 @@ import { CheckboxRectButton } from '@/components/global/CheckboxRectButton/Check
 import { HeaderSearchBar } from '@/components/global/header/HeaderSearchBar';
 import { useGenerationsByModelApi } from '@/hooks/api/useGenerationsByModelApi';
 import { SimpleAutoGeneration } from '@/openapi/client';
-import { useAutoSelectStore, selectSelectedBrands, selectSelectedModels, selectSelectedGenerations } from '@/state/search-screen/useAutoSelectStore';
+import { useAutoSelectStore, selectSelectedBrands, selectSelectedModels, selectSelectedGenerations } from '@/state/search-screen/useSimpleAutoFilterStore';
 import { CustomRectButton } from '@/components/ui/button/CustomRectButton';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight ?? 24;
@@ -17,7 +17,7 @@ const STATUSBAR_HEIGHT = StatusBar.currentHeight ?? 24;
 export default function GenerationFilter() {
   const router = useRouter();
   const searchParams = useLocalSearchParams();
-  const store = useAutoSelectStore();
+  const store = useSimpleAutoFilterStore();
   const selectedBrands = selectSelectedBrands(store);
   const selectedModels = selectSelectedModels(store);
   const selectedBrand = selectedBrands[0];
@@ -109,7 +109,7 @@ type GenerationListProps = {
 };
 
 const GenerationList: FC<GenerationListProps> = ({ generations, scrollY, isScrolling }) => {
-  const store = useAutoSelectStore();
+  const store = useSimpleAutoFilterStore();
   const selectedGenerations = selectSelectedGenerations(store);
   const { addSelectedGeneration } = store;
 

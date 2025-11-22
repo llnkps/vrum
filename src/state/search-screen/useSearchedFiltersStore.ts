@@ -63,13 +63,13 @@ export const useSearchedFiltersStore = create<SearchedFiltersStore>()(
         const id = currentSessionId || generateIdFromFilters(item.filters);
         const name = generateNameFromFilters(item.filters);
 
-        // Check if item with same id already exists
-        const existingItem = searchedItems.find(existing => existing.id === id);
+        // Check if item with same id or same name already exists
+        const existingItem = searchedItems.find(existing => existing.id === id || existing.name === name);
 
         if (existingItem) {
           // Update the existing item with new filters and timestamp
           set({
-            searchedItems: searchedItems.map(f => (f.id === existingItem.id ? { ...item, id, name, timestamp: Date.now(), ttl: item.ttl || DEFAULT_TTL } : f)),
+            searchedItems: searchedItems.map(f => (f.id === existingItem.id ? { ...item, id: existingItem.id, name, timestamp: Date.now(), ttl: item.ttl || DEFAULT_TTL } : f)),
           });
         } else {
           // Add new item

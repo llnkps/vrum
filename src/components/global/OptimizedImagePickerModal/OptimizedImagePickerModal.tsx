@@ -1,5 +1,5 @@
 import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
-import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow/TouchableHighlightRow';
+import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef, useCallback, useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';

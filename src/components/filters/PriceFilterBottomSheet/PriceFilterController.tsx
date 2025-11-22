@@ -11,9 +11,10 @@ interface PriceFilterControllerProps {
   onChange: (value: RangeFilterType | undefined) => void;
   error?: string;
   variant?: 'plain' | 'bordered' | 'button';
+  selectedValueMode?: "under" | "replace";
 }
 
-const PriceFilterController = React.memo(({ value, onChange, error, variant = 'button' }: PriceFilterControllerProps) => {
+const PriceFilterController = React.memo(({ value, onChange, error, variant = 'button', selectedValueMode = "under" }: PriceFilterControllerProps) => {
   const { t } = useTranslation();
   const priceModalRef = useRef<BottomSheetRef>(null);
   const selectedValue = useTranslateRangeFilter('price', value, createFilterFormatCallback('price'));
@@ -31,6 +32,7 @@ const PriceFilterController = React.memo(({ value, onChange, error, variant = 'b
         variant={variant}
         showRightArrow={false}
         error={error}
+        selectedValueMode={selectedValueMode}
       />
       <PriceBottomSheet
         ref={priceModalRef}
