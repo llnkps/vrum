@@ -20,7 +20,8 @@
       },
       "edgeToEdgeEnabled": true,
       "package": "com.anonymous.vrum",
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./google-services.json",
+      "launchMode": "singleTask"
     },
     "web": {
       "bundler": "metro",

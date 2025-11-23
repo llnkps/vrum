@@ -1,8 +1,12 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { UserSubscriptionFilter, UserApi } from '@/openapi/client';
+import { UserSubscriptionFilter, UserApi, UserSubscriptionFilterApi } from '@/openapi/client';
 import { createAuthenticatedConfiguration } from '@/openapi/configurations';
+import { createAuthenticatedApiCall, AuthenticationException } from '@/openapi/auth-utils';
+import { BACKEND_FILTERS, SelectFilterType, RangeFilterType } from '@/types/filter';
+import { showImmediateNotification } from '@/utils/notifications';
+import { SimpleAutoBrand, SimpleAutoModel, Region } from '@/openapi/client';
 
 export type ExtendedUserSubscriptionFilter = UserSubscriptionFilter & {
   createdAt?: string;
@@ -22,6 +26,28 @@ interface SubscriptionsState {
   addSubscription: (subscription: Omit<ExtendedUserSubscriptionFilter, 'id'>) => Promise<void>;
   deleteSubscription: (id: number) => Promise<void>;
   syncSubscriptions: () => Promise<void>;
+  createSubscriptionFromSimpleAutoFilters: (params: {
+    selectedBrands: SimpleAutoBrand[];
+    selectedModels: SimpleAutoModel[];
+    priceRange?: RangeFilterType;
+    yearRange?: RangeFilterType;
+    selectedRegions: Region[];
+    transmission?: SelectFilterType;
+    fuelType?: SelectFilterType;
+    drivetrain?: SelectFilterType;
+    bodyType?: SelectFilterType;
+    color?: SelectFilterType;
+    numberOfOwners?: SelectFilterType;
+    seller?: SelectFilterType;
+    onlyUnsold: boolean;
+    onlyWithPhotos: boolean;
+    engineCapacityRange?: RangeFilterType;
+    powerRange?: RangeFilterType;
+    mileageRange?: RangeFilterType;
+    tab: 'all' | 'old' | 'new';
+    selectedModelsByBrand: Record<number, SimpleAutoModel[]>;
+    onAuthError?: () => void;
+  }) => Promise<void>;
 }
 
 const storage = {
@@ -138,6 +164,213 @@ export const useSubscriptionsStore = create<SubscriptionsState>()(
           } catch (err) {
             console.error('Error syncing subscriptions:', err);
             set({ error: 'Ошибка синхронизации подписок' });
+          }
+        }
+      },
+
+      createSubscriptionFromSimpleAutoFilters: async (params) => {
+        const {
+          selectedBrands,
+          selectedModels,
+          priceRange,
+          yearRange,
+          selectedRegions,
+          transmission,
+          fuelType,
+          drivetrain,
+          bodyType,
+          color,
+          numberOfOwners,
+          seller,
+          onlyUnsold,
+          onlyWithPhotos,
+          engineCapacityRange,
+          powerRange,
+          mileageRange,
+          tab,
+          selectedModelsByBrand,
+          onAuthError,
+        } = params;
+
+        // Build name
+        const nameParts = [];
+        if (selectedBrands.length > 0) {
+          nameParts.push(selectedBrands.map(b => b.name).join(', '));
+        }
+        if (selectedModels.length > 0) {
+          nameParts.push(selectedModels.map(m => m.name).join(', '));
+        }
+        if (priceRange?.from) nameParts.push(`от ${priceRange.from}`);
+        if (priceRange?.to) nameParts.push(`до ${priceRange.to}`);
+        if (yearRange?.from) nameParts.push(`год от ${yearRange.from}`);
+        if (yearRange?.to) nameParts.push(`год до ${yearRange.to}`);
+        if (selectedRegions.length > 0) {
+          nameParts.push(`регионы: ${selectedRegions.map((r: any) => r.name).join(', ')}`);
+        }
+        if (transmission && Object.keys(transmission).length > 0) nameParts.push(`трансмиссия: ${Object.values(transmission).join(', ')}`);
+        if (fuelType && Object.keys(fuelType).length > 0) nameParts.push(`топливо: ${Object.values(fuelType).join(', ')}`);
+        if (drivetrain && Object.keys(drivetrain).length > 0) nameParts.push(`привод: ${Object.values(drivetrain).join(', ')}`);
+        if (bodyType && Object.keys(bodyType).length > 0) nameParts.push(`кузов: ${Object.values(bodyType).join(', ')}`);
+        if (color && Object.keys(color).length > 0) nameParts.push(`цвет: ${Object.values(color).join(', ')}`);
+        if (numberOfOwners && Object.keys(numberOfOwners).length > 0) nameParts.push(`владельцы: ${Object.values(numberOfOwners).join(', ')}`);
+        if (seller && Object.keys(seller).length > 0) nameParts.push(`продавец: ${Object.values(seller).join(', ')}`);
+        if (onlyUnsold) nameParts.push('только не проданные');
+        if (onlyWithPhotos) nameParts.push('только с фото');
+        if (engineCapacityRange?.from) nameParts.push(`объем от ${engineCapacityRange.from}`);
+        if (engineCapacityRange?.to) nameParts.push(`объем до ${engineCapacityRange.to}`);
+        if (powerRange?.from) nameParts.push(`мощность от ${powerRange.from}`);
+        if (powerRange?.to) nameParts.push(`мощность до ${powerRange.to}`);
+        if (mileageRange?.from) nameParts.push(`пробег от ${mileageRange.from}`);
+        if (mileageRange?.to) nameParts.push(`пробег до ${mileageRange.to}`);
+
+        const name = nameParts.join(' ') || 'Фильтр подписки';
+
+        // Build filterParameters
+        const filterParameters: { [key: string]: any } = {};
+
+        if (transmission && Object.keys(transmission).length > 0) {
+          const transmissionObj: { [key: string]: string } = {};
+          Object.values(transmission).forEach((t, index) => {
+            transmissionObj[index.toString()] = t;
+          });
+          filterParameters[BACKEND_FILTERS.TRANSMISSION] = transmissionObj;
+        }
+        if (fuelType && Object.keys(fuelType).length > 0) {
+          const fuelTypeObj: { [key: string]: string } = {};
+          Object.values(fuelType).forEach((t, index) => {
+            fuelTypeObj[index.toString()] = t;
+          });
+          filterParameters[BACKEND_FILTERS.FUEL_TYPE] = fuelTypeObj;
+        }
+        if (drivetrain && Object.keys(drivetrain).length > 0) {
+          const drivetrainObj: { [key: string]: string } = {};
+          Object.values(drivetrain).forEach((t, index) => {
+            drivetrainObj[index.toString()] = t;
+          });
+          filterParameters[BACKEND_FILTERS.DRIVETRAIN_TYPE] = drivetrainObj;
+        }
+        if (bodyType && Object.keys(bodyType).length > 0) {
+          const bodyTypeObj: { [key: string]: string } = {};
+          Object.values(bodyType).forEach((t, index) => {
+            bodyTypeObj[index.toString()] = t;
+          });
+          filterParameters[BACKEND_FILTERS.FRAME_TYPE] = bodyTypeObj;
+        }
+        if (color && Object.keys(color).length > 0) {
+          const colorObj: { [key: string]: string } = {};
+          Object.values(color).forEach((c, index) => {
+            colorObj[index.toString()] = c;
+          });
+          filterParameters[BACKEND_FILTERS.COLOR] = colorObj;
+        }
+        if (numberOfOwners && Object.keys(numberOfOwners).length > 0) {
+          const numberOfOwnersObj: { [key: string]: string } = {};
+          Object.values(numberOfOwners).forEach((t, index) => {
+            numberOfOwnersObj[index.toString()] = t;
+          });
+          filterParameters[BACKEND_FILTERS.NUMBER_OF_OWNER] = numberOfOwnersObj;
+        }
+        if (seller && Object.keys(seller).length > 0) {
+          const sellerObj: { [key: string]: string } = {};
+          Object.values(seller).forEach((s, index) => {
+            sellerObj[index.toString()] = s;
+          });
+          filterParameters[BACKEND_FILTERS.SELLER] = sellerObj;
+        }
+
+        if (onlyUnsold) {
+          filterParameters[BACKEND_FILTERS.UNSOLD] = 'true';
+        }
+        if (onlyWithPhotos) {
+          filterParameters[BACKEND_FILTERS.WITH_IMAGE] = 'true';
+        }
+        if (tab === 'old') {
+          filterParameters[BACKEND_FILTERS.CONDITION] = { '0': 'used' };
+        }
+        if (tab === 'new') {
+          filterParameters[BACKEND_FILTERS.CONDITION] = { '0': 'new' };
+        }
+        if (engineCapacityRange) {
+          filterParameters[BACKEND_FILTERS.ENGINE_CAPACITY] = {};
+          if (engineCapacityRange.from !== undefined) filterParameters[BACKEND_FILTERS.ENGINE_CAPACITY]['from'] = engineCapacityRange.from.toString();
+          if (engineCapacityRange.to !== undefined) filterParameters[BACKEND_FILTERS.ENGINE_CAPACITY]['to'] = engineCapacityRange.to.toString();
+        }
+        if (powerRange) {
+          filterParameters[BACKEND_FILTERS.POWER] = {};
+          if (powerRange.from !== undefined) filterParameters[BACKEND_FILTERS.POWER]['from'] = powerRange.from.toString();
+          if (powerRange.to !== undefined) filterParameters[BACKEND_FILTERS.POWER]['to'] = powerRange.to.toString();
+        }
+        if (mileageRange) {
+          filterParameters[BACKEND_FILTERS.MILEAGE] = {};
+          if (mileageRange.from !== undefined) filterParameters[BACKEND_FILTERS.MILEAGE]['from'] = mileageRange.from.toString();
+          if (mileageRange.to !== undefined) filterParameters[BACKEND_FILTERS.MILEAGE]['to'] = mileageRange.to.toString();
+        }
+        if (yearRange) {
+          filterParameters[BACKEND_FILTERS.YEAR] = {};
+          if (yearRange.from !== undefined) filterParameters[BACKEND_FILTERS.YEAR]['from'] = yearRange.from.toString();
+          if (yearRange.to !== undefined) filterParameters[BACKEND_FILTERS.YEAR]['to'] = yearRange.to.toString();
+        }
+        if (priceRange) {
+          filterParameters[BACKEND_FILTERS.PRICE] = {};
+          if (priceRange.from !== undefined) filterParameters[BACKEND_FILTERS.PRICE]['from'] = priceRange.from.toString();
+          if (priceRange.to !== undefined) filterParameters[BACKEND_FILTERS.PRICE]['to'] = priceRange.to.toString();
+        }
+
+        // Build brandsWithModels
+        const brandsWithModels = selectedBrands?.reduce(
+          (acc, b, brandIndex) => {
+            if (b.id) {
+              let brandModels: Record<string, number> = {};
+              if (selectedModelsByBrand) {
+                brandModels = (selectedModelsByBrand[b.id] || []).reduce(
+                  (acc, model, modelIndex) => {
+                    acc[modelIndex.toString()] = model.id;
+                    return acc;
+                  },
+                  {} as Record<string, number>
+                );
+              }
+
+              acc[brandIndex.toString()] = {
+                id: b.id,
+                models: brandModels,
+              };
+            }
+
+            return acc;
+          },
+          {} as Record<string, any>
+        );
+
+        const userSubscriptionApi = new UserSubscriptionFilterApi(createAuthenticatedConfiguration());
+        try {
+          await createAuthenticatedApiCall(
+            async () =>
+              await userSubscriptionApi.createUserSubscriptionFilter({
+                createUserSubscriptionFilterRequest: {
+                  name,
+                  sourceType: 'simple-auto',
+                  b: brandsWithModels,
+                  r: selectedRegions.reduce(
+                    (acc, r, index) => {
+                      if (r.id !== undefined) {
+                        acc[index.toString()] = r.id!.toString();
+                      }
+                      return acc;
+                    },
+                    {} as Record<string, string>
+                  ),
+                  filterParameters: Object.keys(filterParameters).length > 0 ? filterParameters : undefined,
+                },
+              })
+          );
+          // Show success notification
+          await showImmediateNotification('Subscription Created', 'Your subscription has been saved successfully!');
+        } catch (error) {
+          console.log('ERRRRRRRRRRRRR HERE');
+          console.log(error);
+          if (error instanceof AuthenticationException) {
+            onAuthError?.();
           }
         }
       },

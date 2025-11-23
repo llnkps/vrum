@@ -1,6 +1,6 @@
 import { useFocusEffect, useRouter } from 'expo-router';
-import { FC, useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, ScrollView, StatusBar, View } from 'react-native';
+import React, { FC, useCallback, useEffect, useRef, useState, memo } from 'react';
+import { RefreshControl, ScrollView, StatusBar, View, VirtualizedList } from 'react-native';
 import Animated, { useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -25,7 +25,7 @@ export default function ModelFilter() {
   // Local state for selected models
   const [localSelectedModels, setLocalSelectedModels] = useState<SimpleAutoModel[]>([]);
 
-  const { data, isLoading } = useSimpleAutoModelByBrandApi(currentBrand ? currentBrand.id.toString() : undefined);
+  const { data, isPending, refetch } = useSimpleAutoModelByBrandApi(currentBrand ? currentBrand.id.toString() : undefined);
   const [filteredModels, setFilteredModels] = useState<SimpleAutoModel[]>([]);
 
   const scrollY = useSharedValue(0);
@@ -80,7 +80,11 @@ export default function ModelFilter() {
     }, [])
   );
 
-  if (isLoading) {
+  const handleRemoveModel = useCallback((modelId: number) => {
+    setLocalSelectedModels(prev => prev.filter(m => m.id !== modelId));
+  }, []);
+
+  if (isPending) {
     return (
       <View className="flex-1 items-center justify-center">
         <LoaderIndicator />
@@ -115,23 +119,7 @@ export default function ModelFilter() {
           searchPlaceholder="Марка или модель"
         />
 
-        {(localSelectedModels.length || 0) > 0 && (
-          <View>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              className="mt-2"
-              style={{ height: 50 }}
-              contentContainerStyle={{ alignItems: 'center', paddingVertical: 8 }}
-            >
-              {localSelectedModels.map(model => (
-                <View key={model.id} className="mr-2 self-start">
-                  <FilterBadge label={model.name || ''} onRemove={() => setLocalSelectedModels(prev => prev.filter(m => m.id !== model.id))} />
-                </View>
-              ))}
-            </ScrollView>
-          </View>
-        )}
+        <SelectedModelsBadges localSelectedModels={localSelectedModels} onRemoveModel={handleRemoveModel} />
 
         <ModelList
           models={filteredModels}
@@ -139,6 +127,8 @@ export default function ModelFilter() {
           isScrolling={isScrolling}
           localSelectedModels={localSelectedModels}
           onModelSelect={setLocalSelectedModels}
+          refreshing={isPending}
+          onRefresh={refetch}
         />
 
         {/* Fixed Button */}
@@ -150,15 +140,58 @@ export default function ModelFilter() {
   );
 }
 
+type SelectedModelsBadgesProps = {
+  localSelectedModels: SimpleAutoModel[];
+  onRemoveModel: (modelId: number) => void;
+};
+
+const SelectedModelsBadges: FC<SelectedModelsBadgesProps> = memo(({ localSelectedModels, onRemoveModel }) => {
+  if (localSelectedModels.length === 0) return null;
+
+  return (
+    <View>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        className="mt-2"
+        style={{ height: 50 }}
+        contentContainerStyle={{ alignItems: 'center', paddingVertical: 8 }}
+      >
+        {localSelectedModels.map(model => (
+          <View key={model.id} className="mr-2 self-start">
+            <FilterBadge label={model.name || ''} onRemove={() => onRemoveModel(model.id!)} />
+          </View>
+        ))}
+      </ScrollView>
+    </View>
+  );
+});
+SelectedModelsBadges.displayName = 'SelectedModelsBadges';
+
+type ModelItemProps = {
+  model: SimpleAutoModel;
+  isSelected: boolean;
+  onPress: () => void;
+};
+
+const ModelItem: FC<ModelItemProps> = memo(({ model, isSelected, onPress }) => {
+  return <CheckboxRectButton value={isSelected} label={model.name || ''} onPress={onPress} />;
+});
+ModelItem.displayName = 'ModelItem';
+
 type props = {
   models: SimpleAutoModel[];
   scrollY: any;
   isScrolling: any;
   localSelectedModels: SimpleAutoModel[];
   onModelSelect: (models: SimpleAutoModel[]) => void;
+  refreshing: boolean;
+  onRefresh: () => void;
 };
 
-const ModelList: FC<props> = ({ models, scrollY, isScrolling, localSelectedModels, onModelSelect }) => {
+const AnimatedVirtualizedList = Animated.createAnimatedComponent(VirtualizedList);
+
+const ModelList: FC<props> = memo(({ models, scrollY, isScrolling, localSelectedModels, onModelSelect, refreshing, onRefresh }) => {
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: event => {
       scrollY.value = event.contentOffset.y;
@@ -186,29 +219,41 @@ const ModelList: FC<props> = ({ models, scrollY, isScrolling, localSelectedModel
     [localSelectedModels, onModelSelect]
   );
 
+  const renderItem = useCallback(
+    ({ item }: { item: unknown }) => {
+      const model = item as SimpleAutoModel;
+      const isSelected = localSelectedModels.some(m => m.id === model.id);
+      return <ModelItem model={model} isSelected={isSelected} onPress={() => handleSelectModel(model)} />;
+    },
+    [localSelectedModels, handleSelectModel]
+  );
+
   return (
     <>
       <View className="mt-2">
-        <Animated.FlatList
+        <AnimatedVirtualizedList
           data={models}
-          keyExtractor={item => `${item.id}`}
-          scrollEventThrottle={16}
+          getItemCount={d => d.length}
+          getItem={(d, index) => d[index]}
+          keyExtractor={(item) => `${(item as SimpleAutoModel).id}`}
           onScroll={scrollHandler}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
-            paddingBottom: 120 + STATUSBAR_HEIGHT + 100,
+            paddingBottom: 120 + STATUSBAR_HEIGHT, // Extra padding for fixed button
           }}
-          renderItem={({ item }) => {
-            const isSelected = localSelectedModels.some(m => m.id === item.id);
-            return <CheckboxRectButton value={isSelected} label={item.name || ''} onPress={() => handleSelectModel(item)} />;
-          }}
-          initialNumToRender={18}
-          windowSize={10}
-          maxToRenderPerBatch={20}
+          renderItem={renderItem}
+          initialNumToRender={13}
+          scrollEventThrottle={16}
+          windowSize={5}
+          maxToRenderPerBatch={10}
           updateCellsBatchingPeriod={50}
           removeClippedSubviews={true}
+          refreshing={refreshing}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         />
       </View>
     </>
   );
-};
+});
+
+ModelList.displayName = 'ModelList';

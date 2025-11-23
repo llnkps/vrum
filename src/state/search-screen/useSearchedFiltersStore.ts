@@ -1,29 +1,37 @@
+import { useFilterConfigs } from '@/shared/filter';
 import { BACKEND_FILTERS, BackendFilterKey, FilterValue, SelectFilterType } from '@/types/filter';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTranslation } from 'react-i18next';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+import { useSimpleAutoFilterStore } from './useSimpleAutoFilterStore';
+import { createFilterFormatCallback, formatRangeFilterValue } from '@/utils/useTranslateRangeFilter';
 
+// Function to create storage with MMKV fallback to AsyncStorage
+const createStorage = () => {
+  try {
+    // Try to use MMKV
+    const { createMMKV } = require('react-native-mmkv');
+    const mmkvStorage = createMMKV();
+    return {
+      setItem: async (name: string, value: string) => {
+        mmkvStorage.set(name, value);
+      },
+      getItem: async (name: string) => {
+        const value = mmkvStorage.getString(name);
+        return value ?? null;
+      },
+      removeItem: async (name: string) => {
+        mmkvStorage.remove(name);
+      },
+    };
+  } catch (error) {
+    console.warn('MMKV not available, falling back to AsyncStorage:', error);
+    return AsyncStorage;
+  }
+};
 
-
-
-import { StateStorage } from 'zustand/middleware'
-import { createMMKV } from 'react-native-mmkv'
-
-
-const storage = createMMKV()
-
-export const zustandStorage = createJSONStorage(() => ({
-  setItem: (name, value) => {
-    storage.set(name, value);
-  },
-  getItem: name => {
-    const value = storage.getString(name);
-    return value ?? null;
-  },
-  removeItem: name => {
-    storage.remove(name);
-  },
-}));
-
+export const zustandStorage = createJSONStorage(createStorage);
 
 type FilterType = Partial<Record<BackendFilterKey, FilterValue>>;
 
@@ -69,7 +77,9 @@ export const useSearchedFiltersStore = create<SearchedFiltersStore>()(
         if (existingItem) {
           // Update the existing item with new filters and timestamp
           set({
-            searchedItems: searchedItems.map(f => (f.id === existingItem.id ? { ...item, id: existingItem.id, name, timestamp: Date.now(), ttl: item.ttl || DEFAULT_TTL } : f)),
+            searchedItems: searchedItems.map(f =>
+              f.id === existingItem.id ? { ...item, id: existingItem.id, name, timestamp: Date.now(), ttl: item.ttl || DEFAULT_TTL } : f
+            ),
           });
         } else {
           // Add new item
@@ -232,7 +242,8 @@ const generateNameFromFilters = (filters: FilterType) => {
         } else if (typeof value === 'object' && value !== null && !('min' in value) && !('max' in value)) {
           // Handle SelectFilterType objects - extract labels (fallback for old data)
           const labels = Object.values(value as SelectFilterType);
-          if (labels.length > 0) otherFilters.push(`${filterKey.replace(/_/g, ' ')}: ${labels.slice(0, 2).join(', ')}${labels.length > 2 ? '...' : ''}`);
+          if (labels.length > 0)
+            otherFilters.push(`${filterKey.replace(/_/g, ' ')}: ${labels.slice(0, 2).join(', ')}${labels.length > 2 ? '...' : ''}`);
         } else if (typeof value === 'object' && value !== null && 'min' in value && 'max' in value) {
           const { min, max } = value as { min?: number; max?: number };
           const rangeStr = min && max ? `${min}-${max}` : min || max || '';
@@ -251,4 +262,143 @@ const generateNameFromFilters = (filters: FilterType) => {
   }
 
   return nameParts.join(' ') || 'Search';
+};
+
+// Custom hook to save current filters to searched filters
+// Used on simple auto modal screen
+export const useSaveSearchedFilters = () => {
+  const { t } = useTranslation();
+  const { addSearchedItem } = useSearchedFiltersStore();
+  const filterConfigs = useFilterConfigs();
+  const {
+    currentBrand,
+    selectedModelsByBrand,
+    selectedBrandsMap,
+    onlyUnsold,
+    onlyWithPhotos,
+    transmission,
+    fuelType,
+    drivetrain,
+    bodyType,
+    color,
+    condition,
+    documentsOk,
+    numberOfOwners,
+    seller,
+    tradeAllow,
+    priceRange,
+    yearRange,
+    engineCapacityRange,
+    powerRange,
+    mileageRange,
+  } = useSimpleAutoFilterStore();
+
+  // Helper function to get labels for selected values from filter config
+  const getLabelsForSelectedValues = (filterKey: string, selectedValues: SelectFilterType) => {
+    const config = filterConfigs[filterKey as keyof typeof filterConfigs];
+    if (!config || !config.options) return [];
+
+    const selectedKeys = Object.values(selectedValues);
+    return config.options.filter(option => selectedKeys.includes(String(option.value))).map(option => option.label);
+  };
+
+  const saveCurrentFiltersToSearched = () => {
+    const filters: Record<string, any> = {};
+
+    // Get selected brands and models
+    const selectedBrands = Object.values(selectedBrandsMap);
+    const selectedModels = selectedModelsByBrand[currentBrand?.id || 0] || [];
+
+    // Logic for brand and model display:
+    // 1. If one brand and one model: show both brand and model
+    // 2. If multiple models: show only models (no brand)
+    if (selectedBrands.length === 1 && selectedModels.length === 1) {
+      // One brand and one model: show both
+      filters[BACKEND_FILTERS.BRAND] = selectedBrands[0].name;
+      filters[BACKEND_FILTERS.MODEL] = selectedModels[0].name;
+    } else if (selectedModels.length > 1) {
+      // Multiple models: show only models
+      filters[BACKEND_FILTERS.MODEL] = selectedModels.map(m => m.name).join(', ');
+    }
+
+    // Add other filters - convert SelectFilterType to arrays of labels
+    if (yearRange) {
+      filters[BACKEND_FILTERS.YEAR] = formatRangeFilterValue(BACKEND_FILTERS.YEAR, yearRange, t, createFilterFormatCallback(BACKEND_FILTERS.YEAR));
+    }
+    if (priceRange) {
+      filters[BACKEND_FILTERS.PRICE] = formatRangeFilterValue(
+        BACKEND_FILTERS.PRICE,
+        priceRange,
+        t,
+        createFilterFormatCallback(BACKEND_FILTERS.PRICE)
+      );
+    }
+    if (transmission && Object.keys(transmission).length > 0) {
+      filters[BACKEND_FILTERS.TRANSMISSION] = getLabelsForSelectedValues(BACKEND_FILTERS.TRANSMISSION, transmission);
+    }
+    if (fuelType && Object.keys(fuelType).length > 0) {
+      filters[BACKEND_FILTERS.FUEL_TYPE] = getLabelsForSelectedValues(BACKEND_FILTERS.FUEL_TYPE, fuelType);
+    }
+    if (drivetrain && Object.keys(drivetrain).length > 0) {
+      filters[BACKEND_FILTERS.DRIVETRAIN_TYPE] = getLabelsForSelectedValues(BACKEND_FILTERS.DRIVETRAIN_TYPE, drivetrain);
+    }
+    if (bodyType && Object.keys(bodyType).length > 0) {
+      filters[BACKEND_FILTERS.FRAME_TYPE] = getLabelsForSelectedValues(BACKEND_FILTERS.FRAME_TYPE, bodyType);
+    }
+    if (color && Object.keys(color).length > 0) {
+      filters[BACKEND_FILTERS.COLOR] = getLabelsForSelectedValues(BACKEND_FILTERS.COLOR, color);
+    }
+    if (condition && Object.keys(condition).length > 0) {
+      filters[BACKEND_FILTERS.CONDITION] = getLabelsForSelectedValues(BACKEND_FILTERS.CONDITION, condition);
+    }
+    if (documentsOk && Object.keys(documentsOk).length > 0) {
+      filters[BACKEND_FILTERS.DOCUMENT_TYPE] = getLabelsForSelectedValues(BACKEND_FILTERS.DOCUMENT_TYPE, documentsOk);
+    }
+    if (numberOfOwners && Object.keys(numberOfOwners).length > 0) {
+      filters[BACKEND_FILTERS.NUMBER_OF_OWNER] = getLabelsForSelectedValues(BACKEND_FILTERS.NUMBER_OF_OWNER, numberOfOwners);
+    }
+    if (seller && Object.keys(seller).length > 0) {
+      filters[BACKEND_FILTERS.SELLER] = getLabelsForSelectedValues(BACKEND_FILTERS.SELLER, seller);
+    }
+    if (tradeAllow && Object.keys(tradeAllow).length > 0) {
+      filters[BACKEND_FILTERS.TRADE_ALLOW] = getLabelsForSelectedValues(BACKEND_FILTERS.TRADE_ALLOW, tradeAllow);
+    }
+    if (engineCapacityRange) {
+      filters[BACKEND_FILTERS.ENGINE_CAPACITY] = formatRangeFilterValue(
+        BACKEND_FILTERS.ENGINE_CAPACITY,
+        engineCapacityRange,
+        t,
+        createFilterFormatCallback(BACKEND_FILTERS.ENGINE_CAPACITY)
+      );
+    }
+    if (powerRange) {
+      filters[BACKEND_FILTERS.POWER] = formatRangeFilterValue(
+        BACKEND_FILTERS.POWER,
+        powerRange,
+        t,
+        createFilterFormatCallback(BACKEND_FILTERS.POWER)
+      );
+    }
+    if (mileageRange) {
+      filters[BACKEND_FILTERS.MILEAGE] = formatRangeFilterValue(
+        BACKEND_FILTERS.MILEAGE,
+        mileageRange,
+        t,
+        createFilterFormatCallback(BACKEND_FILTERS.MILEAGE)
+      );
+    }
+    if (onlyUnsold) {
+      filters[BACKEND_FILTERS.UNSOLD] = true;
+    }
+    if (onlyWithPhotos) {
+      filters[BACKEND_FILTERS.WITH_IMAGE] = true;
+    }
+
+    // Only save if there are actual filters
+    if (Object.keys(filters).length > 0) {
+      addSearchedItem({ filters });
+    }
+  };
+
+  return saveCurrentFiltersToSearched;
 };

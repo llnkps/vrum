@@ -6,17 +6,16 @@ import { ScrollView, Text, TouchableWithoutFeedback, View } from 'react-native';
 import { PriceFilterController } from '@/components/filters/PriceFilterBottomSheet/PriceFilterController';
 import { RegionFilterController } from '@/components/filters/RegionBottomSheet/RegionFilterController';
 import { YearFilterController } from '@/components/filters/YearFilterBottomSheet/YearFilterController';
+import FilterBadge from '@/components/global/FilterBadge';
 import { SelectedRegionsBadges } from '@/components/global/SelectedItemsBadges';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
 import { useSearchTab } from '@/modules/search-screen/SearchTabProvider';
 import { isArrayFilter, isBooleanFilter, isRangeFilter } from '@/shared/filter';
 import { QuickFilter, useQuickFilters } from '@/shared/quick-filters';
-import { useSimpleAutoFilterStore } from '@/state/search-screen/useSimpleAutoFilterStore';
 import { SearchedItem, useSearchedFiltersStore } from '@/state/search-screen/useSearchedFiltersStore';
-import { Ionicons } from '@expo/vector-icons';
-import FilterBadge from '@/components/global/FilterBadge';
+import { useSimpleAutoFilterStore } from '@/state/search-screen/useSimpleAutoFilterStore';
 import { BACKEND_FILTERS } from '@/types/filter';
-import { createFilterFormatCallback, formatRangeFilterValue } from '@/utils/useTranslateRangeFilter';
+import { Ionicons } from '@expo/vector-icons';
 
 export const AutoHeaderScreen = () => {
   const { t } = useTranslation();
@@ -28,6 +27,9 @@ export const AutoHeaderScreen = () => {
 
   const quickFilters = useQuickFilters();
   const [selectedQuickFilter, setSelectedQuickFilter] = useState<string | null>('recommended');
+
+  // Local states for filters
+  const [localRegions, setLocalRegions] = useState(store.selectedRegions);
 
   // Apply default recommended filter on mount
   // useEffect(() => {
@@ -144,7 +146,7 @@ export const AutoHeaderScreen = () => {
         // Populate the store with filter values
         store.populateFromFilterValues(filterValues);
         // Navigate to the modal
-        router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal');
+        router.push('/(app)/search-screen/simple-auto-screen/simple-auto-modal');
       }
     },
     [store, router]
@@ -155,7 +157,7 @@ export const AutoHeaderScreen = () => {
     router.prefetch('/(app)/search-screen/simple-auto-screen/brand-auto-filter');
   }, []);
 
-  return (  
+  return (
     <>
       <View className="gap-y-4 px-4 py-3">
         <View className={'gap-y-1'}>
@@ -168,6 +170,8 @@ export const AutoHeaderScreen = () => {
           <View className={'flex-row gap-1'}>
             <YearFilterController
               onChange={yearRange => {
+                // TODO: check on prod build if this works without issues
+                // sometimes yearRange can be undefined when user clicks confirm
                 store.setYearRange(yearRange);
                 router.navigate('/(app)/search-screen/simple-auto-screen/simple-auto-modal');
               }}
@@ -176,7 +180,7 @@ export const AutoHeaderScreen = () => {
             <PriceFilterController
               onChange={priceRange => {
                 store.setPriceRange(priceRange);
-                router.navigate('/(app)/search-screen/simple-auto-screen/simple-auto-modal');
+                router.push('/(app)/search-screen/simple-auto-screen/simple-auto-modal');
               }}
             />
 
@@ -190,18 +194,19 @@ export const AutoHeaderScreen = () => {
             />
           </View>
           <RegionFilterController
-            value={store.selectedRegions}
+            value={localRegions}
             onChange={regions => {
+              setLocalRegions(regions);
               store.setSelectedRegions(regions);
             }}
           />
 
-          {store.selectedRegions?.length > 0 && (
+          {localRegions?.length > 0 && (
             <SelectedRegionsBadges
-              selectedRegions={store.selectedRegions}
+              selectedRegions={localRegions}
               onRemove={region => {
-                const updatedRegions = store.selectedRegions.filter(r => r.id !== region.id);
-                store.setSelectedRegions(updatedRegions);
+                const updatedRegions = localRegions.filter(r => r.id !== region.id);
+                setLocalRegions(updatedRegions);
               }}
             />
           )}

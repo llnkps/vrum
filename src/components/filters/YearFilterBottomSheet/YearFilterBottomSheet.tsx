@@ -16,7 +16,7 @@ type YearModalProps = {
 // Move years array outside component to avoid recreation on every render
 const years = [
   { value: undefined as number | undefined, label: '--' },
-  ...[...Array(50).keys()].map(index => ({
+  ...[...Array(40).keys()].map(index => ({
     value: 2025 - index,
     label: (2025 - index).toString(),
   })),
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 40, // gap-x-10
     paddingHorizontal: 16, // px-4
-    paddingTop: 20, // pt-5
+    paddingTop: 0,
   },
   fieldContainer: {
     flex: 1,
@@ -54,13 +54,20 @@ export const YearBottomSheet = memo(
       props.onChange?.({ from: minYear, to: maxYear });
     };
 
+    const handleDismiss = () => {
+      // Reset picker positions when BottomSheet is dismissed
+      setMinYear(undefined);
+      setMaxYear(undefined);
+    };
+
     return (
       <CustomBottomSheetModal
         ref={ref}
-        snapPoints={['50%']}
+        snapPoints={['45%']}
         footerProps={{
           onConfirm: handleConfirm,
         }}
+        onDismiss={handleDismiss}
         title={t('filters.year.label')}
       >
         <BottomSheetView>

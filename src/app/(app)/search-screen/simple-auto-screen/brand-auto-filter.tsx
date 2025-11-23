@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
 import { FC, memo, useCallback, useEffect, useState } from 'react';
 import { ScrollView, StatusBar, Text, View, RefreshControl, VirtualizedList } from 'react-native';
 import Animated, { useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated';
@@ -7,10 +7,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import FilterBadge from '@/components/global/FilterBadge';
 import { HeaderSearchBar } from '@/components/global/header/HeaderSearchBar/HeaderSearchBar';
-import { LoaderIndicator } from '@/components/global/LoaderIndicator';
 import { CustomRectButton } from '@/components/ui/button';
 import { useSimpleAutoBrandApi } from '@/hooks/api/useSimpleAutoBrandApi';
-import { DefaultConfig, SimpleAutoBrand } from '@/openapi/client';
+import { DefaultConfig, SimpleAutoBrand, SimpleAutoModel } from '@/openapi/client';
 import { selectSelectedBrands, useSimpleAutoFilterStore } from '@/state/search-screen/useSimpleAutoFilterStore';
 import { useTheme } from '@react-navigation/native';
 
@@ -28,6 +27,7 @@ export default function BrandAutoFilter() {
   const store = useSimpleAutoFilterStore();
   const selectedBrands = selectSelectedBrands(store);
   const { removeSelectedBrand } = store;
+  const { selectedModelsByBrand } = store;
 
   const [searchValue, setSearchValue] = useState('');
 
@@ -42,6 +42,13 @@ export default function BrandAutoFilter() {
       setFilteredBrands(data);
     }
   }, [data]);
+
+  const handleSelectBrand = useCallback((brand: SimpleAutoBrand) => {
+    store.setCurrentBrand(brand);
+
+    const fromParam = searchParams.from === 'settings' ? '?from=settings' : '';
+    router.navigate(`/(app)/search-screen/simple-auto-screen/model-filter${fromParam}`);
+  }, [store, searchParams.from, router]);
 
   // useEffect(() => {
   //   router.prefetch(`/(app)/search-screen/simple-auto-screen/model-filter`);
@@ -89,7 +96,7 @@ export default function BrandAutoFilter() {
           </View>
         )}
 
-        <BrandAutoList brands={filteredBrands} scrollY={scrollY} isScrolling={isScrolling} onRefresh={refetch} refreshing={isPending} />
+        <BrandAutoList brands={filteredBrands} scrollY={scrollY} isScrolling={isScrolling} onRefresh={refetch} refreshing={isPending} onSelectBrand={handleSelectBrand} selectedModelsByBrand={selectedModelsByBrand} />
 
         {/* Fixed Button */}
         <View className="absolute bottom-2 left-0 right-0 px-3 pb-6">
@@ -117,11 +124,13 @@ type props = {
   isScrolling: any;
   onRefresh: () => void;
   refreshing: boolean;
+  onSelectBrand: (brand: SimpleAutoBrand) => void;
+  selectedModelsByBrand: Record<number, SimpleAutoModel[]>;
 };
 
 const AnimatedVirtualizedList = Animated.createAnimatedComponent(VirtualizedList);
 
-const BrandAutoList: FC<props> = ({ brands, scrollY, isScrolling, onRefresh, refreshing }) => {
+const BrandAutoList: FC<props> = ({ brands, scrollY, isScrolling, onRefresh, refreshing, onSelectBrand, selectedModelsByBrand }) => {
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: event => {
       scrollY.value = event.contentOffset.y;
@@ -134,6 +143,15 @@ const BrandAutoList: FC<props> = ({ brands, scrollY, isScrolling, onRefresh, ref
     },
   });
 
+  const renderItem = useCallback(
+    ({ item }: { item: unknown }) => {
+      const brand = item as SimpleAutoBrand;
+      const selectedCount = selectedModelsByBrand[brand.id!]?.length || 0;
+      return <ListItem item={brand} onSelectBrand={onSelectBrand} selectedCount={selectedCount} />;
+    },
+    [selectedModelsByBrand, onSelectBrand]
+  );
+
   return (
     <>
       <View className="mt-2">
@@ -143,15 +161,13 @@ const BrandAutoList: FC<props> = ({ brands, scrollY, isScrolling, onRefresh, ref
           getItemCount={d => d.length}
           getItem={(d, index) => d[index]}
 
-          keyExtractor={item => `${item.id}`}
+          keyExtractor={(item) => `${(item as SimpleAutoBrand).id}`}
           onScroll={scrollHandler}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
             paddingBottom: 120 + STATUSBAR_HEIGHT, // Extra padding for fixed button
           }}
-          renderItem={({ item }) => {
-            return <ListItem item={item as SimpleAutoBrand} />;
-          }}
+          renderItem={renderItem}
           initialNumToRender={13}
           scrollEventThrottle={16}
           windowSize={5}
@@ -168,25 +184,16 @@ const BrandAutoList: FC<props> = ({ brands, scrollY, isScrolling, onRefresh, ref
 
 interface ListItemProps {
   item: SimpleAutoBrand;
+  onSelectBrand: (brand: SimpleAutoBrand) => void;
+  selectedCount: number;
 }
 
-const ListItem = memo<ListItemProps>(({ item }) => {
+const ListItem = memo<ListItemProps>(({ item, onSelectBrand, selectedCount }) => {
   const theme = useTheme();
-  const searchParams = useLocalSearchParams();
-  const router = useRouter();
-
-  const { setCurrentBrand, selectedModelsByBrand } = useSimpleAutoFilterStore();
-  const selectedCount = selectedModelsByBrand[item.id!]?.length || 0;
-  const handleSelectBrand = useCallback((brand: SimpleAutoBrand) => {
-    setCurrentBrand(brand);
-
-    const fromParam = searchParams.from === 'settings' ? '?from=settings' : '';
-    router.navigate(`/(app)/search-screen/simple-auto-screen/model-filter${fromParam}`);
-  }, [setCurrentBrand, searchParams.from, router]);
 
   return (
     <View style={{ borderBottomWidth: 1, borderBottomColor: theme.colors.border }}>
-      <CustomRectButton onPress={() => handleSelectBrand(item)} appearance="subtle">
+      <CustomRectButton onPress={() => onSelectBrand(item)} appearance="subtle">
         <View className="flex-row gap-x-4">
           <Image
             source={{

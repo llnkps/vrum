@@ -30,6 +30,8 @@ type CustomBottomSheetProps = {
     onCancel?: () => void;
   };
   initialIndex?: number;
+  /** Called when the bottom sheet is dismissed */
+  onDismiss?: () => void;
 };
 
 const CustomBottomSheetModal = forwardRef<BottomSheetRef, CustomBottomSheetProps>((props, ref) => {
@@ -46,6 +48,7 @@ const CustomBottomSheetModal = forwardRef<BottomSheetRef, CustomBottomSheetProps
     showCloseButton = true,
     footerProps,
     initialIndex = 0,
+    onDismiss,
   } = props;
 
   const memoizedSnapPoints = useMemo(() => snapPoints, [snapPoints]);
@@ -68,18 +71,28 @@ const CustomBottomSheetModal = forwardRef<BottomSheetRef, CustomBottomSheetProps
 
   const finalFooterComponent = footerComponent || (footerProps ? renderDefaultFooter : undefined);
 
+  // Faster animation configuration
+  const animationConfigs = useMemo(
+    () => ({
+      duration: 150, // Faster animation duration (default is usually 500ms)
+    }),
+    []
+  );
+
   return (
     <BottomSheetModal
       ref={ref}
       index={initialIndex} // initially closed
       snapPoints={memoizedSnapPoints}
       enableDynamicSizing={false}
+      animationConfigs={animationConfigs}
       backdropComponent={backdropComponent === null ? undefined : (backdropComponent ?? renderBackdrop)}
       handleComponent={handleComponent ?? renderDefaultHeader}
       footerComponent={finalFooterComponent}
       enableContentPanningGesture={enableContentPanningGesture}
-      enablePanDownToClose={enablePanDownToClose}
+      enablePanDownToClose={footerProps ? false : enablePanDownToClose}
       keyboardBehavior="interactive"
+      onDismiss={onDismiss}
       // keyboardBlurBehavior="restore"
       // android_keyboardInputMode="adjustResize"
       backgroundStyle={{

@@ -38,7 +38,6 @@ const YearFilterController = React.memo(({ value, onChange, error, variant = 'bu
         ref={yearModalRef}
         onChange={yearRange => {
           onChange(yearRange);
-          yearModalRef.current?.close({ duration: 150 });
         }}
       />
     </>

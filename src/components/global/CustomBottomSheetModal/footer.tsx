@@ -1,11 +1,11 @@
-import React, { memo, useCallback } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { BottomSheetFooter, BottomSheetFooterProps, useBottomSheetModal } from '@gorhom/bottom-sheet';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useTheme } from '@react-navigation/native';
-import { useTranslation } from 'react-i18next';
-import { CustomTheme } from '@/theme';
 import { CustomRectButton } from '@/components/ui/button';
+import { CustomTheme } from '@/theme';
+import { BottomSheetFooter, BottomSheetFooterProps, useBottomSheetModal } from '@gorhom/bottom-sheet';
+import { useTheme } from '@react-navigation/native';
+import React, { memo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
+import { StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface DefaultFooterProps extends BottomSheetFooterProps {
   selectedValue?: any;
@@ -59,12 +59,9 @@ const DefaultFooterComponent = ({ animatedFooterPosition, selectedValue, onConfi
   }, [dismiss, onConfirm, selectedValue]);
 
   return (
-    <BottomSheetFooter
-      animatedFooterPosition={animatedFooterPosition}
-      style={themedStyles.footer}
-    >
-      <View style={themedStyles.content}>
-        <View style={themedStyles.buttonContainer}>
+    <BottomSheetFooter animatedFooterPosition={animatedFooterPosition} style={themedStyles.footer}>
+      <View style={themedStyles.content} pointerEvents="box-none">
+        <View style={themedStyles.buttonContainer} pointerEvents="auto">
           <View style={themedStyles.buttonRow}>
             <CustomRectButton onPress={handleCancel} title={t('common.cancel')} appearance="subtle" />
             <CustomRectButton onPress={handleConfirm} title={t('common.confirm')} />
