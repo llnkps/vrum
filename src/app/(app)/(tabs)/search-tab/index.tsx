@@ -1,12 +1,14 @@
 import React, { useMemo } from 'react';
-import { ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import CustomFlashList from '@/components/global/CustomFlashList/CustomFlashList';
 import { HeaderBrand } from '@/components/global/header';
+import { LoaderIndicator } from '@/components/global/LoaderIndicator';
 import { HeaderCategory } from '@/modules/search-screen/HeaderCategory';
 import { SearchTabProvider, useSearchTab } from '@/modules/search-screen/SearchTabProvider';
+import { CustomTheme } from '@/theme';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { useTheme } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 
 export default function SearchScreen() {
@@ -35,6 +37,8 @@ function SearchScreenContent() {
     getDetailUrl,
   } = useSearchTab();
 
+  const theme = useTheme() as CustomTheme;
+
   const MemoizedHeader = useMemo(
     () => (
       <>
@@ -47,7 +51,7 @@ function SearchScreenContent() {
   );
 
   return (
-    <SafeAreaView className="flex-1">
+    <SafeAreaView className="flex-1" style={{ backgroundColor: theme.colors.backgroundNeutral }}>
       <CustomFlashList
         numColumns={2}
         data={data}
@@ -56,7 +60,7 @@ function SearchScreenContent() {
         refreshing={isRefetching}
         onEndReachedThreshold={0.2}
         onEndReached={() => hasNextPage && !isFetchingNextPage && fetchNextPage()}
-        ListFooterComponent={isFetchingNextPage ? <ActivityIndicator color="blue" size="small" style={{ marginBottom: 5 }} /> : null}
+        ListFooterComponent={isFetchingNextPage ? <LoaderIndicator /> : null}
         contentContainerStyle={{ paddingBottom: tabBarHeight }}
         ListHeaderComponent={MemoizedHeader}
         renderItem={({ item }) => {

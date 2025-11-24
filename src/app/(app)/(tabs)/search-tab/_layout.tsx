@@ -7,7 +7,6 @@ export const unstable_settings = {
 export default function SearchLayout() {
   return (
     <Stack>
-      {/* <Stack.Screen name="index" options={{ headerShown: false }} /> */}
       <Stack.Screen name="index" options={{ headerShown: false }} />
     </Stack>
   );

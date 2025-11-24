@@ -72,7 +72,7 @@ const List = <T,>(props: Props<T>) => {
   const listEmptyComponent = (
     <View className="flex-1 items-center justify-center py-10">
       <EmptyIcon name="document-text-outline" size={64} color={theme.colors.icon} />
-      <Text className="mt-4 text-center" style={{ color: theme.colors.text }}>
+      <Text className="mt-4 text-center" style={{ color: theme.colors.primary }}>
         {emptyText}
       </Text>
     </View>

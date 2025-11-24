@@ -15,11 +15,15 @@ import { SearchedItem, useLoadSearchedFilters, useSearchedFiltersStore } from '@
 import { useSimpleAutoFilterStore } from '@/state/search-screen/useSimpleAutoFilterStore';
 import { Ionicons } from '@expo/vector-icons';
 import { RectButton } from 'react-native-gesture-handler';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import { useTheme } from '@react-navigation/native';
+import { CustomTheme } from '@/theme';
 
 export const AutoHeaderScreen = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const store = useSimpleAutoFilterStore();
+  const store = useAutoSelectStore();
+  const theme = useTheme() as CustomTheme;
 
   const { updateRequestParams } = useSearchTab();
 
@@ -113,7 +117,7 @@ export const AutoHeaderScreen = () => {
               label={t('searchScreen.simpleAuto.parameters')}
               onPress={() => router.navigate('/(app)/search-screen/simple-auto-screen/settings')}
               variant="button"
-              icon={<Ionicons name="options-sharp" size={20} color="white" />}
+              icon={<Ionicons name="options-sharp" size={20} color={theme.colors.icon} />}
               showRightArrow={false}
               fullWidth
             />
@@ -143,6 +147,7 @@ export const AutoHeaderScreen = () => {
           variant="button"
           showRightArrow={false}
           centerText={true}
+          noBorder={true}
         />
 
         {/* Searched Filters */}

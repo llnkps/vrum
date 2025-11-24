@@ -182,7 +182,7 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
               <Text
                 style={StyleSheet.flatten([
                   styles.selectedValueReplace,
-                  { color: theme.colors.text },
+                  { color: theme.colors.textSubtle },
                   selectedValueStyle,
                 ])}
               >
@@ -216,7 +216,7 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
                     style={StyleSheet.flatten([
                       styles.subtitleText,
                       styles.subtitle,
-                      { color: theme.colors.tabBarInactiveTintColor },
+                      { color: theme.colors.textSubtle },
                     ])}
                   >
                     {subtitle}
@@ -226,7 +226,7 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
                   <Text
                     style={StyleSheet.flatten([
                       styles.selectedValueUnder,
-                      { color: theme.colors.tabBarInactiveTintColor },
+                      { color: theme.colors.textSubtle },
                       selectedValueStyle,
                     ])}
                   >
