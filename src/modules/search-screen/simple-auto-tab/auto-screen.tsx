@@ -11,11 +11,14 @@ import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow
 import { getPriceDisplayValue, getYearDisplayValue, useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
 import { Ionicons } from '@expo/vector-icons';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import { useTheme } from '@react-navigation/native';
+import { CustomTheme } from '@/theme';
 
 export const AutoHeaderScreen = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const store = useAutoSelectStore();
+  const theme = useTheme() as CustomTheme;
 
   const yearModalRef = useRef<BottomSheetModal>(null);
   const priceModalRef = useRef<BottomSheetModal>(null);
@@ -64,14 +67,28 @@ export const AutoHeaderScreen = () => {
     [store]
   );
 
+  const isActive = (filter: (typeof quickFilters)[0]) => {
+    if (filter.type === 'price' && store.priceRange?.max === filter.value) {
+      return true;
+    }
+    if (filter.type === 'new' && store.yearRange?.min === new Date().getFullYear()) {
+      return true;
+    }
+    // Для recommended и fromOwners
+    return false;
+  };
+
   return (
     <>
-      <View className={'gap-y-1 px-4 py-3'}>
+      <View className="px-4 py-3">
         <TouchableHighlightRow
           label="Марка, модель, поколение"
           onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/brand-auto-filter')}
           variant="button"
           showRightArrow={false}
+          noBorder={true}
+          borderRadiusBottomLeft={0}
+          borderRadiusBottomRight={0}
         />
         <View className={'flex-row gap-1'}>
           <TouchableHighlightRow
@@ -81,6 +98,11 @@ export const AutoHeaderScreen = () => {
             variant="button"
             showRightArrow={false}
             selectedValueMode="replace"
+            noBorder={true}
+            borderRadiusTopLeft={0}
+            borderRadiusTopRight={0}
+            borderRadiusBottomLeft={0}
+            borderRadiusBottomRight={0}
           />
 
           <TouchableHighlightRow
@@ -90,18 +112,36 @@ export const AutoHeaderScreen = () => {
             variant="button"
             showRightArrow={false}
             selectedValueMode="replace"
+            noBorder={true}
+            borderRadiusTopLeft={0}
+            borderRadiusTopRight={0}
+            borderRadiusBottomLeft={0}
+            borderRadiusBottomRight={0}
           />
 
           <TouchableHighlightRow
             label="Параметры"
             onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/settings')}
             variant="button"
-            icon={<Ionicons name="options-sharp" size={20} color="white" />}
+            icon={<Ionicons name="options-sharp" size={20} color={theme.colors.icon} />}
             showRightArrow={false}
             fullWidth
+            noBorder={true}
+            borderRadiusTopLeft={0}
+            borderRadiusTopRight={0}
+            borderRadiusBottomLeft={0}
+            borderRadiusBottomRight={0}
           />
         </View>
-        <TouchableHighlightRow label="Все регионы" onPress={handlePresentRegionModalPress} variant="button" showRightArrow={false} />
+        <TouchableHighlightRow
+          label="Все регионы"
+          onPress={handlePresentRegionModalPress}
+          variant="button"
+          showRightArrow={false}
+          noBorder={true}
+          borderRadiusTopLeft={0}
+          borderRadiusTopRight={0}
+        />
 
         {store.selectedRegions?.length > 0 && (
           <SelectedRegionsBadges
@@ -135,13 +175,14 @@ export const AutoHeaderScreen = () => {
         />
       </View>
 
-      <View className={'px-4 py-3'}>
+      <View className="mb-6 px-4">
         <TouchableHighlightRow
           label={t('searchScreen.auto.searchPlaceholder')}
           onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal')}
           variant="button"
           showRightArrow={false}
           centerText={true}
+          noBorder={true}
         />
 
         {/* Quick Filters */}
@@ -151,9 +192,12 @@ export const AutoHeaderScreen = () => {
               <TouchableOpacity
                 key={index}
                 onPress={() => handleQuickFilterPress(filter)}
-                className="mr-2 rounded-full border border-border bg-surface px-4 py-2 dark:border-border-dark dark:bg-surface-dark"
+                className="mr-2 rounded-2xl px-4 py-3"
+                style={{ backgroundColor: theme.colors.backgroundNeutral }}
               >
-                <Text className="text-sm font-medium text-font dark:text-font-dark">{filter.label}</Text>
+                <Text className="text-md font-medium" style={{ color: theme.colors.text, fontWeight: isActive(filter) ? 'bold' : 'normal' }}>
+                  {filter.label}
+                </Text>
               </TouchableOpacity>
             ))}
           </ScrollView>

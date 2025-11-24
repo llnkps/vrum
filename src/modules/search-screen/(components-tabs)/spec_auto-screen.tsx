@@ -18,22 +18,6 @@ export const SpecAutoHeaderScreen = () => {
   );
 };
 
-export const SpecAutoItemScreen = ({ item }) => {
-  return (
-    <View className="mx-2 rounded-2xl shadow-md">
-      <Image source={item.image} className="h-48 w-full rounded-t-2xl" resizeMode="cover" />
-      <View className="p-4">
-        <Text className="text-lg font-bold text-font-brand dark:text-font-brand-dark">{item.title}</Text>
-        <Text className="text-base text-font dark:text-font-dark">{item.price}</Text>
-        <View className="mt-2 flex-row">
-          <Text className="mr-2 text-xs text-font dark:text-font-dark">⭐ 5-star GNCAP</Text>
-          <Text className="text-xs text-font dark:text-font-dark">🚗 More Mileage</Text>
-        </View>
-      </View>
-    </View>
-  );
-};
-
 const SearchSection = () => {
   const handlePress = buttonName => {
     console.log(`Button "${buttonName}" was pressed.`);
