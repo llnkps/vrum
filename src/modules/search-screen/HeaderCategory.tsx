@@ -7,6 +7,28 @@ import HeaderMoto from '@/assets/images/header-moto-icon.svg';
 import HeaderSpecAuto from '@/assets/images/header-specauto-icon.svg';
 
 import { ActiveScreen } from './types';
+import { useTheme } from '@react-navigation/native';
+import { CustomTheme } from '@/theme';
+
+const CategoryButton = ({ isActive, onPress, Icon, label }: { isActive: boolean; onPress: () => void; Icon: React.ComponentType; label: string }) => {
+  const theme = useTheme() as CustomTheme;
+  return (
+    <TouchableHighlight
+      onPress={onPress}
+      activeOpacity={0.6}
+      underlayColor={theme.colors.backgroundNeutral}
+      className="rounded-2xl px-2 py-3"
+      style={{ backgroundColor: isActive ? theme.colors.backgroundNeutral : undefined, width: 85 }}
+    >
+      <View className="flex-col items-center justify-center">
+        <Icon />
+        <Text className="mt-2" style={{ color: theme.colors.text, fontSize: 10 }}>
+          {label}
+        </Text>
+      </View>
+    </TouchableHighlight>
+  );
+};
 
 export const HeaderCategory = ({
   activeScreen,
@@ -19,60 +41,18 @@ export const HeaderCategory = ({
     setActiveScreen(screen);
   };
 
-  // TODO: update buttons styles
+  const categories = [
+    { key: 'auto' as ActiveScreen, Icon: HeaderAuto, label: 'Автомобили' },
+    { key: 'spec_auto' as ActiveScreen, Icon: HeaderSpecAuto, label: 'Спецтехника' },
+    { key: 'auto_detail' as ActiveScreen, Icon: HeaderBreak, label: 'Запчасти' },
+    { key: 'moto' as ActiveScreen, Icon: HeaderMoto, label: 'Мототехника' },
+  ];
 
   return (
-    <View className="flex-row items-center justify-center gap-2 px-4 py-3">
-      {/* Left side: Location */}
-      <TouchableHighlight
-        className={clsx('rounded-md bg-background-neutral p-2 dark:bg-background-neutral-dark', {
-          'bg-background-neutral-pressed dark:bg-background-neutral-dark-pressed': activeScreen === 'auto',
-        })}
-        onPress={() => handleChangeScreen('auto')}
-        activeOpacity={0.6}
-        underlayColor="#DDDDDD"
-      >
-        <View className="flex-col items-center justify-center">
-          <HeaderAuto />
-          <Text className="text-font dark:text-font-dark">Автомобили</Text>
-        </View>
-      </TouchableHighlight>
-
-      <TouchableHighlight
-        className={clsx('rounded-md bg-background-neutral p-2 dark:bg-background-neutral-dark', {
-          'bg-background-neutral-pressed dark:bg-background-neutral-dark-pressed': activeScreen === 'spec_auto',
-        })}
-        onPress={() => handleChangeScreen('spec_auto')}
-      >
-        <View className="flex-col items-center justify-center">
-          <HeaderSpecAuto />
-          <Text className="text-font dark:text-font-dark">Спецтехника</Text>
-        </View>
-      </TouchableHighlight>
-
-      <TouchableHighlight
-        className={clsx('rounded-md bg-background-neutral p-2 dark:bg-background-neutral-dark', {
-          'bg-background-neutral-pressed dark:bg-background-neutral-dark-pressed': activeScreen === 'auto_detail',
-        })}
-        onPress={() => handleChangeScreen('auto_detail')}
-      >
-        <View className="flex-col items-center justify-center">
-          <HeaderBreak />
-          <Text className="text-font dark:text-font-dark">Запчасти</Text>
-        </View>
-      </TouchableHighlight>
-
-      <TouchableHighlight
-        className={clsx('rounded-md bg-background-neutral p-2 dark:bg-background-neutral-dark', {
-          'bg-background-neutral-pressed dark:bg-background-neutral-dark-pressed': activeScreen === 'moto',
-        })}
-        onPress={() => handleChangeScreen('moto')}
-      >
-        <View className="flex-col items-center justify-center">
-          <HeaderMoto />
-          <Text className="text-font dark:text-font-dark">Мототехника</Text>
-        </View>
-      </TouchableHighlight>
+    <View className="flex-row items-center justify-center gap-2">
+      {categories.map(({ key, Icon, label }) => (
+        <CategoryButton key={key} isActive={activeScreen === key} onPress={() => handleChangeScreen(key)} Icon={Icon} label={label} />
+      ))}
     </View>
   );
 };

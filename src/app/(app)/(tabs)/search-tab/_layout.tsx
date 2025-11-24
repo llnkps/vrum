@@ -1,18 +1,12 @@
-import { Stack, useRouter } from 'expo-router';
-import { TouchableOpacity } from 'react-native';
-
-import { Ionicons } from '@expo/vector-icons';
+import { Stack } from 'expo-router';
 
 export const unstable_settings = {
   initialRouteName: 'index',
 };
 
 export default function SearchLayout() {
-  const router = useRouter();
-
   return (
     <Stack>
-      {/* <Stack.Screen name="index" options={{ headerShown: false }} /> */}
       <Stack.Screen name="index" options={{ headerShown: false }} />
     </Stack>
   );

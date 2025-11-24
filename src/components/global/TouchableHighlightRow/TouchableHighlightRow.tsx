@@ -5,8 +5,6 @@ import { Text, View, ViewStyle, TextStyle, ActivityIndicator } from 'react-nativ
 import { RectButton } from 'react-native-gesture-handler';
 import Entypo from '@expo/vector-icons/Entypo';
 
-import clsx from 'clsx';
-
 type TouchableHighlightRowProps = {
   label: string;
   selectedValue?: string;
@@ -26,6 +24,11 @@ type TouchableHighlightRowProps = {
   selectedValueMode?: 'under' | 'replace';
   required?: boolean;
   error?: string;
+  noBorder?: boolean;
+  borderRadiusTopLeft?: number;
+  borderRadiusTopRight?: number;
+  borderRadiusBottomLeft?: number;
+  borderRadiusBottomRight?: number;
 };
 
 export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
@@ -47,6 +50,11 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
   selectedValueMode = 'under',
   required = false,
   error,
+  noBorder = false,
+  borderRadiusBottomLeft,
+  borderRadiusBottomRight,
+  borderRadiusTopLeft,
+  borderRadiusTopRight,
 }) => {
   const theme = useTheme() as CustomTheme;
 
@@ -60,7 +68,18 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
   const getContainerStyle = () => {
     const baseStyle: ViewStyle = {
       flex: fullWidth ? 1 : undefined,
+      borderRadius: 8,
+      marginVertical: 2,
+      borderTopLeftRadius: borderRadiusTopLeft ?? 8,
+      borderTopRightRadius: borderRadiusTopRight ?? 8,
+      borderBottomLeftRadius: borderRadiusBottomLeft ?? 8,
+      borderBottomRightRadius: borderRadiusBottomRight ?? 8,
     };
+
+    if (!noBorder) {
+      baseStyle.borderWidth = 1;
+      baseStyle.borderColor = theme.colors.border;
+    }
 
     switch (variant) {
       case 'bordered':
@@ -79,18 +98,12 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
         return {
           ...baseStyle,
           backgroundColor: theme.colors.button.neutral,
-          borderColor: theme.colors.border,
-          borderWidth: 1,
-          borderRadius: 8,
-          marginVertical: 2,
           ...containerStyle,
         };
       default:
         return {
           ...baseStyle,
           backgroundColor: theme.colors.background,
-          borderRadius: 8,
-          marginVertical: 2,
           ...containerStyle,
         };
     }
@@ -118,33 +131,25 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
           {icon && <View style={{ marginRight: 2 }}>{icon}</View>}
           <View>
             {selectedValue && selectedValueMode === 'replace' ? (
-              <Text className="text-lg font-bold  text-font-subtle dark:text-font-subtle-dark" style={selectedValueStyle}>
+              <Text className="text-lg font-bold" style={[selectedValueStyle, { color: theme.colors.textSubtle }]}>
                 {selectedValue}
               </Text>
             ) : (
               <>
                 <View className="align-items-center flex-row gap-1">
-                  <Text
-                    className={clsx('font-bold text-font dark:text-font-dark', {
-                      'text-font dark:text-font-dark': !disabled,
-                      'text-font-disabled dark:text-font-disabled-dark': disabled,
-                    })}
-                    style={labelStyle}
-                  >
+                  <Text className="font-bold" style={[labelStyle, { color: disabled ? theme.colors.text + '80' : theme.colors.text }]}>
                     {label}
                   </Text>
                   <View>{required && <Text className="text-red-500">*</Text>}</View>
                 </View>
 
                 {subtitle && (
-                  <Text className={clsx('text-sm text-font-subtle dark:text-font-subtle-dark')} style={{ marginTop: 2 }}>
+                  <Text className="text-sm" style={{ marginTop: 2, color: theme.colors.textSubtle }}>
                     {subtitle}
                   </Text>
                 )}
                 {selectedValue && selectedValueMode === 'under' && (
-                  <Text className="text-font-subtle dark:text-font-subtle-dark" style={selectedValueStyle}>
-                    {selectedValue}
-                  </Text>
+                  <Text style={[selectedValueStyle, { color: theme.colors.textSubtle }]}>{selectedValue}</Text>
                 )}
                 {error && (
                   <Text className="text-sm text-red-500" style={{ marginTop: 2 }}>

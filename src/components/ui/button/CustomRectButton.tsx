@@ -15,7 +15,16 @@ type Props = PropsWithChildren<
   }
 >;
 
-export const CustomRectButton = ({ loading, title, style, children, onPress, appearance = 'default', isSelected = false, size = 'medium' }: Props) => {
+export const CustomRectButton = ({
+  loading,
+  title,
+  style,
+  children,
+  onPress,
+  appearance = 'default',
+  isSelected = false,
+  size = 'medium',
+}: Props) => {
   const theme = useTheme() as CustomTheme;
 
   const getPadding = () => {
