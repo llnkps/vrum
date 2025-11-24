@@ -27,11 +27,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useToast } from '@/hooks/useToast';
 
 export default function SimpleAutoModal() {
   const { t } = useTranslation();
   const router = useRouter();
   const navigation = useNavigation();
+  const toast = useToast();
 
   const simpleAutoFilterStore = useSimpleAutoFilterStore();
   const selectedBrands = selectSelectedBrands(simpleAutoFilterStore);
@@ -57,7 +59,7 @@ export default function SimpleAutoModal() {
     selectedModelsByBrand,
   } = simpleAutoFilterStore;
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch, isRefetching, isSuccess } = useSimpleGetCollectionPagination({
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch, isRefetching, isSuccess, isError, error } = useSimpleGetCollectionPagination({
     brands: selectedBrands,
     models: simpleAutoFilterStore.selectedModelsByBrand,
     pageSize: '10',
@@ -95,7 +97,6 @@ export default function SimpleAutoModal() {
   useFocusEffect(
     useCallback(() => {
       const unsubscribe = navigation.addListener('beforeRemove', e => {
-        console.log('hello eorld');
         isGoingBackRef.current = true;
         e.preventDefault();
         router.push('/search-tab');
@@ -119,11 +120,8 @@ export default function SimpleAutoModal() {
         const currentState = navigation.getState();
         const previousIndex = routeIndexRef.current;
 
-        console.log(currentState, previousIndex);
-
         // Only clear store if navigating back (index decreased or flagged as back)
         if (isGoingBackRef.current || (currentState && previousIndex !== null && currentState.index < previousIndex)) {
-          console.log('CLEAR STATE SIMPLE AUTO MODAL - Going back');
           simpleAutoFilterStore.clearSelections();
         }
         // Reset the flag
@@ -234,6 +232,17 @@ export default function SimpleAutoModal() {
     }
   }, [isSuccess, saveCurrentFiltersToSearched, flattenedData.length]);
   // < --- Search Filters ---
+
+
+  // < --- Handle errors ---
+  useEffect(() => {
+    console.log("ERROR")
+    if (isError && error) {
+      console.error('Error fetching simple auto collection pagination:', error);
+      toast.showToast("Error fetching data. Please try again later.", 'error');
+    }
+  }, [isError, error]);
+  // < --- Handle errors ---
 
   return (
     <SafeAreaView className="flex-1">

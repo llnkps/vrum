@@ -54,16 +54,16 @@ const formatNumberWithUnit = (num: number, filterName: string, t: TFunction): st
       }
 
     case 'power':
-      return `${num} ${t('units.power')}`;
+      return `${num}${t('units.power')}`;
 
     case 'enginecapacity':
-      return `${num} ${t('units.engineCapacity')}`;
+      return `${num}${t('units.engineCapacity')}`;
 
     case 'year':
-      return `${num} ${t('units.year')}`;
+      return `${num}${t('units.year')}`;
 
     case 'mileage':
-      return `${num} ${t('units.mileage')}`;
+      return `${num}${t('units.mileage')}`;
 
     default:
       return num.toString();
