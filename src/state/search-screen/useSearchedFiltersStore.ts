@@ -317,7 +317,7 @@ export const useSaveSearchedFilters = () => {
     }
 
     let name = nameParts.join(' ') || 'Search';
-    console.log(name);
+
     // Limit name to 30 characters
     if (name.length > 30) {
       name = name.substring(0, 17) + '...';
@@ -329,4 +329,103 @@ export const useSaveSearchedFilters = () => {
     }
   };
   return saveCurrentFiltersToSearched;
+};
+
+// Custom hook to load searched filters into the simple auto filter store
+export const useLoadSearchedFilters = () => {
+  const loadSearchedFilters = (item: SearchedItem) => {
+    const filters = item.filters;
+    const updates: any = {};
+
+    if (filters[BACKEND_FILTERS.BRAND]) {
+      const brandId = Number(filters[BACKEND_FILTERS.BRAND]);
+      updates.currentBrand = { id: brandId };
+      updates.selectedBrandsMap = { [brandId]: { id: brandId, name: '' } }; // Name will be populated later when data loads
+    }
+
+    if (filters[BACKEND_FILTERS.MODEL]) {
+      const modelValue = filters[BACKEND_FILTERS.MODEL];
+      const brandId = updates.currentBrand?.id || 0;
+      if (typeof modelValue === 'string') {
+        const modelId = Number(modelValue);
+        updates.selectedModelsByBrand = { [brandId]: [{ id: modelId, name: '' }] };
+      } else if (Array.isArray(modelValue)) {
+        const modelIds = modelValue.map(id => Number(id));
+        updates.selectedModelsByBrand = { [brandId]: modelIds.map(id => ({ id, name: '' })) };
+      }
+    }
+
+    if (filters[BACKEND_FILTERS.YEAR]) {
+      updates.yearRange = filters[BACKEND_FILTERS.YEAR];
+    }
+
+    if (filters[BACKEND_FILTERS.PRICE]) {
+      updates.priceRange = filters[BACKEND_FILTERS.PRICE];
+    }
+
+    if (filters[BACKEND_FILTERS.TRANSMISSION]) {
+      updates.transmission = filters[BACKEND_FILTERS.TRANSMISSION];
+    }
+
+    if (filters[BACKEND_FILTERS.FUEL_TYPE]) {
+      updates.fuelType = filters[BACKEND_FILTERS.FUEL_TYPE];
+    }
+
+    if (filters[BACKEND_FILTERS.DRIVETRAIN_TYPE]) {
+      updates.drivetrain = filters[BACKEND_FILTERS.DRIVETRAIN_TYPE];
+    }
+
+    if (filters[BACKEND_FILTERS.FRAME_TYPE]) {
+      updates.bodyType = filters[BACKEND_FILTERS.FRAME_TYPE];
+    }
+
+    if (filters[BACKEND_FILTERS.COLOR]) {
+      updates.color = filters[BACKEND_FILTERS.COLOR];
+    }
+
+    if (filters[BACKEND_FILTERS.CONDITION]) {
+      updates.condition = filters[BACKEND_FILTERS.CONDITION];
+    }
+
+    if (filters[BACKEND_FILTERS.DOCUMENT_TYPE]) {
+      updates.documentsOk = filters[BACKEND_FILTERS.DOCUMENT_TYPE];
+    }
+
+    if (filters[BACKEND_FILTERS.NUMBER_OF_OWNER]) {
+      updates.numberOfOwners = filters[BACKEND_FILTERS.NUMBER_OF_OWNER];
+    }
+
+    if (filters[BACKEND_FILTERS.SELLER]) {
+      updates.seller = filters[BACKEND_FILTERS.SELLER];
+    }
+
+    if (filters[BACKEND_FILTERS.TRADE_ALLOW]) {
+      updates.tradeAllow = filters[BACKEND_FILTERS.TRADE_ALLOW];
+    }
+
+    if (filters[BACKEND_FILTERS.ENGINE_CAPACITY]) {
+      updates.engineCapacityRange = filters[BACKEND_FILTERS.ENGINE_CAPACITY];
+    }
+
+    if (filters[BACKEND_FILTERS.POWER]) {
+      updates.powerRange = filters[BACKEND_FILTERS.POWER];
+    }
+
+    if (filters[BACKEND_FILTERS.MILEAGE]) {
+      updates.mileageRange = filters[BACKEND_FILTERS.MILEAGE];
+    }
+
+    if (filters[BACKEND_FILTERS.UNSOLD]) {
+      updates.onlyUnsold = filters[BACKEND_FILTERS.UNSOLD];
+    }
+
+    if (filters[BACKEND_FILTERS.WITH_IMAGE]) {
+      updates.onlyWithPhotos = filters[BACKEND_FILTERS.WITH_IMAGE];
+    }
+
+    // Apply updates to the store
+    useSimpleAutoFilterStore.setState(updates);
+  };
+
+  return loadSearchedFilters;
 };
