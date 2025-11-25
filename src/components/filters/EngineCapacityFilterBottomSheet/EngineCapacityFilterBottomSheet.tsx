@@ -1,14 +1,17 @@
 import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import CustomWheelPicker from '@/components/global/CustomWheelPicker';
+import { BACKEND_FILTERS, RangeFilterType } from '@/types/filter';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import { PickerItem, ValueChangedEvent } from '@quidone/react-native-wheel-picker';
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef, memo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
 type EngineCapacityModalProps = {
-  onChange: (range: { min?: number; max?: number }) => void;
+  onChange: (range: RangeFilterType) => void;
 };
 
+// Move engineCapacity outside component to avoid recreation on every render
 const engineCapacity = [
   { value: undefined as number | undefined, label: '--' },
   ...Array.from({ length: Math.round((6.0 - 0.7) / 0.1) + 1 }, (_, i) => {
@@ -17,44 +20,59 @@ const engineCapacity = [
   }),
 ];
 
-const EngineCapacityBottomSheet = forwardRef<BottomSheetRef, EngineCapacityModalProps>(({ onChange }, ref) => {
-  const [minValue, setMinValue] = useState<number | undefined>(undefined);
-  const [maxValue, setMaxValue] = useState<number | undefined>(undefined);
+const EngineCapacityBottomSheet = memo(
+  forwardRef<BottomSheetRef, EngineCapacityModalProps>(({ onChange }, ref) => {
+    const { t } = useTranslation();
+    const [minValue, setMinValue] = useState<number | undefined>(undefined);
+    const [maxValue, setMaxValue] = useState<number | undefined>(undefined);
 
-  const handleMinChange = (value: ValueChangedEvent<PickerItem<number>>) => {
-    setMinValue(value.item.value);
-  };
+    const handleMinChange = (value: ValueChangedEvent<PickerItem<number>>) => {
+      setMinValue(value.item.value);
+    };
 
-  const handleMaxChange = (value: ValueChangedEvent<PickerItem<number>>) => {
-    setMaxValue(value.item.value);
-  };
+    const handleMaxChange = (value: ValueChangedEvent<PickerItem<number>>) => {
+      setMaxValue(value.item.value);
+    };
 
-  const handleConfirm = () => {
-    onChange({ min: minValue, max: maxValue });
-  };
+    const handleConfirm = () => {
+      onChange({ from: minValue, to: maxValue });
+    };
 
-  return (
-    <CustomBottomSheetModal
-      ref={ref}
-      snapPoints={['45%']}
-      title="Объем двигателя"
-      footerProps={{
-        onConfirm: handleConfirm,
-      }}
-    >
-      <BottomSheetView>
-        <View className="flex-row items-center justify-center gap-x-10 px-4 pt-5">
-          <View className="flex-1">
-            <CustomWheelPicker data={engineCapacity} value={minValue} onValueChanged={handleMinChange} label="От" />
+    return (
+      <CustomBottomSheetModal
+        ref={ref}
+        snapPoints={['45%']}
+        title={t(`filters.${BACKEND_FILTERS.ENGINE_CAPACITY}.label`)}
+        footerProps={{
+          onConfirm: handleConfirm,
+        }}
+      >
+        <BottomSheetView>
+          <View className="flex-row items-center justify-center gap-x-10 px-4 pt-5">
+            <View className="flex-1">
+              <CustomWheelPicker
+                virtualized={true}
+                data={engineCapacity}
+                value={minValue}
+                onValueChanged={handleMinChange}
+                label={t(`filters.${BACKEND_FILTERS.ENGINE_CAPACITY}.fromLabel`)}
+              />
+            </View>
+            <View className="flex-1">
+              <CustomWheelPicker
+                virtualized={true}
+                data={engineCapacity}
+                value={maxValue}
+                onValueChanged={handleMaxChange}
+                label={t(`filters.${BACKEND_FILTERS.ENGINE_CAPACITY}.toLabel`)}
+              />
+            </View>
           </View>
-          <View className="flex-1">
-            <CustomWheelPicker data={engineCapacity} value={maxValue} onValueChanged={handleMaxChange} label="До" />
-          </View>
-        </View>
-      </BottomSheetView>
-    </CustomBottomSheetModal>
-  );
-});
+        </BottomSheetView>
+      </CustomBottomSheetModal>
+    );
+  })
+);
 EngineCapacityBottomSheet.displayName = 'EngineCapacityBottomSheet';
 
 export default EngineCapacityBottomSheet;

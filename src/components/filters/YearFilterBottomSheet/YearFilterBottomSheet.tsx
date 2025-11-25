@@ -1,62 +1,100 @@
 import CustomBottomSheetModal from '@/components/global/CustomBottomSheetModal';
 import CustomWheelPicker from '@/components/global/CustomWheelPicker';
+import { RangeFilterType } from '@/types/filter';
 import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import { PickerItem, ValueChangedEvent } from '@quidone/react-native-wheel-picker';
-import React, { forwardRef, useState } from 'react';
-import { View } from 'react-native';
+import React, { forwardRef, memo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { StyleSheet, View } from 'react-native';
 
 export type BottomSheetRef = BottomSheetModal;
 
 type YearModalProps = {
-  onChange?: (year: { min?: number; max?: number }) => void;
+  onChange?: (year: RangeFilterType) => void;
 };
 
+// Move years array outside component to avoid recreation on every render
 const years = [
   { value: undefined as number | undefined, label: '--' },
-  ...[...Array(50).keys()].map(index => ({
+  ...[...Array(40).keys()].map(index => ({
     value: 2025 - index,
     label: (2025 - index).toString(),
   })),
 ];
 
-export const YearBottomSheet = forwardRef<BottomSheetRef, YearModalProps>((props, ref) => {
-  const [minYear, setMinYear] = useState<number | undefined>(undefined);
-  const [maxYear, setMaxYear] = useState<number | undefined>(undefined);
-
-  const handleMinYearChange = (value: ValueChangedEvent<PickerItem<number>>) => {
-    setMinYear(value.item.value);
-  };
-
-  const handleMaxYearChange = (value: ValueChangedEvent<PickerItem<number>>) => {
-    setMaxYear(value.item.value);
-  };
-
-  const handleConfirm = () => {
-    props.onChange?.({ min: minYear, max: maxYear });
-  };
-
-  return (
-    <CustomBottomSheetModal
-      ref={ref}
-      snapPoints={['50%']}
-      footerProps={{
-        onConfirm: handleConfirm,
-      }}
-      title="Год выпуска"
-    >
-      <BottomSheetView>
-        <View className="flex-row items-center justify-center gap-x-10 px-4 pt-5">
-          <View className="flex-1">
-            <CustomWheelPicker data={years} value={minYear} onValueChanged={handleMinYearChange} label="От" />
-          </View>
-
-          <View className="flex-1">
-            <CustomWheelPicker data={years} value={maxYear} onValueChanged={handleMaxYearChange} label="До" />
-          </View>
-        </View>
-      </BottomSheetView>
-    </CustomBottomSheetModal>
-  );
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 40, // gap-x-10
+    paddingHorizontal: 16, // px-4
+    paddingTop: 0,
+  },
+  fieldContainer: {
+    flex: 1,
+  },
 });
 
+export const YearBottomSheet = memo(
+  forwardRef<BottomSheetRef, YearModalProps>((props, ref) => {
+    const { t } = useTranslation();
+    const [minYear, setMinYear] = useState<number | undefined>(undefined);
+    const [maxYear, setMaxYear] = useState<number | undefined>(undefined);
+
+    const handleMinYearChange = (value: ValueChangedEvent<PickerItem<number>>) => {
+      setMinYear(value.item.value);
+    };
+
+    const handleMaxYearChange = (value: ValueChangedEvent<PickerItem<number>>) => {
+      setMaxYear(value.item.value);
+    };
+
+    const handleConfirm = () => {
+      props.onChange?.({ from: minYear, to: maxYear });
+    };
+
+    const handleDismiss = () => {
+      // Reset picker positions when BottomSheet is dismissed
+      setMinYear(undefined);
+      setMaxYear(undefined);
+    };
+
+    return (
+      <CustomBottomSheetModal
+        ref={ref}
+        snapPoints={['45%']}
+        footerProps={{
+          onConfirm: handleConfirm,
+        }}
+        onDismiss={handleDismiss}
+        title={t('filters.year.label')}
+      >
+        <BottomSheetView>
+          <View style={styles.container}>
+            <View style={styles.fieldContainer}>
+              <CustomWheelPicker
+                virtualized={true}
+                data={years}
+                value={minYear}
+                onValueChanged={handleMinYearChange}
+                label={t('filters.year.fromLabel')}
+              />
+            </View>
+
+            <View style={styles.fieldContainer}>
+              <CustomWheelPicker
+                virtualized={true}
+                data={years}
+                value={maxYear}
+                onValueChanged={handleMaxYearChange}
+                label={t('filters.year.toLabel')}
+              />
+            </View>
+          </View>
+        </BottomSheetView>
+      </CustomBottomSheetModal>
+    );
+  })
+);
 YearBottomSheet.displayName = 'YearBottomSheet';

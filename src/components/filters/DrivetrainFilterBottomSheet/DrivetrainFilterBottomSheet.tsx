@@ -1,57 +1,59 @@
-import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
-import { BottomSheetView } from '@gorhom/bottom-sheet';
+import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
+import { FilterOptionType } from '@/types/filter';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
 
-type DrivetrainOption = (typeof options)[number];
-
 type DrivetrainFilterBottomSheetProps = {
-  onChange: (values: DrivetrainOption[]) => void;
+  onChange: (values: FilterOptionType[]) => void;
+  options: readonly FilterOptionType[];
+  title: string;
+  selectedOptions?: FilterOptionType[];
 };
 
-const options = [
-  { label: 'Передний (FWD)', value: 'front' },
-  { label: 'Задний (RWD)', value: 'rear' },
-  { label: '4x4', value: '4wd' },
-];
+export const DrivetrainFilterBottomSheet = forwardRef<BottomSheetRef, DrivetrainFilterBottomSheetProps>(
+  ({ onChange, options, title, selectedOptions = [] }, ref) => {
+    const [selectedDrivetrains, setSelectedDrivetrains] = React.useState<FilterOptionType[]>(selectedOptions);
 
-export const DrivetrainFilterBottomSheet = forwardRef<BottomSheetRef, DrivetrainFilterBottomSheetProps>(({ onChange }, ref) => {
-  const [selectedDrivetrains, setSelectedDrivetrains] = React.useState<DrivetrainOption[]>([]);
+    React.useEffect(() => {
+      setSelectedDrivetrains(selectedOptions);
+    }, [selectedOptions]);
 
-  const handleToggle = (option: DrivetrainOption) => {
-    const isSelected = selectedDrivetrains.some(t => t.value === option.value);
-    if (isSelected) {
-      setSelectedDrivetrains(selectedDrivetrains.filter(t => t.value !== option.value));
-    } else {
-      setSelectedDrivetrains([...selectedDrivetrains, option]);
-    }
-  };
+    const handleToggle = (option: FilterOptionType) => {
+      const isSelected = selectedDrivetrains.some(t => t.value === option.value);
+      if (isSelected) {
+        setSelectedDrivetrains(selectedDrivetrains.filter(t => t.value !== option.value));
+      } else {
+        setSelectedDrivetrains([...selectedDrivetrains, option]);
+      }
+    };
 
-  const handleConfirm = () => {
-    onChange(selectedDrivetrains);
-  };
+    const handleConfirm = () => {
+      onChange(selectedDrivetrains);
+    };
 
-  return (
-    <CustomBottomSheetModal
-      ref={ref}
-      snapPoints={['30%']}
-      enableContentPanningGesture={true}
-      title="Привод"
-      footerProps={{
-        onConfirm: handleConfirm,
-      }}
-    >
-      <BottomSheetView className="flex-col">
-        {options.map(opt => (
-          <CheckboxRectButton
-            key={opt.value}
-            label={opt.label}
-            value={selectedDrivetrains.some(t => t.value === opt.value)}
-            onPress={() => handleToggle(opt)}
-          />
-        ))}
-      </BottomSheetView>
-    </CustomBottomSheetModal>
-  );
-});
+    return (
+      <CustomBottomSheetModal
+        ref={ref}
+        snapPoints={['35%']}
+        enableContentPanningGesture={true}
+        title={title}
+        footerProps={{
+          onConfirm: handleConfirm,
+        }}
+      >
+        <BottomSheetScrollView className="flex-col" enableFooterMarginAdjustment={true}>
+          {options.map(opt => (
+            <CheckboxRectButton
+              key={opt.value}
+              label={opt.label}
+              value={selectedDrivetrains.some(t => t.value === opt.value)}
+              onPress={() => handleToggle(opt)}
+            />
+          ))}
+        </BottomSheetScrollView>
+      </CustomBottomSheetModal>
+    );
+  }
+);
 DrivetrainFilterBottomSheet.displayName = 'DrivetrainFilterBottomSheet';

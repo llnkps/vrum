@@ -1,14 +1,17 @@
 import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import CustomWheelPicker from '@/components/global/CustomWheelPicker';
+import { RangeFilterType } from '@/types/filter';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import { PickerItem, ValueChangedEvent } from '@quidone/react-native-wheel-picker';
-import React, { forwardRef, useState } from 'react';
-import { Text, View } from 'react-native';
+import React, { forwardRef, memo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { View } from 'react-native';
 
 type MileageModalProps = {
-  onChange: (range: { min?: number; max?: number }) => void;
+  onChange: (range: RangeFilterType) => void;
 };
 
+// Move mileage arrays outside component to avoid recreation on every render
 const minMileageArray = [
   { value: undefined as number | undefined, label: '--' },
   { value: 1000, label: '1000' },
@@ -27,44 +30,59 @@ const maxMileageArray = [
   }),
 ];
 
-const MileageFilterBottomSheet = forwardRef<BottomSheetRef, MileageModalProps>(({ onChange }, ref) => {
-  const [minValue, setMinValue] = useState<number | undefined>(undefined);
-  const [maxValue, setMaxValue] = useState<number | undefined>(undefined);
+const MileageFilterBottomSheet = memo(
+  forwardRef<BottomSheetRef, MileageModalProps>(({ onChange }, ref) => {
+    const { t } = useTranslation();
+    const [minValue, setMinValue] = useState<number | undefined>(undefined);
+    const [maxValue, setMaxValue] = useState<number | undefined>(undefined);
 
-  const handleMinChange = (value: ValueChangedEvent<PickerItem<number>>) => {
-    setMinValue(value.item.value);
-  };
+    const handleMinChange = (value: ValueChangedEvent<PickerItem<number>>) => {
+      setMinValue(value.item.value);
+    };
 
-  const handleMaxChange = (value: ValueChangedEvent<PickerItem<number>>) => {
-    setMaxValue(value.item.value);
-  };
+    const handleMaxChange = (value: ValueChangedEvent<PickerItem<number>>) => {
+      setMaxValue(value.item.value);
+    };
 
-  const handleConfirm = () => {
-    onChange({ min: minValue, max: maxValue });
-  };
+    const handleConfirm = () => {
+      onChange({ from: minValue, to: maxValue });
+    };
 
-  return (
-    <CustomBottomSheetModal
-      ref={ref}
-      snapPoints={['45%']}
-      title={'Пробег'}
-      footerProps={{
-        onConfirm: handleConfirm,
-      }}
-    >
-      <BottomSheetView>
-        <View className="flex-row items-center justify-center gap-x-4">
-          <View className="flex-1">
-            <CustomWheelPicker data={minMileageArray} value={minValue} onValueChanged={handleMinChange} label="От" />
+    return (
+      <CustomBottomSheetModal
+        ref={ref}
+        snapPoints={['45%']}
+        title={t('filters.mileage.label')}
+        footerProps={{
+          onConfirm: handleConfirm,
+        }}
+      >
+        <BottomSheetView>
+          <View className="flex-row items-center justify-center gap-x-4">
+            <View className="flex-1">
+              <CustomWheelPicker
+                virtualized={true}
+                data={minMileageArray}
+                value={minValue}
+                onValueChanged={handleMinChange}
+                label={t('filters.mileage.fromLabel')}
+              />
+            </View>
+            <View className="flex-1">
+              <CustomWheelPicker
+                virtualized={true}
+                data={maxMileageArray}
+                value={maxValue}
+                onValueChanged={handleMaxChange}
+                label={t('filters.mileage.toLabel')}
+              />
+            </View>
           </View>
-          <View className="flex-1">
-            <CustomWheelPicker data={maxMileageArray} value={maxValue} onValueChanged={handleMaxChange} label="До" />
-          </View>
-        </View>
-      </BottomSheetView>
-    </CustomBottomSheetModal>
-  );
-});
+        </BottomSheetView>
+      </CustomBottomSheetModal>
+    );
+  })
+);
 MileageFilterBottomSheet.displayName = 'MileageFilterBottomSheet';
 
 export default MileageFilterBottomSheet;

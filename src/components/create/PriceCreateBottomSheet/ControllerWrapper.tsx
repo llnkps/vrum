@@ -35,7 +35,7 @@ const Wrapper = ({ value, onChange, error }: PriceControllerWrapperProps) => {
       />
       <PriceCreateBottomSheet
         ref={priceModalRef}
-        onChange={(price) => {
+        onChange={price => {
           if (price !== undefined) {
             onChange(price);
           }

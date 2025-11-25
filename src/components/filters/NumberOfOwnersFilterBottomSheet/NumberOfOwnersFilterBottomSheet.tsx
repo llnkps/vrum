@@ -1,58 +1,59 @@
 import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
 import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
-import { BottomSheetView } from '@gorhom/bottom-sheet';
+import { BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
-
-type NumberOfOwnersOption = (typeof options)[number];
+import { FilterOptionType } from '@/types/filter';
 
 type NumberOfOwnersFilterBottomSheetProps = {
-  onChange: (values: NumberOfOwnersOption[]) => void;
+  onChange: (values: FilterOptionType[]) => void;
+  options: readonly FilterOptionType[];
+  title: string;
+  selectedOptions?: FilterOptionType[];
 };
 
-const options = [
-  { label: 'Один', value: 'one' },
-  { label: 'Два', value: 'up_to_two' },
-  { label: 'Три', value: 'up_to_three' },
-  { label: 'Больше трех', value: 'more_than_three' },
-];
+export const NumberOfOwnersFilterBottomSheet = forwardRef<BottomSheetRef, NumberOfOwnersFilterBottomSheetProps>(
+  ({ onChange, options, title, selectedOptions = [] }, ref) => {
+    const [selectedNumberOfOwners, setSelectedNumberOfOwners] = React.useState<FilterOptionType[]>(selectedOptions);
 
-export const NumberOfOwnersFilterBottomSheet = forwardRef<BottomSheetRef, NumberOfOwnersFilterBottomSheetProps>(({ onChange }, ref) => {
-  const [selectedValues, setSelectedValues] = React.useState<NumberOfOwnersOption[]>([]);
+    React.useEffect(() => {
+      setSelectedNumberOfOwners(selectedOptions);
+    }, [selectedOptions]);
 
-  const handleToggle = (option: NumberOfOwnersOption) => {
-    const isSelected = selectedValues.some(v => v.value === option.value);
-    if (isSelected) {
-      setSelectedValues(selectedValues.filter(v => v.value !== option.value));
-    } else {
-      setSelectedValues([...selectedValues, option]);
-    }
-  };
+    const handleToggle = (option: FilterOptionType) => {
+      const isSelected = selectedNumberOfOwners.some(v => v.value === option.value);
+      if (isSelected) {
+        setSelectedNumberOfOwners(selectedNumberOfOwners.filter(v => v.value !== option.value));
+      } else {
+        setSelectedNumberOfOwners([...selectedNumberOfOwners, option]);
+      }
+    };
 
-  const handleConfirm = () => {
-    onChange(selectedValues);
-  };
+    const handleConfirm = () => {
+      onChange(selectedNumberOfOwners);
+    };
 
-  return (
-    <CustomBottomSheetModal
-      ref={ref}
-      snapPoints={['33%']}
-      enableContentPanningGesture={true}
-      title={'Количество владельцев'}
-      footerProps={{
-        onConfirm: handleConfirm,
-      }}
-    >
-      <BottomSheetView className="flex-col">
-        {options.map(opt => (
-          <CheckboxRectButton
-            key={opt.value}
-            label={opt.label}
-            value={selectedValues.some(v => v.value === opt.value)}
-            onPress={() => handleToggle(opt)}
-          />
-        ))}
-      </BottomSheetView>
-    </CustomBottomSheetModal>
-  );
-});
+    return (
+      <CustomBottomSheetModal
+        ref={ref}
+        snapPoints={['35%']}
+        enableContentPanningGesture={true}
+        title={title}
+        footerProps={{
+          onConfirm: handleConfirm,
+        }}
+      >
+        <BottomSheetScrollView className="flex-col" enableFooterMarginAdjustment={true}>
+          {options.map(opt => (
+            <CheckboxRectButton
+              key={opt.value}
+              label={opt.label}
+              value={selectedNumberOfOwners.some(v => v.value === opt.value)}
+              onPress={() => handleToggle(opt)}
+            />
+          ))}
+        </BottomSheetScrollView>
+      </CustomBottomSheetModal>
+    );
+  }
+);
 NumberOfOwnersFilterBottomSheet.displayName = 'NumberOfOwnersFilterBottomSheet';

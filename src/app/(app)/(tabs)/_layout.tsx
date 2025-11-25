@@ -5,6 +5,7 @@ import { useAuthContext } from '@/context/AuthContext';
 import { useRouter } from 'expo-router';
 import { Alert, Platform } from 'react-native';
 import { useEffect } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // TODO: test this func
 function withAuthGuard<P>(WrappedComponent: React.ComponentType<P>) {
@@ -36,6 +37,7 @@ function withAuthGuard<P>(WrappedComponent: React.ComponentType<P>) {
 export default function TabLayout() {
   const { isDark } = useThemeStore();
   const { isAuthenticated } = useAuthContext();
+  const { bottom: bottomSafeArea } = useSafeAreaInsets();
   const router = useRouter();
   const backgroundColor = isDark ? '#000' : '#fff';
   const tabBarActiveTintColor = isDark ? '#BFC1C4' : '#292A2E';
@@ -71,7 +73,7 @@ export default function TabLayout() {
           position: 'absolute',
           left: 8,
           right: 0,
-          bottom: 0,
+          bottom: bottomSafeArea,
           height: Platform.OS === 'ios' ? 88 : 68,
           paddingBottom: Platform.OS === 'ios' ? 34 : 20,
           paddingTop: 4,

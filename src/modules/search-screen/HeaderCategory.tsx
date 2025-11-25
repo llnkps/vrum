@@ -1,4 +1,3 @@
-import clsx from 'clsx';
 import { Text, TouchableHighlight, View } from 'react-native';
 
 import HeaderAuto from '@/assets/images/header-auto-icon.svg';
@@ -6,9 +5,9 @@ import HeaderBreak from '@/assets/images/header-break-icon.svg';
 import HeaderMoto from '@/assets/images/header-moto-icon.svg';
 import HeaderSpecAuto from '@/assets/images/header-specauto-icon.svg';
 
-import { ActiveScreen } from './types';
-import { useTheme } from '@react-navigation/native';
 import { CustomTheme } from '@/theme';
+import { useTheme } from '@react-navigation/native';
+import { ActiveScreen } from './types';
 
 const CategoryButton = ({ isActive, onPress, Icon, label }: { isActive: boolean; onPress: () => void; Icon: React.ComponentType; label: string }) => {
   const theme = useTheme() as CustomTheme;

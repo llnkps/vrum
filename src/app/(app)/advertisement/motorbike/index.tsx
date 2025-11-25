@@ -8,7 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { CheckboxRectButton } from '@/components/global/CheckboxRectButton';
 import CloseIcon from '@/components/global/CloseIcon';
 import { BottomSheetRef } from '@/components/global/CustomBottomSheetModal';
-import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow/TouchableHighlightRow';
+import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
 import { Button } from '@/components/ui/button';
 import { BodyTypeCreateBottomSheet } from '@/components/create/FrameTypeCreateBottomSheet';
 import { ColorCreateBottomSheet } from '@/components/create/ColorCreateBottomSheet';

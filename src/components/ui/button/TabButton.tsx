@@ -1,3 +1,5 @@
+// TODO: depreacted. Move functionality to CustomRectButton
+
 import { CustomTheme } from '@/theme';
 import { useTheme } from '@react-navigation/native';
 import React, { PropsWithChildren } from 'react';
@@ -36,18 +38,8 @@ export const TabButton = ({ loading, title, style, children, onPress, isSelected
 
   return (
     <View style={[styles.container, style]}>
-      <RectButton
-        style={styles.button}
-        borderless={false}
-        onPress={onPress}
-        rippleColor={theme.colors.button.subtlePressed}
-      >
-        {children ||
-          (loading ? (
-            <ActivityIndicator size="small" color={theme.colors.primary} />
-          ) : (
-            <Text style={styles.text}>{title}</Text>
-          ))}
+      <RectButton style={styles.button} borderless={false} onPress={onPress} rippleColor={theme.colors.button.subtlePressed}>
+        {children || (loading ? <ActivityIndicator size="small" color={theme.colors.primary} /> : <Text style={styles.text}>{title}</Text>)}
       </RectButton>
     </View>
   );

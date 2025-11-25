@@ -29,8 +29,8 @@ const Wrapper = ({ value, onChange, error }: EngineCapacityControllerWrapperProp
       />
       <EngineCapacityCreateBottomSheet
         ref={engineCapacityModalRef}
-        onChange={(engineCapacity) => {
-          console.log(engineCapacity)
+        onChange={engineCapacity => {
+          console.log(engineCapacity);
           if (engineCapacity !== undefined) {
             onChange(engineCapacity);
           }

@@ -9,7 +9,7 @@ export function createAuthenticatedConfiguration(): Configuration {
     credentials: 'include',
     accessToken: async (name?: string, scopes?: string[]) => {
       const token = tokenManager.getToken();
-      console.log("TOKEN FETCHED FOR CONFIGURATION:", token);
+      console.log('TOKEN FETCHED FOR CONFIGURATION:', token);
       return token || '';
     },
   });

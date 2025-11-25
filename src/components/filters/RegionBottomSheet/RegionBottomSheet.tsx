@@ -69,11 +69,7 @@ export const RegionBottomSheet = forwardRef<BottomSheetRef, RegionBottomSheetPro
         onConfirm: handleConfirm,
       }}
     >
-      <RegionList
-        multiple={props.multiple}
-        onRegionSelect={handleRegionSelect}
-        isRegionSelected={isRegionSelected}
-      />
+      <RegionList multiple={props.multiple} onRegionSelect={handleRegionSelect} isRegionSelected={isRegionSelected} />
     </CustomBottomSheetModal>
   );
 });
@@ -110,12 +106,7 @@ const RegionList: FC<RegionListProps> = ({ multiple, onRegionSelect, isRegionSel
       {regions?.map(region => {
         if (multiple) {
           return (
-            <CheckboxRectButton
-              key={region.id}
-              label={region.name || ''}
-              value={isRegionSelected(region)}
-              onPress={() => onRegionSelect(region)}
-            />
+            <CheckboxRectButton key={region.id} label={region.name || ''} value={isRegionSelected(region)} onPress={() => onRegionSelect(region)} />
           );
         } else {
           return (
@@ -124,6 +115,7 @@ const RegionList: FC<RegionListProps> = ({ multiple, onRegionSelect, isRegionSel
               onPress={() => onRegionSelect(region)}
               title={region.name}
               isSelected={isRegionSelected(region)}
+              appearance="subtle"
             />
           );
         }

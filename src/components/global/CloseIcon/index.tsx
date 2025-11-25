@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { ViewStyle, TextStyle } from 'react-native';
+import { TextStyle, ViewStyle } from 'react-native';
 
 import { CustomTheme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';

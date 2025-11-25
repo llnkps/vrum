@@ -7,7 +7,7 @@ import { CustomTheme } from '@/theme';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 import { useUserSubscriptionFiltersApi } from '@/hooks/api/useUserSubscriptionFiltersApi';
-import { useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
+import { useSimpleAutoFilterStore } from '@/state/search-screen/useSimpleAutoFilterStore';
 import { useSubscriptionsStore } from '@/state/subscriptions/useSubscriptionsStore';
 import SubscriptionCard from './SubscriptionCard';
 import EmptyState from './EmptyState';
@@ -48,7 +48,7 @@ const SubscriptionsPage = () => {
   const handleSubscriptionItemPress = useCallback(
     (item: UserSubscriptionFilter) => {
       populateFromSubscriptionFilters(item.filters);
-      router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal');
+      router.push('/(app)/search-screen/simple-auto-screen/simple-auto-modal');
     },
     [populateFromSubscriptionFilters, router]
   );

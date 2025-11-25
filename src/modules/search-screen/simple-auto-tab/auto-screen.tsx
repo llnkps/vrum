@@ -1,224 +1,199 @@
 import { useRouter } from 'expo-router';
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, Text, View, ScrollView, TouchableOpacity } from 'react-native';
+import { ScrollView, Text, TouchableWithoutFeedback, View } from 'react-native';
 
-import { PriceBottomSheet } from '@/components/filters/PriceFilterBottomSheet';
-import { RegionBottomSheet } from '@/components/filters/RegionBottomSheet';
-import { YearBottomSheet } from '@/components/filters/YearFilterBottomSheet';
+import { PriceFilterController } from '@/components/filters/PriceFilterBottomSheet/PriceFilterController';
+import { RegionFilterController } from '@/components/filters/RegionBottomSheet/RegionFilterController';
+import { YearFilterController } from '@/components/filters/YearFilterBottomSheet/YearFilterController';
+import FilterBadge from '@/components/global/FilterBadge';
 import { SelectedRegionsBadges } from '@/components/global/SelectedItemsBadges';
 import { TouchableHighlightRow } from '@/components/global/TouchableHighlightRow';
-import { getPriceDisplayValue, getYearDisplayValue, useAutoSelectStore } from '@/state/search-screen/useAutoSelectStore';
-import { Ionicons } from '@expo/vector-icons';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { useTheme } from '@react-navigation/native';
+import { useSearchTab } from '@/modules/search-screen/SearchTabProvider';
+import { QuickFilter, useQuickFilters } from '@/shared/quick-filters';
+import { SearchedItem, useLoadSearchedFilters, useSearchedFiltersStore } from '@/state/search-screen/useSearchedFiltersStore';
+import { useSimpleAutoFilterStore } from '@/state/search-screen/useSimpleAutoFilterStore';
 import { CustomTheme } from '@/theme';
+import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '@react-navigation/native';
+import { RectButton } from 'react-native-gesture-handler';
+import { CustomRectButton } from '@/components/ui/button';
 
 export const AutoHeaderScreen = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const store = useAutoSelectStore();
+  const store = useSimpleAutoFilterStore();
   const theme = useTheme() as CustomTheme;
 
-  const yearModalRef = useRef<BottomSheetModal>(null);
-  const priceModalRef = useRef<BottomSheetModal>(null);
-  const regionModalRef = useRef<BottomSheetModal>(null);
+  const { updateRequestParams } = useSearchTab();
 
-  const handlePresentYearModalPress = useCallback(() => {
-    yearModalRef.current?.present();
-  }, []);
+  // Local states for filters
+  const [localRegions, setLocalRegions] = useState(store.selectedRegions);
 
-  const handlePresentPriceModalPress = useCallback(() => {
-    priceModalRef.current?.present();
-  }, []);
+  // > -- Quick Filters State and Handlers ---
+  const quickFilters = useQuickFilters();
+  const [selectedQuickFilter, setSelectedQuickFilter] = useState<string | null>('recommended');
 
-  const handlePresentRegionModalPress = useCallback(() => {
-    regionModalRef.current?.present();
-  }, []);
-
-  const getRegionDisplayValue = () => {
-    return store.selectedRegions?.map(region => region.name).join(', ');
-  };
-
-  const quickFilters = [
-    { label: 'Рекомендации', type: 'recommended' },
-    { label: 'От собственников', type: 'fromOwners' },
-    { label: 'Новые', type: 'new' },
-    { label: 'до $5к', type: 'price', value: 5000 },
-    { label: 'до $10к', type: 'price', value: 10000 },
-    { label: 'до $15к', type: 'price', value: 15000 },
-  ];
+  // Apply default recommended filter on mount
+  // useEffect(() => {
+  //   if (updateRequestParams) {
+  //     // updateRequestParams({ recommended: true });
+  //   }
+  // }, [updateRequestParams]);
 
   const handleQuickFilterPress = useCallback(
-    (filter: (typeof quickFilters)[0]) => {
-      if (filter.type === 'price') {
-        // Set price filter with max value
-        store.setPriceRange({ min: undefined, max: filter.value });
-      } else if (filter.type === 'recommended') {
-        // Handle recommended filter - you might need to add this to your store
-        // For now, just clear other filters or set a special flag
-      } else if (filter.type === 'fromOwners') {
-        // Handle from owners filter
-      } else if (filter.type === 'new') {
-        // Handle new items filter - maybe set year to current year
-        store.setYearRange({ min: new Date().getFullYear(), max: undefined });
-      }
-    },
-    [store]
-  );
+    (filter: QuickFilter) => {
+      // If this filter is not already selected, select it
+      if (selectedQuickFilter !== filter.type) {
+        setSelectedQuickFilter(filter.type);
 
-  const isActive = (filter: (typeof quickFilters)[0]) => {
-    if (filter.type === 'price' && store.priceRange?.max === filter.value) {
-      return true;
-    }
-    if (filter.type === 'new' && store.yearRange?.min === new Date().getFullYear()) {
-      return true;
-    }
-    // Для recommended и fromOwners
-    return false;
+        // Clear all existing quick filter params first
+        if (updateRequestParams) {
+          updateRequestParams({
+            price: undefined,
+            releaseYear: undefined,
+            recommended: undefined,
+            seller: undefined,
+          });
+        }
+
+        // Call onSelect function and update request params
+        if (updateRequestParams && filter.onSelect) {
+          const params = filter.onSelect();
+          updateRequestParams(params);
+        }
+      }
+      // If already selected, do nothing (no deselection allowed)
+    },
+    [selectedQuickFilter, updateRequestParams]
+  );
+  // < -- Quick Filters State and Handlers ---
+
+  // > -- Searched Filters Handlers ---
+  const searchedFiltersStore = useSearchedFiltersStore();
+
+  const loadSearchedFilters = useLoadSearchedFilters();
+
+  const handlePressSearchedFilter = (searchedItem: SearchedItem) => {
+    console.log('CLICK press');
+    loadSearchedFilters(searchedItem);
+    router.push('/(app)/search-screen/simple-auto-screen/simple-auto-modal');
   };
+  // < -- Searched Filters Handlers ---
+
+  useEffect(() => {
+    router.prefetch('/(app)/search-screen/simple-auto-screen/simple-auto-modal');
+    router.prefetch('/(app)/search-screen/simple-auto-screen/brand-auto-filter');
+  }, []);
 
   return (
     <>
-      <View className="px-4 py-3">
-        <TouchableHighlightRow
-          label="Марка, модель, поколение"
-          onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/brand-auto-filter')}
-          variant="button"
-          showRightArrow={false}
-          noBorder={true}
-          borderRadiusBottomLeft={0}
-          borderRadiusBottomRight={0}
-        />
-        <View className={'flex-row gap-1'}>
+      <View className="gap-y-4 px-4 py-3">
+        <View>
           <TouchableHighlightRow
-            label="Год"
-            selectedValue={getYearDisplayValue(store)}
-            onPress={handlePresentYearModalPress}
-            variant="button"
+            label={t('searchScreen.simpleAuto.brandModelGeneration')}
+            onPress={() => router.navigate('/(app)/search-screen/simple-auto-screen/brand-auto-filter')}
+            appearance="primary"
             showRightArrow={false}
-            selectedValueMode="replace"
-            noBorder={true}
-            borderRadiusTopLeft={0}
-            borderRadiusTopRight={0}
-            borderRadiusBottomLeft={0}
-            borderRadiusBottomRight={0}
-          />
-
-          <TouchableHighlightRow
-            label="Цена"
-            selectedValue={getPriceDisplayValue(store)}
-            onPress={handlePresentPriceModalPress}
-            variant="button"
-            showRightArrow={false}
-            selectedValueMode="replace"
-            noBorder={true}
-            borderRadiusTopLeft={0}
-            borderRadiusTopRight={0}
-            borderRadiusBottomLeft={0}
-            borderRadiusBottomRight={0}
-          />
-
-          <TouchableHighlightRow
-            label="Параметры"
-            onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/settings')}
-            variant="button"
-            icon={<Ionicons name="options-sharp" size={20} color={theme.colors.icon} />}
-            showRightArrow={false}
-            fullWidth
-            noBorder={true}
-            borderRadiusTopLeft={0}
-            borderRadiusTopRight={0}
-            borderRadiusBottomLeft={0}
-            borderRadiusBottomRight={0}
-          />
-        </View>
-        <TouchableHighlightRow
-          label="Все регионы"
-          onPress={handlePresentRegionModalPress}
-          variant="button"
-          showRightArrow={false}
-          noBorder={true}
-          borderRadiusTopLeft={0}
-          borderRadiusTopRight={0}
-        />
-
-        {store.selectedRegions?.length > 0 && (
-          <SelectedRegionsBadges
-            selectedRegions={store.selectedRegions}
-            onRemove={region => {
-              const updatedRegions = store.selectedRegions.filter(r => r.id !== region.id);
-              store.setSelectedRegions(updatedRegions);
+            containerStyle={{
+              borderTopLeftRadius: 8,
+              borderTopRightRadius: 8,
             }}
           />
-        )}
+          <View className={'flex-row gap-1'}>
+            <YearFilterController
+              onChange={yearRange => {
+                // TODO: check on prod build if this works without issues
+                // sometimes yearRange can be undefined when user clicks confirm
+                store.setYearRange(yearRange);
+                router.navigate('/(app)/search-screen/simple-auto-screen/simple-auto-modal');
+              }}
+              appearance="primary"
+            />
 
-        <YearBottomSheet
-          ref={yearModalRef}
-          onChange={yearRange => {
-            store.setYearRange(yearRange);
-            router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal');
-          }}
-        />
-        <PriceBottomSheet
-          ref={priceModalRef}
-          onChange={priceRange => {
-            store.setPriceRange(priceRange);
-            router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal');
-          }}
-        />
-        <RegionBottomSheet
-          ref={regionModalRef}
-          multiple
-          selectedRegions={store.selectedRegions}
-          onChange={regions => store.setSelectedRegions(Array.isArray(regions) ? regions : [regions])}
-        />
-      </View>
+            <PriceFilterController
+              onChange={priceRange => {
+                store.setPriceRange(priceRange);
+                router.push('/(app)/search-screen/simple-auto-screen/simple-auto-modal');
+              }}
+              appearance="primary"
+            />
 
-      <View className="mb-6 px-4">
+            <TouchableHighlightRow
+              label={t('searchScreen.simpleAuto.parameters')}
+              onPress={() => router.navigate('/(app)/search-screen/simple-auto-screen/settings')}
+              icon={<Ionicons name="options-sharp" size={20} color={theme.colors.icon} />}
+              showRightArrow={false}
+              fullWidth
+              appearance="primary"
+            />
+          </View>
+          <RegionFilterController
+            value={localRegions}
+            onChange={regions => {
+              setLocalRegions(regions);
+              store.setSelectedRegions(regions);
+            }}
+            appearance="primary"
+            containerStyle={{
+              borderBottomLeftRadius: 8,
+              borderBottomRightRadius: 8,
+            }}
+          />
+
+          {localRegions?.length > 0 && (
+            <SelectedRegionsBadges
+              selectedRegions={localRegions}
+              onRemove={region => {
+                const updatedRegions = localRegions.filter(r => r.id !== region.id);
+                setLocalRegions(updatedRegions);
+              }}
+            />
+          )}
+        </View>
+
         <TouchableHighlightRow
-          label={t('searchScreen.auto.searchPlaceholder')}
-          onPress={() => router.push('/(app)/search-screen/simple-auto-screen/(modals)/simple-auto-modal')}
-          variant="button"
+          label={t('searchScreen.simpleAuto.searchPlaceholder')}
+          onPress={() => router.push('/(app)/search-screen/simple-auto-screen/simple-auto-modal')}
+          appearance="primary"
           showRightArrow={false}
           centerText={true}
-          noBorder={true}
+          containerStyle={{ borderRadius: 8 }}
         />
 
-        {/* Quick Filters */}
-        <View className="mt-4">
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row gap-2">
-            {quickFilters.map((filter, index) => (
-              <TouchableOpacity
-                key={index}
-                onPress={() => handleQuickFilterPress(filter)}
-                className="mr-2 rounded-2xl px-4 py-3"
-                style={{ backgroundColor: theme.colors.backgroundNeutral }}
-              >
-                <Text className="text-md font-medium" style={{ color: theme.colors.text, fontWeight: isActive(filter) ? 'bold' : 'normal' }}>
-                  {filter.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
+        {/* Searched Filters */}
+        {searchedFiltersStore.searchedItems.length > 0 && (
+          <View className="gap-y-1">
+            <Text className="text-sm font-medium text-font dark:text-font-dark">{t('searchScreen.simpleAuto.searchedFilters')}</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
+              {searchedFiltersStore.searchedItems.map(searchedItem => (
+                <RectButton key={searchedItem.id} onPress={() => handlePressSearchedFilter(searchedItem)}>
+                  <FilterBadge label={searchedItem.name} onRemove={() => searchedFiltersStore.removeSearchedFilter(searchedItem.id)} />
+                </RectButton>
+              ))}
+            </ScrollView>
+          </View>
+        )}
+
+        {/** Quick Filters */}
+        <View className="gap-y-1">
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingVertical: 10 }}>
+            {quickFilters.map((filter, index) => {
+              const isSelected = selectedQuickFilter === filter.type;
+
+              return (
+                <CustomRectButton
+                  title={filter.label}
+                  key={index}
+                  onPress={() => handleQuickFilterPress(filter)}
+                  appearance={isSelected ? 'primary' : 'subtle'}
+                  size="small"
+                />
+              );
+            })}
           </ScrollView>
         </View>
       </View>
     </>
-  );
-};
-
-export const AutoItemScreen = ({ item }: { item: any }) => {
-  return (
-    <View className="mx-2 rounded-2xl shadow-md">
-      <Image source={item.image} className="h-48 w-full rounded-t-2xl" resizeMode="cover" />
-      <View className="p-4">
-        <Text className="text-lg font-bold text-font-brand dark:text-font-brand-dark">{item.title}</Text>
-        <Text className="text-base text-font dark:text-font-dark">{item.price}</Text>
-        <View className="mt-2 flex-row">
-          <Text className="mr-2 text-xs text-font dark:text-font-dark">⭐ 5-star GNCAP</Text>
-          <Text className="text-xs text-font dark:text-font-dark">🚗 More Mileage</Text>
-        </View>
-      </View>
-    </View>
   );
 };

@@ -2,23 +2,19 @@ import CustomBottomSheetModal, { BottomSheetRef } from '@/components/global/Cust
 import { CustomRectButton } from '@/components/ui/button';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { forwardRef } from 'react';
-
-type DocumentsOkOption = (typeof options)[number];
+import { FilterOptionType } from '@/types/filter';
 
 type DocumentsOkFilterBottomSheetProps = {
-  onSelect: (value: DocumentsOkOption) => void;
+  onSelect: (value: FilterOption) => void;
+  options: readonly FilterOptionType[];
+  title: string;
 };
 
-const options = [
-  { label: 'Документы в порядке', value: 'ok' },
-  { label: 'Проблемы с документами', value: 'missing_or_problematic' },
-];
-
-export const DocumentsOkFilterBottomSheet = forwardRef<BottomSheetRef, DocumentsOkFilterBottomSheetProps>(({ onSelect }, ref) => {
-  const [selected, setSelected] = React.useState<string | undefined>(undefined);
+export const DocumentsOkFilterBottomSheet = forwardRef<BottomSheetRef, DocumentsOkFilterBottomSheetProps>(({ onSelect, options, title }, ref) => {
+  const [selected, setSelected] = React.useState<string | number | undefined>(undefined);
 
   return (
-    <CustomBottomSheetModal ref={ref} snapPoints={['25%']} enableContentPanningGesture={true} title="Документы">
+    <CustomBottomSheetModal ref={ref} snapPoints={['25%']} enableContentPanningGesture={true} title={title}>
       <BottomSheetView className="flex-col">
         {options.map(opt => (
           <CustomRectButton

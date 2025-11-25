@@ -65,7 +65,7 @@ export const useFavoritesStore = create<FavoritesState>()(
       setLoading: (loading: boolean) => set({ isLoading: loading }),
 
       setError: (error: string | null) => set({ error }),
-      
+
       setSortMethod: (method: string) => set({ sortMethod: method }),
 
       syncWithApi: (apiFavorites: AdvertisementItemResponse[]) =>

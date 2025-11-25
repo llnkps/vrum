@@ -35,7 +35,7 @@ const Wrapper = ({ value, onChange, error }: MileageControllerWrapperProps) => {
       />
       <MileageCreateBottomSheet
         ref={mileageModalRef}
-        onChange={(mileage) => {
+        onChange={mileage => {
           if (mileage !== undefined) {
             onChange(mileage);
           }

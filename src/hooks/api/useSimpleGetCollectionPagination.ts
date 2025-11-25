@@ -1,44 +1,36 @@
 import { Region, SimpleAutoApi, SimpleAutoBrand, SimpleAutoModel } from '@/openapi/client';
+import { BACKEND_FILTERS, RangeFilterType, SelectFilterType } from '@/types/filter';
+import { SortMethod } from '@/types/sort';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { ARRAY_FILTERS, BOOLEAN_FILTERS, RANGE_FILTERS } from '../../utils/filters';
-
-type BottomSheetOptionType = {
-  value: string;
-  label: string;
-};
-
-// SimpleAutoBrand
 
 type props = {
   brands?: SimpleAutoBrand[];
   models?: Record<number, SimpleAutoModel[]>;
-  releaseYear?: number;
-  price?: string;
   page?: string;
   pageSize?: string;
   tab?: 'all' | 'old' | 'new';
   selectedRegions?: Region[];
   onlyUnsold?: boolean;
   onlyWithPhotos?: boolean;
-  transmission?: BottomSheetOptionType[];
-  fuelType?: BottomSheetOptionType[];
-  drivetrain?: BottomSheetOptionType[];
-  bodyType?: BottomSheetOptionType[];
-  color?: BottomSheetOptionType[];
-  numberOfOwners?: BottomSheetOptionType[];
-  seller?: BottomSheetOptionType[];
-  priceRange?: { min?: number; max?: number };
-  yearRange?: { min?: number; max?: number };
-  engineCapacityRange?: { min?: number; max?: number };
-  powerRange?: { min?: number; max?: number };
-  mileageRange?: { min?: number; max?: number };
+  transmission?: SelectFilterType;
+  fuelType?: SelectFilterType;
+  drivetrain?: SelectFilterType;
+  bodyType?: SelectFilterType;
+  color?: SelectFilterType;
+  numberOfOwners?: SelectFilterType;
+  seller?: SelectFilterType;
+  priceRange?: RangeFilterType;
+  yearRange?: RangeFilterType;
+  engineCapacityRange?: RangeFilterType;
+  powerRange?: RangeFilterType;
+  mileageRange?: RangeFilterType;
+  sortMethod?: SortMethod;
+  onSuccess?: (data: any) => void;
 };
 
 export const useSimpleGetCollectionPagination = ({
   brands,
   models,
-  releaseYear,
-  price,
   pageSize,
   tab,
   selectedRegions,
@@ -56,19 +48,17 @@ export const useSimpleGetCollectionPagination = ({
   engineCapacityRange,
   powerRange,
   mileageRange,
+  sortMethod,
 }: Omit<props, 'page'>) => {
   const simpleAutoApi = new SimpleAutoApi();
 
   return useInfiniteQuery({
     gcTime: 0,
     staleTime: 0,
-
     queryKey: [
       'advertisement-simple-auto-pagination',
       brands,
       models,
-      releaseYear,
-      price,
       tab,
       selectedRegions,
       onlyUnsold,
@@ -85,60 +75,33 @@ export const useSimpleGetCollectionPagination = ({
       engineCapacityRange,
       powerRange,
       mileageRange,
+      sortMethod,
     ],
     initialPageParam: 1,
     queryFn: async ({ pageParam }) => {
       const filterParameters: { [key: string]: any } = {};
 
       // Build filterParameters from the filters
-      if (transmission && transmission.length > 0) {
-        const transmissionObj: { [key: string]: string } = {};
-        transmission.forEach((t, index) => {
-          transmissionObj[index.toString()] = t.value;
-        });
-        filterParameters[ARRAY_FILTERS.TRANSMISSION] = transmissionObj;
+      if (transmission) {
+        filterParameters[BACKEND_FILTERS.TRANSMISSION] = transmission;
       }
-      if (fuelType && fuelType.length > 0) {
-        const fuelTypeObj: { [key: string]: string } = {};
-        fuelType.forEach((t, index) => {
-          fuelTypeObj[index.toString()] = t.value;
-        });
-        filterParameters[ARRAY_FILTERS.FUEL_TYPE] = fuelTypeObj;
+      if (fuelType) {
+        filterParameters[BACKEND_FILTERS.FUEL_TYPE] = fuelType;
       }
-      if (drivetrain && drivetrain.length > 0) {
-        const drivetrainObj: { [key: string]: string } = {};
-        drivetrain.forEach((t, index) => {
-          drivetrainObj[index.toString()] = t.value;
-        });
-        filterParameters[ARRAY_FILTERS.DRIVETRAIN_TYPE] = drivetrainObj;
+      if (drivetrain) {
+        filterParameters[BACKEND_FILTERS.DRIVETRAIN_TYPE] = drivetrain;
       }
-      if (bodyType && bodyType.length > 0) {
-        const bodyTypeObj: { [key: string]: string } = {};
-        bodyType.forEach((t, index) => {
-          bodyTypeObj[index.toString()] = t.value;
-        });
-        filterParameters[ARRAY_FILTERS.FRAME_TYPE] = bodyTypeObj;
+      if (bodyType) {
+        filterParameters[BACKEND_FILTERS.FRAME_TYPE] = bodyType;
       }
-      if (color && color.length > 0) {
-        const colorObj: { [key: string]: string } = {};
-        color.forEach((c, index) => {
-          colorObj[index.toString()] = c.value;
-        });
-        filterParameters[ARRAY_FILTERS.COLOR] = colorObj;
+      if (color) {
+        filterParameters[BACKEND_FILTERS.COLOR] = color;
       }
-      if (numberOfOwners && numberOfOwners.length > 0) {
-        const numberOfOwnersObj: { [key: string]: string } = {};
-        numberOfOwners.forEach((t, index) => {
-          numberOfOwnersObj[index.toString()] = t.value;
-        });
-        filterParameters[ARRAY_FILTERS.NUMBER_OF_OWNER] = numberOfOwnersObj;
+      if (numberOfOwners) {
+        filterParameters[BACKEND_FILTERS.NUMBER_OF_OWNER] = numberOfOwners;
       }
-      if (seller && seller.length > 0) {
-        const sellerObj: { [key: string]: string } = {};
-        seller.forEach((s, index) => {
-          sellerObj[index.toString()] = s.value;
-        });
-        filterParameters[ARRAY_FILTERS.SELLER] = sellerObj;
+      if (seller) {
+        filterParameters[BACKEND_FILTERS.SELLER] = seller;
       }
       if (selectedRegions && selectedRegions.length > 0) {
         const regionObj: { [key: string]: string } = {};
@@ -150,41 +113,41 @@ export const useSimpleGetCollectionPagination = ({
         filterParameters['regions'] = regionObj;
       }
       if (onlyUnsold) {
-        filterParameters[BOOLEAN_FILTERS.UNSOLD] = 'true';
+        filterParameters[BACKEND_FILTERS.UNSOLD] = 'true';
       }
       if (onlyWithPhotos) {
-        filterParameters[BOOLEAN_FILTERS.WITH_IMAGE] = 'true';
+        filterParameters[BACKEND_FILTERS.WITH_IMAGE] = 'true';
       }
       if (tab === 'old') {
-        filterParameters[ARRAY_FILTERS.CONDITION] = { '0': 'used' };
+        filterParameters[BACKEND_FILTERS.CONDITION] = { '0': 'used' };
       }
       if (tab === 'new') {
-        filterParameters[ARRAY_FILTERS.CONDITION] = { '0': 'new' };
+        filterParameters[BACKEND_FILTERS.CONDITION] = { '0': 'new' };
       }
       if (engineCapacityRange) {
-        filterParameters[RANGE_FILTERS.ENGINE_CAPACITY] = {};
-        if (engineCapacityRange.min !== undefined) filterParameters[RANGE_FILTERS.ENGINE_CAPACITY]['from'] = engineCapacityRange.min.toString();
-        if (engineCapacityRange.max !== undefined) filterParameters[RANGE_FILTERS.ENGINE_CAPACITY]['to'] = engineCapacityRange.max.toString();
+        filterParameters[BACKEND_FILTERS.ENGINE_CAPACITY] = {};
+        if (engineCapacityRange.from !== undefined) filterParameters[BACKEND_FILTERS.ENGINE_CAPACITY]['from'] = engineCapacityRange.from.toString();
+        if (engineCapacityRange.to !== undefined) filterParameters[BACKEND_FILTERS.ENGINE_CAPACITY]['to'] = engineCapacityRange.to.toString();
       }
       if (powerRange) {
-        filterParameters[RANGE_FILTERS.POWER] = {};
-        if (powerRange.min !== undefined) filterParameters[RANGE_FILTERS.POWER]['from'] = powerRange.min.toString();
-        if (powerRange.max !== undefined) filterParameters[RANGE_FILTERS.POWER]['to'] = powerRange.max.toString();
+        filterParameters[BACKEND_FILTERS.POWER] = {};
+        if (powerRange.from !== undefined) filterParameters[BACKEND_FILTERS.POWER]['from'] = powerRange.from.toString();
+        if (powerRange.to !== undefined) filterParameters[BACKEND_FILTERS.POWER]['to'] = powerRange.to.toString();
       }
       if (mileageRange) {
-        filterParameters[RANGE_FILTERS.MILEAGE] = {};
-        if (mileageRange.min !== undefined) filterParameters[RANGE_FILTERS.MILEAGE]['from'] = mileageRange.min.toString();
-        if (mileageRange.max !== undefined) filterParameters[RANGE_FILTERS.MILEAGE]['to'] = mileageRange.max.toString();
+        filterParameters[BACKEND_FILTERS.MILEAGE] = {};
+        if (mileageRange.from !== undefined) filterParameters[BACKEND_FILTERS.MILEAGE]['from'] = mileageRange.from.toString();
+        if (mileageRange.to !== undefined) filterParameters[BACKEND_FILTERS.MILEAGE]['to'] = mileageRange.to.toString();
       }
       if (yearRange) {
-        filterParameters[RANGE_FILTERS.YEAR] = {};
-        if (yearRange.min !== undefined) filterParameters[RANGE_FILTERS.YEAR]['from'] = yearRange.min.toString();
-        if (yearRange.max !== undefined) filterParameters[RANGE_FILTERS.YEAR]['to'] = yearRange.max.toString();
+        filterParameters[BACKEND_FILTERS.YEAR] = {};
+        if (yearRange.from !== undefined) filterParameters[BACKEND_FILTERS.YEAR]['from'] = yearRange.from.toString();
+        if (yearRange.to !== undefined) filterParameters[BACKEND_FILTERS.YEAR]['to'] = yearRange.to.toString();
       }
       if (priceRange) {
-        filterParameters[RANGE_FILTERS.PRICE] = {};
-        if (priceRange.min !== undefined) filterParameters[RANGE_FILTERS.PRICE]['from'] = priceRange.min.toString();
-        if (priceRange.max !== undefined) filterParameters[RANGE_FILTERS.PRICE]['to'] = priceRange.max.toString();
+        filterParameters[BACKEND_FILTERS.PRICE] = {};
+        if (priceRange.from !== undefined) filterParameters[BACKEND_FILTERS.PRICE]['from'] = priceRange.from.toString();
+        if (priceRange.to !== undefined) filterParameters[BACKEND_FILTERS.PRICE]['to'] = priceRange.to.toString();
       }
 
       const brandsWithModels = brands?.reduce(
@@ -213,19 +176,22 @@ export const useSimpleGetCollectionPagination = ({
         {} as Record<string, any>
       );
 
+      const sorting = sortMethod ? { [sortMethod.fieldName]: sortMethod.direction } : undefined;
+
       const response = await simpleAutoApi.getSimpleAutoCollectionPagination({
         page: pageParam.toString(),
-        limit: pageSize || '10',
+        limit: pageSize || '20',
         b: brandsWithModels,
         f: Object.keys(filterParameters).length > 0 ? filterParameters : undefined,
+        sort: sorting,
       });
 
       return {
         data: response.items || [],
         currentPage: response.currentPage || pageParam,
         total: response.total || 0,
-        perPage: response.perPage || parseInt(pageSize || '10'),
-        hasNextPage: (response.currentPage || pageParam) * (response.perPage || parseInt(pageSize || '10')) < (response.total || 0),
+        perPage: response.perPage || parseInt(pageSize || '20'),
+        hasNextPage: (response.currentPage || pageParam) * (response.perPage || parseInt(pageSize || '20')) < (response.total || 0),
       };
     },
     getNextPageParam: lastPage => {

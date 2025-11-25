@@ -14,7 +14,6 @@ import { ActivityIndicator, Alert, Image, Platform, StyleSheet, Text, TouchableO
 import { Bubble, GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-
 export default function ChatModal() {
   const router = useRouter();
   const theme = useTheme() as CustomTheme;
@@ -49,14 +48,17 @@ export default function ChatModal() {
     }
   };
 
-  const handleSendMessage = useCallback(async (text: string) => {
-    try {
-      await sendMessage(text);
-      setSelectedImage(null);
-    } catch (error) {
-      console.error('Failed to send message:', error);
-    }
-  }, [sendMessage, selectedImage]);
+  const handleSendMessage = useCallback(
+    async (text: string) => {
+      try {
+        await sendMessage(text);
+        setSelectedImage(null);
+      } catch (error) {
+        console.error('Failed to send message:', error);
+      }
+    },
+    [sendMessage, selectedImage]
+  );
 
   // Map API messages to Gifted Chat format
   const mappedMessages = messages.map((item: MessageDTO) => ({

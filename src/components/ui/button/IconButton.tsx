@@ -1,3 +1,5 @@
+// TODO: depreacted
+
 import { CustomTheme } from '@/theme';
 import { useTheme } from '@react-navigation/native';
 import React from 'react';
@@ -91,17 +93,8 @@ export const IconButton = ({
   };
 
   return (
-    <TouchableOpacity
-      style={[getButtonStyle(), style]}
-      onPress={onPress}
-      disabled={disabled || loading}
-      {...props}
-    >
-      {loading ? (
-        <ActivityIndicator size="small" color={getIconColor()} />
-      ) : (
-        <Ionicons name={iconName} size={iconSize} color={getIconColor()} />
-      )}
+    <TouchableOpacity style={[getButtonStyle(), style]} onPress={onPress} disabled={disabled || loading} {...props}>
+      {loading ? <ActivityIndicator size="small" color={getIconColor()} /> : <Ionicons name={iconName} size={iconSize} color={getIconColor()} />}
     </TouchableOpacity>
   );
 };

@@ -79,5 +79,200 @@
   },
   "UserDetails": {
     "userDetails": "Детали пользователя"
+  },
+  "searchScreen": {
+    "simpleAuto": {
+      "searchPlaceholder": "Показать объявления",
+      "quickFilters": "Быстрые фильтры",
+      "searchedFilters": "Поисковые фильтры",
+      "brandModelGeneration": "Марка, модель, поколение",
+      "year": "Год",
+      "price": "Цена",
+      "parameters": "Параметры",
+      "allRegions": "Все регионы",
+      "recommendations": "Рекомендации",
+      "fromOwners": "От собственников",
+      "new": "Новые",
+      "upTo5k": "до $5к",
+      "upTo10k": "до $10к",
+      "upTo15k": "до $15к"
+    }
+  },
+  "sort": {
+    "byRelevance": "по актуальности",
+    "lowPrice": "с низкой ценой",
+    "highPrice": "с высокой ценой",
+    "newYear": "свежий год выпуска",
+    "oldYear": "старый год выпуска",
+    "lowMileage": "с малым пробегом",
+    "bestPrice": "с отличной ценой",
+    "largeEngine": "с большим объемом двигателя"
+  },
+  "filters": {
+    "transmission": {
+      "label": "Трансмиссия",
+      "manual": "Механическая",
+      "automatic": "Автоматическая",
+      "robot": "Роботизированная",
+      "variator": "Вариатор"
+    },
+    "fuelType": {
+      "label": "Тип топлива",
+      "petrol": "Бензин",
+      "diesel": "Дизель",
+      "electric": "Электро",
+      "hybrid": "Гибрид",
+      "gas": "Газ"
+    },
+    "drivetrain": {
+      "label": "Привод",
+      "fwd": "Передний",
+      "rwd": "Задний",
+      "awd": "Полный",
+      "fourwd": "4WD"
+    },
+    "frameType": {
+      "label": "Тип кузова",
+      "sedan": "Седан",
+      "hatchback": "Хэтчбек",
+      "suv": "Внедорожник",
+      "crossover": "Кроссовер",
+      "coupe": "Купе",
+      "convertible": "Кабриолет",
+      "wagon": "Универсал",
+      "pickup": "Пикап",
+      "van": "Фургон",
+      "minivan": "Минивэн"
+    },
+    "color": {
+      "label": "Цвет",
+      "white": "Белый",
+      "black": "Черный",
+      "silver": "Серебристый",
+      "gray": "Серый",
+      "blue": "Синий",
+      "red": "Красный",
+      "green": "Зеленый",
+      "brown": "Коричневый",
+      "beige": "Бежевый",
+      "orange": "Оранжевый",
+      "purple": "Фиолетовый",
+      "yellow": "Желтый",
+      "other": "Другой"
+    },
+    "condition": {
+      "label": "Состояние",
+      "excellent": "Отличное",
+      "good": "Хорошее",
+      "satisfactory": "Удовлетворительное",
+      "requiresRepair": "Требует ремонта",
+      "damaged": "Поврежденный"
+    },
+    "seller": {
+      "label": "Продавец",
+      "owner": "Владелец",
+      "private": "Частное лицо",
+      "company": "Компания"
+    },
+    "documentType": {
+      "label": "Документы",
+      "original": "Оригинал",
+      "duplicate": "Дубликат",
+      "missing": "Отсутствуют"
+    },
+    "numberOfOwners": {
+      "label": "Количество владельцев",
+      "1": "1 владелец",
+      "2": "2 владельца",
+      "3": "3 владельца",
+      "4plus": "4+ владельцев"
+    },
+    "wheelType": {
+      "label": "Руль",
+      "left": "Левый",
+      "right": "Правый"
+    },
+    "tradeAllow": {
+      "label": "Торг уместен"
+    },
+    "withImage": {
+      "label": "С фото"
+    },
+    "unsold": {
+      "label": "Не продано"
+    },
+    "engine_capacity": {
+      "label": "Объем двигателя",
+      "placeholder": "Объем двигателя (л)",
+      "from": "от {{value}}",
+      "to": "до {{value}}",
+      "range": "{{from}} - {{to}}",
+      "fromLabel": "от",
+      "toLabel": "до"
+    },
+    "power": {
+      "label": "Мощность",
+      "placeholder": "Мощность (л.с.)",
+      "from": "от {{value}}",
+      "to": "до {{value}}",
+      "range": "{{from}} - {{to}}",
+      "fromLabel": "от",
+      "toLabel": "до"
+    },
+    "mileage": {
+      "label": "Пробег",
+      "placeholder": "Пробег (км)",
+      "from": "от {{value}}",
+      "to": "до {{value}}",
+      "range": "{{from}} - {{to}}",
+      "fromLabel": "от",
+      "toLabel": "до"
+    },
+    "year": {
+      "label": "Год",
+      "placeholder": "Год выпуска",
+      "from": "от {{value}}",
+      "to": "до {{value}}",
+      "range": "{{from}} - {{to}}",
+      "fromLabel": "от",
+      "toLabel": "до"
+    },
+    "price": {
+      "label": "Цена",
+      "placeholder": "Цена",
+      "from": "от {{value}}",
+      "to": "до {{value}}",
+      "range": "{{from}} - {{to}}",
+      "fromLabel": "от",
+      "toLabel": "до"
+    },
+    "firmCountryGroup": {
+      "label": "Производитель",
+      "european": "Европейский",
+      "asian": "Азиатский",
+      "american": "Американский"
+    },
+    "damagedType": {
+      "label": "Повреждения",
+      "notDamaged": "Без повреждений",
+      "lightDamage": "Легкие повреждения",
+      "mediumDamage": "Средние повреждения",
+      "heavyDamage": "Тяжелые повреждения"
+    },
+    "sellLocation": {
+      "label": "Местоположение",
+      "kyiv": "Киев",
+      "lviv": "Львов",
+      "odesa": "Одесса"
+    }
+  },
+  "units": {
+    "currency": "€",
+    "million": "млн",
+    "thousand": "тыс",
+    "power": "л.с.",
+    "engineCapacity": "л",
+    "year": "г.",
+    "mileage": "км"
   }
 }

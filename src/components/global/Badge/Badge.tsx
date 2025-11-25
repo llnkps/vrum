@@ -4,9 +4,10 @@ import { Text, View } from 'react-native';
 type BadgeProps = {
   text: string;
   variant?: 'default' | 'warning' | 'success';
+  onPress?: () => void;
 };
 
-export const Badge: React.FC<BadgeProps> = ({ text, variant = 'default' }) => {
+export const Badge: React.FC<BadgeProps> = ({ text, variant = 'default', onPress }) => {
   const getBackgroundColor = () => {
     switch (variant) {
       case 'warning':
@@ -20,6 +21,7 @@ export const Badge: React.FC<BadgeProps> = ({ text, variant = 'default' }) => {
 
   return (
     <View
+      onTouchEnd={onPress}
       style={{
         backgroundColor: getBackgroundColor(),
         paddingHorizontal: 8,
