@@ -1,9 +1,21 @@
 import { CustomTheme } from '@/theme';
+import Entypo from '@expo/vector-icons/Entypo';
 import { useTheme } from '@react-navigation/native';
 import { FC, ReactNode } from 'react';
-import { Text, View, ViewStyle, TextStyle, ActivityIndicator, StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
-import Entypo from '@expo/vector-icons/Entypo';
+
+export const getTouchableHighlightRowStyles = (appearance: 'default' | 'primary' | 'subtle', theme: CustomTheme): ViewStyle => {
+  switch (appearance) {
+    case 'primary':
+      return { backgroundColor: theme.colors.button.neutral };
+    case 'subtle':
+      return { backgroundColor: theme.colors.card };
+    case 'default':
+    default:
+      return { borderWidth: 1, borderColor: theme.colors.border, backgroundColor: 'transparent' };
+  }
+};
 
 const styles = StyleSheet.create({
   button: {
@@ -80,14 +92,14 @@ const styles = StyleSheet.create({
   },
 });
 
-type TouchableHighlightRowProps = {
+export type TouchableHighlightRowProps = {
   label: string;
   selectedValue?: string;
   onPress: () => void;
   icon?: ReactNode;
   rightIcon?: keyof typeof Entypo.glyphMap;
   showRightArrow?: boolean;
-  variant?: 'default' | 'bordered' | 'plain' | 'button';
+  appearance?: 'default' | 'primary' | 'subtle';
   containerStyle?: ViewStyle;
   labelStyle?: TextStyle;
   selectedValueStyle?: TextStyle;
@@ -108,7 +120,7 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
   icon,
   rightIcon,
   showRightArrow = true,
-  variant = 'default',
+  appearance = 'default',
   containerStyle,
   labelStyle,
   selectedValueStyle,
@@ -129,34 +141,9 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
       ...(fullWidth ? styles.containerFullWidth : {}),
     };
 
-    switch (variant) {
-      case 'bordered':
-        return StyleSheet.flatten([
-          baseStyle,
-          styles.containerBordered,
-          { borderBottomColor: theme.colors.border },
-          containerStyle,
-        ]);
-      case 'plain':
-        return StyleSheet.flatten([baseStyle, containerStyle]);
-      case 'button':
-        return StyleSheet.flatten([
-          baseStyle,
-          styles.containerButton,
-          {
-            backgroundColor: theme.colors.button.neutral,
-            borderColor: theme.colors.border,
-          },
-          containerStyle,
-        ]);
-      default:
-        return StyleSheet.flatten([
-          baseStyle,
-          styles.containerDefault,
-          { backgroundColor: theme.colors.background },
-          containerStyle,
-        ]);
-    }
+    const appearanceStyle = getTouchableHighlightRowStyles(appearance, theme);
+
+    return StyleSheet.flatten([baseStyle, appearanceStyle, containerStyle]);
   };
 
   const handlePress = () => {
@@ -168,10 +155,7 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
     <View style={getContainerStyle()}>
       <RectButton
         onPress={handlePress}
-        style={StyleSheet.flatten([
-          styles.button,
-          centerText ? styles.buttonCenter : styles.buttonSpaceBetween,
-        ])}
+        style={StyleSheet.flatten([styles.button, centerText ? styles.buttonCenter : styles.buttonSpaceBetween])}
         rippleColor={theme.colors.border}
         enabled={!disabled}
       >
@@ -179,13 +163,7 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
           {icon && <View style={styles.iconContainer}>{icon}</View>}
           <View>
             {selectedValue && selectedValueMode === 'replace' ? (
-              <Text
-                style={StyleSheet.flatten([
-                  styles.selectedValueReplace,
-                  { color: theme.colors.textSubtle },
-                  selectedValueStyle,
-                ])}
-              >
+              <Text style={StyleSheet.flatten([styles.selectedValueReplace, { color: theme.colors.textSubtle }, selectedValueStyle])}>
                 {selectedValue}
               </Text>
             ) : (
@@ -195,55 +173,25 @@ export const TouchableHighlightRow: FC<TouchableHighlightRowProps> = ({
                     style={StyleSheet.flatten([
                       styles.label,
                       {
-                        color: disabled
-                          ? theme.colors.tabBarInactiveTintColor
-                          : theme.colors.text,
+                        color: disabled ? theme.colors.tabBarInactiveTintColor : theme.colors.textSubtle,
                       },
                       labelStyle,
                     ])}
                   >
                     {label}
                   </Text>
-                  {required && (
-                    <Text style={StyleSheet.flatten([styles.required, { color: theme.colors.textDanger }])}>
-                      *
-                    </Text>
-                  )}
+                  {required && <Text style={StyleSheet.flatten([styles.required, { color: theme.colors.textDanger }])}>*</Text>}
                 </View>
 
                 {subtitle && (
-                  <Text
-                    style={StyleSheet.flatten([
-                      styles.subtitleText,
-                      styles.subtitle,
-                      { color: theme.colors.textSubtle },
-                    ])}
-                  >
-                    {subtitle}
-                  </Text>
+                  <Text style={StyleSheet.flatten([styles.subtitleText, styles.subtitle, { color: theme.colors.textSubtle }])}>{subtitle}</Text>
                 )}
                 {selectedValue && selectedValueMode === 'under' && (
-                  <Text
-                    style={StyleSheet.flatten([
-                      styles.selectedValueUnder,
-                      { color: theme.colors.textSubtle },
-                      selectedValueStyle,
-                    ])}
-                  >
+                  <Text style={StyleSheet.flatten([styles.selectedValueUnder, { color: theme.colors.textSubtle }, selectedValueStyle])}>
                     {selectedValue}
                   </Text>
                 )}
-                {error && (
-                  <Text
-                    style={StyleSheet.flatten([
-                      styles.errorText,
-                      styles.error,
-                      { color: theme.colors.textDanger },
-                    ])}
-                  >
-                    {error}
-                  </Text>
-                )}
+                {error && <Text style={StyleSheet.flatten([styles.errorText, styles.error, { color: theme.colors.textDanger }])}>{error}</Text>}
               </>
             )}
           </View>

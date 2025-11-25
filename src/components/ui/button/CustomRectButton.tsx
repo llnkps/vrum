@@ -2,8 +2,64 @@ import { CustomTheme } from '@/theme';
 import { Feather } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
 import React, { PropsWithChildren } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { ActivityIndicator, Text, TextStyle, View, ViewStyle } from 'react-native';
 import { RectButton, RectButtonProps } from 'react-native-gesture-handler';
+
+export const getCustomRectButtonStyles = (
+  appearance: 'primary' | 'default' | 'subtle',
+  theme: CustomTheme,
+  size: 'small' | 'medium' | 'large'
+) => {
+  const getPadding = () => {
+    switch (size) {
+      case 'small':
+        return { paddingVertical: 4, paddingHorizontal: 8 };
+      case 'large':
+        return { paddingVertical: 16, paddingHorizontal: 32 };
+      default: // medium
+        return { paddingVertical: 12, paddingHorizontal: 24 };
+    }
+  };
+
+  const getFontSize = () => {
+    switch (size) {
+      case 'small':
+        return 14;
+      case 'large':
+        return 18;
+      default: // medium
+        return 16;
+    }
+  };
+
+  const baseButton: ViewStyle = {
+    ...getPadding(),
+    borderRadius: 8,
+  };
+
+  const baseText: TextStyle = {
+    fontSize: getFontSize(),
+  };
+
+  switch (appearance) {
+    case 'primary':
+      return {
+        button: { ...baseButton, backgroundColor: theme.colors.button.neutral },
+        text: { ...baseText, color: theme.colors.textSubtle },
+      };
+    case 'subtle':
+      return {
+        button: { ...baseButton, backgroundColor: theme.colors.card },
+        text: { ...baseText, color: theme.colors.text },
+      };
+    case 'default':
+    default:
+      return {
+        button: { ...baseButton, borderColor: theme.colors.border, borderWidth: 1, backgroundColor: 'transparent' },
+        text: { ...baseText, color: theme.colors.text },
+      };
+  }
+};
 
 type Props = PropsWithChildren<
   RectButtonProps & {
@@ -27,54 +83,11 @@ export const CustomRectButton = ({
 }: Props) => {
   const theme = useTheme() as CustomTheme;
 
-  const getPadding = () => {
-    switch (size) {
-      case 'small':
-        return { paddingVertical: 4, paddingHorizontal: 8 };
-      case 'large':
-        return { paddingVertical: 16, paddingHorizontal: 32 };
-      default: // medium
-        return { paddingVertical: 12, paddingHorizontal: 24 };
-    }
-  };
-
-  const getFontSize = () => {
-    switch (size) {
-      case 'small':
-        return 14;
-      case 'large':
-        return 18;
-      default: // medium
-        return 16;
-    }
-  };
-
-  const styles = StyleSheet.create({
-    button: {
-      ...getPadding(),
-      borderRadius: 8,
-    },
-    text: {
-      color: theme.colors.text,
-      fontSize: getFontSize(),
-    },
-
-    primary: {
-      backgroundColor: '#1868DB',
-      color: '#fff',
-      borderColor: 'transparent',
-    },
-
-    default: {
-      // backgroundColor: theme.colors.button.neutral,
-      borderColor: theme.colors.border,
-      borderWidth: 1,
-    },
-  });
+  const appearanceStyles = getCustomRectButtonStyles(appearance, theme, size);
 
   return (
     <RectButton
-      style={[styles.button, appearance === 'primary' && styles.primary, appearance === 'default' && styles.default, style]}
+      style={[appearanceStyles.button, style]}
       borderless={false}
       onPress={onPress}
       rippleColor={theme.colors.button.subtlePressed}
@@ -85,8 +98,8 @@ export const CustomRectButton = ({
         ) : (
           <>
             <View className="flex-row items-center justify-between">
-              <Text style={styles.text}>{title}</Text>
-              {isSelected && <Feather name="check" size={getFontSize() - 2} color={theme.colors.icon} />}
+              <Text style={appearanceStyles.text}>{title}</Text>
+              {isSelected && <Feather name="check" size={(appearanceStyles.text.fontSize || 16) - 2} color={theme.colors.icon} />}
             </View>
           </>
         ))}

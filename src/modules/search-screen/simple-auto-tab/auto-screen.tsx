@@ -13,16 +13,16 @@ import { useSearchTab } from '@/modules/search-screen/SearchTabProvider';
 import { QuickFilter, useQuickFilters } from '@/shared/quick-filters';
 import { SearchedItem, useLoadSearchedFilters, useSearchedFiltersStore } from '@/state/search-screen/useSearchedFiltersStore';
 import { useSimpleAutoFilterStore } from '@/state/search-screen/useSimpleAutoFilterStore';
-import { Ionicons } from '@expo/vector-icons';
-import { RectButton } from 'react-native-gesture-handler';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { useTheme } from '@react-navigation/native';
 import { CustomTheme } from '@/theme';
+import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '@react-navigation/native';
+import { RectButton } from 'react-native-gesture-handler';
+import { CustomRectButton } from '@/components/ui/button';
 
 export const AutoHeaderScreen = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const store = useAutoSelectStore();
+  const store = useSimpleAutoFilterStore();
   const theme = useTheme() as CustomTheme;
 
   const { updateRequestParams } = useSearchTab();
@@ -75,10 +75,10 @@ export const AutoHeaderScreen = () => {
   const loadSearchedFilters = useLoadSearchedFilters();
 
   const handlePressSearchedFilter = (searchedItem: SearchedItem) => {
-    console.log("CLICK press")
+    console.log('CLICK press');
     loadSearchedFilters(searchedItem);
     router.push('/(app)/search-screen/simple-auto-screen/simple-auto-modal');
-  }
+  };
   // < -- Searched Filters Handlers ---
 
   useEffect(() => {
@@ -89,12 +89,16 @@ export const AutoHeaderScreen = () => {
   return (
     <>
       <View className="gap-y-4 px-4 py-3">
-        <View className={'gap-y-1'}>
+        <View>
           <TouchableHighlightRow
             label={t('searchScreen.simpleAuto.brandModelGeneration')}
             onPress={() => router.navigate('/(app)/search-screen/simple-auto-screen/brand-auto-filter')}
-            variant="button"
+            appearance="primary"
             showRightArrow={false}
+            containerStyle={{
+              borderTopLeftRadius: 8,
+              borderTopRightRadius: 8,
+            }}
           />
           <View className={'flex-row gap-1'}>
             <YearFilterController
@@ -104,6 +108,7 @@ export const AutoHeaderScreen = () => {
                 store.setYearRange(yearRange);
                 router.navigate('/(app)/search-screen/simple-auto-screen/simple-auto-modal');
               }}
+              appearance="primary"
             />
 
             <PriceFilterController
@@ -111,15 +116,16 @@ export const AutoHeaderScreen = () => {
                 store.setPriceRange(priceRange);
                 router.push('/(app)/search-screen/simple-auto-screen/simple-auto-modal');
               }}
+              appearance="primary"
             />
 
             <TouchableHighlightRow
               label={t('searchScreen.simpleAuto.parameters')}
               onPress={() => router.navigate('/(app)/search-screen/simple-auto-screen/settings')}
-              variant="button"
               icon={<Ionicons name="options-sharp" size={20} color={theme.colors.icon} />}
               showRightArrow={false}
               fullWidth
+              appearance="primary"
             />
           </View>
           <RegionFilterController
@@ -127,6 +133,11 @@ export const AutoHeaderScreen = () => {
             onChange={regions => {
               setLocalRegions(regions);
               store.setSelectedRegions(regions);
+            }}
+            appearance="primary"
+            containerStyle={{
+              borderBottomLeftRadius: 8,
+              borderBottomRightRadius: 8,
             }}
           />
 
@@ -144,10 +155,10 @@ export const AutoHeaderScreen = () => {
         <TouchableHighlightRow
           label={t('searchScreen.simpleAuto.searchPlaceholder')}
           onPress={() => router.push('/(app)/search-screen/simple-auto-screen/simple-auto-modal')}
-          variant="button"
+          appearance="primary"
           showRightArrow={false}
           centerText={true}
-          noBorder={true}
+          containerStyle={{ borderRadius: 8 }}
         />
 
         {/* Searched Filters */}
@@ -171,15 +182,13 @@ export const AutoHeaderScreen = () => {
               const isSelected = selectedQuickFilter === filter.type;
 
               return (
-                <TouchableWithoutFeedback key={index} onPress={() => handleQuickFilterPress(filter)}>
-                  <Text
-                    className={`text-lg font-bold ${
-                      isSelected ? 'text-font dark:text-font-dark' : 'text-font-subtlest dark:text-font-subtlest-dark'
-                    }`}
-                  >
-                    {filter.label}
-                  </Text>
-                </TouchableWithoutFeedback>
+                <CustomRectButton
+                  title={filter.label}
+                  key={index}
+                  onPress={() => handleQuickFilterPress(filter)}
+                  appearance={isSelected ? 'primary' : 'subtle'}
+                  size="small"
+                />
               );
             })}
           </ScrollView>
